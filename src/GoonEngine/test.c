@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <GoonEngine/test.h>
+#include <GoonEngine/gnpch.h>
+#include <GoonEngine/SdlWindow.h>
+#include <SupergoonSound/include/sound.h>
+
+#define MAX_STARTUP_FRAMES 1000
+
+static SDL_Event event;
+static bool shouldQuit = false;
+
+static uint64_t lastFrameMilliseconds;
+static float msBuildup;
+
+// TODO this should be different, it is inside of SDLwindow.c
+extern SDL_Renderer *g_pRenderer;
+extern int g_refreshRate;
+
+
+
+void *MusicUpdateWrapper(void *arg)
+{
+    return NULL;
+}
+
+/**
+ * @brief Handles all SDL events every frame.
+ *
+ * @return true If we should quit or not
+ * @return false If we should quit or not
+ */
+static bool sdlEventLoop()
+{
+    // Event loop, Handle SDL events.
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+        case SDL_QUIT:
+            return true;
+            break;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            // HandleKeyboardEvent(&event, L);
+            break;
+        default:
+            break;
+        }
+    }
+    return false;
+}
+
+static int loop_func()
+{
+    Uint64 beginFrame = SDL_GetTicks64();
+    Uint64 delta = beginFrame - lastFrameMilliseconds;
+    msBuildup += delta;
+    lastFrameMilliseconds = beginFrame;
+    // Handle SDL inputs
+    shouldQuit = sdlEventLoop();
+    if (shouldQuit)
+        return 0;
+    // TODO make these static and pass into as ref to stop allocations
+    // Initialize time this frame
+    double deltaTimeSeconds = 1 / (double)g_refreshRate;
+    double deltaTimeMs = 1000 / (double)g_refreshRate;
+    if (msBuildup < deltaTimeMs)
+        return true;
+
+    // Run Update and update physics as many times as needed
+    while (msBuildup >= deltaTimeMs)
+    {
+        UpdateSound();
+        msBuildup -= deltaTimeMs;
+    }
+
+    // Draw after we are caught up
+    SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
+    SDL_RenderClear(g_pRenderer);
+    SDL_RenderPresent(g_pRenderer);
+}
+
+int Play()
+{
+    while (!shouldQuit)
+    {
+        loop_func();
+    }
+}
