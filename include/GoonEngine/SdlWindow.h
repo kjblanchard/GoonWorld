@@ -10,4 +10,4 @@
  */
 #pragma once
 
-int LuaCreateSdlWindow(unsigned int width, unsigned int height);
+int CreateWindowAndRenderer(unsigned int width, unsigned int height, const char* windowName);

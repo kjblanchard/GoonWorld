@@ -3,10 +3,12 @@ namespace GoonEngine;
 
 public class Game
 {
-    public ConfigManager _config;
+    public ConfigManager Config { get; }
+    public Sound Sound { get; }
     public Game()
     {
-        _config = new ConfigManager();
+        Config = new ConfigManager();
+        Sound = new Sound(Config.Config.soundConfig);
     }
     ~Game()
     {
@@ -15,7 +17,7 @@ public class Game
 
     public bool CreateWindow()
     {
-        LuaCreateSdlWindow(_config.Config.windowConfig.windowSize.x, _config.Config.windowConfig.windowSize.y);
+        CreateWindowAndRenderer(Config.Config.windowConfig.windowSize.x, Config.Config.windowConfig.windowSize.y, Config.Config.windowConfig.title);
         return true;
     }
 
@@ -24,7 +26,14 @@ public class Game
         return true;
     }
 
+    public void Run()
+    {
+        Play();
+    }
+
 
     [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern int LuaCreateSdlWindow(uint width, uint height);
+    private static extern int CreateWindowAndRenderer(uint width, uint height, string windowTitle);
+    [DllImport("../build/lib/libSupergoonEngine")]
+    private static extern void Play();
 }

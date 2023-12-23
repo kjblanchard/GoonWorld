@@ -1,32 +1,42 @@
 using System.Runtime.InteropServices;
+using System.Linq;
+using System.Collections.Generic;
+using System;
 namespace GoonEngine;
 public class Sound
 {
-    public Sound()
+    ConfigManager.SoundConfig _soundConfig;
+    private static Dictionary<string, IntPtr> LoadedBgms = new();
+    public Sound(ConfigManager.SoundConfig soundConfig)
     {
-
+        _soundConfig = soundConfig;
     }
     ~Sound()
     {
 
     }
-    private static Dictionary<string, IntPtr> LoadedBgms = new();
 
-    public bool LoadBgm(string filename, float loopBegin, float loopEnd)
+    public bool LoadBgm(string title)
     {
-        var bgmPtr = BgmLoad(filename, loopBegin, loopEnd);
+        var foundMusic = _soundConfig.musicToLoad.FirstOrDefault(music => music.title == title);
+        if(foundMusic == null)
+        {
+            // Could not find debug
+            return false;
+        }
+        var bgmPtr = BgmLoad(foundMusic.name, foundMusic.startLoop, foundMusic.endLoop);
         if (bgmPtr == IntPtr.Zero)
         {
             // Invalid bgm ptr
             return false;
         }
-        LoadedBgms[filename] = bgmPtr;
+        LoadedBgms[title] = bgmPtr;
         return true;
     }
 
-    public void PlayBgm(string filename, float volume)
+    public void PlayBgm(string filename, float? volumeOverride = null)
     {
-        BgmPlay(LoadedBgms[filename], volume);
+        BgmPlay(LoadedBgms[filename], volumeOverride ?? _soundConfig.musicVolume);
     }
 
 

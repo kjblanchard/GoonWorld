@@ -24,6 +24,14 @@ public class ConfigManager
     public class SoundConfig
     {
         public float musicVolume { get; set; }
+        public MusicToLoad[] musicToLoad { get; set; }
+    }
+    public class MusicToLoad
+    {
+        public string title { get; set; }
+        public string name { get; set; }
+        public float startLoop { get; set; }
+        public float endLoop { get; set; }
     }
 
     public class WindowConfig

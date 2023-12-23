@@ -12,9 +12,8 @@ int g_refreshRate = 60;
  * @param L
  * @return int
  */
-int LuaCreateSdlWindow(uint width, uint height)
+int CreateWindowAndRenderer(uint width, uint height, const char* windowName)
 {
-    const char *windowName = "Testig";
     g_pWindow = SDL_CreateWindow(windowName,
                                  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                  width, height,
