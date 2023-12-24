@@ -48,7 +48,7 @@ public class Tiled
                         var tileTileset = LoadedTilesetImages.OrderByDescending(tileset => tileset.FirstGid)
                                                                 .FirstOrDefault(tileset => tileset.FirstGid <= tileGid);
                         Console.WriteLine($"Tile num {tileGid} is in tileset {tileTileset.Tileset.Name} and the tilesets first gid is {tileTileset.FirstGid}");
-                        if(tileTileset.ImageTileset)
+                        if (tileTileset.ImageTileset)
                         {
                             // We should blit the image
                         }
