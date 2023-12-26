@@ -1,65 +1,85 @@
 using TiledCS;
+using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
+namespace GoonEngine;
 
 public class Tiled
 {
+    private const string _assetPrefix = "assets/";
+    [DllImport("../build/lib/libSupergoonEngine")]
+    private static extern IntPtr LoadSurfaceFromFile(string filepath);
+    [DllImport("../build/lib/libSupergoonEngine")]
+    // private static extern void BlitSurface(IntPtr atlasSurface, IntPtr tileSurface, IntPtr dstRect, IntPtr srcRect);
+    private static extern void BlitSurface( IntPtr srcSurface, ref SDL_Rect srcRect, IntPtr dstSurface, ref SDL_Rect dstRect);
+    // private static extern void BlitSurface(IntPtr atlasSurface, IntPtr tileSurface, ref SDL_Rect dstRect, ref SDL_Rect srcRect);
+    [DllImport("../build/lib/libSupergoonEngine")]
+    private static extern IntPtr LoadTextureAtlas(int width, int height);
+    [DllImport("../build/lib/libSupergoonEngine")]
+    private static extern void SetBackgroundAtlas(IntPtr background, ref SDL_Rect rect);
+    [DllImport("../build/lib/libSupergoonEngine")]
+    private static extern IntPtr CreateTextureFromSurface(IntPtr surface);
+
     public TiledMap LoadedMap;
-    // private Dictionary<int, LoadedTileset> LoadedTilesetImages = new();
-    private List<LoadedTileset> LoadedTilesetImages = new();
-
-    private struct LoadedTileset
-    {
-        public IntPtr LoadedImage;
-        public TiledTileset Tileset;
-        public int FirstGid;
-        public bool ImageTileset;
-
-        public LoadedTileset(TiledTileset tileset, int firstGid)
-        {
-            LoadedImage = IntPtr.Zero;
-            FirstGid = firstGid;
-            Tileset = tileset;
-            ImageTileset = tileset.Tiles.Any() ? true : false;
-        }
-
-    }
+    private Dictionary<string, IntPtr> LoadedTilesetImages = new();
     public Tiled()
     {
         var pathPrefix = "assets/tiled/";
         LoadedMap = new TiledMap(pathPrefix + "level1.tmx");
-        foreach (var tileset in LoadedMap.Tilesets)
-        {
-            var loadedTileset = new TiledTileset(pathPrefix + tileset.source);
-            LoadedTilesetImages.Add(new LoadedTileset(loadedTileset, tileset.firstgid));
-        }
-        LoadedTilesetImages = LoadedTilesetImages.OrderBy(x => x.FirstGid).ToList();
+        var tilesets = LoadedMap.GetTiledTilesets(_assetPrefix + "tiled/");
 
         foreach (var group in LoadedMap.Groups)
         {
-            // Create a tilemap
             if (group.name == "background")
+            // We should create a atlas for the background and blit it all
             {
+                var atlas = LoadTextureAtlas(LoadedMap.Width * LoadedMap.TileWidth, LoadedMap.Height * LoadedMap.TileHeight);
                 foreach (var layer in group.layers)
                 {
-                    Console.WriteLine(layer.name);
-                    foreach (var tileGid in layer.data)
+                    for (int y = 0; y < layer.height; y++)
                     {
-                        if (tileGid == 0)
-                            continue;
-                        var tileTileset = LoadedTilesetImages.OrderByDescending(tileset => tileset.FirstGid)
-                                                                .FirstOrDefault(tileset => tileset.FirstGid <= tileGid);
-                        Console.WriteLine($"Tile num {tileGid} is in tileset {tileTileset.Tileset.Name} and the tilesets first gid is {tileTileset.FirstGid}");
-                        if (tileTileset.ImageTileset)
+                        for (int x = 0; x < layer.width; x++)
                         {
-                            // We should blit the image
-                        }
-                        else
-                        {
-                            // We should blit the tile
+                            var index = (y * layer.width) + x; // Assuming the default render order is used which is from right to bottom
+                            var tileGid = layer.data[index]; // The tileset tile index
+                            // var tileGid = layer.data[x];
+                            if (tileGid == 0)
+                                continue;
+                            var tilesetMap = LoadedMap.GetTiledMapTileset(tileGid);
+                            var tileset = tilesets[tilesetMap.firstgid];
+                            var tiledTile = LoadedMap.GetTiledTile(tilesetMap, tileset, tileGid);
+                            IntPtr loadedTileset = IntPtr.Zero;
+                            var dstX = x;
+                            var dstY = y;
+                            if(tiledTile == null)
+                            {
+                                // this is a tile, use regular x for destination
+                                loadedTileset =  GetImageFromFilepath(tileset.Image.source);
+                            }
+                            else
+                            {
+                                // This is an image tile.
+                                loadedTileset =  GetImageFromFilepath(tiledTile.image.source);
+                            }
+                            var srcRect = new SDL_Rect(LoadedMap.GetSourceRect(tilesetMap, tileset, tileGid));
+                            var dstRect = new SDL_Rect(
+                                // x * tileset.TileWidth,
+                                x * LoadedMap.TileWidth,
+                                y * LoadedMap.TileHeight,
+                                srcRect.width,
+                                srcRect.height
+                            );
+                            Console.WriteLine($"Going to blit at dest {dstRect.x}:{dstRect.y}:{dstRect.width}:{dstRect.height} from source {srcRect.x}:{srcRect.y}:{srcRect.width}:{srcRect.height} for gid {tileGid}");
+                            // BlitSurface(atlas, loadedTileset, ref dstRect, ref srcRect);
+                            BlitSurface(loadedTileset,ref srcRect, atlas, ref dstRect);
                         }
                     }
 
                 }
+                var bgRect = new SDL_Rect(0, 0, 512, 288);
+                var texPtr = CreateTextureFromSurface(atlas);
+                SetBackgroundAtlas(texPtr, ref bgRect);
             }
+
         }
         foreach (var layer in LoadedMap.Layers)
         {
@@ -78,6 +98,16 @@ public class Tiled
             }
 
         }
+    }
+
+    private IntPtr GetImageFromFilepath(string filepath)
+    {
+        if (LoadedTilesetImages.TryGetValue(filepath, out var loadedPtr))
+        {
+            return loadedPtr;
+        }
+        var loadPath = _assetPrefix + string.Join('/', filepath.Split('/').Skip(1));
+        return LoadedTilesetImages[filepath] = LoadSurfaceFromFile(loadPath);
     }
 
     private void CreateBlittedTilemap(TiledMap map)

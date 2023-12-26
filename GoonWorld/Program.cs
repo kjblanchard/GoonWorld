@@ -8,6 +8,7 @@ class Program
     static void Main()
     {
         var game = new Game();
+        game.Initialize();
         game.CreateWindow();
         game.Sound.LoadBgm("rangers");
         game.Sound.PlayBgm("rangers");

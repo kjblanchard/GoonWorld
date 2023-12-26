@@ -4,6 +4,9 @@
 #include <GoonEngine/SdlWindow.h>
 #include <SupergoonSound/include/sound.h>
 
+extern SDL_Texture *g_BackgroundAtlas;
+extern SDL_Rect g_backgroundDrawRect;
+
 #define MAX_STARTUP_FRAMES 1000
 
 static SDL_Event event;
@@ -77,6 +80,20 @@ static int loop_func()
     // Draw after we are caught up
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
     SDL_RenderClear(g_pRenderer);
+    if(g_BackgroundAtlas)
+    {
+        int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, NULL, NULL);
+        // fprintf(stdout, "Atlas %x, dst %d:%d src %d:%d\n", g_BackgroundAtlas, g_backgroundDrawRect.x, g_backgroundDrawRect.y, g_backgroundDrawRect.w, g_backgroundDrawRect.h);
+
+       if(drawResult != 0)
+       {
+            printf("Did not draw properly, Error %s\n", SDL_GetError());
+
+       }
+    }
+    SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);  // Set to red with full alpha
+    SDL_RenderDrawRect(g_pRenderer, &g_backgroundDrawRect);
+
     SDL_RenderPresent(g_pRenderer);
 }
 
@@ -86,4 +103,18 @@ int Play()
     {
         loop_func();
     }
+}
+int GnInitializeEngine()
+{
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
+    {
+        fprintf(stderr, "Could not Initialize SDL!\nError: %s", SDL_GetError());
+        return 1;
+    }
+    if(!IMG_Init(IMG_INIT_PNG))
+    {
+        fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
+        return 1;
+    }
+
 }
