@@ -48,8 +48,8 @@ public class Tiled
                             var tileset = tilesets[tilesetMap.firstgid];
                             var tiledTile = LoadedMap.GetTiledTile(tilesetMap, tileset, tileGid);
                             IntPtr loadedTileset = IntPtr.Zero;
-                            var dstX = x;
-                            var dstY = y;
+                            var dstX = x * LoadedMap.TileWidth;
+                            var dstY = y * LoadedMap.TileHeight;
                             if(tiledTile == null)
                             {
                                 // this is a tile, use regular x for destination
@@ -59,23 +59,22 @@ public class Tiled
                             {
                                 // This is an image tile.
                                 loadedTileset =  GetImageFromFilepath(tiledTile.image.source);
+                                dstY -= LoadedMap.TileHeight;
                             }
                             var srcRect = new SDL_Rect(LoadedMap.GetSourceRect(tilesetMap, tileset, tileGid));
                             var dstRect = new SDL_Rect(
                                 // x * tileset.TileWidth,
-                                x * LoadedMap.TileWidth,
-                                y * LoadedMap.TileHeight,
+                                dstX,
+                                dstY,
                                 srcRect.width,
                                 srcRect.height
                             );
-                            Console.WriteLine($"Going to blit at dest {dstRect.x}:{dstRect.y}:{dstRect.width}:{dstRect.height} from source {srcRect.x}:{srcRect.y}:{srcRect.width}:{srcRect.height} for gid {tileGid}");
-                            // BlitSurface(atlas, loadedTileset, ref dstRect, ref srcRect);
                             BlitSurface(loadedTileset,ref srcRect, atlas, ref dstRect);
                         }
                     }
 
                 }
-                var bgRect = new SDL_Rect(0, 0, 512, 288);
+                var bgRect = new SDL_Rect(0, 0, LoadedMap.TileWidth * LoadedMap.Width, LoadedMap.TileHeight * LoadedMap.Height);
                 var texPtr = CreateTextureFromSurface(atlas);
                 SetBackgroundAtlas(texPtr, ref bgRect);
             }

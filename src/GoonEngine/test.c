@@ -82,8 +82,7 @@ static int loop_func()
     SDL_RenderClear(g_pRenderer);
     if(g_BackgroundAtlas)
     {
-        int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, NULL, NULL);
-        // fprintf(stdout, "Atlas %x, dst %d:%d src %d:%d\n", g_BackgroundAtlas, g_backgroundDrawRect.x, g_backgroundDrawRect.y, g_backgroundDrawRect.w, g_backgroundDrawRect.h);
+        int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
 
        if(drawResult != 0)
        {
@@ -91,8 +90,8 @@ static int loop_func()
 
        }
     }
-    SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);  // Set to red with full alpha
-    SDL_RenderDrawRect(g_pRenderer, &g_backgroundDrawRect);
+    // SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);  // Set to red with full alpha
+    // SDL_RenderDrawRect(g_pRenderer, &g_backgroundDrawRect);
 
     SDL_RenderPresent(g_pRenderer);
 }
