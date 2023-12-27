@@ -1,10 +1,10 @@
 #pragma once
-typedef struct Entity Entity;
+struct Entity;
 
 typedef struct Component
 {
-    Entity* Parent;
-    int Type;
+    struct Entity* Parent;
+    unsigned int Type;
     void *Data;
     struct Component* NextComponent;
 } Component;

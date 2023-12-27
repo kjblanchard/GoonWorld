@@ -19,12 +19,12 @@ static void CheckEntityArraySize(geContext *context)
     }
 }
 
-static void CheckSystemArraySize(geContext *context)
+static void CheckSystemArraySize(geContext *context, int systemNum)
 {
-    if (context->SystemCount + 1 > context->SystemCapacity)
+    int newSize = systemNum + 1;
+    if (newSize  > context->SystemCapacity)
     {
-        int newSize = context->SystemCapacity * 2 + 1;
-        context->Entities = realloc(context->Systems, newSize * sizeof(System *));
+        context->Systems = realloc(context->Systems, newSize * sizeof(System *));
         if (!context->Systems)
         {
             fprintf(stderr, "Could not reallocate space for entities");
@@ -39,18 +39,20 @@ static void CheckComponentArraySize(geContext *context, int type)
     // Resize internal arrays if this is a new type
     if (type >= context->ComponentArrayCount)
     {
-        context->ComponentArrays = realloc(context->ComponentArrays, type * sizeof(Component **));
-        context->ComponentCounts = realloc(context->ComponentCounts, type * sizeof(int));
+        context->ComponentArrays = realloc(context->ComponentArrays, (type + 1) * sizeof(Component **));
+        context->ComponentCounts = realloc(context->ComponentCounts, (type + 1) * sizeof(int));
+        context->ComponentCapacity = realloc(context->ComponentCapacity, (type + 1) * sizeof(int));
         if (!context->ComponentArrays || !context->ComponentCounts)
         {
             fprintf(stderr, "Could not reallocate space for components");
             exit(1);
         }
         // change the component counts to 0 for the new types
-        for (size_t i = context->ComponentArrayCount; i < type; i++)
+        for (size_t i = context->ComponentArrayCount; i <= type; i++)
         {
             context->ComponentCounts[i] = context->ComponentCapacity[i] = 0;
         }
+        context->ComponentArrayCount = type + 1;
     }
     // Check to see if we have enough storage in the internal array for a new one
     if (context->ComponentCounts[type] + 1 > context->ComponentCapacity[type])
@@ -62,6 +64,7 @@ static void CheckComponentArraySize(geContext *context, int type)
             fprintf(stderr, "Could not reallocate space for component array of type");
             exit(1);
         }
+        context->ComponentCapacity[type] = newSize;
     }
 }
 
@@ -92,19 +95,20 @@ Component *geContextComponentNew(geContext *context, int type, void *data)
     component->Type = type;
     component->Data = data;
     CheckComponentArraySize(context, type);
-    context->ComponentArrays[type][context->ComponentArrayCount++] = component;
+    // context->ComponentArrays[type][context->ComponentArrayCount++] = component;
+    context->ComponentArrays[type][context->ComponentCounts[type]++] = component;
     return component;
 }
-int geContextSystemNew(geContext *context, System system)
+int geContextSystemNew(geContext *context, System system, int systemType)
 {
-    CheckSystemArraySize(context);
-    context->Systems[context->SystemCount++] = system;
+    CheckSystemArraySize(context, systemType);
+    context->Systems[systemType] = system;
     return true;
 }
 
 void geContextUpdate(geContext* context, void* data)
 {
-    for (size_t i = 0; i < context->SystemCount; i++)
+    for (size_t i = 0; i < context->SystemCapacity; i++)
     {
         context->Systems[i](context, i, data);
     }

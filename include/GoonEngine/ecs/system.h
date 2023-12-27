@@ -1,4 +1,4 @@
 #pragma once
 
-typedef struct geContext geContext;
-typedef void (*System)(geContext *context, int type, void *data);
+struct geContext;
+typedef void (*System)(struct geContext *context, int type, void *data);

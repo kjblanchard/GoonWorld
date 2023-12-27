@@ -1,16 +1,17 @@
 
 #pragma once
 
-typedef struct Component Component;
+struct Component;
 
 typedef struct Entity
 {
     int Id;
-    int ComponentsBitmask;
-    Component* NextComponent;
+    unsigned int ComponentsBitmask;
+    struct Component* NextComponent;
+    struct Component* LastComponent;
 } Entity;
 
-int geEntityAddComponent(Entity* entity, Component* component);
-int geEntityHasComponent(Entity* entity, int componentBitmask);
-Component* geEntityGetComponent(Entity* entity, int componentBitmask);
-int geEntityRemoveComponent(Entity* entity, int componentBitmask);
+int geEntityAddComponent(Entity* entity, struct Component* component);
+int geEntityHasComponent(Entity* entity, unsigned int componentBit);
+struct Component* geEntityGetComponent(Entity* entity, unsigned int componentBit);
+int geEntityRemoveComponent(Entity* entity, unsigned int componentBit);
