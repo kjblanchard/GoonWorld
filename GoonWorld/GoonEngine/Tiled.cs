@@ -1,6 +1,5 @@
 using TiledCS;
 using System.Runtime.InteropServices;
-using System.Reflection.Metadata;
 namespace GoonEngine;
 
 public class Tiled
@@ -9,9 +8,7 @@ public class Tiled
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr LoadSurfaceFromFile(string filepath);
     [DllImport("../build/lib/libSupergoonEngine")]
-    // private static extern void BlitSurface(IntPtr atlasSurface, IntPtr tileSurface, IntPtr dstRect, IntPtr srcRect);
     private static extern void BlitSurface( IntPtr srcSurface, ref SDL_Rect srcRect, IntPtr dstSurface, ref SDL_Rect dstRect);
-    // private static extern void BlitSurface(IntPtr atlasSurface, IntPtr tileSurface, ref SDL_Rect dstRect, ref SDL_Rect srcRect);
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr LoadTextureAtlas(int width, int height);
     [DllImport("../build/lib/libSupergoonEngine")]
@@ -30,7 +27,6 @@ public class Tiled
         foreach (var group in LoadedMap.Groups)
         {
             if (group.name == "background")
-            // We should create a atlas for the background and blit it all
             {
                 var atlas = LoadTextureAtlas(LoadedMap.Width * LoadedMap.TileWidth, LoadedMap.Height * LoadedMap.TileHeight);
                 foreach (var layer in group.layers)
@@ -41,7 +37,6 @@ public class Tiled
                         {
                             var index = (y * layer.width) + x; // Assuming the default render order is used which is from right to bottom
                             var tileGid = layer.data[index]; // The tileset tile index
-                            // var tileGid = layer.data[x];
                             if (tileGid == 0)
                                 continue;
                             var tilesetMap = LoadedMap.GetTiledMapTileset(tileGid);
@@ -63,7 +58,6 @@ public class Tiled
                             }
                             var srcRect = new SDL_Rect(LoadedMap.GetSourceRect(tilesetMap, tileset, tileGid));
                             var dstRect = new SDL_Rect(
-                                // x * tileset.TileWidth,
                                 dstX,
                                 dstY,
                                 srcRect.width,
@@ -86,7 +80,12 @@ public class Tiled
             {
                 if (layer.name == "entities")
                 {
+
                     Console.WriteLine("Entities found");
+                    foreach(var entityObject in layer.objects)
+                    {
+                        Console.WriteLine($"Name: {entityObject.name}\nType: {entityObject.type}");
+                    }
 
                 }
                 else if (layer.name == "solid")

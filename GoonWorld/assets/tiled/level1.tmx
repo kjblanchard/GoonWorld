@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.8" tiledversion="1.8.6" orientation="orthogonal" renderorder="right-down" width="64" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="175">
- <editorsettings>
-  <export target="level1.lua" format="lua"/>
- </editorsettings>
  <properties>
   <property name="backup" type="class" propertytype="Bgm">
    <properties>
@@ -18,8 +15,8 @@
    </properties>
   </property>
  </properties>
- <tileset firstgid="1" source="terrain.tsx"/>
- <tileset firstgid="243" source="background.tsx"/>
+ <tileset firstgid="1" source="../../../../goonDash/assets/tiled/terrain.tsx"/>
+ <tileset firstgid="243" source="../../../../goonDash/assets/tiled/background.tsx"/>
  <group id="12" name="background">
   <layer id="11" name="tilebg" width="64" height="18">
    <data encoding="csv">
@@ -111,7 +108,7 @@
   </layer>
  </group>
  <objectgroup id="5" name="entities">
-  <object id="147" template="templates/PlayerStart.tx" x="48" y="48"/>
+  <object id="147" name="PlayerStart" type="Player" gid="30" x="48" y="48" width="32" height="32"/>
   <object id="164" name="EnemyTest" type="Enemy" gid="203" x="32" y="112" width="64" height="32"/>
   <object id="165" name="EnemyTest" type="Enemy" gid="203" x="160" y="112" width="64" height="32"/>
   <object id="166" name="EnemyTest" type="Enemy" gid="203" x="432" y="224" width="64" height="32"/>
