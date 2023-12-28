@@ -8,11 +8,11 @@ public class Tiled
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr LoadSurfaceFromFile(string filepath);
     [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern void BlitSurface( IntPtr srcSurface, ref SDL_Rect srcRect, IntPtr dstSurface, ref SDL_Rect dstRect);
+    private static extern void BlitSurface( IntPtr srcSurface, ref Rect srcRect, IntPtr dstSurface, ref Rect dstRect);
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr LoadTextureAtlas(int width, int height);
     [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern void SetBackgroundAtlas(IntPtr background, ref SDL_Rect rect);
+    private static extern void SetBackgroundAtlas(IntPtr background, ref Rect rect);
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr CreateTextureFromSurface(IntPtr surface);
 
@@ -56,8 +56,8 @@ public class Tiled
                                 loadedTileset =  GetImageFromFilepath(tiledTile.image.source);
                                 dstY -= LoadedMap.TileHeight;
                             }
-                            var srcRect = new SDL_Rect(LoadedMap.GetSourceRect(tilesetMap, tileset, tileGid));
-                            var dstRect = new SDL_Rect(
+                            var srcRect = new Rect(LoadedMap.GetSourceRect(tilesetMap, tileset, tileGid));
+                            var dstRect = new Rect(
                                 dstX,
                                 dstY,
                                 srcRect.width,
@@ -68,7 +68,7 @@ public class Tiled
                     }
 
                 }
-                var bgRect = new SDL_Rect(0, 0, LoadedMap.TileWidth * LoadedMap.Width, LoadedMap.TileHeight * LoadedMap.Height);
+                var bgRect = new Rect(0, 0, LoadedMap.TileWidth * LoadedMap.Width, LoadedMap.TileHeight * LoadedMap.Height);
                 var texPtr = CreateTextureFromSurface(atlas);
                 SetBackgroundAtlas(texPtr, ref bgRect);
             }

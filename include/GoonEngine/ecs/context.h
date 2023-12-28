@@ -26,3 +26,6 @@ struct Entity *geGetEntityById(geContext *context, int id);
 struct Component *geContextComponentNew(geContext *context, int type, void *data);
 int geContextSystemNew(geContext *context, System system, int systemType);
 void geContextUpdate(geContext *context, void *data);
+
+struct Component** geContextGetComponentArrayByType(geContext* context, int type);
+int geContextGetComponentArrayCountByType(geContext* context, int type);

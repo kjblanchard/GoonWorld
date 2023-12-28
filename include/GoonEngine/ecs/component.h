@@ -8,5 +8,3 @@ typedef struct Component
     void *Data;
     struct Component* NextComponent;
 } Component;
-
-Component* geComponentNew(int type, void *data);

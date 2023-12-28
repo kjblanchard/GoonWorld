@@ -3,9 +3,9 @@ using TiledCS;
 namespace GoonEngine;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct SDL_Rect
+public struct Rect
 {
-    public SDL_Rect(int x, int y, int w, int h)
+    public Rect(int x, int y, int w, int h)
     {
         this.x = x;
         this.y = y;
@@ -13,7 +13,7 @@ public struct SDL_Rect
         height = h;
 
     }
-    public SDL_Rect(TiledSourceRect rect)
+    public Rect(TiledSourceRect rect)
     {
         x = rect.x;
         y = rect.y;

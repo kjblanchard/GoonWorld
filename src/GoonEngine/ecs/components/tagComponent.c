@@ -9,23 +9,19 @@ TagComponent *gnTagComponentNew()
 int gnTagComponentAddTag(TagComponent *component, const char *tag)
 {
     component->tags = realloc(component->tags, sizeof(char *) * component->tagCount + 1);
-    component->tags[component->tagCount++] = tag;
+    component->tags[component->tagCount++] = strdup(tag);
     return true;
 }
 
 int gnTagComponentHasTag(TagComponent *component, const char *tag)
 {
-    printf("Searching for tag %s\n", tag);
     for (int i = 0; i < component->tagCount; i++)
     {
-        if (component->tags[i] == tag)
+        if(strcmp(component->tags[i], tag) == 0)
         {
-            printf("Found it\n");
-
             return true;
         }
     }
-    printf("No findy\n");
     return false;
 }
 const char **gnTagComponentGetTags(TagComponent *component)

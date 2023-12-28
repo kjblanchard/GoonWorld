@@ -16,8 +16,8 @@
 
 void TagSystem(geContext *context, int type, void *data)
 {
-    Component **components = context->ComponentArrays[type];
-    int componentCount = context->ComponentCounts[type];
+    Component **components = geContextGetComponentArrayByType(context, type);
+    int componentCount = geContextGetComponentArrayCountByType(context, type);
 
     for (int i = 0; i < componentCount; i++)
     {

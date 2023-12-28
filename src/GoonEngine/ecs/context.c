@@ -22,7 +22,7 @@ static void CheckEntityArraySize(geContext *context)
 static void CheckSystemArraySize(geContext *context, int systemNum)
 {
     int newSize = systemNum + 1;
-    if (newSize  > context->SystemCapacity)
+    if (newSize > context->SystemCapacity)
     {
         context->Systems = realloc(context->Systems, newSize * sizeof(System *));
         if (!context->Systems)
@@ -106,11 +106,23 @@ int geContextSystemNew(geContext *context, System system, int systemType)
     return true;
 }
 
-void geContextUpdate(geContext* context, void* data)
+void geContextUpdate(geContext *context, void *data)
 {
+    printf("Going to run the update thing here with context %x and data %x", context, data);
     for (size_t i = 0; i < context->SystemCapacity; i++)
     {
+        if (!context->Systems[i])
+            continue;
+        printf("Shoot for i %d \n", i);
         context->Systems[i](context, i, data);
     }
+}
 
+struct Component **geContextGetComponentArrayByType(geContext *context, int type)
+{
+    return context->ComponentArrays[type];
+}
+int geContextGetComponentArrayCountByType(geContext *context, int type)
+{
+    return context->ComponentCounts[type];
 }

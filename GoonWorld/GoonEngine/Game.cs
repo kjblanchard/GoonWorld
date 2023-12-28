@@ -5,8 +5,15 @@ public class Game
 {
     public ConfigManager Config { get; }
     public Sound Sound { get; }
+    public static Game Global => _gameInstance;
+    private static Game _gameInstance;
     public Game()
     {
+        if (_gameInstance != null)
+        {
+            throw new Exception("Should only have one instance of game!");
+        }
+        _gameInstance = this;
         Config = new ConfigManager();
         Sound = new Sound(Config.Config.soundConfig);
     }
@@ -23,6 +30,7 @@ public class Game
 
     public bool Initialize()
     {
+        ECS.Initialize();
         return true;
     }
 
