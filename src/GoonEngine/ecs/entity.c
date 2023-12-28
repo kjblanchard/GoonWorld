@@ -26,11 +26,13 @@ int geEntityAddComponent(Entity *entity, Component *component)
 
 int geEntityHasComponent(Entity *entity, unsigned int componentBit)
 {
+    printf("Searching for component %d\n", componentBit);
     if ((entity->ComponentsBitmask & (1 << componentBit)) == 0)
     {
-        // Component not present
+        printf("Does not have it? %d\n", componentBit);
         return false;
     }
+    printf("Has it %d\n", componentBit);
     return true;
 }
 

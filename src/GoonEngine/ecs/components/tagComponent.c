@@ -15,10 +15,20 @@ int gnTagComponentAddTag(TagComponent *component, const char *tag)
 
 int gnTagComponentHasTag(TagComponent *component, const char *tag)
 {
+    printf("Searching for tag %s\n", tag);
     for (int i = 0; i < component->tagCount; i++)
     {
         if (component->tags[i] == tag)
+        {
+            printf("Found it\n");
+
             return true;
+        }
     }
+    printf("No findy\n");
     return false;
+}
+const char **gnTagComponentGetTags(TagComponent *component)
+{
+    return component->tags;
 }

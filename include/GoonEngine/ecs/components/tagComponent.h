@@ -9,3 +9,4 @@ typedef struct TagComponent
 TagComponent* gnTagComponentNew();
 int gnTagComponentAddTag(TagComponent* component, const char* tag);
 int gnTagComponentHasTag(TagComponent* component, const char* tag);
+const char** gnTagComponentGetTags(TagComponent* component);
