@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 namespace GoonEngine;
 
@@ -28,10 +29,12 @@ public static class ECS
     public static extern void geContextUpdate(IntPtr context, IntPtr data);
     public static class Component
     {
-        public static T? GetComponentOfType<T>(IntPtr ecsComponentPtr)
+        public unsafe static T? GetComponentOfType<T>(IntPtr ecsComponentPtr)
         {
-            var componentData = Marshal.PtrToStructure<Models.Component>(ecsComponentPtr);
-            return Marshal.PtrToStructure<T>(componentData.Data);
+            var componenetData = (Models.Component*)ecsComponentPtr;
+            return Marshal.PtrToStructure<T>(componenetData->Data);
+            // var componentData = Marshal.PtrToStructure<Models.Component>(ecsComponentPtr);
+            // return Marshal.PtrToStructure<T>(componentData.Data);
         }
     }
     public static class Entity

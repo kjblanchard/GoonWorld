@@ -24,7 +24,7 @@ public class Game
 
     public bool CreateWindow()
     {
-        CreateWindowAndRenderer(Config.Config.windowConfig.windowSize.x, Config.Config.windowConfig.windowSize.y, Config.Config.windowConfig.title);
+        Api.Rendering.CreateWindowAndRenderer(Config.Config.windowConfig.windowSize.x, Config.Config.windowConfig.windowSize.y, Config.Config.windowConfig.title);
         return true;
     }
 
@@ -36,12 +36,8 @@ public class Game
 
     public void Run()
     {
-        Play();
+        Api.Update.Play();
     }
 
 
-    [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern int CreateWindowAndRenderer(uint width, uint height, string windowTitle);
-    [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern void Play();
 }
