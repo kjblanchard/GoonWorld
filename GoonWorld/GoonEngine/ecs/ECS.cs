@@ -33,8 +33,6 @@ public static class ECS
         {
             var componenetData = (Models.Component*)ecsComponentPtr;
             return Marshal.PtrToStructure<T>(componenetData->Data);
-            // var componentData = Marshal.PtrToStructure<Models.Component>(ecsComponentPtr);
-            // return Marshal.PtrToStructure<T>(componentData.Data);
         }
     }
     public static class Entity
