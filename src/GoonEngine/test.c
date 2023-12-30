@@ -3,6 +3,8 @@
 #include <GoonEngine/gnpch.h>
 #include <GoonEngine/SdlWindow.h>
 #include <SupergoonSound/include/sound.h>
+// #include <GoonEngine/ecs/system.h>
+#include <GoonEngine/ecs/context.h>
 
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect g_backgroundDrawRect;

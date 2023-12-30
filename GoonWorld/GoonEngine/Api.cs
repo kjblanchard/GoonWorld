@@ -26,6 +26,15 @@ public static class Api
             public static extern IntPtr gnTagComponentNew();
 
         }
+        public static class ScriptComponent
+        {
+            public delegate void ScriptComponentDelegate(IntPtr data);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern IntPtr gnScriptComponentNew();
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern  int gnScriptComponentSetUpdateFunc(IntPtr scriptComponent, ScriptComponentDelegate func);
+
+        }
         public static class LocationComponent
         {
             [DllImport("../build/lib/libSupergoonEngine")]

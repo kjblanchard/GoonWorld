@@ -5,7 +5,7 @@ public class TagComponent : Component
     public TagComponent(params string[] tags)
     {
         _componentDataPointer = Api.Components.TagComponent.gnTagComponentNew();
-        _ecsComponentDataPtr = ECS.NewComponent(0, ComponentPtr);
+        _ecsComponentDataPtr = ECS.NewComponent(ComponentTypes.TAG_COMPONENT, ComponentPtr);
         foreach (var tag in tags)
         {
             AddTag(tag);

@@ -58,7 +58,18 @@ static void CheckComponentArraySize(geContext *context, int type)
     if (context->ComponentCounts[type] + 1 > context->ComponentCapacity[type])
     {
         int newSize = context->ComponentCapacity[type] * 2 + 1;
-        context->ComponentArrays[type] = realloc(context->ComponentArrays[type], newSize * sizeof(Component *));
+        printf("Going to make new size of %d for type %d\n", newSize, type);
+        // Should allocate new space if it doesn't exist, was getting random crashes
+        if (!context->ComponentArrays[type])
+        {
+            printf("Goint to calloc for type %d\n", type);
+            context->ComponentArrays[type] = calloc(newSize, sizeof(Component *));
+        }
+        else
+        {
+            printf("Goint to realloc for type %d\n", type);
+            context->ComponentArrays[type] = realloc(context->ComponentArrays[type], newSize * sizeof(Component *));
+        }
         if (!context->ComponentArrays[type])
         {
             fprintf(stderr, "Could not reallocate space for component array of type");
@@ -94,6 +105,7 @@ Component *geContextComponentNew(geContext *context, int type, void *data)
     Component *component = calloc(1, sizeof(*component));
     component->Type = type;
     component->Data = data;
+    printf("Creating for context %x and type %d\n", context, type);
     CheckComponentArraySize(context, type);
     // context->ComponentArrays[type][context->ComponentArrayCount++] = component;
     context->ComponentArrays[type][context->ComponentCounts[type]++] = component;

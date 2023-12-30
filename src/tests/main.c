@@ -10,9 +10,11 @@
 #include <GoonEngine/ecs/component.h>
 #include <GoonEngine/ecs/components/tagComponent.h>
 #include <GoonEngine/ecs/components/locationComponent.h>
+#include <GoonEngine/ecs/components/scriptComponent.h>
 
-#define TAG_COMPONENT 0
-#define LOCATION_COMPONENT 1
+#define TAG_COMPONENT 1
+#define LOCATION_COMPONENT 2
+#define SCRIPT_COMPONENT 3
 
 void TagSystem(geContext *context, int type, void *data)
 {
@@ -30,6 +32,25 @@ void TagSystem(geContext *context, int type, void *data)
             printf("Component of type %d and parent %d has tag %s\n", component->Type, component->Parent->Id, tagComp->tags[j]);
         }
     }
+}
+void UpdateSystem(geContext *context, int type, void *data)
+{
+    Component **components = geContextGetComponentArrayByType(context, type);
+    int componentCount = geContextGetComponentArrayCountByType(context, type);
+
+    for (int i = 0; i < componentCount; i++)
+    {
+        Component *component = components[i];
+        ScriptComponent *scriptComp = (ScriptComponent *)component->Data;
+        if (!scriptComp)
+            continue;
+        scriptComp->UpdateFunc(NULL);
+    }
+}
+
+void UpdateFunc(void* data)
+{
+    printf("Hello from update func!!\n");
 }
 
 void LocationSystem(geContext *context, int type, void *data)
@@ -74,6 +95,9 @@ int main(int argc, char const *argv[])
     locComponent->x = 20;
     locComponent->y = 40;
     Component *locComp = geContextComponentNew(context, LOCATION_COMPONENT, locComponent);
+    ScriptComponent* scriptComponent = gnScriptComponentNew();
+    scriptComponent->UpdateFunc = UpdateFunc;
+    Component* scriptComp = geContextComponentNew(context, SCRIPT_COMPONENT, scriptComponent );
     geEntityAddComponent(entity, locComp);
 
     Entity *entity2 = geContextEntityNew(context);
@@ -85,6 +109,7 @@ int main(int argc, char const *argv[])
 
     geContextSystemNew(context, TagSystem, TAG_COMPONENT);
     geContextSystemNew(context, LocationSystem, LOCATION_COMPONENT);
+    geContextSystemNew(context, UpdateSystem, SCRIPT_COMPONENT);
     bool ent1TagBool = geEntityHasComponent(entity, TAG_COMPONENT);
     bool ent1LocBool = geEntityHasComponent(entity, LOCATION_COMPONENT);
     Component* ent1TagComp = geEntityGetComponent(entity, TAG_COMPONENT);

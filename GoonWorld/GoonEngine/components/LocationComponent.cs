@@ -6,7 +6,7 @@ public class LocationComponent : Component
         _componentDataPointer = Api.Components.LocationComponent.gnLocationComponentNew();
         X = x;
         Y = y;
-        _ecsComponentDataPtr = ECS.NewComponent(1, ComponentPtr );
+        _ecsComponentDataPtr = ECS.NewComponent(ComponentTypes.LOCATION_COMPONENT, ComponentPtr );
     }
     public int X
     {

@@ -3,8 +3,7 @@ namespace GoonEngine;
 
 public class LocationSystem : System
 {
-    public const int LocationType = 1;
-    public LocationSystem() : base(LocationType)
+    public LocationSystem() : base(ComponentTypes.LOCATION_COMPONENT)
     {
         RegisterInECS();
     }

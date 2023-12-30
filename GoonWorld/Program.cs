@@ -17,6 +17,7 @@ class Program
             Console.WriteLine(GameObject.EntityToGameObjectDictionary.Count);
         }
         var locationSystem = new LocationSystem();
+        var updateSystem = new ScriptSystem();
         ECS.UpdateSystems(IntPtr.Zero);
         game.Run();
     }
