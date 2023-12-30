@@ -4,6 +4,9 @@
 #include <GoonEngine/ecs/component.h>
 #include <GoonEngine/ecs/system.h>
 
+static int maxTypeEncountered = -1;
+geContext* g_Context;
+
 static void CheckEntityArraySize(geContext *context)
 {
     if (context->EntityCount + 1 > context->EntityCapacity)
@@ -34,42 +37,33 @@ static void CheckSystemArraySize(geContext *context, int systemNum)
     }
 }
 
+static void AllocateSpaceForNewComponentType(geContext *context, int type)
+{
+    context->ComponentArrays = realloc(context->ComponentArrays, (type + 1) * sizeof(Component **));
+    context->ComponentCounts = realloc(context->ComponentCounts, (type + 1) * sizeof(int));
+    context->ComponentCapacity = realloc(context->ComponentCapacity, (type + 1) * sizeof(int));
+    if (!context->ComponentArrays || !context->ComponentCounts)
+    {
+        fprintf(stderr, "Could not reallocate space for components");
+        exit(1);
+    }
+    // change the component counts to 0 for the new types
+    for (size_t i = context->ComponentArrayCount; i <= type; i++)
+    {
+        context->ComponentCounts[i] = context->ComponentCapacity[i] = 0;
+        context->ComponentArrays[type] = calloc(1, sizeof(Component *));
+    }
+    context->ComponentArrayCount = type + 1;
+}
+
 static void CheckComponentArraySize(geContext *context, int type)
 {
-    // Resize internal arrays if this is a new type
-    if (type >= context->ComponentArrayCount)
-    {
-        context->ComponentArrays = realloc(context->ComponentArrays, (type + 1) * sizeof(Component **));
-        context->ComponentCounts = realloc(context->ComponentCounts, (type + 1) * sizeof(int));
-        context->ComponentCapacity = realloc(context->ComponentCapacity, (type + 1) * sizeof(int));
-        if (!context->ComponentArrays || !context->ComponentCounts)
-        {
-            fprintf(stderr, "Could not reallocate space for components");
-            exit(1);
-        }
-        // change the component counts to 0 for the new types
-        for (size_t i = context->ComponentArrayCount; i <= type; i++)
-        {
-            context->ComponentCounts[i] = context->ComponentCapacity[i] = 0;
-        }
-        context->ComponentArrayCount = type + 1;
-    }
-    // Check to see if we have enough storage in the internal array for a new one
     if (context->ComponentCounts[type] + 1 > context->ComponentCapacity[type])
     {
         int newSize = context->ComponentCapacity[type] * 2 + 1;
         printf("Going to make new size of %d for type %d\n", newSize, type);
-        // Should allocate new space if it doesn't exist, was getting random crashes
-        if (!context->ComponentArrays[type])
-        {
-            printf("Goint to calloc for type %d\n", type);
-            context->ComponentArrays[type] = calloc(newSize, sizeof(Component *));
-        }
-        else
-        {
-            printf("Goint to realloc for type %d\n", type);
-            context->ComponentArrays[type] = realloc(context->ComponentArrays[type], newSize * sizeof(Component *));
-        }
+        printf("Goint to realloc for type %d\n", type);
+        context->ComponentArrays[type] = realloc(context->ComponentArrays[type], newSize * sizeof(Component *));
         if (!context->ComponentArrays[type])
         {
             fprintf(stderr, "Could not reallocate space for component array of type");
@@ -82,7 +76,10 @@ static void CheckComponentArraySize(geContext *context, int type)
 geContext *geContextNew()
 {
     geContext *context = calloc(1, sizeof(*context));
-    return context;
+    context->ComponentArrays = calloc(1, sizeof(Component **));
+    context->ComponentCounts = calloc(1, sizeof(int));
+    context->ComponentCapacity = calloc(1, sizeof(int));
+    return g_Context = context;
 }
 
 Entity *geContextEntityNew(geContext *context)
@@ -106,6 +103,11 @@ Component *geContextComponentNew(geContext *context, int type, void *data)
     component->Type = type;
     component->Data = data;
     printf("Creating for context %x and type %d\n", context, type);
+    if (type > maxTypeEncountered)
+    {
+        AllocateSpaceForNewComponentType(context, type);
+        maxTypeEncountered = type;
+    }
     CheckComponentArraySize(context, type);
     // context->ComponentArrays[type][context->ComponentArrayCount++] = component;
     context->ComponentArrays[type][context->ComponentCounts[type]++] = component;
@@ -120,12 +122,10 @@ int geContextSystemNew(geContext *context, System system, int systemType)
 
 void geContextUpdate(geContext *context, void *data)
 {
-    printf("Going to run the update thing here with context %x and data %x", context, data);
     for (size_t i = 0; i < context->SystemCapacity; i++)
     {
         if (!context->Systems[i])
             continue;
-        printf("Shoot for i %d \n", i);
         context->Systems[i](context, i, data);
     }
 }

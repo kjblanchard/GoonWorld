@@ -21,7 +21,6 @@ public abstract class System
     }
     public unsafe void ComponentForEach()
     {
-        Console.WriteLine("Hello bro");
         var componentsPtr = ECS.GetComponentsOfType(_type);
         var componentCount = ECS.GetNumComponentsOfType(_type);
         if (componentsPtr == IntPtr.Zero)

@@ -20,6 +20,7 @@ static float msBuildup;
 // TODO this should be different, it is inside of SDLwindow.c
 extern SDL_Renderer *g_pRenderer;
 extern int g_refreshRate;
+extern geContext* g_Context;
 
 
 
@@ -76,6 +77,7 @@ static int loop_func()
     while (msBuildup >= deltaTimeMs)
     {
         UpdateSound();
+        geContextUpdate(g_Context, NULL);
         msBuildup -= deltaTimeMs;
     }
 
