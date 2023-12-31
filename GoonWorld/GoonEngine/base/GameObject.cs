@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace GoonEngine;
 
 /// <summary>
@@ -17,12 +19,14 @@ class GameObject : IStart, IUpdate
     private IntPtr _entity;
     private uint _type;
 
+    public LocationComponent Location => _locationComponent;
+
     protected LocationComponent _locationComponent;
     protected TagComponent _tagComponent;
     protected ScriptComponent _scriptComponent;
-    public void UpdateFunc(IntPtr input)
+    public virtual void Update(IntPtr input)
     {
-        Console.WriteLine("Update from the gameobject");
+        Console.WriteLine($"Update from the gameobject with location {_locationComponent.X}: {_locationComponent.Y}");
         return;
     }
 
@@ -31,13 +35,9 @@ class GameObject : IStart, IUpdate
         _entity = ECS.NewEntity();
         _tagComponent = new TagComponent("Hello", "nou");
         _locationComponent = new LocationComponent() { X = 20, Y = 30 };
-        _scriptComponent = new ScriptComponent(UpdateFunc);
-        // var hasTag = _tagComponent.HasTag("nou");
-        // AddComponent(_locationComponent, _tagComponent, _scriptComponent);
-        // AddComponent(_tagComponent, _scriptComponent);
+        _scriptComponent = new ScriptComponent(Update);
+        AddComponent(_locationComponent, _tagComponent, _scriptComponent);
         AddComponent(_tagComponent);
-        // AddComponent(_locationComponent, _tagComponent);
-        // var thing = ECS.Component.GetComponentOfType<Models.LocationComponent>( _locationComponent.ECSComponentPtr);
         EntityToGameObjectDictionary[_entity] = this;
     }
     public void AddComponent(params Component[] components)
@@ -47,6 +47,7 @@ class GameObject : IStart, IUpdate
             ECS.Entity.geEntityAddComponent(_entity, component.ECSComponentPtr);
         }
     }
+
 
 
     public bool HasComponent(uint type) => ECS.Entity.geEntityHasComponent(_entity, type);

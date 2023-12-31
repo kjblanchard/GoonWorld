@@ -1,4 +1,5 @@
 using System.Net;
+
 using System.Runtime.InteropServices;
 namespace GoonEngine;
 
@@ -7,8 +8,11 @@ public abstract class System
     public System(int type)
     {
         _type = type;
+        deleg = Update;
     }
     int _type;
+    // GCHandle gch = GCHandle.Alloc(yourInstance.YourDelegate);
+    ECS.System.SystemDelegate deleg;
     public virtual void Start() { }
     public void Update(ref IntPtr context, int type, IntPtr data)
     {
@@ -17,7 +21,7 @@ public abstract class System
     protected virtual void ComponentUpdate(IntPtr component) { }
     public void RegisterInECS()
     {
-        ECS.System.NewSystem(Update, _type);
+        ECS.System.NewSystem(deleg, _type);
     }
     public unsafe void ComponentForEach()
     {
