@@ -11,6 +11,6 @@ public class LocationSystem : System
     protected override void ComponentUpdate(IntPtr component)
     {
         var locationComponent = ECS.Component.GetComponentOfType<Models.LocationComponent>(component);
-        Console.WriteLine($"This component has location x: {locationComponent.x} y: {locationComponent.y}");
+        // Console.WriteLine($"This component has location x: {locationComponent.x} y: {locationComponent.y}");
     }
 }
