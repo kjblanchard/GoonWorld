@@ -20,6 +20,7 @@ class GameObject : IStart, IUpdate
     private uint _type;
 
     public LocationComponent Location => _locationComponent;
+    public TagComponent Tag => _tagComponent;
 
     protected LocationComponent _locationComponent;
     protected TagComponent _tagComponent;
@@ -29,11 +30,10 @@ class GameObject : IStart, IUpdate
     public GameObject()
     {
         _entity = ECS.NewEntity();
-        _tagComponent = new TagComponent("Hello", "nou");
-        _locationComponent = new LocationComponent() { X = 20, Y = 30 };
+        _tagComponent = new TagComponent();
+        _locationComponent = new LocationComponent();
         _scriptComponent = new ScriptComponent(Update);
         AddComponent(_locationComponent, _tagComponent, _scriptComponent);
-        AddComponent(_tagComponent);
         EntityToGameObjectDictionary[_entity] = this;
     }
     public void AddComponent(params Component[] components)

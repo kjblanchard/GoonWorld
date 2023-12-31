@@ -8,7 +8,7 @@ public class Tiled
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr LoadSurfaceFromFile(string filepath);
     [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern void BlitSurface( IntPtr srcSurface, ref Rect srcRect, IntPtr dstSurface, ref Rect dstRect);
+    private static extern void BlitSurface(IntPtr srcSurface, ref Rect srcRect, IntPtr dstSurface, ref Rect dstRect);
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr LoadTextureAtlas(int width, int height);
     [DllImport("../build/lib/libSupergoonEngine")]
@@ -18,11 +18,28 @@ public class Tiled
 
     public TiledMap LoadedMap;
     private Dictionary<string, IntPtr> LoadedTilesetImages = new();
+    private void LoadBgm(string bgmName)
+    {
+        Game.Global.Sound.LoadBgm(bgmName);
+        Game.Global.Sound.PlayBgm(bgmName);
+
+    }
     public Tiled()
     {
         var pathPrefix = "assets/tiled/";
         LoadedMap = new TiledMap(pathPrefix + "level1.tmx");
         var tilesets = LoadedMap.GetTiledTilesets(_assetPrefix + "tiled/");
+
+        // Load BGM
+        var properties = LoadedMap.Properties;
+        foreach (var property in LoadedMap.Properties)
+        {
+            if (property.name == "bgmName")
+            {
+                LoadBgm(property.value);
+            }
+
+        }
 
         foreach (var group in LoadedMap.Groups)
         {
@@ -45,15 +62,15 @@ public class Tiled
                             IntPtr loadedTileset = IntPtr.Zero;
                             var dstX = x * LoadedMap.TileWidth;
                             var dstY = y * LoadedMap.TileHeight;
-                            if(tiledTile == null)
+                            if (tiledTile == null)
                             {
                                 // this is a tile, use regular x for destination
-                                loadedTileset =  GetImageFromFilepath(tileset.Image.source);
+                                loadedTileset = GetImageFromFilepath(tileset.Image.source);
                             }
                             else
                             {
                                 // This is an image tile.
-                                loadedTileset =  GetImageFromFilepath(tiledTile.image.source);
+                                loadedTileset = GetImageFromFilepath(tiledTile.image.source);
                                 dstY -= LoadedMap.TileHeight;
                             }
                             var srcRect = new Rect(LoadedMap.GetSourceRect(tilesetMap, tileset, tileGid));
@@ -63,7 +80,7 @@ public class Tiled
                                 srcRect.width,
                                 srcRect.height
                             );
-                            BlitSurface(loadedTileset,ref srcRect, atlas, ref dstRect);
+                            BlitSurface(loadedTileset, ref srcRect, atlas, ref dstRect);
                         }
                     }
 
@@ -82,9 +99,13 @@ public class Tiled
                 {
 
                     Console.WriteLine("Entities found");
-                    foreach(var entityObject in layer.objects)
+                    foreach (var entityObject in layer.objects)
                     {
-                        Console.WriteLine($"Name: {entityObject.name}\nType: {entityObject.type}");
+                        if (Program.ObjectSpawnDictionary.ContainsKey(entityObject.type))
+                        {
+                            var newGo = Program.ObjectSpawnDictionary[entityObject.type](entityObject);
+                        }
+                        // Console.WriteLine($"Name: {entityObject.name}\nType: {entityObject.type}");
                     }
 
                 }

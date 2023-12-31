@@ -9,11 +9,13 @@
   </property>
   <property name="bgm" type="class" propertytype="Bgm">
    <properties>
-    <property name="bgmName" value="test"/>
+    <property name="bgmName" value="rangers"/>
     <property name="loopBegin" type="float" value="20.397"/>
     <property name="loopEnd" type="float" value="43.08"/>
    </properties>
   </property>
+  <property name="bgmName" value="rangers"/>
+  <property name="wut" type="class" propertytype="Bgm"/>
  </properties>
  <tileset firstgid="1" source="../../../../goonDash/assets/tiled/terrain.tsx"/>
  <tileset firstgid="243" source="../../../../goonDash/assets/tiled/background.tsx"/>
@@ -108,7 +110,11 @@
   </layer>
  </group>
  <objectgroup id="5" name="entities">
-  <object id="147" name="PlayerStart" type="Player" gid="30" x="48" y="48" width="32" height="32"/>
+  <object id="147" name="PlayerStart" type="Player" gid="30" x="48" y="48" width="32" height="32">
+   <properties>
+    <property name="Player" type="class" propertytype="Player"/>
+   </properties>
+  </object>
   <object id="164" name="EnemyTest" type="Enemy" gid="203" x="32" y="112" width="64" height="32"/>
   <object id="165" name="EnemyTest" type="Enemy" gid="203" x="160" y="112" width="64" height="32"/>
   <object id="166" name="EnemyTest" type="Enemy" gid="203" x="432" y="224" width="64" height="32"/>
