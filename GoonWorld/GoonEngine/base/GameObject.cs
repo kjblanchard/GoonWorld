@@ -24,11 +24,7 @@ class GameObject : IStart, IUpdate
     protected LocationComponent _locationComponent;
     protected TagComponent _tagComponent;
     protected ScriptComponent _scriptComponent;
-    public virtual void Update(IntPtr input)
-    {
-        Console.WriteLine($"Update from the gameobject with location {_locationComponent.X}: {_locationComponent.Y}");
-        return;
-    }
+    public virtual void Update(IntPtr input){}
 
     public GameObject()
     {
