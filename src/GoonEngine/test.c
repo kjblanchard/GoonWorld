@@ -5,6 +5,7 @@
 #include <SupergoonSound/include/sound.h>
 // #include <GoonEngine/ecs/system.h>
 #include <GoonEngine/ecs/context.h>
+#include <GoonEngine/keyboard.h>
 
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect g_backgroundDrawRect;
@@ -47,7 +48,7 @@ static bool sdlEventLoop()
             break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
-            // HandleKeyboardEvent(&event, L);
+            HandleKeyboardEvent(&event);
             break;
         default:
             break;
@@ -72,6 +73,7 @@ static int loop_func()
     double deltaTimeMs = 1000 / (double)g_refreshRate;
     if (msBuildup < deltaTimeMs)
         return true;
+    geUpdateKeyboard();
 
     // Run Update and update physics as many times as needed
     while (msBuildup >= deltaTimeMs)
@@ -119,5 +121,7 @@ int GnInitializeEngine()
         fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
         return 1;
     }
+
+    geInitializeKeyboard();
 
 }
