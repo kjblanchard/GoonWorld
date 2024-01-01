@@ -13,6 +13,7 @@
 #include <GoonEngine/ecs/components/locationComponent.h>
 #include <GoonEngine/ecs/components/scriptComponent.h>
 #include <GoonEngine/ecs/components/keyboardComponent.h>
+#include <GoonEngine/ecs/components/drawComponent.h>
 // Input testing
 #include <GoonEngine/keyboard.h>
 
@@ -20,6 +21,9 @@
 #define LOCATION_COMPONENT 2
 #define SCRIPT_COMPONENT 3
 #define KEYBOARD_COMPONENT 4
+#define DRAW_COMPONENT 5
+
+geContext* g_pContext;
 
 void TagSystem(geContext *context, int type, void *data)
 {
@@ -50,6 +54,35 @@ void UpdateSystem(geContext *context, int type, void *data)
         if (!scriptComp)
             continue;
         scriptComp->UpdateFunc(NULL);
+    }
+}
+
+// void DrawSystem(geContext *context, int type, void *data)
+// {
+//     Component **components = geContextGetComponentArrayByType(context, type);
+//     int componentCount = geContextGetComponentArrayCountByType(context, type);
+
+//     for (int i = 0; i < componentCount; i++)
+//     {
+//         Component *component = components[i];
+//         DrawComponent *drawComp = (DrawComponent *)component->Data;
+//         if (!drawComp)
+//             continue;
+//         geDrawComponentDraw(drawComp);
+//     }
+// }
+void DrawSystem()
+{
+    Component **components = geContextGetComponentArrayByType(g_pContext, DRAW_COMPONENT);
+    int componentCount = geContextGetComponentArrayCountByType(g_pContext, DRAW_COMPONENT);
+
+    for (int i = 0; i < componentCount; i++)
+    {
+        Component *component = components[i];
+        DrawComponent *drawComp = (DrawComponent *)component->Data;
+        if (!drawComp)
+            continue;
+        geDrawComponentDraw(drawComp);
     }
 }
 
@@ -123,6 +156,7 @@ int main(int argc, char const *argv[])
     BgmPlay(mainBgm, 1.0);
 
     geContext *context = geContextNew();
+    g_pContext = context;
     Entity *entity = geContextEntityNew(context);
     TagComponent *tagComponent = gnTagComponentNew();
     gnTagComponentAddTag(tagComponent, "Hello");
@@ -148,6 +182,11 @@ int main(int argc, char const *argv[])
     Component *keyboardComponent = geContextComponentNew(context, KEYBOARD_COMPONENT, kbComp);
     geEntityAddComponent(entity, keyboardComponent);
 
+    DrawComponent* drawComp = geDrawComponentNew(locComponent);
+    geDrawComponentSetSize(drawComp, 16, 16);
+    Component *drawComponent = geContextComponentNew(context, DRAW_COMPONENT, drawComp);
+    geEntityAddComponent(entity, drawComponent);
+
     Entity *entity2 = geContextEntityNew(context);
     TagComponent *tagComponent2 = gnTagComponentNew();
     gnTagComponentAddTag(tagComponent2, "Hello2");
@@ -167,8 +206,9 @@ int main(int argc, char const *argv[])
     Component *ent2TagComp = geEntityGetComponent(entity2, TAG_COMPONENT);
     Component *ent2LocComp = geEntityGetComponent(entity2, LOCATION_COMPONENT);
 
-    geContextUpdate(context, NULL);
+    // geContextUpdate(context, NULL);
     // Entity* entity2 =  geContextEntityNew(context);
+    geContextSetDrawFunc(DrawSystem);
 
     Play();
     return 0;

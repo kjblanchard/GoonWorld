@@ -29,3 +29,4 @@ void geContextUpdate(geContext *context, void *data);
 
 struct Component** geContextGetComponentArrayByType(geContext* context, int type);
 int geContextGetComponentArrayCountByType(geContext* context, int type);
+void geContextSetDrawFunc(void(*drawFunc)());

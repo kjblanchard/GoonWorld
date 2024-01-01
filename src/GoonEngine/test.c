@@ -23,6 +23,8 @@ extern SDL_Renderer *g_pRenderer;
 extern int g_refreshRate;
 extern geContext* g_Context;
 
+void (*DrawUpdateFunc)() = NULL;
+
 
 
 void *MusicUpdateWrapper(void *arg)
@@ -96,8 +98,10 @@ static int loop_func()
 
        }
     }
-    // SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);  // Set to red with full alpha
-    // SDL_RenderDrawRect(g_pRenderer, &g_backgroundDrawRect);
+    if(DrawUpdateFunc)
+    {
+        DrawUpdateFunc();
+    }
 
     SDL_RenderPresent(g_pRenderer);
 }

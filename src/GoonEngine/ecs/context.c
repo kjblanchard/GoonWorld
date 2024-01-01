@@ -6,6 +6,7 @@
 
 static int maxTypeEncountered = -1;
 geContext* g_Context;
+extern void (*DrawUpdateFunc)();
 
 static void CheckEntityArraySize(geContext *context)
 {
@@ -80,6 +81,11 @@ geContext *geContextNew()
     context->ComponentCounts = calloc(1, sizeof(int));
     context->ComponentCapacity = calloc(1, sizeof(int));
     return g_Context = context;
+}
+
+void geContextSetDrawFunc(void(*drawFunc)())
+{
+    DrawUpdateFunc = drawFunc;
 }
 
 Entity *geContextEntityNew(geContext *context)
