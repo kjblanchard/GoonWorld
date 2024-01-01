@@ -62,3 +62,5 @@ run:
 	@cd ./$(BUILD_FOLDER)/$(BINARY_FOLDER) && ./$(BINARY_NAME)
 dotnet:
 	@cd ./GoonWorld && dotnet build && dotnet run
+dotnetPublish:
+	@cs ./GoonWorld && dotnet publish -c Release --sc --use-current-runtime

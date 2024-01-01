@@ -32,7 +32,7 @@ public static class Api
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gnScriptComponentNew();
             [DllImport("../build/lib/libSupergoonEngine")]
-            public static extern  int gnScriptComponentSetUpdateFunc(IntPtr scriptComponent, ScriptComponentDelegate func);
+            public static extern int gnScriptComponentSetUpdateFunc(IntPtr scriptComponent, ScriptComponentDelegate func);
 
         }
         public static class LocationComponent
@@ -49,6 +49,26 @@ public static class Api
             public static extern void gnLocationComponentSetXY(IntPtr component, int x, int y);
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gnLocationComponentNew();
+        }
+        public static class KeyboardComponent
+        {
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern IntPtr KeyboardComponentNew();
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void SetControllerMapButton(IntPtr keyboardComponent, int buttonToSet, int sdlScancode);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            [return: MarshalAs(UnmanagedType.I1)]
+            public static extern bool CheckIfButtonReleased(IntPtr keyboardComponent, int buttonToCheck);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            [return: MarshalAs(UnmanagedType.I1)]
+            public static extern bool CheckIfButtonPressed(IntPtr keyboardComponent, int buttonToCheck);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            [return: MarshalAs(UnmanagedType.I1)]
+            public static extern bool CheckIfButtonHeld(IntPtr keyboardComponent, int buttonToCheck);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            [return: MarshalAs(UnmanagedType.I1)]
+            public static extern bool CheckIfButtonDown(IntPtr keyboardComponent, int buttonToCheck);
+
         }
     }
 }

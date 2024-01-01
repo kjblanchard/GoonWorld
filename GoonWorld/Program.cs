@@ -11,7 +11,6 @@ public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary
     { "Player", (data) => new Player(data) },
 };
 
-    const int numGameObjects = 2;
     static void Main()
     {
         var game = new Game();

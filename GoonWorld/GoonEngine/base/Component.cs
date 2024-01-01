@@ -12,4 +12,5 @@ public static class ComponentTypes
     public const int TAG_COMPONENT = 0;
     public const int LOCATION_COMPONENT = 1;
     public const int SCRIPT_COMPONENT = 2;
+    public const int KEYBOARD_COMPONENT = 3;
 }
