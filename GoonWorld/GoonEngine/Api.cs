@@ -31,7 +31,7 @@ public static class Api
         }
         public static class ScriptComponent
         {
-            public delegate void ScriptComponentDelegate(IntPtr data);
+            public delegate void ScriptComponentDelegate();
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gnScriptComponentNew();
             [DllImport("../build/lib/libSupergoonEngine")]

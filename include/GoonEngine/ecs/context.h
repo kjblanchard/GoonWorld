@@ -20,6 +20,12 @@ typedef struct geContext
 
 } geContext;
 
+typedef struct geContextUpdateData
+{
+    double updateTime;
+
+} geContextUpdateData;
+
 geContext *geContextNew();
 struct Entity *geContextEntityNew(geContext *context);
 struct Entity *geGetEntityById(geContext *context, int id);

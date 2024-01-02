@@ -1,6 +1,6 @@
 #pragma once
 
-typedef void (*ScriptComponentDelegate)(void* data);
+typedef void (*ScriptComponentDelegate)();
 
 typedef struct ScriptComponent
 {

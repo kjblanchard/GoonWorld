@@ -1,5 +1,3 @@
-using System.Net;
-
 using System.Runtime.InteropServices;
 namespace GoonEngine;
 
@@ -11,13 +9,16 @@ public abstract class System
         deleg = Update;
     }
     int _type;
+    public TimeSpan ElapsedTime;
     ECS.System.SystemDelegate deleg;
     public virtual void Start() { }
-    public void Update(ref IntPtr context, int type, IntPtr data)
+    public unsafe void Update(ref IntPtr context, int type, IntPtr data)
     {
+        long ticks = (long)(((Models.UpdateData*)data)->UpdateTime * TimeSpan.TicksPerMillisecond);
+        TimeSpan timeSpan = TimeSpan.FromTicks(ticks);
         ComponentForEach();
     }
-    protected virtual void ComponentUpdate(IntPtr component) { }
+    protected virtual void ComponentUpdate(IntPtr ecsComponentPtr) { }
     public void RegisterInECS()
     {
         ECS.System.NewSystem(deleg, _type);

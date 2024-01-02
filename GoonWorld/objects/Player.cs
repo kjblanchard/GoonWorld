@@ -22,9 +22,9 @@ class Player : GameObject
         AddComponent(_keyboardComponent, _drawComponent);
     }
 
-    public override void Update(IntPtr input)
+    public override void Update()
     {
-        base.Update(input);
+        base.Update();
         // Console.WriteLine($"I am the player, and my location is {Location.X}:  {Location.Y}!");
         if (_keyboardComponent.GetButtonPressed(Models.EngineButtons.ebA))
         {

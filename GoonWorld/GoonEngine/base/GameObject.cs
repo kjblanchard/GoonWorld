@@ -25,7 +25,8 @@ class GameObject : IStart, IUpdate
     protected LocationComponent _locationComponent;
     protected TagComponent _tagComponent;
     protected ScriptComponent _scriptComponent;
-    public virtual void Update(IntPtr input){}
+    public static TimeSpan DeltaTime;
+    public virtual void Update(){}
 
     public GameObject()
     {

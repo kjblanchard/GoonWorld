@@ -81,7 +81,9 @@ static int loop_func()
     while (msBuildup >= deltaTimeMs)
     {
         UpdateSound();
-        geContextUpdate(g_Context, NULL);
+        geContextUpdateData updateData;
+        updateData.updateTime = deltaTimeMs;
+        geContextUpdate(g_Context, &updateData);
         msBuildup -= deltaTimeMs;
     }
 

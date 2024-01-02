@@ -22,7 +22,7 @@ public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary
         var locationSystem = new LocationSystem();
         var updateSystem = new ScriptSystem();
         var drawSystem = new DrawSystem();
-        ECS.UpdateSystems(IntPtr.Zero);
+        // ECS.UpdateSystems(IntPtr.Zero);
         game.Run();
     }
 }

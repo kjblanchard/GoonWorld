@@ -7,9 +7,10 @@ public class ScriptSystem : System
         RegisterInECS();
     }
 
-    protected override void ComponentUpdate(IntPtr component)
+    protected override void ComponentUpdate(IntPtr ecsComponentPtr)
     {
-        var scriptComponent = ECS.Component.GetComponentOfType<Models.ScriptComponent>(component);
-        scriptComponent.UpdateFunc(IntPtr.Zero);
+        GameObject.DeltaTime = ElapsedTime;
+        var scriptComponent = ECS.Component.GetComponentOfType<Models.ScriptComponent>(ecsComponentPtr);
+        scriptComponent.UpdateFunc();
     }
 }
