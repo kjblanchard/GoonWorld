@@ -17,6 +17,8 @@ class Player : GameObject
         _drawComponent = new DrawComponent(_locationComponent);
         _drawComponent.Width = (int)castedData.width;
         _drawComponent.Height = (int)castedData.height;
+        _drawComponent.Width = 44;
+        _drawComponent.Height = 50;
         AddComponent(_keyboardComponent, _drawComponent);
     }
 

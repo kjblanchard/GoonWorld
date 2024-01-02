@@ -1,5 +1,4 @@
 namespace GoonEngine;
-using GoonEngine.Models;
 public class DrawComponent : Component
 {
     public DrawComponent(LocationComponent locationComponent)
@@ -9,27 +8,15 @@ public class DrawComponent : Component
     }
     public unsafe int Width
     {
-        get
-        {
-            var thing = ((Models.DrawComponent*)_componentDataPointer)->sizeX;
-            return thing;
-
-        }
-        set
-        {
-            Api.Components.DrawComponent.geDrawComponentSetWidth(_componentDataPointer, value);
-            // var beforeValue = Width;
-            // var thing = value;
-            // ((Models.DrawComponent*)_componentDataPointer)->sizeX = thing;
-        }
+        get => ((Models.DrawComponent*)_componentDataPointer)->sizeX;
+        set => ((Models.DrawComponent*)_componentDataPointer)->sizeX = value;
 
 
     }
     public unsafe int Height
     {
         get => ((Models.DrawComponent*)_componentDataPointer)->sizeY;
-        // set => ((Models.DrawComponent*)_componentDataPointer)->sizeY = value;
-            set => Api.Components.DrawComponent.geDrawComponentSetHeight(_componentDataPointer, value);
+        set => ((Models.DrawComponent*)_componentDataPointer)->sizeY = value;
     }
 
 }
