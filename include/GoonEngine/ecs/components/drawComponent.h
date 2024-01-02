@@ -14,3 +14,5 @@ typedef struct DrawComponent
 DrawComponent* geDrawComponentNew(LocationComponent* locationComponent);
 void geDrawComponentDraw(DrawComponent* component);
 void geDrawComponentSetSize(DrawComponent* component, int w, int h);
+void geDrawComponentSetHeight(DrawComponent* component, int h);
+void geDrawComponentSetWidth(DrawComponent* component, int w);

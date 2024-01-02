@@ -11,7 +11,6 @@ public abstract class System
         deleg = Update;
     }
     int _type;
-    // GCHandle gch = GCHandle.Alloc(yourInstance.YourDelegate);
     ECS.System.SystemDelegate deleg;
     public virtual void Start() { }
     public void Update(ref IntPtr context, int type, IntPtr data)

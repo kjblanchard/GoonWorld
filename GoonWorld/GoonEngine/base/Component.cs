@@ -13,4 +13,5 @@ public static class ComponentTypes
     public const int LOCATION_COMPONENT = 1;
     public const int SCRIPT_COMPONENT = 2;
     public const int KEYBOARD_COMPONENT = 3;
+    public const int DRAW_COMPONENT = 4;
 }

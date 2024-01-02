@@ -16,7 +16,15 @@ void geDrawComponentSetSize(DrawComponent* component, int w, int h)
 {
     component->sizeX = w;
     component->sizeY = h;
+}
+void geDrawComponentSetWidth(DrawComponent* component, int w)
+{
+    component->sizeX = w;
+}
 
+void geDrawComponentSetHeight(DrawComponent* component, int h)
+{
+    component->sizeY = h;
 }
 
 void geDrawComponentDraw(DrawComponent* component)
@@ -26,6 +34,8 @@ void geDrawComponentDraw(DrawComponent* component)
     drawRect.y = component->LocationComponent->y;
     drawRect.w = component->sizeX;
     drawRect.h = component->sizeY;
+    printf("Drawing %d:%d size %d:%d\n", drawRect.x, drawRect.y, drawRect.w, drawRect.h );
+
     SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);
     SDL_RenderDrawRect(g_pRenderer, &drawRect);
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);

@@ -11,6 +11,9 @@ public static class Api
     {
         [DllImport("../build/lib/libSupergoonEngine")]
         public static extern int CreateWindowAndRenderer(uint width, uint height, string windowTitle);
+        public delegate void DrawUpdateDelegate();
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void geContextSetDrawFunc(DrawUpdateDelegate drawFunc);
     }
     public static class Components
     {
@@ -49,6 +52,20 @@ public static class Api
             public static extern void gnLocationComponentSetXY(IntPtr component, int x, int y);
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gnLocationComponentNew();
+        }
+        public static class DrawComponent
+        {
+
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern IntPtr geDrawComponentNew(IntPtr locationComponent);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void geDrawComponentDraw(IntPtr component);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void geDrawComponentSetSize(IntPtr component, int w, int h);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void geDrawComponentSetHeight(IntPtr component, int h);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void geDrawComponentSetWidth(IntPtr component, int w);
         }
         public static class KeyboardComponent
         {
