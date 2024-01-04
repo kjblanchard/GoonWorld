@@ -1,4 +1,5 @@
 #include <GoonEngine/gnpch.h>
+#include <GoonEngine/debug.h>
 #include <GoonEngine/ecs/context.h>
 #include <GoonEngine/ecs/entity.h>
 #include <GoonEngine/ecs/component.h>
@@ -63,7 +64,7 @@ static void CheckComponentArraySize(geContext *context, int type)
     {
         int newSize = context->ComponentCapacity[type] * 2 + 1;
         printf("Going to make new size of %d for type %d\n", newSize, type);
-        printf("Goint to realloc for type %d\n", type);
+        LogError("Going to make new size of %d for type %d\n", newSize, type);
         context->ComponentArrays[type] = realloc(context->ComponentArrays[type], newSize * sizeof(Component *));
         if (!context->ComponentArrays[type])
         {

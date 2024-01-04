@@ -1,4 +1,3 @@
-
 namespace GoonEngine.Objects;
 class Player : GameObject
 {
@@ -12,14 +11,13 @@ class Player : GameObject
         Location.X = (int)castedData.x;
         Location.Y = (int)castedData.y;
         _keyboardComponent = new KeyboardComponent();
-        // _drawComponent = new DrawComponent(_locationComponent) { Width = (int)castedData.width, Height = (int)castedData.height };
-        _drawComponent = new DrawComponent(_locationComponent);
-        _drawComponent.Width = (int)castedData.width;
-        _drawComponent.Height = (int)castedData.height;
+        _drawComponent = new DrawComponent(_locationComponent) { Width = (int)castedData.width, Height = (int)castedData.height };
         _drawComponent.Width = 44;
         _drawComponent.Height = 50;
         SetControllerButtons();
         AddComponent(_keyboardComponent, _drawComponent);
+        Debug.Level = Debug.LogLevel.Error;
+        Debug.Log.Error("Did we work?");
     }
 
     private void SetControllerButtons()

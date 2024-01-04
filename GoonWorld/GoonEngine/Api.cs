@@ -1,7 +1,32 @@
 using System.Runtime.InteropServices;
+using GoonEngine.Models;
 namespace GoonEngine;
 public static class Api
 {
+    public static class Engine
+    {
+
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern int GnInitializeEngine();
+    }
+    public static class Debug
+    {
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern int InitializeDebugLogFile();
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern int CloseDebugLogFile();
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void LogDebug(string log);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void LogInfo(string log);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void LogWarn(string log);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void LogError(string log);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void SetLogLevel(int newLevel);
+
+    }
     public static class Update
     {
         [DllImport("../build/lib/libSupergoonEngine")]

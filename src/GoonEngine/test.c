@@ -6,6 +6,7 @@
 // #include <GoonEngine/ecs/system.h>
 #include <GoonEngine/ecs/context.h>
 #include <GoonEngine/keyboard.h>
+#include <GoonEngine/debug.h>
 
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect g_backgroundDrawRect;
@@ -129,5 +130,8 @@ int GnInitializeEngine()
     }
 
     geInitializeKeyboard();
+    InitializeDebugLogFile();
+
+
 
 }

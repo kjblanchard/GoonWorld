@@ -14,6 +14,7 @@ public class Game
             throw new Exception("Should only have one instance of game!");
         }
         _gameInstance = this;
+        Api.Engine.GnInitializeEngine();
         Config = new ConfigManager();
         Sound = new Sound(Config.Config.soundConfig);
     }
