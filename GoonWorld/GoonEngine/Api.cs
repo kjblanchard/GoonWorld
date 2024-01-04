@@ -9,6 +9,25 @@ public static class Api
         [DllImport("../build/lib/libSupergoonEngine")]
         public static extern int GnInitializeEngine();
     }
+    public static class Physics
+    {
+        public static class Scene
+        {
+
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern IntPtr gpInitScene();
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void gpSceneSetGravity(IntPtr scene, float gravity);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern int gpSceneAddBody(IntPtr body);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern int gpSceneAddStaticBody(IntPtr body);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void gpSceneUpdate(IntPtr body, float gameTime);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern IntPtr gpSceneGetBody(int bodyRef);
+        }
+    }
     public static class Debug
     {
         [DllImport("../build/lib/libSupergoonEngine")]
