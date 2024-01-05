@@ -16,13 +16,14 @@ public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary
         var game = new Game();
         game.Initialize();
         game.CreateWindow();
-        // game.Sound.LoadBgm("rangers");
-        // game.Sound.PlayBgm("rangers");
+
+        var scene = Api.Physics.Scene.gpInitScene();
+        Api.Physics.Scene.geSetCurrentScene(scene);
+        Api.Physics.Scene.gpSceneSetGravity(scene, 50);
         var level1 = new Tiled();
         var locationSystem = new LocationSystem();
         var updateSystem = new ScriptSystem();
         var drawSystem = new DrawSystem();
-        // ECS.UpdateSystems(IntPtr.Zero);
         game.Run();
     }
 }

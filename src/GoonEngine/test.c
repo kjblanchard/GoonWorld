@@ -8,6 +8,11 @@
 #include <GoonEngine/keyboard.h>
 #include <GoonEngine/debug.h>
 
+// Physics
+#include <GoonPhysics/scene.h>
+
+static gpScene* g_pScene;
+
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect g_backgroundDrawRect;
 
@@ -82,6 +87,10 @@ static int loop_func()
     while (msBuildup >= deltaTimeMs)
     {
         UpdateSound();
+        if(g_pScene)
+        {
+            gpSceneUpdate(g_pScene, deltaTimeSeconds);
+        }
         geContextUpdateData updateData;
         updateData.updateTime = deltaTimeMs;
         geContextUpdate(g_Context, &updateData);
@@ -134,4 +143,9 @@ int GnInitializeEngine()
 
 
 
+}
+
+void geSetCurrentScene(void* scene)
+{
+    g_pScene = scene;
 }

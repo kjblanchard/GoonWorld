@@ -25,7 +25,7 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
     gpSceneGravity sceneGravity;
     sceneGravity.sceneGravity = scene->gravity;
     // sceneGravity.sceneFriction = 2.25f;
-    sceneGravity.sceneFriction = 0.25;
+    sceneGravity.sceneFriction = 0.45;
     sceneGravity.sceneMaxXVelocity = 100000;
     sceneGravity.sceneMaxYVelocity = 100000;
     sceneGravity.sceneMinYVelocity = 0.001;

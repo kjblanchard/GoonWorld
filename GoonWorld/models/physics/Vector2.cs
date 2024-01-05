@@ -9,5 +9,5 @@ namespace GoonEngine.Models;
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
 public struct Vector2
 {
-    float x, y;
+    public float x, y;
 }

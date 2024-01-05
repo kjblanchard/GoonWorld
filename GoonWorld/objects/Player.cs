@@ -3,6 +3,7 @@ class Player : GameObject
 {
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
+    private PhysicsComponent _physicsComponent;
     public Player(object data) : base()
     {
         var castedData = (TiledCS.TiledObject)data;
@@ -15,9 +16,9 @@ class Player : GameObject
         _drawComponent.Width = 44;
         _drawComponent.Height = 50;
         SetControllerButtons();
+        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height));
         AddComponent(_keyboardComponent, _drawComponent);
         Debug.Level = Debug.LogLevel.Error;
-        Debug.Log.Error("Did we work?");
     }
 
     private void SetControllerButtons()
@@ -29,23 +30,29 @@ class Player : GameObject
         _keyboardComponent.SetControllerButton(Models.EngineButtons.ebDown, Models.SDL_Scancode.SDL_SCANCODE_S);
     }
 
+    const int initialMoveSpeed = 20;
+    // private float LeftRightMovement => _physicsComponent.Bod.Velocity.x == 0 ? initialMoveSpeed : initialMoveSpeed * 200 * DeltaTime.Seconds;
+    private float LeftRightMovement => _physicsComponent.Bod.Velocity.x == 0 ? initialMoveSpeed : 5;
+
     private void HandleInput()
     {
-        if(_keyboardComponent.GetButtonDown(Models.EngineButtons.ebLeft))
+        if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebLeft))
         {
-            Location.X -= 1;
+            var movementBase = LeftRightMovement;
+            _physicsComponent.Bod.Velocity.x += -movementBase;
         }
-        if(_keyboardComponent.GetButtonDown(Models.EngineButtons.ebRight))
+        if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebRight))
         {
-            Location.X += 1;
+            var movementBase = LeftRightMovement;
+            _physicsComponent.Bod.Velocity.x += movementBase;
         }
-        if(_keyboardComponent.GetButtonDown(Models.EngineButtons.ebUp))
+        if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebUp))
         {
-            Location.Y -= 1;
+            _physicsComponent.Bod.Velocity.y -= 5;
         }
-        if(_keyboardComponent.GetButtonDown(Models.EngineButtons.ebDown))
+        if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebDown))
         {
-            Location.Y += 1;
+            _physicsComponent.Bod.Velocity.y += 5;
         }
 
     }
@@ -53,6 +60,9 @@ class Player : GameObject
     public override void Update()
     {
         base.Update();
+        Location.X = (int)Math.Round(_physicsComponent.Bod.BoundingBox.x);
+        Location.Y = (int)Math.Round(_physicsComponent.Bod.BoundingBox.y);
+        // Debug.Log.Info($"Velocity is X: {_physicsComponent.Bod.Velocity.x} Y: {_physicsComponent.Bod.Velocity.y}");
         HandleInput();
     }
 

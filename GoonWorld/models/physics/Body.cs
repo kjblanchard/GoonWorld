@@ -12,6 +12,7 @@
 
 // } gpBody;
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 namespace GoonEngine.Models;
 
@@ -20,7 +21,15 @@ public struct Body
 {
     public int bodyNum, bodyType;
     public BoundingBox BoundingBox;
-    // gpvec Velocity
+    public Vector2 Velocity;
     public int NumOverlappingBodies, GravityEnabled;
-    IntPtr[] Overlaps;
+    public IntPtr Overlaps;
+
+    unsafe Overlap* GetOverlapNum(int overlapNum)
+    {
+        if (overlapNum < 0 || overlapNum > NumOverlappingBodies)
+            return null;
+        return (Overlap*)Marshal.ReadIntPtr(Overlaps, overlapNum * IntPtr.Size);
+
+    }
 }

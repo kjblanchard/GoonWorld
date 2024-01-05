@@ -26,6 +26,14 @@ public static class Api
             public static extern void gpSceneUpdate(IntPtr body, float gameTime);
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gpSceneGetBody(int bodyRef);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void geSetCurrentScene(IntPtr scene);
+        }
+        public static class Body
+        {
+
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern IntPtr gpBodyNew(BoundingBox boundingBox);
         }
     }
     public static class Debug

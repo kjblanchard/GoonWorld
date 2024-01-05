@@ -34,8 +34,6 @@ void geDrawComponentDraw(DrawComponent* component)
     drawRect.y = component->LocationComponent->y;
     drawRect.w = component->sizeX;
     drawRect.h = component->sizeY;
-    printf("Drawing %d:%d size %d:%d\n", drawRect.x, drawRect.y, drawRect.w, drawRect.h );
-
     SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);
     SDL_RenderDrawRect(g_pRenderer, &drawRect);
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
