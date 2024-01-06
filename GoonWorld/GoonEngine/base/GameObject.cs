@@ -19,14 +19,22 @@ class GameObject : IStart, IUpdate
     private IntPtr _entity;
     private uint _type;
 
-    public LocationComponent Location => _locationComponent;
+    public ref Models.LocationComponent Location => ref _locationComponent.Location;
     public TagComponent Tag => _tagComponent;
 
     protected LocationComponent _locationComponent;
     protected TagComponent _tagComponent;
     protected ScriptComponent _scriptComponent;
+    protected PhysicsComponent? _physicsComponent;
     public static TimeSpan DeltaTime;
-    public virtual void Update(){}
+    public virtual void Update()
+    {
+        if (_physicsComponent != null)
+        {
+            Location.x = (int)Math.Round(_physicsComponent.Body.BoundingBox.x);
+            Location.y = (int)Math.Round(_physicsComponent.Body.BoundingBox.y);
+        }
+    }
 
     public GameObject()
     {
@@ -34,6 +42,7 @@ class GameObject : IStart, IUpdate
         _tagComponent = new TagComponent();
         _locationComponent = new LocationComponent();
         _scriptComponent = new ScriptComponent(Update);
+        _physicsComponent = null;
         AddComponent(_locationComponent, _tagComponent, _scriptComponent);
         EntityToGameObjectDictionary[_entity] = this;
     }
@@ -45,11 +54,8 @@ class GameObject : IStart, IUpdate
         }
     }
 
-
-
     public bool HasComponent(uint type) => ECS.Entity.geEntityHasComponent(_entity, type);
     ~GameObject() { }
-
 
 }
 

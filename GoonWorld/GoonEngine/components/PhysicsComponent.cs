@@ -2,8 +2,8 @@ using GoonEngine.Models;
 namespace GoonEngine;
 public class PhysicsComponent
 {
-    public unsafe ref Body Bod => ref *(Body*)_bodyPtr;
-    internal IntPtr _bodyPtr = IntPtr.Zero;
+    public unsafe ref Body Body => ref *(Body*)_bodyPtr;
+    private IntPtr _bodyPtr = IntPtr.Zero;
 
     public PhysicsComponent(BoundingBox bodyRectangle)
     {
