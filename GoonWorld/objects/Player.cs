@@ -3,18 +3,17 @@ class Player : GameObject
 {
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
-    // private PhysicsComponent _physicsComponent;
+
     public Player(object data) : base()
     {
-        var castedData = (TiledCS.TiledObject)data;
-        if (castedData == null)
+        if (!(data is TiledCS.TiledObject castedData))
             return;
         Location.x = (int)castedData.x;
         Location.y = (int)castedData.y;
         _keyboardComponent = new KeyboardComponent();
-        _drawComponent = new DrawComponent(_locationComponent) { Width = (int)castedData.width, Height = (int)castedData.height };
-        _drawComponent.Width = 44;
-        _drawComponent.Height = 50;
+        _drawComponent = new DrawComponent(_locationComponent);
+        _drawComponent.Data.Width = 44;
+        _drawComponent.Data.Height = 50;
         SetControllerButtons();
         _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height));
         _physicsComponent.Body.GravityEnabled = 0;

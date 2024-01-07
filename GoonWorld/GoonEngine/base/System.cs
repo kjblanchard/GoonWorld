@@ -3,14 +3,15 @@ namespace GoonEngine;
 
 public abstract class System
 {
+    private int _type;
+    public TimeSpan ElapsedTime;
+    ECS.System.SystemDelegate deleg;
+
     public System(int type)
     {
         _type = type;
         deleg = Update;
     }
-    int _type;
-    public TimeSpan ElapsedTime;
-    ECS.System.SystemDelegate deleg;
     public virtual void Start() { }
     public unsafe void Update(ref IntPtr context, int type, IntPtr data)
     {

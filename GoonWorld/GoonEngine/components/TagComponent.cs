@@ -1,7 +1,6 @@
 namespace GoonEngine;
 public class TagComponent : Component
 {
-    // public TagComponent(IntPtr context, params string[] tags)
     public TagComponent(params string[] tags)
     {
         _componentDataPointer = Api.Components.TagComponent.gnTagComponentNew();

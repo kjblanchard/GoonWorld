@@ -3,9 +3,6 @@ namespace GoonEngine;
 
 public class ScriptComponent : Component
 {
-    // [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    // public delegate void UpdateDelegate(IntPtr data);
-    // public UpdateDelegate UpdateFunc;
     public Api.Components.ScriptComponent.ScriptComponentDelegate UpdateFunc;
     public ScriptComponent(Api.Components.ScriptComponent.ScriptComponentDelegate updateFunc)
     {
@@ -14,5 +11,4 @@ public class ScriptComponent : Component
         Api.Components.ScriptComponent.gnScriptComponentSetUpdateFunc(_componentDataPointer, UpdateFunc);
         _ecsComponentDataPtr = ECS.NewComponent(ComponentTypes.SCRIPT_COMPONENT, ComponentPtr );
     }
-
 }

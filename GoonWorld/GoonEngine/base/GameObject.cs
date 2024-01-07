@@ -1,19 +1,7 @@
-using System.Security.Cryptography.X509Certificates;
-
 namespace GoonEngine;
-
-/// <summary>
-/// Gameobject class should be every entity that is spawned,
-/// and can have components added to them.
-/// </summary>
 class GameObject : IStart, IUpdate
 {
-
     public static Dictionary<IntPtr, GameObject> EntityToGameObjectDictionary = new();
-
-    /// <summary>
-    /// The entity ID is the ID in the ECS system
-    /// </summary>
     public uint Type => _type;
     public IntPtr Entity => _entity;
     private IntPtr _entity;
@@ -27,15 +15,6 @@ class GameObject : IStart, IUpdate
     protected ScriptComponent _scriptComponent;
     protected PhysicsComponent? _physicsComponent;
     public static TimeSpan DeltaTime;
-    public virtual void Update()
-    {
-        if (_physicsComponent != null)
-        {
-            Location.x = (int)Math.Round(_physicsComponent.Body.BoundingBox.x);
-            Location.y = (int)Math.Round(_physicsComponent.Body.BoundingBox.y);
-        }
-    }
-
     public GameObject()
     {
         _entity = ECS.NewEntity();
@@ -46,6 +25,16 @@ class GameObject : IStart, IUpdate
         AddComponent(_locationComponent, _tagComponent, _scriptComponent);
         EntityToGameObjectDictionary[_entity] = this;
     }
+    ~GameObject() { }
+    public virtual void Update()
+    {
+        if (_physicsComponent != null)
+        {
+            Location.x = (int)Math.Round(_physicsComponent.Body.BoundingBox.x);
+            Location.y = (int)Math.Round(_physicsComponent.Body.BoundingBox.y);
+        }
+    }
+
     public void AddComponent(params Component[] components)
     {
         foreach (var component in components)
@@ -55,7 +44,6 @@ class GameObject : IStart, IUpdate
     }
 
     public bool HasComponent(uint type) => ECS.Entity.geEntityHasComponent(_entity, type);
-    ~GameObject() { }
 
 }
 

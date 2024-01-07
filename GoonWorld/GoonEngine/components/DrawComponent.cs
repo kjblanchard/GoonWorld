@@ -6,17 +6,6 @@ public class DrawComponent : Component
         _componentDataPointer = Api.Components.DrawComponent.geDrawComponentNew(locationComponent.ComponentPtr);
         _ecsComponentDataPtr = ECS.NewComponent(ComponentTypes.DRAW_COMPONENT, ComponentPtr);
     }
-    public unsafe int Width
-    {
-        get => ((Models.DrawComponent*)_componentDataPointer)->sizeX;
-        set => ((Models.DrawComponent*)_componentDataPointer)->sizeX = value;
 
-
-    }
-    public unsafe int Height
-    {
-        get => ((Models.DrawComponent*)_componentDataPointer)->sizeY;
-        set => ((Models.DrawComponent*)_componentDataPointer)->sizeY = value;
-    }
-
+    public unsafe ref Models.DrawComponent Data =>  ref *(Models.DrawComponent*)_componentDataPointer;
 }
