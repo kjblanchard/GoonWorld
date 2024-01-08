@@ -77,8 +77,8 @@ public class Tiled
                             var dstRect = new Rect(
                                 dstX,
                                 dstY,
-                                srcRect.width,
-                                srcRect.height
+                                srcRect.Width,
+                                srcRect.Height
                             );
                             BlitSurface(loadedTileset, ref srcRect, atlas, ref dstRect);
                         }
@@ -97,21 +97,18 @@ public class Tiled
             {
                 if (layer.name == "entities")
                 {
-
-                    Console.WriteLine("Entities found");
                     foreach (var entityObject in layer.objects)
                     {
                         if (Program.ObjectSpawnDictionary.ContainsKey(entityObject.type))
                         {
                             var newGo = Program.ObjectSpawnDictionary[entityObject.type](entityObject);
                         }
-                        // Console.WriteLine($"Name: {entityObject.name}\nType: {entityObject.type}");
                     }
 
                 }
                 else if (layer.name == "solid")
                 {
-                    Console.WriteLine("Solids found");
+                    ;
 
                 }
             }

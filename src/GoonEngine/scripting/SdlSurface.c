@@ -9,7 +9,6 @@ extern SDL_Renderer *g_pRenderer;
 
 void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
 {
-    printf("Trying to set atlas to %x with rect loc x/y %d:%d size w/h %d:%d\n", background, rect->x, rect->y, rect->w, rect->h);
     g_BackgroundAtlas = background;
     g_backgroundDrawRect.x = rect->x;
     g_backgroundDrawRect.y = rect->y;

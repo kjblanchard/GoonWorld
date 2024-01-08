@@ -32,11 +32,8 @@ int CreateWindowAndRenderer(uint width, uint height, const char* windowName)
     fprintf(stdout, "Created window\nWidth: %d, Height: %d", width, height);
     SDL_DisplayMode mode;
     SDL_GetWindowDisplayMode(g_pWindow, &mode);
-    g_refreshRate = mode.refresh_rate ? mode.refresh_rate : 60;
-    // g_refreshRate = 60;
-    // g_refreshRate = 30;
-    // LogDebug("The refresh rate of the window is %d\n", mode.refresh_rate);
-    fprintf(stdout, "The refresh rate of the window is %d\n", mode.refresh_rate);
+    // g_refreshRate = mode.refresh_rate ? mode.refresh_rate : 60;
+    g_refreshRate = 120;
     return 0;
 }
 

@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <GoonPhysics/gravity.h>
 
-static void GravityConstraintX(gpBody *body, float deltaTime, gpSceneGravity *sceneGravity)
+static void GravityConstraintX(gpBody *body, double deltaTime, gpSceneGravity *sceneGravity)
 {
     if (body->velocity.x == 0)
         return;
     // Apply friction
     int onGround = gpBodyIsOnGround(body);
-    float friction = onGround ? sceneGravity->sceneFriction : sceneGravity->sceneFriction * 3;
+    double friction = onGround ? sceneGravity->sceneFriction : sceneGravity->sceneFriction * 3;
     // float friction = sceneGravity->sceneFriction;
     // body->velocity.x *= pow(sceneGravity->sceneFriction, deltaTime);
     body->velocity.x *= pow(friction, deltaTime);
@@ -24,7 +24,7 @@ static void GravityConstraintX(gpBody *body, float deltaTime, gpSceneGravity *sc
     }
 }
 
-static void GravityConstraintY(gpBody *body, float gravityStep, gpSceneGravity *sceneGravity)
+static void GravityConstraintY(gpBody *body, double gravityStep, gpSceneGravity *sceneGravity)
 {
     double step = body->velocity.y + gravityStep;
     if (step >= 0)
@@ -46,8 +46,8 @@ static void GravityConstraintY(gpBody *body, float gravityStep, gpSceneGravity *
 
 void gpGravityBodyStep(gpBody *body, gpSceneGravity *sceneGravity, float deltaTime)
 {
-    float gravityStep = sceneGravity->sceneGravity * deltaTime;
-    float frictionStep = 0.0f;
+    double gravityStep = sceneGravity->sceneGravity * deltaTime;
+    double frictionStep = 0.0f;
     // int friction = sceneGravity->sceneFriction;
     if (sceneGravity->sceneFriction)
     {

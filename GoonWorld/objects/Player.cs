@@ -16,7 +16,8 @@ class Player : GameObject
         _drawComponent.Data.Height = 50;
         SetControllerButtons();
         _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height));
-        _physicsComponent.Body.GravityEnabled = 0;
+        // _physicsComponent.Body.GravityEnabled = 0;
+        _physicsComponent.Body.GravityEnabled = 1;
         AddComponent(_keyboardComponent, _drawComponent);
         Debug.Level = Debug.LogLevel.Error;
     }
@@ -32,7 +33,7 @@ class Player : GameObject
 
     const int initialMoveSpeed = 20;
     // private float LeftRightMovement => _physicsComponent.Bod.Velocity.x == 0 ? initialMoveSpeed : initialMoveSpeed * 200 * DeltaTime.Seconds;
-    private float LeftRightMovement => _physicsComponent.Body.Velocity.x == 0 ? initialMoveSpeed : 5;
+    private float LeftRightMovement => _physicsComponent.Body.Velocity.X == 0 ? initialMoveSpeed : 5;
 
 
     private void HandleInput()
@@ -40,20 +41,24 @@ class Player : GameObject
         if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebLeft))
         {
             var movementBase = LeftRightMovement;
-            _physicsComponent.Body.Velocity.x += -movementBase;
+            _physicsComponent.Body.Velocity.X += -movementBase;
+            // Location.x -= 1;
         }
         if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebRight))
         {
             var movementBase = LeftRightMovement;
-            _physicsComponent.Body.Velocity.x += movementBase;
+            // Location.x += 1;
+            _physicsComponent.Body.Velocity.X += movementBase;
         }
         if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebUp))
         {
-            _physicsComponent.Body.Velocity.y -= 5;
+            // Location.y -= 1;
+            _physicsComponent.Body.Velocity.Y -= 5;
         }
         if (_keyboardComponent.GetButtonDown(Models.EngineButtons.ebDown))
         {
-            _physicsComponent.Body.Velocity.y += 5;
+            // Location.y += 1;
+            _physicsComponent.Body.Velocity.Y += 5;
         }
 
     }

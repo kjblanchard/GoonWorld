@@ -7,21 +7,21 @@ public struct Rect
 {
     public Rect(int x, int y, int w, int h)
     {
-        this.x = x;
-        this.y = y;
-        width = w;
-        height = h;
+        X = x;
+        Y = y;
+        Width = w;
+        Height = h;
 
     }
     public Rect(TiledSourceRect rect)
     {
-        x = rect.x;
-        y = rect.y;
-        width = rect.width;
-        height = rect.height;
+        X = rect.x;
+        Y = rect.y;
+        Width = rect.width;
+        Height = rect.height;
     }
-    public int x;
-    public int y;
-    public int width;
-    public int height;
+    public int X;
+    public int Y;
+    public int Width;
+    public int Height;
 }

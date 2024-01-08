@@ -1,18 +1,3 @@
-// typedef struct gpBody
-// {
-//     int bodyNum;
-//     int bodyType;
-//     gpBB boundingBox;
-//     gpVec velocity;
-//     int numOverlappingBodies;
-//     int gravityEnabled;
-//     // int bodyOnGround;
-//     struct gpOverlap** overlaps;
-
-
-// } gpBody;
-
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 namespace GoonEngine.Models;
 

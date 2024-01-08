@@ -63,12 +63,10 @@ static void CheckComponentArraySize(geContext *context, int type)
     if (context->ComponentCounts[type] + 1 > context->ComponentCapacity[type])
     {
         int newSize = context->ComponentCapacity[type] * 2 + 1;
-        printf("Going to make new size of %d for type %d\n", newSize, type);
-        LogError("Going to make new size of %d for type %d\n", newSize, type);
         context->ComponentArrays[type] = realloc(context->ComponentArrays[type], newSize * sizeof(Component *));
         if (!context->ComponentArrays[type])
         {
-            fprintf(stderr, "Could not reallocate space for component array of type");
+            LogError("Could not reallocate space for component array of type");
             exit(1);
         }
         context->ComponentCapacity[type] = newSize;
@@ -109,14 +107,12 @@ Component *geContextComponentNew(geContext *context, int type, void *data)
     Component *component = calloc(1, sizeof(*component));
     component->Type = type;
     component->Data = data;
-    printf("Creating for context %x and type %d\n", context, type);
     if (type > maxTypeEncountered)
     {
         AllocateSpaceForNewComponentType(context, type);
         maxTypeEncountered = type;
     }
     CheckComponentArraySize(context, type);
-    // context->ComponentArrays[type][context->ComponentArrayCount++] = component;
     context->ComponentArrays[type][context->ComponentCounts[type]++] = component;
     return component;
 }

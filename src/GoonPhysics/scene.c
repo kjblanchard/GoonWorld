@@ -28,8 +28,9 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
     sceneGravity.sceneFriction = 0.45;
     sceneGravity.sceneMaxXVelocity = 100000;
     sceneGravity.sceneMaxYVelocity = 100000;
-    sceneGravity.sceneMinYVelocity = 0.001;
-    sceneGravity.sceneMinXVelocity = 10;
+    // sceneGravity.sceneMinYVelocity = 0.001;
+    sceneGravity.sceneMinYVelocity = 0.1
+    sceneGravity.sceneMinXVelocity = 20;
 
     for (size_t i = 0; i < _currentNumBodies; i++)
     {
@@ -63,13 +64,13 @@ static void CheckForNonStaticOverlaps(gpBody *body, int direction)
 
 static void ApplyYVelocity(gpBody *body, float gameTime)
 {
-    float initialYStep = body->velocity.y * gameTime;
-    float iterYStep = initialYStep;
-    float stepSize = (int)initialYStep != 0 ? initialYStep > 0 ? 1 : -1 : initialYStep;
+    double initialYStep = body->velocity.y * gameTime;
+    double iterYStep = initialYStep;
+    double stepSize = (int)initialYStep != 0 ? initialYStep > 0 ? 1 : -1 : initialYStep;
     int shouldStep = stepSize != 0 ? 1 : 0;
     while (shouldStep)
     {
-        float bodyInitialY = body->boundingBox.y;
+        double bodyInitialY = body->boundingBox.y;
         body->boundingBox.y += stepSize;
         // Check for collisions for each static body
         // If it is a blocking body, then we should set shouldStep to False
@@ -112,14 +113,14 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
 
 static void ApplyXVelocity(gpBody *body, float gameTime)
 {
-    float initialXStep = body->velocity.x * gameTime;
-    float iterXStep = initialXStep;
-    float stepSize = (int)initialXStep != 0 ? initialXStep > 0 ? 1 : -1 : initialXStep;
+    double initialXStep = body->velocity.x * gameTime;
+    double iterXStep = initialXStep;
+    double stepSize = (int)initialXStep != 0 ? initialXStep > 0 ? 1 : -1 : initialXStep;
     int shouldStep = stepSize != 0 ? 1 : 0;
     int direction = stepSize > 0 ? gpOverlapRight : gpOverlapLeft;
     while (shouldStep)
     {
-        float bodyInitialX = body->boundingBox.x;
+        double bodyInitialX = body->boundingBox.x;
         body->boundingBox.x += stepSize;
         // Check for collisions for each body
         // For body in bodies, if collides,

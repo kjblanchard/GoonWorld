@@ -11,14 +11,8 @@ public static class Debug
     }
 
     public static LogLevel Level { get; set; }
-    public static class Log
-    {
-        public static void Debug(string log) => Api.Debug.LogDebug(log);
-        public static void Info(string log) => Api.Debug.LogInfo(log);
-        public static void Warn(string log) => Api.Debug.LogWarn(log);
-        public static void Error(string log) => Api.Debug.LogError(log);
-
-    }
-
-
+    public static void DebugMessage(string log) => Api.Debug.LogDebug(log);
+    public static void InfoMessage(string log) => Api.Debug.LogInfo(log);
+    public static void WarnMessage(string log) => Api.Debug.LogWarn(log);
+    public static void ErrorMessage(string log) => Api.Debug.LogError(log);
 }

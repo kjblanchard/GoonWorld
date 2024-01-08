@@ -55,7 +55,6 @@ static void Log(LogLevel level, const char *thing_to_write)
     fprintf(outStream, "%s: %s end\n", buf, thing_to_write);
     if (level == Log_LError && open_debug_file)
     {
-        fprintf(stdout, "Going to write to the file..\n");
         fprintf(open_debug_file, "%s: %s\n", buf, thing_to_write);
     }
 }

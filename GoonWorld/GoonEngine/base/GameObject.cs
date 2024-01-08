@@ -28,10 +28,10 @@ class GameObject : IStart, IUpdate
     ~GameObject() { }
     public virtual void Update()
     {
-        if (_physicsComponent != null)
+        if (_physicsComponent != null && _physicsComponent.Body.GravityEnabled == 1)
         {
-            Location.x = (int)Math.Round(_physicsComponent.Body.BoundingBox.x);
-            Location.y = (int)Math.Round(_physicsComponent.Body.BoundingBox.y);
+            Location.x = (int)Math.Floor(_physicsComponent.Body.BoundingBox.X);
+            Location.y = (int)Math.Floor(_physicsComponent.Body.BoundingBox.Y);
         }
     }
 
