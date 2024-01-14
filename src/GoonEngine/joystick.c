@@ -16,15 +16,14 @@ static int _numGamePads;
 static void CountPluggedInControllers();
 GamePad _connectedGamepads[MAX_GAMEPADS];
 
-GamePad *geGamePadNew(int padNum)
+static void InitializeEngineGamepad(int padNum)
 {
+    GamePad *gamepad = &_connectedGamepads[padNum];
     SDL_GameController *pad = SDL_GameControllerOpen(padNum);
     if (!pad)
     {
         LogError("Could not open gamecontroller");
-        return NULL;
     }
-    GamePad *gamepad = calloc(1, sizeof(*gamepad));
     gamepad->SdlController = pad;
     for (int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++)
     {
@@ -33,7 +32,7 @@ GamePad *geGamePadNew(int padNum)
     }
 }
 
-void InitializeGoonEngineJoysticks()
+void geInitializeJoysticks()
 {
     SDL_GameControllerEventState(SDL_ENABLE);
     CountPluggedInControllers();
@@ -87,7 +86,7 @@ static void CountPluggedInControllers()
         if (SDL_IsGameController(i))
         {
             _numGamePads++;
-            geGamePadNew(i);
+            InitializeEngineGamepad(i);
         }
 }
 
@@ -98,4 +97,17 @@ void geUpdateControllers()
         memcpy(_connectedGamepads[i].lastFrameAxis, _connectedGamepads[i].thisFrameAxis, sizeof(_connectedGamepads[i].lastFrameAxis));
         memcpy(_connectedGamepads[i].lastFrameButtons, _connectedGamepads[i].thisFrameButtons, sizeof(_connectedGamepads[i].lastFrameButtons));
     }
+}
+
+bool geGamepadButtonJustReleased(const int padNum, const int button)
+{
+    return _numGamePads > padNum && !_connectedGamepads[padNum].thisFrameButtons[button] && _connectedGamepads[padNum].lastFrameButtons[button];
+}
+bool geGamepadButtonJustPressed(const int padNum, const int button)
+{
+    return _numGamePads > padNum && _connectedGamepads[padNum].thisFrameButtons[button] && !_connectedGamepads[padNum].lastFrameButtons[button];
+}
+bool geGamepadButtonHeldDown(const int padNum, const int button)
+{
+    return _numGamePads > padNum && _connectedGamepads[padNum].lastFrameButtons[button] && _connectedGamepads[padNum].thisFrameButtons[button];
 }

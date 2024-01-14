@@ -15,25 +15,17 @@ void SetControllerMapButton(KeyboardComponent *keyboardComponent, int buttonToSe
 }
 int CheckIfButtonReleased(KeyboardComponent *keyboardComponent, int buttonToCheck)
 {
-    // int result = geKeyJustReleased(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
-    // printf("Result %d", result);
     return geKeyJustReleased(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
 }
 int CheckIfButtonPressed(KeyboardComponent *keyboardComponent, int buttonToCheck)
 {
-    // int result = geKeyJustPressed(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
-    // printf("Result %d", result);
     return geKeyJustPressed(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
 }
 int CheckIfButtonHeld(KeyboardComponent *keyboardComponent, int buttonToCheck)
 {
-    // int result = geKeyHeldDown(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
-    // printf("Result %d", result);
     return geKeyHeldDown(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
 }
 int CheckIfButtonDown(KeyboardComponent *keyboardComponent, int buttonToCheck)
 {
-    // int result = geKeyHeldDown(keyboardComponent->ControllerMap.Buttons[buttonToCheck]) || geKeyHeldDown(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
-    // printf("Result %d", result);
     return geKeyHeldDown(keyboardComponent->ControllerMap.Buttons[buttonToCheck]) || geKeyHeldDown(keyboardComponent->ControllerMap.Buttons[buttonToCheck]);
 }

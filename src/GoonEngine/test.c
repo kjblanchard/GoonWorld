@@ -6,12 +6,13 @@
 // #include <GoonEngine/ecs/system.h>
 #include <GoonEngine/ecs/context.h>
 #include <GoonEngine/keyboard.h>
+#include <GoonEngine/joystick.h>
 #include <GoonEngine/debug.h>
 
 // Physics
 #include <GoonPhysics/scene.h>
 
-static gpScene* g_pScene;
+static gpScene *g_pScene;
 
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect g_backgroundDrawRect;
@@ -27,11 +28,9 @@ static float msBuildup;
 // TODO this should be different, it is inside of SDLwindow.c
 extern SDL_Renderer *g_pRenderer;
 extern int g_refreshRate;
-extern geContext* g_Context;
+extern geContext *g_Context;
 
 void (*DrawUpdateFunc)() = NULL;
-
-
 
 void *MusicUpdateWrapper(void *arg)
 {
@@ -58,6 +57,11 @@ static bool sdlEventLoop()
         case SDL_KEYUP:
             HandleKeyboardEvent(&event);
             break;
+        case SDL_CONTROLLERBUTTONUP:
+        case SDL_CONTROLLERBUTTONDOWN:
+        case SDL_CONTROLLERDEVICEADDED:
+            HandleJoystickEvent(&event);
+            break;
         default:
             break;
         }
@@ -82,12 +86,13 @@ static int loop_func()
     if (msBuildup < deltaTimeMs)
         return true;
     geUpdateKeyboard();
+    geUpdateControllers();
 
     // Run Update and update physics as many times as needed
     while (msBuildup >= deltaTimeMs)
     {
         UpdateSound();
-        if(g_pScene)
+        if (g_pScene)
         {
             gpSceneUpdate(g_pScene, deltaTimeSeconds);
         }
@@ -100,17 +105,16 @@ static int loop_func()
     // Draw after we are caught up
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
     SDL_RenderClear(g_pRenderer);
-    if(g_BackgroundAtlas)
+    if (g_BackgroundAtlas)
     {
         int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
 
-       if(drawResult != 0)
-       {
+        if (drawResult != 0)
+        {
             printf("Did not draw properly, Error %s\n", SDL_GetError());
-
-       }
+        }
     }
-    if(DrawUpdateFunc)
+    if (DrawUpdateFunc)
     {
         DrawUpdateFunc();
     }
@@ -132,20 +136,18 @@ int GnInitializeEngine()
         fprintf(stderr, "Could not Initialize SDL!\nError: %s", SDL_GetError());
         return 1;
     }
-    if(!IMG_Init(IMG_INIT_PNG))
+    if (!IMG_Init(IMG_INIT_PNG))
     {
         fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
         return 1;
     }
 
     geInitializeKeyboard();
+    geInitializeJoysticks();
     InitializeDebugLogFile();
-
-
-
 }
 
-void geSetCurrentScene(void* scene)
+void geSetCurrentScene(void *scene)
 {
     g_pScene = scene;
 }

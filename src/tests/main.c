@@ -16,6 +16,7 @@
 #include <GoonEngine/ecs/components/drawComponent.h>
 // Input testing
 #include <GoonEngine/keyboard.h>
+#include <GoonEngine/joystick.h>
 
 #define TAG_COMPONENT 1
 #define LOCATION_COMPONENT 2
@@ -57,20 +58,6 @@ void UpdateSystem(geContext *context, int type, void *data)
     }
 }
 
-// void DrawSystem(geContext *context, int type, void *data)
-// {
-//     Component **components = geContextGetComponentArrayByType(context, type);
-//     int componentCount = geContextGetComponentArrayCountByType(context, type);
-
-//     for (int i = 0; i < componentCount; i++)
-//     {
-//         Component *component = components[i];
-//         DrawComponent *drawComp = (DrawComponent *)component->Data;
-//         if (!drawComp)
-//             continue;
-//         geDrawComponentDraw(drawComp);
-//     }
-// }
 void DrawSystem()
 {
     Component **components = geContextGetComponentArrayByType(g_pContext, DRAW_COMPONENT);
@@ -209,6 +196,11 @@ int main(int argc, char const *argv[])
     // geContextUpdate(context, NULL);
     // Entity* entity2 =  geContextEntityNew(context);
     geContextSetDrawFunc(DrawSystem);
+    if(geGamepadButtonJustPressed(0, SDL_CONTROLLER_BUTTON_A))
+    {
+        printf("Just pressed button A\n");
+    }
+
 
     Play();
     return 0;
