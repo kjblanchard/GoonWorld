@@ -1,16 +1,8 @@
-using GoonEngine.Models;
-
-namespace GoonEngine;
-public class KeyboardComponent : Component
+namespace GoonEngine.Components;
+public class KeyboardComponent
 {
-    public KeyboardComponent()
-    {
-        _componentDataPointer = Api.Components.KeyboardComponent.KeyboardComponentNew();
-        _ecsComponentDataPtr = ECS.NewComponent(ComponentTypes.KEYBOARD_COMPONENT, ComponentPtr);
-    }
-    public bool GetButtonDown(EngineButtons button) => Api.Components.KeyboardComponent.CheckIfButtonDown(_componentDataPointer, (int)button);
-    public bool GetButtonHeld(EngineButtons button) => Api.Components.KeyboardComponent.CheckIfButtonHeld(_componentDataPointer, (int)button);
-    public bool GetButtonPressed(EngineButtons button) => Api.Components.KeyboardComponent.CheckIfButtonPressed(_componentDataPointer, (int)button);
-    public bool GetButtonReleased(EngineButtons button) => Api.Components.KeyboardComponent.CheckIfButtonReleased(_componentDataPointer, (int)button);
-    public void SetControllerButton(EngineButtons buttonToBeMapped, SDL_Scancode button) => Api.Components.KeyboardComponent.SetControllerMapButton(_componentDataPointer, (int)buttonToBeMapped, (int)button);
+    public Dictionary<Models.EngineButtons, Models.SDL_Scancode> ButtonMap = new();
+    public bool IsButtonDown(Models.EngineButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false;
+    public bool IsButtonPressed(Models.EngineButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustPressed((int)scancode) : false;
+    public bool IsButtonReleased(Models.EngineButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustReleased((int)scancode) : false;
 }

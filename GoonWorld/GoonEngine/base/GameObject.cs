@@ -1,49 +1,50 @@
+using GoonEngine.Objects;
+
 namespace GoonEngine;
-class GameObject : IStart, IUpdate
+
+abstract class GameObject : IStart, IUpdate
 {
-    public static Dictionary<IntPtr, GameObject> EntityToGameObjectDictionary = new();
-    public uint Type => _type;
-    public IntPtr Entity => _entity;
-    private IntPtr _entity;
-    private uint _type;
-
-    public ref Models.LocationComponent Location => ref _locationComponent.Location;
-    public TagComponent Tag => _tagComponent;
-
-    protected LocationComponent _locationComponent;
-    protected TagComponent _tagComponent;
-    protected ScriptComponent _scriptComponent;
+    public static Dictionary<uint, GameObject> EntityToGameObjectDictionary = new();
+    public static List<GameObject> UpdateGameObjects = new();
+    public static List<Player> DrawGameObjects = new();
+    private static uint _numGameObjects;
+    public static Api.Engine.DrawUpdateDelegate DrawFunc = Draw;
     protected PhysicsComponent? _physicsComponent;
     public static TimeSpan DeltaTime;
+    public uint Id => _id;
+    private uint _id;
+    public bool HasTag(string tag) => _tags.Exists(i => i == tag);
+    protected void AddTag(string tag) => _tags.Add(tag);
+
+    private List<string> _tags = new();
+
+    public ref Point Location => ref _location;
+    private Point _location;
     public GameObject()
     {
-        _entity = ECS.NewEntity();
-        _tagComponent = new TagComponent();
-        _locationComponent = new LocationComponent();
-        _scriptComponent = new ScriptComponent(Update);
+        _id = _numGameObjects++;
         _physicsComponent = null;
-        AddComponent(_locationComponent, _tagComponent, _scriptComponent);
-        EntityToGameObjectDictionary[_entity] = this;
     }
     ~GameObject() { }
     public virtual void Update()
     {
         if (_physicsComponent != null && _physicsComponent.Body.GravityEnabled == 1)
         {
-            Location.x = (int)Math.Floor(_physicsComponent.Body.BoundingBox.X);
-            Location.y = (int)Math.Floor(_physicsComponent.Body.BoundingBox.Y);
+            Location.X = (int)Math.Floor(_physicsComponent.Body.BoundingBox.X);
+            Location.Y = (int)Math.Floor(_physicsComponent.Body.BoundingBox.Y);
         }
     }
 
-    public void AddComponent(params Component[] components)
+    public static void UpdateAllGameObjects()
     {
-        foreach (var component in components)
-        {
-            ECS.Entity.geEntityAddComponent(_entity, component.ECSComponentPtr);
-        }
+        UpdateGameObjects.ForEach(gameobject => gameobject.Update());
+
     }
 
-    public bool HasComponent(uint type) => ECS.Entity.geEntityHasComponent(_entity, type);
+    public static void Draw()
+    {
+        DrawGameObjects.ForEach(gameobject => gameobject.DrawMan());
+    }
 
 }
 

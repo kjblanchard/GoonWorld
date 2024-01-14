@@ -21,9 +21,7 @@ public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary
         Api.Physics.Scene.geSetCurrentScene(scene);
         Api.Physics.Scene.gpSceneSetGravity(scene, 50);
         var level1 = new Tiled();
-        var locationSystem = new LocationSystem();
-        var updateSystem = new ScriptSystem();
-        var drawSystem = new DrawSystem();
+        Api.Engine.geGameSetDrawFunc(GameObject.DrawFunc);
         game.Run();
     }
 }

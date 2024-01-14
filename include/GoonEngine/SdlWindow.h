@@ -11,3 +11,5 @@
 #pragma once
 
 int CreateWindowAndRenderer(unsigned int width, unsigned int height, const char* windowName);
+void DrawDebugRect(SDL_Rect* rect);
+

@@ -8,7 +8,24 @@ public static class Api
 
         [DllImport("../build/lib/libSupergoonEngine")]
         public static extern int GnInitializeEngine();
+        public delegate void UpdateGameDelegate(double deltaTime);
+
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void geGameSetUpdateFunc(UpdateGameDelegate updateFunc);
+        public delegate void DrawUpdateDelegate();
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void geGameSetDrawFunc(DrawUpdateDelegate drawFunc);
+        public static class Input
+        {
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool geKeyHeldDown(int key);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool geKeyJustPressed(int key);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool geKeyJustReleased(int key);
+        }
     }
+
     public static class Physics
     {
         public static class Scene
@@ -64,8 +81,10 @@ public static class Api
         [DllImport("../build/lib/libSupergoonEngine")]
         public static extern int CreateWindowAndRenderer(uint width, uint height, string windowTitle);
         public delegate void DrawUpdateDelegate();
+        // [DllImport("../build/lib/libSupergoonEngine")]
+        // public static extern void geContextSetDrawFunc(DrawUpdateDelegate drawFunc);
         [DllImport("../build/lib/libSupergoonEngine")]
-        public static extern void geContextSetDrawFunc(DrawUpdateDelegate drawFunc);
+        public static extern void DrawDebugRect(ref Rect rect);
     }
     public static class Components
     {

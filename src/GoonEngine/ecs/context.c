@@ -82,10 +82,10 @@ geContext *geContextNew()
     return g_Context = context;
 }
 
-void geContextSetDrawFunc(void(*drawFunc)())
-{
-    DrawUpdateFunc = drawFunc;
-}
+// void geContextSetDrawFunc(void(*drawFunc)())
+// {
+//     DrawUpdateFunc = drawFunc;
+// }
 
 Entity *geContextEntityNew(geContext *context)
 {

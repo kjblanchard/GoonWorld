@@ -44,6 +44,8 @@ bool geKeyJustPressed(const SDL_Scancode key)
     return _currentKeyboardState[key] && !_previousKeyboardState[key];
 }
 
+// bool geKeyHeldDown(SDL_Scancode key)
+// bool geKeyJustPressed(const SDL_Scancode key)
 bool geKeyJustReleased(const SDL_Scancode key)
 {
     return !_currentKeyboardState[key] && _previousKeyboardState[key];

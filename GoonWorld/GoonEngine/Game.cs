@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 namespace GoonEngine;
 
 public class Game
@@ -7,6 +6,7 @@ public class Game
     public Sound Sound { get; }
     public static Game Global => _gameInstance;
     private static Game _gameInstance;
+    private static Api.Engine.UpdateGameDelegate _updateFunc;
     public Game()
     {
         if (_gameInstance != null)
@@ -14,7 +14,9 @@ public class Game
             throw new Exception("Should only have one instance of game!");
         }
         _gameInstance = this;
+        _updateFunc = Update;
         Api.Engine.GnInitializeEngine();
+        Api.Engine.geGameSetUpdateFunc(_updateFunc);
         Config = new ConfigManager();
         Sound = new Sound(Config.Config.soundConfig);
     }
@@ -33,6 +35,12 @@ public class Game
     {
         ECS.Initialize();
         return true;
+    }
+    public void Update(double deltaTime)
+    {
+        long ticks = (long)(deltaTime * TimeSpan.TicksPerMillisecond);
+        GameObject.DeltaTime = TimeSpan.FromTicks(ticks);
+        GameObject.UpdateAllGameObjects();
     }
 
     public void Run()

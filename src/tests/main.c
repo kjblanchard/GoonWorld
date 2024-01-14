@@ -195,7 +195,7 @@ int main(int argc, char const *argv[])
 
     // geContextUpdate(context, NULL);
     // Entity* entity2 =  geContextEntityNew(context);
-    geContextSetDrawFunc(DrawSystem);
+    // geContextSetDrawFunc(DrawSystem);
     if(geGamepadButtonJustPressed(0, SDL_CONTROLLER_BUTTON_A))
     {
         printf("Just pressed button A\n");

@@ -45,3 +45,10 @@ SDL_Window *GetGlobalWindow()
 {
     return g_pWindow;
 }
+
+void DrawDebugRect(SDL_Rect* rect)
+{
+    SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);
+    SDL_RenderDrawRect(g_pRenderer, rect);
+    SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
+}

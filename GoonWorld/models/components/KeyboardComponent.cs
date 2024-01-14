@@ -2,22 +2,22 @@ using System.Runtime.InteropServices;
 namespace GoonEngine.Models;
 public enum EngineButtons
 {
-    ebA,
-    ebB,
-    ebX,
-    ebY,
-    ebStart,
-    ebSelect,
-    ebUp,
-    ebRight,
-    ebDown,
-    ebLeft,
-    ebMax
+    A,
+    B,
+    X,
+    Y,
+    Start,
+    Select,
+    Up,
+    Right,
+    Down,
+    Left,
+    Max
 }
 [StructLayout(LayoutKind.Sequential)]
 public struct KeyboardMap
 {
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)EngineButtons.ebMax)]
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)EngineButtons.Max)]
     public int[] Buttons;
 }
 

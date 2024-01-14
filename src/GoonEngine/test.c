@@ -31,6 +31,7 @@ extern int g_refreshRate;
 extern geContext *g_Context;
 
 void (*DrawUpdateFunc)() = NULL;
+void (*GameUpdateFunc)(double deltaTime) = NULL;
 
 void *MusicUpdateWrapper(void *arg)
 {
@@ -96,8 +97,11 @@ static int loop_func()
         {
             gpSceneUpdate(g_pScene, deltaTimeSeconds);
         }
+        if (GameUpdateFunc)
+        {
+            GameUpdateFunc(deltaTimeMs);
+        }
         geContextUpdateData updateData;
-        updateData.updateTime = deltaTimeMs;
         geContextUpdate(g_Context, &updateData);
         msBuildup -= deltaTimeMs;
     }
@@ -111,7 +115,7 @@ static int loop_func()
 
         if (drawResult != 0)
         {
-            printf("Did not draw properly, Error %s\n", SDL_GetError());
+            LogError("Did not draw properly, Error %s\n", SDL_GetError());
         }
     }
     if (DrawUpdateFunc)
@@ -150,4 +154,13 @@ int GnInitializeEngine()
 void geSetCurrentScene(void *scene)
 {
     g_pScene = scene;
+}
+
+void geGameSetDrawFunc(void (*drawFunc)())
+{
+    DrawUpdateFunc = drawFunc;
+}
+void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime))
+{
+    GameUpdateFunc = updateFunc;
 }
