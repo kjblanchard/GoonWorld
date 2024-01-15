@@ -15,6 +15,7 @@ public class ConfigManager
         public GraphicsConfig graphicsConfig { get; set; }
         public SoundConfig soundConfig { get; set; }
         public List<List<List<int>>> keyboardConfig { get; set; }
+        public List<List<int>> controllerConfig { get; set; }
     }
 
     public class GraphicsConfig

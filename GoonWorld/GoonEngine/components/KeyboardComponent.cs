@@ -1,38 +1,63 @@
 namespace GoonEngine.Components;
 public class KeyboardComponent : Component
 {
-    public Dictionary<ControllerButtons, SdlScancodes> ButtonMap = new();
-    public bool IsButtonDown(ControllerButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false;
-    public bool IsButtonPressed(ControllerButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustPressed((int)scancode) : false;
-    public bool IsButtonReleased(ControllerButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustReleased((int)scancode) : false;
+    public Dictionary<SdlGameControllerButton, SdlScancodes> ButtonMap = new();
+    public int[] joystickMap;
+    public bool IsButtonDown(SdlGameControllerButton button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false;
+    public bool IsButtonPressed(SdlGameControllerButton button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustPressed((int)scancode) : false;
+    public bool IsButtonReleased(SdlGameControllerButton button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustReleased((int)scancode) : false;
 
     public void LoadControllerSettingsFromConfig(int playerNum)
     {
-        var playerControls = Game.Global.Config.Config.keyboardConfig[playerNum];
+        var playerKeyboard = Game.Global.Config.Config.keyboardConfig[playerNum];
+        var playerGamepad = Game.Global.Config.Config.controllerConfig[playerNum];
+        joystickMap = new int[playerGamepad.Count];
         // For each controller button
-        for (int i = 0; i < playerControls.Count; i++)
+        for (int i = 0; i < playerKeyboard.Count; i++)
         {
             // For each mapped button (once implemented, for now break after first)
-            for (int j = 0; j < playerControls[i].Count; j++)
+            for (int j = 0; j < playerKeyboard[i].Count; j++)
             {
-                ButtonMap[(ControllerButtons)i] = (SdlScancodes)playerControls[i][j];
+                ButtonMap[(SdlGameControllerButton)i] = (SdlScancodes)playerKeyboard[i][j];
                 break;
             }
+            joystickMap[i] = playerGamepad[i];
         }
     }
 }
-public enum ControllerButtons
+// public enum ControllerButtons
+// {
+//     A,
+//     B,
+//     X,
+//     Y,
+//     Start,
+//     Select,
+//     Up,
+//     Right,
+//     Down,
+//     Left,
+//     Max
+// }
+public enum SdlGameControllerButton
 {
     A,
     B,
     X,
     Y,
+    Back,
+    Guide,
     Start,
-    Select,
-    Up,
-    Right,
-    Down,
-    Left,
+    LeftStick,
+    RightStick,
+    LeftShoulder,
+    RightShoulder,
+    DPadUp,
+    DPadDown,
+    DPadLeft,
+    DPadRight,
+    LeftTrigger,
+    RightTrigger,
     Max
 }
 

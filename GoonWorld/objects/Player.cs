@@ -23,27 +23,27 @@ public class Player : GameObject
 
     private void HandleInput()
     {
-        if (_keyboardComponent.IsButtonDown(ControllerButtons.Up))
+        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadUp))
         {
             _physicsComponent.Velocity.Y -= 5;
 
         }
-        if (_keyboardComponent.IsButtonDown(ControllerButtons.Down))
+        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadDown))
         {
             _physicsComponent.Velocity.Y += 5;
 
         }
-        if (_keyboardComponent.IsButtonDown(ControllerButtons.Left))
+        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadLeft))
         {
             _physicsComponent.Velocity.X -= 15;
 
         }
-        if (_keyboardComponent.IsButtonDown(ControllerButtons.Right))
+        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadRight))
         {
             _physicsComponent.Velocity.X += 15;
 
         }
-        if (_keyboardComponent.IsButtonPressed(ControllerButtons.A))
+        if (_keyboardComponent.IsButtonPressed(SdlGameControllerButton.A))
         {
             Debug.InfoMessage("Just pressed the button!");
         }
