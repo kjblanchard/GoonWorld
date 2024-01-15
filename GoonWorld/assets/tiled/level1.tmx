@@ -110,7 +110,7 @@
   </layer>
  </group>
  <objectgroup id="5" name="entities">
-  <object id="147" name="PlayerStart" type="Player" gid="30" x="16" y="192" width="32" height="32">
+  <object id="147" name="PlayerStart" type="Player" gid="30" x="16" y="160" width="32" height="32">
    <properties>
     <property name="Player" type="class" propertytype="Player"/>
    </properties>

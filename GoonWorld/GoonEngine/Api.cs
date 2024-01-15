@@ -90,7 +90,8 @@ public static class Api
         // [DllImport("../build/lib/libSupergoonEngine")]
         // public static extern void geContextSetDrawFunc(DrawUpdateDelegate drawFunc);
         [DllImport("../build/lib/libSupergoonEngine")]
-        public static extern void DrawDebugRect(ref Rect rect);
+        // public static extern void DrawDebugRect(ref Rect rect);
+    public static extern void DrawDebugRect(ref Rect rect, ref Color color);
     }
     public static class Components
     {

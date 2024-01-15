@@ -19,7 +19,7 @@ class Program
         var scene = Api.Physics.Scene.gpInitScene();
         Api.Physics.Scene.geSetCurrentScene(scene);
         Api.Physics.Scene.gpSceneSetGravity(scene, 50);
-        var level1 = new Tiled("level1");
+        game.CurrentLevel = new Tiled("level1");
         game.Run();
     }
 }

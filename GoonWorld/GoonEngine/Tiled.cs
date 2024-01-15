@@ -1,5 +1,6 @@
 using TiledCS;
 using System.Runtime.InteropServices;
+using GoonEngine.Models;
 namespace GoonEngine;
 
 public class Tiled
@@ -15,6 +16,7 @@ public class Tiled
     private static extern void SetBackgroundAtlas(IntPtr background, ref Rect rect);
     [DllImport("../build/lib/libSupergoonEngine")]
     private static extern IntPtr CreateTextureFromSurface(IntPtr surface);
+    public List<BoundingBox> StaticBodies = new();
 
     public TiledMap LoadedMap;
     private Dictionary<string, IntPtr> LoadedTilesetImages = new();
@@ -108,7 +110,24 @@ public class Tiled
                 }
                 else if (layer.name == "solid")
                 {
-                    ;
+                    foreach (var entityObject in layer.objects)
+                    {
+                        var x = entityObject.x;
+                        var y = entityObject.y;
+                        Point[] points = new Point[entityObject.polygon.points.Length / 2];
+                        for (int i = 0; i < points.Length; i++)
+                        {
+                            points[i] = new Point(entityObject.polygon.points[i * 2], entityObject.polygon.points[(i * 2) + 1]);
+                        }
+                        var minX = x + points.Min(p => p.X);
+                        var minY = y + points.Min(p => p.Y);
+                        var maxX = x + points.Max(p => p.X);
+                        var maxY = y + points.Max(p => p.Y);
+                        BoundingBox box = new BoundingBox(minX, minY, maxX - minX, maxY - minY);
+                        StaticBodies.Add(box);
+                        var body = Api.Physics.Body.gpBodyNew(box);
+                        Api.Physics.Scene.gpSceneAddStaticBody(body);
+                    }
 
                 }
             }

@@ -5,6 +5,7 @@ public class DrawComponent : Component
     public ref Point Size => ref _size;
     public bool Enabled { get; set; } = true;
     private Point _size;
+    private Color _color = new Color(255, 0, 0, 255);
     public DrawComponent() { }
     public DrawComponent(int x, int y)
     {
@@ -21,7 +22,7 @@ public class DrawComponent : Component
         if (!Enabled)
             return;
         var rect = new Rect(Parent.Location.X, Parent.Location.Y, _size.X, _size.Y);
-        Api.Rendering.DrawDebugRect(ref rect);
+        Api.Rendering.DrawDebugRect(ref rect, ref _color);
     }
     public override void OnComponentAdd(GameObject parent)
     {

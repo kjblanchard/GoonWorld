@@ -9,7 +9,9 @@ public class Game
     public static Game Global => _gameInstance;
     private static Game _gameInstance;
     private static Api.Engine.UpdateGameDelegate _updateFunc = Update;
-    private static Api.Engine.DrawUpdateDelegate _drawFunc = GameObject.DrawAllGameObjects;
+    private static Api.Engine.DrawUpdateDelegate _drawFunc = Draw;
+    public Tiled CurrentLevel;
+    public bool Debug = false;
     public Game()
     {
         if (_gameInstance != null)
@@ -39,6 +41,21 @@ public class Game
         GameObject.DeltaTime = TimeSpan.FromTicks(ticks);
         PhysicsComponent.PhysicsUpdate();
         GameObject.UpdateAllGameObjects();
+    }
+    public static void Draw()
+    {
+        GameObject.DrawAllGameObjects();
+        if(_gameInstance.Debug && _gameInstance.CurrentLevel != null )
+        {
+            var color = new Color(0, 200, 0, 255);
+            foreach(var solid in _gameInstance.CurrentLevel.StaticBodies)
+            {
+                var rect = new Rect(solid);
+                Api.Rendering.DrawDebugRect(ref rect, ref color);
+            }
+
+
+        }
     }
 
     public void Run()

@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GoonEngine.Models;
 using TiledCS;
 namespace GoonEngine;
 
@@ -19,6 +20,13 @@ public struct Rect
         Y = rect.y;
         Width = rect.width;
         Height = rect.height;
+    }
+    public Rect(BoundingBox box)
+    {
+        X = (int)box.X;
+        Y = (int)box.Y;
+        Width = (int)box.Width;
+        Height = (int)box.Height;
     }
     public int X;
     public int Y;
