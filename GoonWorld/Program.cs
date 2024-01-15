@@ -9,6 +9,7 @@ class Program
     public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary = new Dictionary<string, Func<object, GameObject>>
 {
     { "Player", (data) => new Player(data) },
+    { "Enemy", (data) => new Goomba(data) },
 };
 
     static void Main()
