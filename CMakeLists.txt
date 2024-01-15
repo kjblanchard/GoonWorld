@@ -165,6 +165,7 @@ elseif(EMSCRIPTEN)
     # target_compile_options(${EXECUTABLE_TARGET_NAME} PRIVATE -sUSE_SDL_TTF=2)
 endif(WIN32)
 
+
 target_compile_options(${LIBRARY_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS})
 
 # #########################################

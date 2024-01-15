@@ -57,10 +57,10 @@ public abstract class GameObject : IStart, IUpdate
     ~GameObject() { }
     public virtual void Update()
     {
-        if (_physicsComponent != null && _physicsComponent.Body.GravityEnabled == 1)
+        if (_physicsComponent != null && _physicsComponent.GravityEnabled)
         {
-            Location.X = (int)Math.Floor(_physicsComponent.Body.BoundingBox.X);
-            Location.Y = (int)Math.Floor(_physicsComponent.Body.BoundingBox.Y);
+            Location.X = (int)Math.Floor(_physicsComponent.BoundingBox.X);
+            Location.Y = (int)Math.Floor(_physicsComponent.BoundingBox.Y);
         }
     }
 
