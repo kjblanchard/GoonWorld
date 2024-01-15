@@ -3,19 +3,29 @@ namespace GoonEngine;
 
 public abstract class GameObject : IStart, IUpdate
 {
-    public static Dictionary<uint, GameObject> EntityToGameObjectDictionary = new();
     public static List<GameObject> UpdateGameObjects = new();
-    public static List<DrawComponent> DrawGameObjects = new();
-    private static uint _numGameObjects;
-    protected PhysicsComponent? _physicsComponent;
+    public static List<DrawComponent> CurrentDrawComponents = new();
     public static TimeSpan DeltaTime;
+    protected static Dictionary<uint, GameObject> EntityToGameObjectDictionary = new();
+    private static uint _numGameObjects;
     public uint Id => _id;
     private uint _id;
     public bool HasTag(string tag) => _tags.Contains(tag);
     protected void AddTag(string tag) => _tags.Add(tag);
-
     private List<string> _tags = new();
     private List<Component> _components = new();
+    public ref Point Location => ref _location;
+    private Point _location;
+
+    public GameObject()
+    {
+        _id = _numGameObjects++;
+        UpdateGameObjects.Add(this);
+    }
+    ~GameObject() { }
+
+    public virtual void Update() { }
+
     public void AddComponent(Component component)
     {
         component.OnComponentAdd(this);
@@ -46,24 +56,6 @@ public abstract class GameObject : IStart, IUpdate
         return null;
     }
 
-    public ref Point Location => ref _location;
-    private Point _location;
-    public GameObject()
-    {
-        _id = _numGameObjects++;
-        _physicsComponent = null;
-        UpdateGameObjects.Add(this);
-    }
-    ~GameObject() { }
-    public virtual void Update()
-    {
-        if (_physicsComponent != null && _physicsComponent.GravityEnabled)
-        {
-            Location.X = (int)Math.Floor(_physicsComponent.BoundingBox.X);
-            Location.Y = (int)Math.Floor(_physicsComponent.BoundingBox.Y);
-        }
-    }
-
     public static void UpdateAllGameObjects()
     {
         UpdateGameObjects.ForEach(gameobject => gameobject.Update());
@@ -71,7 +63,7 @@ public abstract class GameObject : IStart, IUpdate
 
     public static void DrawAllGameObjects()
     {
-        DrawGameObjects.ForEach(drawComponent => drawComponent.Draw());
+        CurrentDrawComponents.ForEach(drawComponent => drawComponent.Draw());
     }
 
 }

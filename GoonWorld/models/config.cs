@@ -8,12 +8,15 @@ public class ConfigManager
         string jsonContent = File.ReadAllText(configFilepath);
         Config = JsonSerializer.Deserialize<GameConfig>(jsonContent);
     }
+    // [JsonSerializable(typeof(JsonElement))]
     public class GameConfig
     {
         public WindowConfig windowConfig { get; set; }
         public GraphicsConfig graphicsConfig { get; set; }
         public SoundConfig soundConfig { get; set; }
+        public List<List<List<int>>> keyboardConfig { get; set; }
     }
+
     public class GraphicsConfig
     {
         public bool vsync { get; set; }

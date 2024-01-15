@@ -5,29 +5,21 @@ public class Player : GameObject
 {
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
+    protected PhysicsComponent _physicsComponent;
 
     public Player(object data) : base()
     {
-        if (!(data is TiledCS.TiledObject castedData))
-            return;
+        if (data is not TiledCS.TiledObject castedData)
+            throw new Exception("Loading a player with no data somehow!");
         Location.X = (int)castedData.x;
         Location.Y = (int)castedData.y;
-        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height));
-        _physicsComponent.GravityEnabled = true;
+        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { GravityEnabled = true };
         _keyboardComponent = new KeyboardComponent();
-        SetControllerButtons();
+        _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
-        AddComponent(_drawComponent);
+        AddComponent(_drawComponent, _physicsComponent, _keyboardComponent);
     }
 
-    private void SetControllerButtons()
-    {
-        _keyboardComponent.ButtonMap[ControllerButtons.A] = SdlScancodes.SDL_SCANCODE_SPACE;
-        _keyboardComponent.ButtonMap[ControllerButtons.Up] = SdlScancodes.SDL_SCANCODE_W;
-        _keyboardComponent.ButtonMap[ControllerButtons.Down] = SdlScancodes.SDL_SCANCODE_S;
-        _keyboardComponent.ButtonMap[ControllerButtons.Left] = SdlScancodes.SDL_SCANCODE_A;
-        _keyboardComponent.ButtonMap[ControllerButtons.Right] = SdlScancodes.SDL_SCANCODE_D;
-    }
 
     private void HandleInput()
     {

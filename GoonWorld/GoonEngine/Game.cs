@@ -1,3 +1,5 @@
+using GoonEngine.Components;
+
 namespace GoonEngine;
 
 public class Game
@@ -35,6 +37,7 @@ public class Game
     {
         long ticks = (long)(deltaTime * TimeSpan.TicksPerMillisecond);
         GameObject.DeltaTime = TimeSpan.FromTicks(ticks);
+        PhysicsComponent.PhysicsUpdate();
         GameObject.UpdateAllGameObjects();
     }
 
@@ -42,6 +45,5 @@ public class Game
     {
         Api.Update.Play();
     }
-
 
 }

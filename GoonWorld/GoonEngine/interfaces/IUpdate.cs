@@ -4,6 +4,5 @@ namespace GoonEngine;
 /// </summary>
 interface IUpdate
 {
-    public static double DeltaTime;
-    public virtual void Update(){}
+    public virtual void Update() { }
 }

@@ -5,6 +5,21 @@ public class KeyboardComponent : Component
     public bool IsButtonDown(ControllerButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false;
     public bool IsButtonPressed(ControllerButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustPressed((int)scancode) : false;
     public bool IsButtonReleased(ControllerButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustReleased((int)scancode) : false;
+
+    public void LoadControllerSettingsFromConfig(int playerNum)
+    {
+        var playerControls = Game.Global.Config.Config.keyboardConfig[playerNum];
+        // For each controller button
+        for (int i = 0; i < playerControls.Count; i++)
+        {
+            // For each mapped button (once implemented, for now break after first)
+            for (int j = 0; j < playerControls[i].Count; j++)
+            {
+                ButtonMap[(ControllerButtons)i] = (SdlScancodes)playerControls[i][j];
+                break;
+            }
+        }
+    }
 }
 public enum ControllerButtons
 {
