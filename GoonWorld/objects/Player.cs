@@ -47,6 +47,18 @@ public class Player : GameObject
         {
             Debug.InfoMessage("Just pressed the button!");
         }
+        else if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.A))
+        {
+            Debug.InfoMessage("Holding the button!");
+        }
+        else if (_keyboardComponent.IsButtonReleased(SdlGameControllerButton.A))
+        {
+            Debug.InfoMessage("Just released the button!");
+        }
+        if(_keyboardComponent.IsButtonPressed(SdlGameControllerButton.LeftShoulder))
+        {
+            Environment.Exit(0);
+        }
 
     }
 

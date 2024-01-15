@@ -3,9 +3,16 @@ public class KeyboardComponent : Component
 {
     public Dictionary<SdlGameControllerButton, SdlScancodes> ButtonMap = new();
     public int[] joystickMap;
-    public bool IsButtonDown(SdlGameControllerButton button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false;
-    public bool IsButtonPressed(SdlGameControllerButton button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustPressed((int)scancode) : false;
-    public bool IsButtonReleased(SdlGameControllerButton button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustReleased((int)scancode) : false;
+    public int playerNum = 0;
+    public bool IsButtonDown(SdlGameControllerButton button) =>
+        (ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false) ||
+        Api.Engine.Input.geGamepadButtonHeldDown(playerNum, joystickMap[(int)button]);
+    public bool IsButtonPressed(SdlGameControllerButton button) =>
+        (ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustPressed((int)scancode) : false) ||
+        Api.Engine.Input.geGamepadButtonJustPressed(playerNum, joystickMap[(int)button]);
+    public bool IsButtonReleased(SdlGameControllerButton button) =>
+        (ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyJustReleased((int)scancode) : false) ||
+        Api.Engine.Input.geGamepadButtonJustReleased(playerNum, joystickMap[(int)button]);
 
     public void LoadControllerSettingsFromConfig(int playerNum)
     {
@@ -25,20 +32,6 @@ public class KeyboardComponent : Component
         }
     }
 }
-// public enum ControllerButtons
-// {
-//     A,
-//     B,
-//     X,
-//     Y,
-//     Start,
-//     Select,
-//     Up,
-//     Right,
-//     Down,
-//     Left,
-//     Max
-// }
 public enum SdlGameControllerButton
 {
     A,

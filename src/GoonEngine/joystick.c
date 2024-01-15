@@ -81,6 +81,7 @@ void HandleJoystickEvent(const SDL_Event *event)
 static void CountPluggedInControllers()
 {
     int nJoysticks = SDL_NumJoysticks();
+    LogInfo("There is a total of %d controllers initializing", nJoysticks);
     _numGamePads = 0;
     for (int i = 0; i < nJoysticks; i++)
         if (SDL_IsGameController(i))
@@ -92,22 +93,26 @@ static void CountPluggedInControllers()
 
 void geUpdateControllers()
 {
+    if(_connectedGamepads[0].thisFrameButtons[0])
+    {
+        ;
+    }
     for (int i = 0; i < _numGamePads; i++)
     {
-        memcpy(_connectedGamepads[i].lastFrameAxis, _connectedGamepads[i].thisFrameAxis, sizeof(_connectedGamepads[i].lastFrameAxis));
-        memcpy(_connectedGamepads[i].lastFrameButtons, _connectedGamepads[i].thisFrameButtons, sizeof(_connectedGamepads[i].lastFrameButtons));
+        memcpy(_connectedGamepads[i].lastFrameAxis, _connectedGamepads[i].thisFrameAxis, sizeof(Uint8) * SDL_CONTROLLER_BUTTON_MAX);
+        memcpy(_connectedGamepads[i].lastFrameButtons, _connectedGamepads[i].thisFrameButtons, sizeof(Uint8) * SDL_CONTROLLER_BUTTON_MAX);
     }
 }
 
 bool geGamepadButtonJustReleased(const int padNum, const int button)
 {
-    return _numGamePads > padNum && !_connectedGamepads[padNum].thisFrameButtons[button] && _connectedGamepads[padNum].lastFrameButtons[button];
+    return _numGamePads > padNum && (!_connectedGamepads[padNum].thisFrameButtons[button] && _connectedGamepads[padNum].lastFrameButtons[button]);
 }
 bool geGamepadButtonJustPressed(const int padNum, const int button)
 {
-    return _numGamePads > padNum && _connectedGamepads[padNum].thisFrameButtons[button] && !_connectedGamepads[padNum].lastFrameButtons[button];
+    return _numGamePads > padNum && (_connectedGamepads[padNum].thisFrameButtons[button] && !_connectedGamepads[padNum].lastFrameButtons[button]);
 }
 bool geGamepadButtonHeldDown(const int padNum, const int button)
 {
-    return _numGamePads > padNum && _connectedGamepads[padNum].lastFrameButtons[button] && _connectedGamepads[padNum].thisFrameButtons[button];
+    return _numGamePads > padNum && (_connectedGamepads[padNum].lastFrameButtons[button] && _connectedGamepads[padNum].thisFrameButtons[button]);
 }

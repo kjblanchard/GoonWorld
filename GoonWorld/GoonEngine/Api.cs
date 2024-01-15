@@ -23,6 +23,12 @@ public static class Api
             public static extern bool geKeyJustPressed(int key);
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern bool geKeyJustReleased(int key);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool geGamepadButtonJustReleased(int padNum, int button);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool geGamepadButtonJustPressed(int padNum, int button);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool geGamepadButtonHeldDown(int padNum, int button);
         }
     }
 

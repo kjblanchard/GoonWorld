@@ -7,6 +7,23 @@
 #include <GoonEngine/keyboard.h>
 #include <GoonEngine/joystick.h>
 
+void UpdateFunc()
+{
+    if (geGamepadButtonJustPressed(0, SDL_CONTROLLER_BUTTON_A))
+    {
+        printf("Just pressed button A\n");
+    }
+    if (geGamepadButtonJustReleased(0, SDL_CONTROLLER_BUTTON_A))
+    {
+        printf("Just released button A\n");
+    }
+    if (geGamepadButtonHeldDown(0, SDL_CONTROLLER_BUTTON_A))
+    {
+        printf("Holding button A\n");
+    }
+
+}
+
 int main(int argc, char const *argv[])
 {
     GnInitializeEngine();
@@ -21,11 +38,7 @@ int main(int argc, char const *argv[])
     SetBackgroundAtlas(tex, &screenRect);
     struct Bgm *mainBgm = BgmLoad("test.ogg", 20.397, 43.08);
     BgmPlay(mainBgm, 1.0);
-    if (geGamepadButtonJustPressed(0, SDL_CONTROLLER_BUTTON_A))
-    {
-        printf("Just pressed button A\n");
-    }
-
+    geGameSetUpdateFunc(UpdateFunc);
     Play();
     return 0;
 }

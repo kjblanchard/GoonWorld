@@ -87,7 +87,6 @@ static int loop_func()
     if (msBuildup < deltaTimeMs)
         return true;
     geUpdateKeyboard();
-    geUpdateControllers();
 
     // Run Update and update physics as many times as needed
     while (msBuildup >= deltaTimeMs)
@@ -103,6 +102,7 @@ static int loop_func()
         }
         msBuildup -= deltaTimeMs;
     }
+    geUpdateControllers();
 
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
     SDL_RenderClear(g_pRenderer);
