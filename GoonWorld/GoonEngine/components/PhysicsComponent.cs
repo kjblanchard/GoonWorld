@@ -1,6 +1,6 @@
 using GoonEngine.Models;
-namespace GoonEngine;
-public class PhysicsComponent
+namespace GoonEngine.Components;
+public class PhysicsComponent : Component
 {
     public unsafe ref Body Body => ref *(Body*)_bodyPtr;
     private IntPtr _bodyPtr = IntPtr.Zero;

@@ -4,7 +4,7 @@
 #include <GoonEngine/SdlWindow.h>
 #include <SupergoonSound/include/sound.h>
 // #include <GoonEngine/ecs/system.h>
-#include <GoonEngine/ecs/context.h>
+// #include <GoonEngine/ecs/context.h>
 #include <GoonEngine/keyboard.h>
 #include <GoonEngine/joystick.h>
 #include <GoonEngine/debug.h>
@@ -28,7 +28,7 @@ static float msBuildup;
 // TODO this should be different, it is inside of SDLwindow.c
 extern SDL_Renderer *g_pRenderer;
 extern int g_refreshRate;
-extern geContext *g_Context;
+// extern geContext *g_Context;
 
 void (*DrawUpdateFunc)() = NULL;
 void (*GameUpdateFunc)(double deltaTime) = NULL;
@@ -101,12 +101,9 @@ static int loop_func()
         {
             GameUpdateFunc(deltaTimeMs);
         }
-        geContextUpdateData updateData;
-        geContextUpdate(g_Context, &updateData);
         msBuildup -= deltaTimeMs;
     }
 
-    // Draw after we are caught up
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
     SDL_RenderClear(g_pRenderer);
     if (g_BackgroundAtlas)

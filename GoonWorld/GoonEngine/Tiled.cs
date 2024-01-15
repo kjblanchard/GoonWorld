@@ -24,10 +24,10 @@ public class Tiled
         Game.Global.Sound.PlayBgm(bgmName);
 
     }
-    public Tiled()
+    public Tiled(string level)
     {
         var pathPrefix = "assets/tiled/";
-        LoadedMap = new TiledMap(pathPrefix + "level1.tmx");
+        LoadedMap = new TiledMap(pathPrefix + level + ".tmx");
         var tilesets = LoadedMap.GetTiledTilesets(_assetPrefix + "tiled/");
 
         // Load BGM

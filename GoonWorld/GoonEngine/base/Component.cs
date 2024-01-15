@@ -1,17 +1,9 @@
 namespace GoonEngine;
 public abstract class Component
 {
-    public IntPtr ComponentPtr => _componentDataPointer;
-    protected IntPtr _componentDataPointer;
-    public IntPtr ECSComponentPtr => _ecsComponentDataPtr;
-    protected IntPtr _ecsComponentDataPtr;
-
-}
-public static class ComponentTypes
-{
-    public const int TAG_COMPONENT = 0;
-    public const int LOCATION_COMPONENT = 1;
-    public const int SCRIPT_COMPONENT = 2;
-    public const int KEYBOARD_COMPONENT = 3;
-    public const int DRAW_COMPONENT = 4;
+    public GameObject? Parent;
+    public virtual void OnComponentAdd(GameObject parent)
+    {
+        Parent = parent;
+    }
 }

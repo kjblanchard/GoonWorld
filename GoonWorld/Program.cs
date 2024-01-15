@@ -6,7 +6,7 @@ using GoonEngine.Objects;
 class Program
 {
 
-public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary = new Dictionary<string, Func<object, GameObject>>
+    public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary = new Dictionary<string, Func<object, GameObject>>
 {
     { "Player", (data) => new Player(data) },
 };
@@ -14,14 +14,12 @@ public static Dictionary<string, Func<object, GameObject>> ObjectSpawnDictionary
     static void Main()
     {
         var game = new Game();
+        Debug.Level = Debug.LogLevel.Error;
         game.Initialize();
-        game.CreateWindow();
-
         var scene = Api.Physics.Scene.gpInitScene();
         Api.Physics.Scene.geSetCurrentScene(scene);
         Api.Physics.Scene.gpSceneSetGravity(scene, 50);
-        var level1 = new Tiled();
-        Api.Engine.geGameSetDrawFunc(GameObject.DrawFunc);
+        var level1 = new Tiled("level1");
         game.Run();
     }
 }

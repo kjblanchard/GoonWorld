@@ -1,5 +1,5 @@
 namespace GoonEngine.Components;
-public class KeyboardComponent
+public class KeyboardComponent : Component
 {
     public Dictionary<Models.EngineButtons, Models.SDL_Scancode> ButtonMap = new();
     public bool IsButtonDown(Models.EngineButtons button) => ButtonMap.TryGetValue(button, out var scancode) ? Api.Engine.Input.geKeyHeldDown((int)scancode) : false;

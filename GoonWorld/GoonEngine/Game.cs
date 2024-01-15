@@ -6,7 +6,8 @@ public class Game
     public Sound Sound { get; }
     public static Game Global => _gameInstance;
     private static Game _gameInstance;
-    private static Api.Engine.UpdateGameDelegate _updateFunc;
+    private static Api.Engine.UpdateGameDelegate _updateFunc = Update;
+    private static Api.Engine.DrawUpdateDelegate _drawFunc = GameObject.DrawAllGameObjects;
     public Game()
     {
         if (_gameInstance != null)
@@ -14,9 +15,6 @@ public class Game
             throw new Exception("Should only have one instance of game!");
         }
         _gameInstance = this;
-        _updateFunc = Update;
-        Api.Engine.GnInitializeEngine();
-        Api.Engine.geGameSetUpdateFunc(_updateFunc);
         Config = new ConfigManager();
         Sound = new Sound(Config.Config.soundConfig);
     }
@@ -25,18 +23,15 @@ public class Game
 
     }
 
-    public bool CreateWindow()
+    public bool Initialize()
     {
+        Api.Engine.GnInitializeEngine();
+        Api.Engine.geGameSetUpdateFunc(_updateFunc);
+        Api.Engine.geGameSetDrawFunc(_drawFunc);
         Api.Rendering.CreateWindowAndRenderer(Config.Config.windowConfig.windowSize.x, Config.Config.windowConfig.windowSize.y, Config.Config.windowConfig.title);
         return true;
     }
-
-    public bool Initialize()
-    {
-        ECS.Initialize();
-        return true;
-    }
-    public void Update(double deltaTime)
+    public static void Update(double deltaTime)
     {
         long ticks = (long)(deltaTime * TimeSpan.TicksPerMillisecond);
         GameObject.DeltaTime = TimeSpan.FromTicks(ticks);
