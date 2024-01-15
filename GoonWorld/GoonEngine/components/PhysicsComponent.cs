@@ -1,5 +1,5 @@
 using GoonEngine.Models;
-using Microsoft.VisualBasic;
+using System.Runtime.InteropServices;
 namespace GoonEngine.Components;
 public class PhysicsComponent : Component
 {
@@ -7,6 +7,7 @@ public class PhysicsComponent : Component
     private static List<PhysicsComponent> _physicsComponents = new();
 
     private static Dictionary<int, PhysicsComponent> _bodyNumToGameObjectDictionary = new();
+    public ref int BodyType => ref Body.bodyType;
     public ref Vector2 Velocity => ref Body.Velocity;
     public ref BoundingBox BoundingBox => ref Body.BoundingBox;
     public bool GravityEnabled
@@ -14,6 +15,7 @@ public class PhysicsComponent : Component
         get => Body.GravityEnabled == 0 ? false : true;
         set => Body.GravityEnabled = value ? 1 : 0;
     }
+    public HashSet<int> lastFrameOverlaps = new();
     private unsafe ref Body Body => ref *(Body*)_bodyPtr;
     private IntPtr _bodyPtr = IntPtr.Zero;
 
@@ -26,7 +28,7 @@ public class PhysicsComponent : Component
         _physicsComponents.Add(this);
     }
 
-    public static void PhysicsUpdate()
+    public unsafe static void PhysicsUpdate()
     {
         _physicsComponents.ForEach(component =>
         {
@@ -34,6 +36,15 @@ public class PhysicsComponent : Component
                 return;
             component.Parent.Location.X = (int)component.BoundingBox.X;
             component.Parent.Location.Y = (int)component.BoundingBox.Y;
+            component.lastFrameOverlaps.Clear();
+            for (int i = 0; i < component.Body.NumOverlappingBodies; i++)
+            {
+                // Overlap valueAtIndexi = *(Overlap*)Marshal.ReadInt32(component.Body.Overlaps + sizeof(Overlap) * i);
+
+                Overlap* overlapPtr = (Overlap*)IntPtr.Add(component.Body.Overlaps, sizeof(Overlap) * i);
+                // Debug.InfoMessage($"I'm overlapping with body num {overlapPtr->OverlapBody}");
+                // component.lastFrameOverlaps.Add(component.Body.Overlaps[i]);
+            }
         });
 
     }

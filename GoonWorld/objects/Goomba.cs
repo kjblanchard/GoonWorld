@@ -12,7 +12,7 @@ public class Goomba : GameObject
             throw new Exception("Loading a player with no data somehow!");
         Location.X = (int)castedData.x;
         Location.Y = (int)castedData.y;
-        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { GravityEnabled = true };
+        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) {BodyType = 3, GravityEnabled = true };
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         AddComponent(_drawComponent, _physicsComponent);
         _drawComponent.Color = new Color(0, 0, 255, 0);

@@ -57,6 +57,12 @@ public static class Api
 
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gpBodyNew(BoundingBox boundingBox);
+            public delegate void BodyOverlapDelegate(ref Models.Body body, ref Models.Body overlapBody);
+            [DllImport("../build/lib/libSupergoonEngine")]
+
+            public static extern void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, BodyOverlapDelegate func);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern void gpBodyAddOverlapFunc(int bodyType, int overlapBodyType, BodyOverlapDelegate func);
         }
     }
     public static class Debug
@@ -91,7 +97,7 @@ public static class Api
         // public static extern void geContextSetDrawFunc(DrawUpdateDelegate drawFunc);
         [DllImport("../build/lib/libSupergoonEngine")]
         // public static extern void DrawDebugRect(ref Rect rect);
-    public static extern void DrawDebugRect(ref Rect rect, ref Color color);
+        public static extern void DrawDebugRect(ref Rect rect, ref Color color);
     }
     public static class Components
     {

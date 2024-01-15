@@ -32,31 +32,6 @@ struct overlap
     gpBody* body;
     int direction;
 };
-// static int GetOverlappingBodies(int bodyNum, int bodyType)
-// {
-//     gpBody *body = GetBodyFromScene(L, bodyNum);
-//     if (!body)
-//         return 1;
-//     lua_newtable(L);
-//     int tableListLoc = lua_gettop(L);
-//     int bodiesAdded = 0;
-//     for (size_t i = 0; i < body->numOverlappingBodies; i++)
-//     {
-//         // gpBody *overlapBody = body->overlappingBodies[i];
-//         gpBody *overlapBody = body->overlaps[i]->overlapBody;
-//         int direction = body->overlaps[i]->overlapDirection;
-//         if (overlapBody->bodyType != bodyType)
-//             continue;
-//         // Create a new table
-//         lua_newtable(L);
-//         lua_pushnumber(L, overlapBody->bodyNum);
-//         lua_setfield(L, -2, "body");
-//         lua_pushnumber(L, direction);
-//         lua_setfield(L, -2, "direction");
-//         lua_rawseti(L, tableListLoc, ++bodiesAdded);
-//     }
-//     return 1;
-// }
 
 int AddForceToBody(int bodyNum, float forceX, float forceY)
 {

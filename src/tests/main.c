@@ -7,6 +7,8 @@
 #include <GoonEngine/keyboard.h>
 #include <GoonEngine/joystick.h>
 
+#include <GoonPhysics/body.h>
+
 void UpdateFunc()
 {
     if (geGamepadButtonJustPressed(0, SDL_CONTROLLER_BUTTON_A))

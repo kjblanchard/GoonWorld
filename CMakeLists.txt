@@ -17,7 +17,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # File globbing
 # #########################################
 message(STATUS "Getting all files for cmake..")
-file(GLOB_RECURSE FILES src/GoonEngine/*.c*)
+file(GLOB_RECURSE FILES src/GoonEngine/*.c* src/GoonPhysics/*.c*)
 file(GLOB_RECURSE TESTFILES src/tests/*.c*)
 
 # #########################################
@@ -105,8 +105,8 @@ find_package(SDL2_ttf
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 
 # Build my Libraries and include directories regardless
-add_subdirectory(./external/goonPhysics)
-target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/goonPhysics/include/)
+# add_subdirectory(./external/goonPhysics)
+# target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/goonPhysics/include/)
 add_subdirectory(./external/sg_sound)
 target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/sg_sound/src/)
 
@@ -176,7 +176,7 @@ set(LIBRARIES_TO_LINK
     SDL2::SDL2main
     SDL2::SDL2-static
     SDL2_image::SDL2_image-static
-    goonPhysics
+    # goonPhysics
     supergoonSound
     SupergoonUI
 )
@@ -193,7 +193,7 @@ target_link_libraries(${LIBRARY_TARGET_NAME}
     PRIVATE
     ${LUA_LIBRARIES}
     ${GOONSOUND_LIBRARIES}
-    ${GOONPHYSICS_LIBRARIES}
+    # ${GOONPHYSICS_LIBRARIES}
     ${LIB_SOCKET}
 )
 target_link_directories(${LIBRARY_TARGET_NAME}

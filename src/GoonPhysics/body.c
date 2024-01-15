@@ -3,18 +3,28 @@
 #include <GoonPhysics/overlap.h>
 
 #define MAX_OVERLAP_BODIES 10
+#define MAX_BODY_TYPES 10
+// static OverlapFunc **OverlapBeginFunctions;
+static OverlapFunc OverlapBeginFunctions[MAX_BODY_TYPES][MAX_BODY_TYPES];
+static OverlapFunc OverlapFunctions[MAX_BODY_TYPES][MAX_BODY_TYPES];
+void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, OverlapFunc func)
+{
+    printf("Adding func.. to pos %d, %d\n", bodyType, overlapBodyType);
+    OverlapBeginFunctions[bodyType][overlapBodyType] = func;
+}
+
+void gpBodyAddOverlapFunc(int bodyType, int overlapBodyType, OverlapFunc func)
+{
+    OverlapFunctions[bodyType][overlapBodyType] = func;
+}
 
 gpBody *gpBodyNew(gpBB boundingBox)
 {
     gpBody *body;
     body = calloc(1, sizeof(*body));
     body->overlaps = calloc(MAX_OVERLAP_BODIES, sizeof(gpOverlap *));
-    for (size_t i = 0; i < MAX_OVERLAP_BODIES; ++i)
-    {
-        body->overlaps[i] = calloc(1, sizeof(gpOverlap));
-    }
+    body->lastFrameOverlaps = calloc(MAX_OVERLAP_BODIES, sizeof(gpOverlap *));
     body->bodyType = 1;
-    // body->bodyOnGround = 0;
     body->gravityEnabled = 1;
     body->numOverlappingBodies = 0;
     body->velocity = gpV(0, 0);
@@ -23,13 +33,13 @@ gpBody *gpBodyNew(gpBB boundingBox)
     return body;
 }
 
-void gpBodySetPosition(gpBody* body, gpVec pos)
+void gpBodySetPosition(gpBody *body, gpVec pos)
 {
     body->boundingBox.x = pos.x;
     body->boundingBox.y = pos.y;
 }
 
-void gpBodySetVelocity(gpBody* body, gpVec vel)
+void gpBodySetVelocity(gpBody *body, gpVec vel)
 {
     body->velocity.x = vel.x;
     body->velocity.y = vel.y;
@@ -44,21 +54,42 @@ gpBody *gpBodyNewStatic(gpBB boundingBox)
 
 void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
 {
-    if (body->numOverlappingBodies < MAX_OVERLAP_BODIES)
+    if (body->numOverlappingBodies >= MAX_OVERLAP_BODIES)
+        return;
+    bool newOverlap = true;
+    for (size_t i = 0; i < body->lastFrameNumOverlappingBodies; i++)
     {
-        for (size_t i = 0; i < body->numOverlappingBodies; i++)
+        if (body->lastFrameOverlaps[i].overlapBody == overlapBody)
         {
-            if (body->overlaps[i]->overlapBody == overlapBody)
-            {
-                return;
-            }
+            newOverlap = false;
+            break;
         }
-
-        // body->overlappingBodies[body->numOverlappingBodies] = overlapBody;
-        body->overlaps[body->numOverlappingBodies]->overlapBody = overlapBody;
-        body->overlaps[body->numOverlappingBodies]->overlapDirection = direction;
-        ++body->numOverlappingBodies;
     }
+    int bodyType = body->bodyType;
+    int overlapBodyType = overlapBody->bodyType;
+    if (newOverlap)
+    {
+        // Fire function type
+        OverlapFunc func = OverlapBeginFunctions[bodyType][overlapBodyType];
+        if (func)
+        {
+            printf("Firing func at %d %d\n");
+            func(body, overlapBody);
+        }
+    }
+    else
+    {
+        OverlapFunc func = OverlapFunctions[bodyType][overlapBodyType];
+        if (func)
+        {
+            func(body, overlapBody);
+        }
+    }
+
+    // body->overlappingBodies[body->numOverlappingBodies] = overlapBody;
+    body->overlaps[body->numOverlappingBodies].overlapBody = overlapBody;
+    body->overlaps[body->numOverlappingBodies].overlapDirection = direction;
+    ++body->numOverlappingBodies;
 }
 
 int gpBodyIsOnGround(gpBody *body)
@@ -66,13 +97,13 @@ int gpBodyIsOnGround(gpBody *body)
     for (size_t i = 0; i < body->numOverlappingBodies; i++)
     {
         // gpBody *overlap = body->overlappingBodies[i];
-        gpBody *overlap = body->overlaps[i]->overlapBody;
+        gpBody *overlap = body->overlaps[i].overlapBody;
         // If we are not a static body, then continue
         if (overlap->bodyType)
             continue;
         if (overlap->boundingBox.y >= body->boundingBox.y + body->boundingBox.h)
             return 1;
-            // body->bodyOnGround = 1;
+        // body->bodyOnGround = 1;
     }
     // body->bodyOnGround = 0;
     // return body->bodyOnGround;

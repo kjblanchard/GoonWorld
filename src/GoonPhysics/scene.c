@@ -29,14 +29,17 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
     sceneGravity.sceneMaxXVelocity = 100000;
     sceneGravity.sceneMaxYVelocity = 100000;
     // sceneGravity.sceneMinYVelocity = 0.001;
-    sceneGravity.sceneMinYVelocity = 0.1
-    sceneGravity.sceneMinXVelocity = 20;
+    sceneGravity.sceneMinYVelocity = 0.1;
+    sceneGravity.sceneMinXVelocity = 5;
 
     for (size_t i = 0; i < _currentNumBodies; i++)
     {
         gpBody *body = _currentBodies[i];
         if (!body->gravityEnabled)
             continue;
+        memcpy(body->lastFrameOverlaps, body->overlaps, sizeof(gpOverlap*) * body->numOverlappingBodies);
+
+        body->lastFrameNumOverlappingBodies = body->numOverlappingBodies;
         gpGravityBodyStep(body, &sceneGravity, gameTime);
         // Remove overlap bodies after gravity is updated.
         body->numOverlappingBodies = 0;
