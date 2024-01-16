@@ -1,5 +1,6 @@
 namespace GoonEngine.Objects;
 using GoonEngine.Components;
+using GoonEngine.Models;
 
 public class Player : GameObject
 {
@@ -23,15 +24,15 @@ public class Player : GameObject
         Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
 
     }
-    public static void PlayerGoombaOverlap(ref Models.Body playerBody, ref Models.Body goombaBody)
+    public static void PlayerGoombaOverlap(ref Models.Body playerBody, ref Models.Body goombaBody, ref Overlap overlap)
     {
-        Debug.InfoMessage("Func do now");
         Player player = (Player)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(playerBody.bodyNum);
         Goomba goomba = (Goomba)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(goombaBody.bodyNum);
         if (player == null || goomba == null)
             Debug.InfoMessage("Borked");
-        if(playerBody.BoundingBox.Y <= goombaBody.BoundingBox.X)
+        if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
         {
+
             playerBody.Velocity.Y -= 500;
         }
         Debug.InfoMessage("Wow it works");

@@ -7,3 +7,14 @@ public struct Overlap
     public int OverlapDirection;
     public IntPtr OverlapBody;
 }
+
+
+public enum OverlapDirections
+{
+    gpOverlapNoOverlap = 0,
+    gpOverlapUp,
+    gpOverlapRight,
+    gpOverlapDown,
+    gpOverlapLeft
+
+}

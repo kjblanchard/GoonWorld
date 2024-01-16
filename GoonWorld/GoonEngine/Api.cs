@@ -57,7 +57,7 @@ public static class Api
 
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern IntPtr gpBodyNew(BoundingBox boundingBox);
-            public delegate void BodyOverlapDelegate(ref Models.Body body, ref Models.Body overlapBody);
+            public delegate void BodyOverlapDelegate(ref Models.Body body, ref Models.Body overlapBody, ref Models.Overlap overlap);
             [DllImport("../build/lib/libSupergoonEngine")]
 
             public static extern void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, BodyOverlapDelegate func);

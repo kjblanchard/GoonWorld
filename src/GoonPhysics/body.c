@@ -69,6 +69,10 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
     }
     int bodyType = body->bodyType;
     int overlapBodyType = overlapBody->bodyType;
+    int currentOverlap = body->numOverlappingBodies;
+    body->overlaps[body->numOverlappingBodies].overlapBody = overlapBody;
+    body->overlaps[body->numOverlappingBodies].overlapDirection = direction;
+    ++body->numOverlappingBodies;
     if (newOverlap)
     {
         // Fire function type
@@ -76,7 +80,7 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
         if (func)
         {
             printf("Firing func at %d %d at loc %x\n", bodyType, overlapBodyType, func);
-            func(body, overlapBody);
+            func(body, overlapBody, &body->overlaps[currentOverlap]);
         }
     }
     else
@@ -84,14 +88,11 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
         OverlapFunc func = OverlapFunctions[bodyType][overlapBodyType];
         if (func)
         {
-            func(body, overlapBody);
+            func(body, overlapBody, &body->overlaps[currentOverlap]);
         }
     }
 
     // body->overlappingBodies[body->numOverlappingBodies] = overlapBody;
-    body->overlaps[body->numOverlappingBodies].overlapBody = overlapBody;
-    body->overlaps[body->numOverlappingBodies].overlapDirection = direction;
-    ++body->numOverlappingBodies;
 }
 
 int gpBodyIsOnGround(gpBody *body)
