@@ -19,7 +19,8 @@ public class Player : GameObject
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         AddComponent(_drawComponent, _physicsComponent, _keyboardComponent);
-        Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlap);
+        PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
+        Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
 
     }
     public static void PlayerGoombaOverlap(ref Models.Body playerBody, ref Models.Body goombaBody)
@@ -29,6 +30,10 @@ public class Player : GameObject
         Goomba goomba = (Goomba)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(goombaBody.bodyNum);
         if (player == null || goomba == null)
             Debug.InfoMessage("Borked");
+        if(playerBody.BoundingBox.Y <= goombaBody.BoundingBox.X)
+        {
+            playerBody.Velocity.Y -= 500;
+        }
         Debug.InfoMessage("Wow it works");
 
     }

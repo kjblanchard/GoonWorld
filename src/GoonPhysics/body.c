@@ -9,8 +9,10 @@ static OverlapFunc OverlapBeginFunctions[MAX_BODY_TYPES][MAX_BODY_TYPES];
 static OverlapFunc OverlapFunctions[MAX_BODY_TYPES][MAX_BODY_TYPES];
 void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, OverlapFunc func)
 {
-    printf("Adding func.. to pos %d, %d\n", bodyType, overlapBodyType);
+    // printf("Adding func.. to pos %d, %d\n", bodyType, overlapBodyType);
     OverlapBeginFunctions[bodyType][overlapBodyType] = func;
+
+    // OverlapBeginFunctions[bodyType][overlapBodyType](NULL,NULL);
 }
 
 void gpBodyAddOverlapFunc(int bodyType, int overlapBodyType, OverlapFunc func)
@@ -73,7 +75,7 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
         OverlapFunc func = OverlapBeginFunctions[bodyType][overlapBodyType];
         if (func)
         {
-            printf("Firing func at %d %d\n");
+            printf("Firing func at %d %d at loc %x\n", bodyType, overlapBodyType, func);
             func(body, overlapBody);
         }
     }

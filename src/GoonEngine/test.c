@@ -33,6 +33,8 @@ extern int g_refreshRate;
 void (*DrawUpdateFunc)() = NULL;
 void (*GameUpdateFunc)(double deltaTime) = NULL;
 
+
+
 void *MusicUpdateWrapper(void *arg)
 {
     return NULL;

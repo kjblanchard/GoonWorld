@@ -25,6 +25,10 @@ void UpdateFunc()
     }
 
 }
+static void UpdateBodyThing(gpBody* bod, gpBody* overlap)
+{
+    printf("Did the thing!\n");
+}
 
 int main(int argc, char const *argv[])
 {
@@ -41,6 +45,7 @@ int main(int argc, char const *argv[])
     struct Bgm *mainBgm = BgmLoad("test.ogg", 20.397, 43.08);
     BgmPlay(mainBgm, 1.0);
     geGameSetUpdateFunc(UpdateFunc);
+    gpBodyAddOverlapBeginFunc(2, 3,UpdateBodyThing);
     Play();
     return 0;
 }
