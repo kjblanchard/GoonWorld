@@ -50,6 +50,13 @@ void BlitSurface(
         fprintf(stderr, "Failed to blit surface %s", SDL_GetError());
     }
 }
+SDL_Texture *CreateTextureFromFile(const char* filename)
+{
+    SDL_Surface* surface =  LoadSurfaceFromFile(filename);
+    SDL_Texture* texture = CreateTextureFromSurface(surface);
+    return texture;
+
+}
 
 SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
 {

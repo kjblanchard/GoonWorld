@@ -99,6 +99,11 @@ public static class Api
         // public static extern void DrawDebugRect(ref Rect rect);
         public static extern void DrawDebugRect(ref Rect rect, ref Color color);
     }
+    public static class Content
+    {
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern IntPtr CreateTextureFromFile(string filename);
+    }
     public static class Components
     {
         public static class TagComponent

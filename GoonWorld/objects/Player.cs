@@ -21,6 +21,7 @@ public class Player : GameObject
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         AddComponent(_drawComponent, _physicsComponent, _keyboardComponent);
         PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
+        var loadedImage = Content.Image.LoadImage("mario_and_items");
         Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
 
     }

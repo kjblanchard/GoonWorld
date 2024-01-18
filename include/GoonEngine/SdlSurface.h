@@ -21,3 +21,4 @@ SDL_Surface *LoadTextureAtlas(int width, int height);
 void BlitSurface( SDL_Surface *srcSurface, SDL_Rect *srcRect, SDL_Surface *dstSurface, SDL_Rect *dstRect);
 SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface);
 void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect);
+SDL_Texture *CreateTextureFromFile(const char* filename);
