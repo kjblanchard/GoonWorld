@@ -27,6 +27,6 @@ public class DrawComponent : Component
     public override void OnComponentAdd(GameObject parent)
     {
         base.OnComponentAdd(parent);
-        GameObject.CurrentDrawComponents.Add(this);
+        GameObject.CurrentDebugDrawComponents.Add(this);
     }
 }

@@ -70,11 +70,7 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
     return texture;
 }
 
-void DrawTexture(
-    SDL_Renderer *renderer,
-    SDL_Texture *texture,
-    SDL_Rect *srcRect,
-    SDL_Rect *dstRect)
+void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
 {
-    SDL_RenderCopy(renderer, texture, srcRect, dstRect);
+    SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
 }

@@ -3,6 +3,7 @@ namespace GoonEngine.Content;
 public class Image
 {
     private static Dictionary<string, Image> _loadedImages = new();
+    public IntPtr LoadedImagePtr => _loadedData;
     private IntPtr _loadedData;
     private Image(string filename)
     {

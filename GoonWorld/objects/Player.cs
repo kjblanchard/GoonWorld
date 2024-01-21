@@ -4,9 +4,12 @@ using GoonEngine.Models;
 
 public class Player : GameObject
 {
+    protected static Animator<Player> _animator = new();
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
     protected PhysicsComponent _physicsComponent;
+    protected SpriteComponent _spriteComponent;
+    protected AnimationComponent<Player> _animationComponent;
     public static Api.Physics.Body.BodyOverlapDelegate PlayerGoombaOverlapFunc;
 
     public Player(object data) : base()
@@ -19,10 +22,15 @@ public class Player : GameObject
         _keyboardComponent = new KeyboardComponent();
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
-        AddComponent(_drawComponent, _physicsComponent, _keyboardComponent);
+        // _spriteComponent = new SpriteComponent(new Rect(0, 72, 16, 16), "mario_and_items") { Size = new Point(32, 32) };
+        _animationComponent = new AnimationComponent<Player>("mario", _animator);
+        // AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _spriteComponent);
+        AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _animationComponent);
         PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
-        var loadedImage = Content.Image.LoadImage("mario_and_items");
+        // var loadedImage = Content.Image.LoadImage("mario_and_items");
         Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
+
+
 
     }
     public static void PlayerGoombaOverlap(ref Models.Body playerBody, ref Models.Body goombaBody, ref Overlap overlap)
@@ -38,6 +46,16 @@ public class Player : GameObject
         }
         Debug.InfoMessage("Wow it works");
 
+    }
+
+    public static void CreateAnimations()
+    {
+        var idleAnimation = new Animation<Player>("idle", false);
+        var idleToRunTransition = new AnimationTransition<Player>("run", ShouldRun);
+        idleAnimation.Transitions.Add(idleToRunTransition);
+        var runAnimation = new Animation<Player>("run");
+        _animator.AddAnimation(idleAnimation);
+        _animator.AddAnimation(runAnimation);
     }
 
 
@@ -85,7 +103,13 @@ public class Player : GameObject
 
     public override void Update()
     {
-        base.Update();
         HandleInput();
+        base.Update();
+        // _animationComponent.Update();
+    }
+
+    public static bool ShouldRun(Player player)
+    {
+        return player._physicsComponent.Velocity.X != 0;
     }
 }

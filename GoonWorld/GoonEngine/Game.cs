@@ -44,7 +44,9 @@ public class Game
     }
     public static void Draw()
     {
-        GameObject.DrawAllGameObjects();
+
+        GameObject.DrawGameObjectBoxes();
+        GameObject.DrawGameObjectDebugBoxes();
         if(_gameInstance.Debug && _gameInstance.CurrentLevel != null )
         {
             var color = new Color(0, 200, 0, 255);

@@ -21,6 +21,8 @@ class Program
         Api.Physics.Scene.geSetCurrentScene(scene);
         Api.Physics.Scene.gpSceneSetGravity(scene, 50);
         game.CurrentLevel = new Tiled("level1");
+
+        Player.CreateAnimations();
         game.Run();
     }
 }

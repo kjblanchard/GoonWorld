@@ -4,7 +4,8 @@ namespace GoonEngine;
 public abstract class GameObject : IStart, IUpdate
 {
     public static List<GameObject> UpdateGameObjects = new();
-    public static List<DrawComponent> CurrentDrawComponents = new();
+    public static List<DrawComponent> CurrentDebugDrawComponents = new();
+    public static List<SpriteComponent> CurrentDrawComponents = new();
     public static TimeSpan DeltaTime;
     protected static Dictionary<uint, GameObject> EntityToGameObjectDictionary = new();
     private static uint _numGameObjects;
@@ -24,7 +25,11 @@ public abstract class GameObject : IStart, IUpdate
     }
     ~GameObject() { }
 
-    public virtual void Update() { }
+    public virtual void Update()
+    {
+        _components.ForEach(component => component.Update());
+
+    }
 
     public void AddComponent(Component component)
     {
@@ -60,10 +65,14 @@ public abstract class GameObject : IStart, IUpdate
     {
         UpdateGameObjects.ForEach(gameobject => gameobject.Update());
     }
-
-    public static void DrawAllGameObjects()
+    public static void DrawGameObjectBoxes()
     {
-        CurrentDrawComponents.ForEach(drawComponent => drawComponent.Draw());
+        CurrentDrawComponents.ForEach(spriteComponent => spriteComponent.Draw());
+    }
+
+    public static void DrawGameObjectDebugBoxes()
+    {
+        CurrentDebugDrawComponents.ForEach(drawComponent => drawComponent.Draw());
     }
 
 }
