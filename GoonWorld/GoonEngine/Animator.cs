@@ -1,29 +1,40 @@
 using System.Text.Json;
 using GoonEngine.Models;
+using GoonEngine.Content;
 using GoonEngine.Components;
 
 namespace GoonEngine;
 public class Animator<T> where T : GameObject
 {
+    private static string GetImagePath(string filename) => $"assets/img/{filename}.png";
+    public AsepriteDocument BaseDocument => _loadedDocument;
     private AsepriteDocument _loadedDocument;
-    private Dictionary<string, Animation<T>> Animations = new();
+    public Dictionary<string, Animation<T>> Animations = new();
     public void LoadAnimationFile(string filepath)
     {
         var fullPath = $"assets/img/{filepath}.json";
         string jsonContent = File.ReadAllText(fullPath);
         _loadedDocument = JsonSerializer.Deserialize<AsepriteDocument>(jsonContent);
-        // This should all be on the "Animator" for a class like "Player" as it will be shared between all
-        // Load Image
-        // For each frametag
-        // Grab name and from/to
-        // these should be linked to an image, so that when we have big / fireball we can quickly switch
-
     }
+
     public void AddAnimation(Animation<T> animation)
     {
+        // animation.Image = Image.LoadImage(GetImagePath(_loadedDocument.meta.image));
+        animation.Image = Image.LoadImage(_loadedDocument.meta.image);
+        foreach (var transition in _loadedDocument.meta.frameTags)
+        {
+            if (transition.name == animation.Name)
+            {
+                {
+                    animation.StartFrame = transition.from;
+                    animation.EndFrame = transition.to;
+                }
+            }
+        }
         Animations[animation.Name] = animation;
     }
-    public string? CheckAnimationState(AnimationComponent<T> component)
+
+    public AnimatorTransitionArgs<T>? CheckAnimationState(AnimationComponent<T> component)
     {
         if (!Animations.TryGetValue(component.CurrentAnimation, out var animations))
             return null;
@@ -31,10 +42,15 @@ public class Animator<T> where T : GameObject
         {
             if (transition.TransitionCondition((T)component.Parent))
             {
-                return transition.TransitionAnimationTag;
+                return new AnimatorTransitionArgs<T> { Animation = Animations[transition.TransitionAnimationTag], Document = _loadedDocument };
             }
         }
         return null;
     }
+}
 
+public struct AnimatorTransitionArgs<T>
+{
+    public Animation<T> Animation;
+    public AsepriteDocument Document;
 }

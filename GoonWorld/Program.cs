@@ -17,12 +17,12 @@ class Program
         var game = new Game();
         Debug.Level = Debug.LogLevel.Error;
         game.Initialize();
+        Player.CreateAnimations();
         var scene = Api.Physics.Scene.gpInitScene();
         Api.Physics.Scene.geSetCurrentScene(scene);
         Api.Physics.Scene.gpSceneSetGravity(scene, 50);
         game.CurrentLevel = new Tiled("level1");
 
-        Player.CreateAnimations();
         game.Run();
     }
 }

@@ -1,8 +1,10 @@
 using GoonEngine.Content;
+using GoonEngine.Interfaces;
 
 namespace GoonEngine.Components;
 
-public class SpriteComponent : Component
+public class SpriteComponent : Component, IDraw
+
 {
     private Image? _loadedImage;
     public Rect SpriteImageRect;

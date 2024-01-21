@@ -1,6 +1,6 @@
 namespace GoonEngine.Models;
 
-class AsepriteDocument
+public class AsepriteDocument
 {
     public List<Frame> frames { get; set; }
     public Meta meta { get; set; }
@@ -8,7 +8,7 @@ class AsepriteDocument
     public class Frame
     {
         public string filename { get; set; }
-        public Frame frame { get; set; }
+        public Frame2 frame { get; set; }
         public bool rotated { get; set; }
         public bool trimmed { get; set; }
         public SpriteSourceSize spriteSourceSize { get; set; }

@@ -1,9 +1,11 @@
+using GoonEngine.Interfaces;
+
 namespace GoonEngine.Components;
 
-public class DrawComponent : Component
+public class DrawComponent : Component, IDraw
 {
     public ref Point Size => ref _size;
-    public bool Enabled { get; set; } = true;
+    // public bool Enabled { get; set; } = true;
     private Point _size;
     public Color Color = new Color(255, 0, 0, 255);
     public DrawComponent() { }

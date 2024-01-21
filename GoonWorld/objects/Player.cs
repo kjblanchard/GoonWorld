@@ -23,7 +23,7 @@ public class Player : GameObject
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         // _spriteComponent = new SpriteComponent(new Rect(0, 72, 16, 16), "mario_and_items") { Size = new Point(32, 32) };
-        _animationComponent = new AnimationComponent<Player>("mario", _animator);
+        _animationComponent = new AnimationComponent<Player>("idle", _animator);
         // AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _spriteComponent);
         AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _animationComponent);
         PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
@@ -50,10 +50,13 @@ public class Player : GameObject
 
     public static void CreateAnimations()
     {
+        _animator.LoadAnimationFile("mario");
         var idleAnimation = new Animation<Player>("idle", false);
-        var idleToRunTransition = new AnimationTransition<Player>("run", ShouldRun);
+        var idleToRunTransition = new AnimationTransition<Player>("walk", ShouldRun);
         idleAnimation.Transitions.Add(idleToRunTransition);
-        var runAnimation = new Animation<Player>("run");
+        var runToIdleTransition = new AnimationTransition<Player>("idle", ShouldWalk);
+        var runAnimation = new Animation<Player>("walk");
+        runAnimation.Transitions.Add(runToIdleTransition);
         _animator.AddAnimation(idleAnimation);
         _animator.AddAnimation(runAnimation);
     }
@@ -105,11 +108,14 @@ public class Player : GameObject
     {
         HandleInput();
         base.Update();
-        // _animationComponent.Update();
     }
 
     public static bool ShouldRun(Player player)
     {
         return player._physicsComponent.Velocity.X != 0;
+    }
+    public static bool ShouldWalk(Player player)
+    {
+        return player._physicsComponent.Velocity.X == 0;
     }
 }

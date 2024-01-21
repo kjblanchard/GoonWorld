@@ -1,11 +1,13 @@
 using GoonEngine.Components;
+using GoonEngine.Interfaces;
 namespace GoonEngine;
 
 public abstract class GameObject : IStart, IUpdate
 {
-    public static List<GameObject> UpdateGameObjects = new();
-    public static List<DrawComponent> CurrentDebugDrawComponents = new();
-    public static List<SpriteComponent> CurrentDrawComponents = new();
+    public static List<IUpdate> UpdateGameObjects = new();
+    public static List<IDraw> CurrentDebugDrawComponents = new();
+    // public static List<SpriteComponent> CurrentDrawComponents = new();
+    public static List<IDraw> CurrentDrawComponents = new();
     public static TimeSpan DeltaTime;
     protected static Dictionary<uint, GameObject> EntityToGameObjectDictionary = new();
     private static uint _numGameObjects;

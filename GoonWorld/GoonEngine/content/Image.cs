@@ -7,7 +7,7 @@ public class Image
     private IntPtr _loadedData;
     private Image(string filename)
     {
-        var fullFilepath = $"assets/img/{filename}.png";
+        var fullFilepath = $"assets/img/{filename}";
         _loadedData = Api.Content.CreateTextureFromFile(fullFilepath);
         _loadedImages[filename] = this;
     }
