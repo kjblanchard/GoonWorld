@@ -71,7 +71,8 @@ public class AnimationComponent<T> : Component, IDraw where T : GameObject
         if (!Enabled || !Visible || _currentAnimation == null)
             return;
         var drawRect = DrawImageRect;
-        Api.Rendering.DrawTexture(_currentAnimation.Image.LoadedImagePtr, ref SpriteImageRect, ref drawRect);
+        // Api.Rendering.DrawTexture(_currentAnimation.Image.LoadedImagePtr, ref SpriteImageRect, ref drawRect);
+        Api.Rendering.DrawTexture(_currentAnimation.Image.LoadedImagePtr, ref SpriteImageRect, ref drawRect, Mirror);
     }
     public override void OnComponentAdd(GameObject parent)
     {

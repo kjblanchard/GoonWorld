@@ -76,6 +76,7 @@ public class Player : ObjectBase<Player>
     {
         HandleInput();
         _canJump = _physicsComponent.IsOnGround;
+        _animationComponent.Mirror = _physicsComponent.Velocity.X >= 0 ? false : true;
         base.Update();
     }
 

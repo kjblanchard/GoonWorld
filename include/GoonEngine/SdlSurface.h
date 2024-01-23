@@ -22,7 +22,8 @@ void BlitSurface( SDL_Surface *srcSurface, SDL_Rect *srcRect, SDL_Surface *dstSu
 SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface);
 void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect);
 SDL_Texture *CreateTextureFromFile(const char* filename);
-void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect);
+// void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect);
+void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip);
 // int geDrawTexture( SDL_Texture * texture,
 //                    const SDL_Rect * srcrect,
 //                    const SDL_Rect * dstrect,

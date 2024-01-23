@@ -101,7 +101,8 @@ public static class Api
         // public static extern void DrawDebugRect(ref Rect rect);
         public static extern void DrawDebugRect(ref Rect rect, ref Color color);
         [DllImport("../build/lib/libSupergoonEngine")]
-        public static extern void DrawTexture(IntPtr texture, ref Rect srcRect, ref Rect dstRect);
+        // public static extern void DrawTexture(IntPtr texture, ref Rect srcRect, ref Rect dstRect);
+        public static extern void DrawTexture(IntPtr texture, ref Rect srcRect, ref Rect dstRect, bool shouldFlip);
     }
     public static class Content
     {

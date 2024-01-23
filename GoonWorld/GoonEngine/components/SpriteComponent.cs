@@ -28,7 +28,7 @@ public class SpriteComponent : Component, IDraw
         if (!Enabled || !Visible || _loadedImage == null)
             return;
         var drawRect = DrawImageRect;
-        Api.Rendering.DrawTexture(_loadedImage.LoadedImagePtr, ref SpriteImageRect, ref drawRect);
+        Api.Rendering.DrawTexture(_loadedImage.LoadedImagePtr, ref SpriteImageRect, ref drawRect, Mirror);
     }
     public override void OnComponentAdd(GameObject parent)
     {

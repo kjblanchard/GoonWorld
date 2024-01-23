@@ -70,7 +70,16 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
     return texture;
 }
 
-void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
+// void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
+void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip)
 {
-    SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
+    // SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
+    SDL_RenderCopyEx(g_pRenderer,
+    texture,
+    srcRect,
+    dstRect,
+    0,
+    NULL,
+    (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE
+    );
 }
