@@ -9,12 +9,30 @@ public class Animator<T> where T : GameObject
     private static string GetImagePath(string filename) => $"assets/img/{filename}.png";
     public AsepriteDocument BaseDocument => _loadedDocument;
     private AsepriteDocument _loadedDocument;
+    public string DefaultAnimation;
     public Dictionary<string, Animation<T>> Animations = new();
     public void LoadAnimationFile(string filepath)
     {
         var fullPath = $"assets/img/{filepath}.json";
         string jsonContent = File.ReadAllText(fullPath);
         _loadedDocument = JsonSerializer.Deserialize<AsepriteDocument>(jsonContent);
+         if(!Game.Global.Config.Config.Animations.TryGetValue(filepath, out var data))
+         {
+            return;
+         }
+         DefaultAnimation = data.Default;
+         foreach(var animation in data.animations)
+         {
+            var newAnim = new Animation<T>(animation.name, animation.looping);
+            AddAnimation(newAnim);
+            // Animations[animation.name] = newAnim;
+         }
+    }
+
+    public void AddAnimationTransition(string current, string transition, Func<T, bool> func)
+    {
+        var animTransition = new AnimationTransition<T>(transition, func);
+        Animations[current].Transitions.Add(animTransition);
     }
 
     public void AddAnimation(Animation<T> animation)

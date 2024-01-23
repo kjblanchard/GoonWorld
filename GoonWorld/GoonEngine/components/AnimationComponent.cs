@@ -17,8 +17,9 @@ public class AnimationComponent<T> : Component, IDraw where T : GameObject
     public bool Mirror { get; set; } = false;
     // public Point Size;
     public Point Offset;
+    public byte SizeMultiplier = 1;
     // public Rect DrawImageRect => new Rect(Parent.Location.X + Offset.X, Parent.Location.Y + Offset.Y, Size.X, Size.Y);
-    public Rect DrawImageRect => new Rect(Parent.Location.X + Offset.X, Parent.Location.Y + Offset.Y, SpriteImageRect.Width, SpriteImageRect.Height);
+    public Rect DrawImageRect => new Rect(Parent.Location.X + Offset.X, Parent.Location.Y + Offset.Y, SpriteImageRect.Width * SizeMultiplier, SpriteImageRect.Height * SizeMultiplier);
     public bool Visible { get; set; } = true;
 
 
@@ -43,8 +44,7 @@ public class AnimationComponent<T> : Component, IDraw where T : GameObject
         if (_secondsThisFrame >= _currentAnimationDocument.frames[currentFrame].duration)
         {
             _secondsThisFrame -= frameSeconds;
-            // currentFrame =  _currentAnimation.Looping ? (currentFrame + 1 < _currentAnimationDocument.frames.Count) ? currentFrame + 1 : 0 : currentFrame;
-            currentFrame = _currentAnimation.Looping ? (currentFrame + 1 < _currentAnimation.EndFrame) ? currentFrame + 1 : _currentAnimation.StartFrame : currentFrame;
+            currentFrame = _currentAnimation.Looping ? (currentFrame + 1 <= _currentAnimation.EndFrame) ? currentFrame + 1 : _currentAnimation.StartFrame : currentFrame;
             SpriteImageRect = new Rect(
                 _currentAnimationDocument.frames[currentFrame].frame.x,
                 _currentAnimationDocument.frames[currentFrame].frame.y,
@@ -56,8 +56,11 @@ public class AnimationComponent<T> : Component, IDraw where T : GameObject
 
     private void ChangeAnimation(AnimatorTransitionArgs<T> args)
     {
+        // Debug.InfoMessage($"I should be switching to {args.Animation.Name}");
+        CurrentAnimation = args.Animation.Name;
         _currentAnimation = args.Animation;
         _currentAnimationDocument = args.Document;
+        currentFrame = _currentAnimation.StartFrame;
         SpriteImageRect = new Rect(
             _currentAnimationDocument.frames[currentFrame].frame.x,
             _currentAnimationDocument.frames[currentFrame].frame.y,

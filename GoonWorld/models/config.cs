@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace GoonEngine;
 public class ConfigManager
 {
@@ -16,6 +17,9 @@ public class ConfigManager
         public SoundConfig soundConfig { get; set; }
         public List<List<List<int>>> keyboardConfig { get; set; }
         public List<List<int>> controllerConfig { get; set; }
+        [JsonPropertyName("animation")]
+        public Dictionary<string, AnimationFile> Animations { get; set; }
+        // public Animation Animation {get; set;}
     }
 
     public class GraphicsConfig
@@ -48,6 +52,19 @@ public class ConfigManager
     {
         public uint x { get; set; }
         public uint y { get; set; }
+    }
+
+    public class AnimationFile
+    {
+        [JsonPropertyName("default")]
+        public string Default { get; set; }
+        // public <string, Animation> animations { get; set; }
+        public List<Animation> animations { get; set; }
+        public class Animation
+        {
+            public string name { get; set; }
+            public bool looping { get; set; }
+        }
     }
 
 }

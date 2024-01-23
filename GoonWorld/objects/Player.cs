@@ -24,14 +24,12 @@ public class Player : GameObject
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         // _spriteComponent = new SpriteComponent(new Rect(0, 72, 16, 16), "mario_and_items") { Size = new Point(32, 32) };
         _animationComponent = new AnimationComponent<Player>("idle", _animator);
-        // AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _spriteComponent);
+        _animationComponent.Offset.X = 16;
+        _animationComponent.Offset.Y = 16;
+        _animationComponent.SizeMultiplier = 2;
         AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _animationComponent);
         PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
-        // var loadedImage = Content.Image.LoadImage("mario_and_items");
         Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
-
-
-
     }
     public static void PlayerGoombaOverlap(ref Models.Body playerBody, ref Models.Body goombaBody, ref Overlap overlap)
     {
@@ -51,14 +49,17 @@ public class Player : GameObject
     public static void CreateAnimations()
     {
         _animator.LoadAnimationFile("mario");
-        var idleAnimation = new Animation<Player>("idle", false);
-        var idleToRunTransition = new AnimationTransition<Player>("walk", ShouldRun);
-        idleAnimation.Transitions.Add(idleToRunTransition);
-        var runToIdleTransition = new AnimationTransition<Player>("idle", ShouldWalk);
-        var runAnimation = new Animation<Player>("walk");
-        runAnimation.Transitions.Add(runToIdleTransition);
-        _animator.AddAnimation(idleAnimation);
-        _animator.AddAnimation(runAnimation);
+        // var idleAnimation = new Animation<Player>("idle", false);
+        // var runAnimation = new Animation<Player>("walk");
+        // _animator.AddAnimation(idleAnimation);
+        // _animator.AddAnimation(runAnimation);
+        _animator.AddAnimationTransition("idle", "walk", ShouldRun);
+        _animator.AddAnimationTransition("walk", "idle", ShouldWalk);
+
+        // var idleToRunTransition = new AnimationTransition<Player>("walk", ShouldRun);
+        // idleAnimation.Transitions.Add(idleToRunTransition);
+        // var runToIdleTransition = new AnimationTransition<Player>("idle", ShouldWalk);
+        // runAnimation.Transitions.Add(runToIdleTransition);
     }
 
 
