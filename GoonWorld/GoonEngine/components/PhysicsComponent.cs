@@ -1,5 +1,4 @@
 using GoonEngine.Models;
-using System.Runtime.InteropServices;
 namespace GoonEngine.Components;
 public class PhysicsComponent : Component
 {
@@ -8,6 +7,7 @@ public class PhysicsComponent : Component
 
     private static Dictionary<int, PhysicsComponent> _bodyNumToGameObjectDictionary = new();
     public ref int BodyType => ref Body.bodyType;
+    private List<Api.Physics.Body.BodyOverlapDelegate>Delegates = new();
     public ref Vector2 Velocity => ref Body.Velocity;
     public ref BoundingBox BoundingBox => ref Body.BoundingBox;
     public bool GravityEnabled
@@ -26,6 +26,13 @@ public class PhysicsComponent : Component
         var bodyNum = Api.Physics.Scene.gpSceneAddBody(_bodyPtr);
         _bodyNumToGameObjectDictionary[bodyNum] = this;
         _physicsComponents.Add(this);
+    }
+
+    // public void AddOverlapFunc(int targetBodyType, Api.Physics.Body.BodyOverlapDelegate func)
+    public void AddOverlapBeginFunc(int targetBodyType, Api.Physics.Body.BodyOverlapDelegate func)
+    {
+        Delegates.Add(func);
+        Api.Physics.Body.gpBodyAddOverlapBeginFunc(BodyType,targetBodyType, func);
     }
 
     public unsafe static void PhysicsUpdate()

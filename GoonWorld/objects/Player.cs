@@ -6,7 +6,6 @@ public class Player : ObjectBase<Player>
 {
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
-    public static Api.Physics.Body.BodyOverlapDelegate PlayerGoombaOverlapFunc;
 
     public Player(object data) : base(data)
     {
@@ -16,23 +15,18 @@ public class Player : ObjectBase<Player>
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         _animationComponent.SizeMultiplier = 2;
+        _physicsComponent.BodyType = (int)BodyTypes.Player;
+        _physicsComponent.AddOverlapBeginFunc(3, PlayerGoombaOverlap);
         AddComponent(_keyboardComponent, _drawComponent);
-        PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
-        Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
     }
-    public static void PlayerGoombaOverlap(ref Models.Body playerBody, ref Models.Body goombaBody, ref Overlap overlap)
+    public static void PlayerGoombaOverlap(ref Body playerBody, ref Body goombaBody, ref Overlap overlap)
     {
         Player player = (Player)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(playerBody.bodyNum);
         Goomba goomba = (Goomba)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(goombaBody.bodyNum);
         if (player == null || goomba == null)
-            Debug.InfoMessage("Borked");
+            return;
         if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
-        {
-
             playerBody.Velocity.Y -= 500;
-        }
-        Debug.InfoMessage("Wow it works");
-
     }
 
     public static void CreateAnimations()
