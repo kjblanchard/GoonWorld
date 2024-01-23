@@ -1,8 +1,10 @@
 namespace GoonEngine.Objects;
+
+using System.Runtime.CompilerServices;
 using GoonEngine.Components;
 using GoonEngine.Models;
 
-public class Player : GameObject
+public class Player : GameObject, IAnimate
 {
     protected static Animator<Player> _animator = new();
     private KeyboardComponent _keyboardComponent;
@@ -22,7 +24,7 @@ public class Player : GameObject
         _keyboardComponent = new KeyboardComponent();
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
-        _animationComponent = new AnimationComponent<Player>("idle", _animator);
+        _animationComponent = new AnimationComponent<Player>(_animator);
         _animationComponent.Offset.X = 16;
         _animationComponent.Offset.Y = 16;
         _animationComponent.SizeMultiplier = 2;
