@@ -1,34 +1,22 @@
 namespace GoonEngine.Objects;
-
-using System.Runtime.CompilerServices;
 using GoonEngine.Components;
 using GoonEngine.Models;
 
-public class Player : GameObject, IAnimate
+public class Player : ObjectBase<Player>
 {
-    protected static Animator<Player> _animator = new();
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
-    protected PhysicsComponent _physicsComponent;
-    protected SpriteComponent _spriteComponent;
-    protected AnimationComponent<Player> _animationComponent;
     public static Api.Physics.Body.BodyOverlapDelegate PlayerGoombaOverlapFunc;
 
-    public Player(object data) : base()
+    public Player(object data) : base(data)
     {
         if (data is not TiledCS.TiledObject castedData)
             throw new Exception("Loading a player with no data somehow!");
-        Location.X = (int)castedData.x;
-        Location.Y = (int)castedData.y;
-        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { BodyType = 2, GravityEnabled = true };
         _keyboardComponent = new KeyboardComponent();
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
-        _animationComponent = new AnimationComponent<Player>(_animator);
-        _animationComponent.Offset.X = 16;
-        _animationComponent.Offset.Y = 16;
         _animationComponent.SizeMultiplier = 2;
-        AddComponent(_drawComponent, _physicsComponent, _keyboardComponent, _animationComponent);
+        AddComponent(_keyboardComponent, _drawComponent);
         PlayerGoombaOverlapFunc = PlayerGoombaOverlap;
         Api.Physics.Body.gpBodyAddOverlapBeginFunc(2, 3, PlayerGoombaOverlapFunc);
     }
@@ -53,8 +41,6 @@ public class Player : GameObject, IAnimate
         _animator.AddAnimationTransition("idle", "walk", ShouldRun);
         _animator.AddAnimationTransition("walk", "idle", ShouldWalk);
     }
-
-
 
     private void HandleInput()
     {
