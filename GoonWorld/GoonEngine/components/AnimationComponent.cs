@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using GoonEngine.Content;
 using GoonEngine.Interfaces;
 using GoonEngine.Models;
@@ -15,17 +14,15 @@ public class AnimationComponent<T> : Component, IDraw where T : GameObject
     private int currentFrame = 0;
     public Rect SpriteImageRect;
     public bool Mirror { get; set; } = false;
-    // public Point Size;
     public Point Offset;
     public byte SizeMultiplier = 1;
-    // public Rect DrawImageRect => new Rect(Parent.Location.X + Offset.X, Parent.Location.Y + Offset.Y, Size.X, Size.Y);
     public Rect DrawImageRect => new Rect(Parent.Location.X + Offset.X, Parent.Location.Y + Offset.Y, SpriteImageRect.Width * SizeMultiplier, SpriteImageRect.Height * SizeMultiplier);
     public bool Visible { get; set; } = true;
 
 
-    public AnimationComponent(string initialAnimation, Animator<T> animator)
+    public AnimationComponent(Animator<T> animator)
     {
-        CurrentAnimation = initialAnimation;
+        CurrentAnimation = animator.DefaultAnimation;
         _currentAnimation = animator.Animations[CurrentAnimation];
         _animator = animator;
         _currentAnimationDocument = _animator.BaseDocument;
