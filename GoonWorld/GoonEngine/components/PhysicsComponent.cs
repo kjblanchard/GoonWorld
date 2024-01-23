@@ -9,6 +9,7 @@ public class PhysicsComponent : Component
     public ref int BodyType => ref Body.bodyType;
     private List<Api.Physics.Body.BodyOverlapDelegate>Delegates = new();
     public ref Vector2 Velocity => ref Body.Velocity;
+    public bool IsOnGround => Api.Physics.Body.gpBodyIsOnGround(ref Body);
     public ref BoundingBox BoundingBox => ref Body.BoundingBox;
     public bool GravityEnabled
     {

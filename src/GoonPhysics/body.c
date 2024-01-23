@@ -91,24 +91,23 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
             func(body, overlapBody, &body->overlaps[currentOverlap]);
         }
     }
-
-    // body->overlappingBodies[body->numOverlappingBodies] = overlapBody;
 }
 
 int gpBodyIsOnGround(gpBody *body)
 {
+
     for (size_t i = 0; i < body->numOverlappingBodies; i++)
     {
-        // gpBody *overlap = body->overlappingBodies[i];
         gpBody *overlap = body->overlaps[i].overlapBody;
-        // If we are not a static body, then continue
+        // If we are not a static body (type0), then continue
         if (overlap->bodyType)
+        {
             continue;
+        }
         if (overlap->boundingBox.y >= body->boundingBox.y + body->boundingBox.h)
+        {
             return 1;
-        // body->bodyOnGround = 1;
+        }
     }
-    // body->bodyOnGround = 0;
-    // return body->bodyOnGround;
     return 0;
 }

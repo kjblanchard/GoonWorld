@@ -63,6 +63,8 @@ public static class Api
             public static extern void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, BodyOverlapDelegate func);
             [DllImport("../build/lib/libSupergoonEngine")]
             public static extern void gpBodyAddOverlapFunc(int bodyType, int overlapBodyType, BodyOverlapDelegate func);
+            [DllImport("../build/lib/libSupergoonEngine")]
+            public static extern bool gpBodyIsOnGround(ref Models.Body body);
         }
     }
     public static class Debug

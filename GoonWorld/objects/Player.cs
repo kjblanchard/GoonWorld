@@ -81,6 +81,15 @@ public class Player : ObjectBase<Player>
     {
         HandleInput();
         base.Update();
+        if(_physicsComponent.IsOnGround)
+        {
+            Debug.InfoMessage("We are currently On the ground!");
+        }
+        else
+        {
+            Debug.InfoMessage("We are currently not On the ground!");
+
+        }
     }
 
     public static bool ShouldRun(Player player)
