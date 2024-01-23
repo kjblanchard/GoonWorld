@@ -7,7 +7,7 @@ public class Player : ObjectBase<Player>
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
     private bool _isJumping;
-    private bool _canJump;
+    public bool _canJump;
     private int _jumpVelocity = 5;
     private float _currentJumpTime;
     private float _maxJumpTime = 0.25f;
@@ -21,25 +21,17 @@ public class Player : ObjectBase<Player>
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         _animationComponent.SizeMultiplier = 2;
         _physicsComponent.BodyType = (int)BodyTypes.Player;
-        _physicsComponent.AddOverlapBeginFunc(3, PlayerGoombaOverlap);
         AddComponent(_keyboardComponent, _drawComponent);
+        _physicsComponent.AddOverlapBeginFunc<Goomba>((int)BodyTypes.Goomba, PlayerGoombaOverlap);
     }
-    public static void PlayerGoombaOverlap(ref Body playerBody, ref Body goombaBody, ref Overlap overlap)
-    {
-        var player = PhysicsComponent.GetGameObjectWithPhysicsBodyNum<Player>(playerBody.bodyNum);
-        var goomba = PhysicsComponent.GetGameObjectWithPhysicsBodyNum<Goomba>(goombaBody.bodyNum);
-        if (player == null || goomba == null)
-            return;
-        player.GoombaOverlapInstance(goomba, ref goombaBody, ref overlap);
-    }
-    public void GoombaOverlapInstance(Goomba goomba, ref Body goombaBody, ref Overlap overlap)
+
+    public void PlayerGoombaOverlap(Goomba goomba, ref Overlap overlap)
     {
         if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
         {
             _physicsComponent.Velocity.Y -= 500;
             _canJump = true;
         }
-
     }
 
     public static void CreateAnimations()

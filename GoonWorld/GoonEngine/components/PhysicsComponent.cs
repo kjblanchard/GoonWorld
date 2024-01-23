@@ -2,12 +2,12 @@ using GoonEngine.Models;
 namespace GoonEngine.Components;
 public class PhysicsComponent : Component
 {
-    public static T GetGameObjectWithPhysicsBodyNum<T>(int bodyNum) where T: GameObject => _bodyNumToGameObjectDictionary.TryGetValue(bodyNum, out var gameobj) ? (T)gameobj.Parent : null;
+    public static T GetGameObjectWithPhysicsBodyNum<T>(int bodyNum) where T : GameObject => _bodyNumToGameObjectDictionary.TryGetValue(bodyNum, out var gameobj) ? (T)gameobj.Parent : null;
     private static List<PhysicsComponent> _physicsComponents = new();
 
     private static Dictionary<int, PhysicsComponent> _bodyNumToGameObjectDictionary = new();
     public ref int BodyType => ref Body.bodyType;
-    private List<Api.Physics.Body.BodyOverlapDelegate>Delegates = new();
+    private List<Api.Physics.Body.BodyOverlapDelegate> Delegates = new();
     public ref Vector2 Velocity => ref Body.Velocity;
     public bool IsOnGround => Api.Physics.Body.gpBodyIsOnGround(ref Body);
     public ref BoundingBox BoundingBox => ref Body.BoundingBox;
@@ -29,10 +29,22 @@ public class PhysicsComponent : Component
         _physicsComponents.Add(this);
     }
 
-    public void AddOverlapBeginFunc(int targetBodyType, Api.Physics.Body.BodyOverlapDelegate func)
+    public delegate void OverlapDelegate<T>(T overlapType, ref Overlap overlap);
+    //TODO we need a way to be able to remove these delegates..?
+    public void AddOverlapBeginFunc<T>(int targetBodyType, OverlapDelegate<T> func) where T : GameObject
     {
-        Delegates.Add(func);
-        Api.Physics.Body.gpBodyAddOverlapBeginFunc(BodyType,targetBodyType, func);
+        Api.Physics.Body.BodyOverlapDelegate function = (ref Body body, ref Body overlapBody, ref Overlap overlap) =>
+        {
+
+            if (body.bodyNum != Body.bodyNum)
+                return;
+            var overlapInstance = GetGameObjectWithPhysicsBodyNum<T>(overlapBody.bodyNum);
+            if (overlapInstance == null)
+                return;
+            func(overlapInstance, ref overlap);
+        };
+        Delegates.Add(function);
+        Api.Physics.Body.gpBodyAddOverlapBeginFunc(BodyType, targetBodyType, function);
     }
 
     public unsafe static void PhysicsUpdate()
@@ -46,11 +58,7 @@ public class PhysicsComponent : Component
             component.lastFrameOverlaps.Clear();
             for (int i = 0; i < component.Body.NumOverlappingBodies; i++)
             {
-                // Overlap valueAtIndexi = *(Overlap*)Marshal.ReadInt32(component.Body.Overlaps + sizeof(Overlap) * i);
-
                 Overlap* overlapPtr = (Overlap*)IntPtr.Add(component.Body.Overlaps, sizeof(Overlap) * i);
-                // Debug.InfoMessage($"I'm overlapping with body num {overlapPtr->OverlapBody}");
-                // component.lastFrameOverlaps.Add(component.Body.Overlaps[i]);
             }
         });
 
