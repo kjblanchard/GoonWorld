@@ -6,6 +6,11 @@ public class Player : ObjectBase<Player>
 {
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
+    private bool _isJumping;
+    private bool _canJump;
+    private int _jumpVelocity = 5;
+    private float _currentJumpTime;
+    private float _maxJumpTime = 0.25f;
 
     public Player(object data) : base(data)
     {
@@ -21,12 +26,20 @@ public class Player : ObjectBase<Player>
     }
     public static void PlayerGoombaOverlap(ref Body playerBody, ref Body goombaBody, ref Overlap overlap)
     {
-        Player player = (Player)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(playerBody.bodyNum);
-        Goomba goomba = (Goomba)PhysicsComponent.GetGameObjectWithPhysicsBodyNum(goombaBody.bodyNum);
+        var player = PhysicsComponent.GetGameObjectWithPhysicsBodyNum<Player>(playerBody.bodyNum);
+        var goomba = PhysicsComponent.GetGameObjectWithPhysicsBodyNum<Goomba>(goombaBody.bodyNum);
         if (player == null || goomba == null)
             return;
+        player.GoombaOverlapInstance(goomba, ref goombaBody, ref overlap);
+    }
+    public void GoombaOverlapInstance(Goomba goomba, ref Body goombaBody, ref Overlap overlap)
+    {
         if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
-            playerBody.Velocity.Y -= 500;
+        {
+            _physicsComponent.Velocity.Y -= 500;
+            _canJump = true;
+        }
+
     }
 
     public static void CreateAnimations()
@@ -38,16 +51,6 @@ public class Player : ObjectBase<Player>
 
     private void HandleInput()
     {
-        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadUp))
-        {
-            _physicsComponent.Velocity.Y -= 5;
-
-        }
-        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadDown))
-        {
-            _physicsComponent.Velocity.Y += 5;
-
-        }
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadLeft))
         {
             _physicsComponent.Velocity.X -= 15;
@@ -58,17 +61,13 @@ public class Player : ObjectBase<Player>
             _physicsComponent.Velocity.X += 15;
 
         }
-        if (_keyboardComponent.IsButtonPressed(SdlGameControllerButton.A))
+        if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.A))
         {
-            Debug.InfoMessage("Just pressed the button!");
-        }
-        else if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.A))
-        {
-            Debug.InfoMessage("Holding the button!");
+            Jump();
         }
         else if (_keyboardComponent.IsButtonReleased(SdlGameControllerButton.A))
         {
-            Debug.InfoMessage("Just released the button!");
+            _isJumping = false;
         }
         if (_keyboardComponent.IsButtonPressed(SdlGameControllerButton.LeftShoulder))
         {
@@ -80,16 +79,35 @@ public class Player : ObjectBase<Player>
     public override void Update()
     {
         HandleInput();
+        _canJump = _physicsComponent.IsOnGround;
         base.Update();
-        if(_physicsComponent.IsOnGround)
-        {
-            Debug.InfoMessage("We are currently On the ground!");
-        }
-        else
-        {
-            Debug.InfoMessage("We are currently not On the ground!");
+    }
 
+    private void Jump()
+    {
+        if (_isJumping)
+        {
+            if (_currentJumpTime < _maxJumpTime)
+            {
+                Debug.InfoMessage("Jump Extension");
+                _physicsComponent.Velocity.Y -= _jumpVelocity;
+                _currentJumpTime += (float)DeltaTime.TotalSeconds;
+            }
+            else
+            {
+                Debug.InfoMessage("Jump maxed");
+                _isJumping = _canJump = false;
+            }
         }
+        else if (_canJump)
+        {
+            Debug.InfoMessage("Big jump");
+            _currentJumpTime = 0;
+            _isJumping = true;
+            _canJump = false;
+            _physicsComponent.Velocity.Y += _jumpVelocity * 5;
+        }
+
     }
 
     public static bool ShouldRun(Player player)

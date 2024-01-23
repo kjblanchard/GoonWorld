@@ -2,7 +2,7 @@ using GoonEngine.Models;
 namespace GoonEngine.Components;
 public class PhysicsComponent : Component
 {
-    public static GameObject? GetGameObjectWithPhysicsBodyNum(int bodyNum) => _bodyNumToGameObjectDictionary.TryGetValue(bodyNum, out var gameobj) ? gameobj.Parent : null;
+    public static T GetGameObjectWithPhysicsBodyNum<T>(int bodyNum) where T: GameObject => _bodyNumToGameObjectDictionary.TryGetValue(bodyNum, out var gameobj) ? (T)gameobj.Parent : null;
     private static List<PhysicsComponent> _physicsComponents = new();
 
     private static Dictionary<int, PhysicsComponent> _bodyNumToGameObjectDictionary = new();
@@ -29,7 +29,6 @@ public class PhysicsComponent : Component
         _physicsComponents.Add(this);
     }
 
-    // public void AddOverlapFunc(int targetBodyType, Api.Physics.Body.BodyOverlapDelegate func)
     public void AddOverlapBeginFunc(int targetBodyType, Api.Physics.Body.BodyOverlapDelegate func)
     {
         Delegates.Add(func);
