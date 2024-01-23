@@ -37,8 +37,12 @@ public class Player : ObjectBase<Player>
     public static void CreateAnimations()
     {
         _animator.LoadAnimationFile("mario");
-        _animator.AddAnimationTransition("idle", "walk", ShouldRun);
-        _animator.AddAnimationTransition("walk", "idle", ShouldWalk);
+        _animator.AddAnimationTransition("idle", "walk", ShouldRunAnim);
+        _animator.AddAnimationTransition("walk", "idle", ShouldWalkAnim);
+        _animator.AddAnimationTransition("idle", "jump", ShouldJumpAnim);
+        _animator.AddAnimationTransition("walk", "jump", ShouldJumpAnim);
+        _animator.AddAnimationTransition("jump", "idle", ShouldIdleFromFallAnim);
+        _animator.AddAnimationTransition("jump", "walk", ShouldRunFromFallAnim);
     }
 
     private void HandleInput()
@@ -102,12 +106,25 @@ public class Player : ObjectBase<Player>
 
     }
 
-    public static bool ShouldRun(Player player)
+    public static bool ShouldRunAnim(Player player)
     {
         return player._physicsComponent.Velocity.X != 0;
     }
-    public static bool ShouldWalk(Player player)
+    public static bool ShouldWalkAnim(Player player)
     {
         return player._physicsComponent.Velocity.X == 0;
+    }
+    public static bool ShouldJumpAnim(Player player)
+    {
+        return player._isJumping;
+    }
+    public static bool ShouldIdleFromFallAnim(Player player)
+    {
+        return !player._isJumping && player._physicsComponent.IsOnGround && player._physicsComponent.Velocity.X == 0;
+    }
+
+    public static bool ShouldRunFromFallAnim(Player player)
+    {
+        return !player._isJumping && player._physicsComponent.IsOnGround && player._physicsComponent.Velocity.X != 0;
     }
 }
