@@ -58,7 +58,7 @@ public class Animator<T> where T : GameObject
             return null;
         foreach (var transition in animations.Transitions)
         {
-            if (transition.TransitionCondition((T)component.Parent))
+            if (transition.TransitionCondition.Invoke((T)component.Parent))
             {
                 return new AnimatorTransitionArgs<T> { Animation = Animations[transition.TransitionAnimationTag], Document = _loadedDocument };
             }

@@ -7,7 +7,8 @@ public class Player : ObjectBase<Player>
     private KeyboardComponent _keyboardComponent;
     private DrawComponent _drawComponent;
     private bool _isJumping;
-    public bool _canJump;
+    private bool _canJump;
+    private bool _facingRight;
     private int _jumpVelocity = 5;
     private float _currentJumpTime;
     private float _maxJumpTime = 0.25f;
@@ -55,7 +56,6 @@ public class Player : ObjectBase<Player>
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadRight))
         {
             _physicsComponent.Velocity.X += 15;
-
         }
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.A))
         {
@@ -76,7 +76,7 @@ public class Player : ObjectBase<Player>
     {
         HandleInput();
         _canJump = _physicsComponent.IsOnGround;
-        _animationComponent.Mirror = _physicsComponent.Velocity.X >= 0 ? false : true;
+          _animationComponent.Mirror = _physicsComponent.IsOnGround ?   _physicsComponent.Velocity.X >= 0 ? false : true : _animationComponent.Mirror;
         base.Update();
     }
 
@@ -86,19 +86,19 @@ public class Player : ObjectBase<Player>
         {
             if (_currentJumpTime < _maxJumpTime)
             {
-                Debug.InfoMessage("Jump Extension");
+                // Debug.InfoMessage("Jump Extension");
                 _physicsComponent.Velocity.Y -= _jumpVelocity;
                 _currentJumpTime += (float)DeltaTime.TotalSeconds;
             }
             else
             {
-                Debug.InfoMessage("Jump maxed");
+                // Debug.InfoMessage("Jump maxed");
                 _isJumping = _canJump = false;
             }
         }
         else if (_canJump)
         {
-            Debug.InfoMessage("Big jump");
+            // Debug.InfoMessage("Big jump");
             _currentJumpTime = 0;
             _isJumping = true;
             _canJump = false;
@@ -118,6 +118,16 @@ public class Player : ObjectBase<Player>
     public static bool ShouldJumpAnim(Player player)
     {
         return player._isJumping;
+    }
+    public static bool ShouldTurnFromWalk(Player player)
+    {
+        return true;
+
+    }
+    public static bool ShouldWalkFromTurn(Player player)
+    {
+        return true;
+
     }
     public static bool ShouldIdleFromFallAnim(Player player)
     {
