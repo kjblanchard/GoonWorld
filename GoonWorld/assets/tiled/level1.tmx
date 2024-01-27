@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.6" orientation="orthogonal" renderorder="right-down" width="64" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="518">
+<map version="1.8" tiledversion="1.8.6" orientation="orthogonal" renderorder="right-down" width="64" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="519">
  <properties>
   <property name="backup" type="class" propertytype="Bgm">
    <properties>
@@ -116,8 +116,8 @@
    </properties>
   </object>
   <object id="166" name="EnemyTest" type="Enemy" gid="203" x="256" y="64" width="16" height="16"/>
-  <object id="172" type="DeathBox" gid="189" x="0" y="288" width="1040" height="16"/>
   <object id="174" name="WinBox" type="WinBox" gid="240" x="976" y="160" width="48" height="64"/>
+  <object id="518" type="DeathBox" gid="189" x="0" y="272" width="1024" height="16"/>
  </objectgroup>
  <objectgroup id="13" name="solid">
   <object id="149" x="0" y="240">

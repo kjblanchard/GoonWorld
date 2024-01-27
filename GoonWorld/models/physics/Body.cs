@@ -6,6 +6,7 @@ public struct Body
 {
     public int bodyNum, bodyType;
     public BoundingBox BoundingBox;
+    public Vector2 Acceleration;
     public Vector2 Velocity;
     public int NumOverlappingBodies, GravityEnabled;
     public IntPtr Overlaps;

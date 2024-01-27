@@ -4,6 +4,8 @@
 
 static void GravityConstraintX(gpBody *body, double deltaTime, gpSceneGravity *sceneGravity)
 {
+    body->velocity.x += body->acceleration.x;
+    body->acceleration.x = 0;
     if (body->velocity.x == 0)
         return;
     // Apply friction

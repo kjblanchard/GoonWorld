@@ -15,7 +15,7 @@ public class Goomba : GameObject
         _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { BodyType = (int)BodyTypes.Goomba, GravityEnabled = true };
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         AddComponent(_drawComponent, _physicsComponent);
-        _drawComponent.Color = new Color(0, 0, 255, 0);
+        _drawComponent.Color = new Color(0, 0, 255, 255);
     }
 
     public override void Update()

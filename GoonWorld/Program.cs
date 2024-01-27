@@ -11,6 +11,7 @@ class Program
 {
     { "Player", (data) => new Player(data) },
     { "Enemy", (data) => new Goomba(data) },
+    { "DeathBox", (data) => new DeathBox(data) },
 };
     static void Main()
     {

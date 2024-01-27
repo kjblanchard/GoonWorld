@@ -18,6 +18,7 @@ typedef struct gpBody
     int bodyNum;
     int bodyType;
     gpBB boundingBox;
+    gpVec acceleration;
     gpVec velocity;
     int numOverlappingBodies;
     int lastFrameNumOverlappingBodies;

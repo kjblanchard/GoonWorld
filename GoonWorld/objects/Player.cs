@@ -8,7 +8,7 @@ public class Player : ObjectBase<Player>
     private DrawComponent _drawComponent;
     private bool _isJumping;
     private bool _canJump;
-    private bool _facingRight;
+    // private bool _facingRight;
     private int _jumpVelocity = 5;
     private float _currentJumpTime;
     private float _maxJumpTime = 0.25f;
@@ -24,6 +24,7 @@ public class Player : ObjectBase<Player>
         _physicsComponent.BodyType = (int)BodyTypes.Player;
         AddComponent(_keyboardComponent, _drawComponent);
         _physicsComponent.AddOverlapBeginFunc<Goomba>((int)BodyTypes.Goomba, PlayerGoombaOverlap);
+        _physicsComponent.AddOverlapBeginFunc<DeathBox>((int)BodyTypes.DeathBox, PlayerDeathBoxOverlap);
     }
 
     public void PlayerGoombaOverlap(Goomba goomba, ref Overlap overlap)
@@ -35,6 +36,12 @@ public class Player : ObjectBase<Player>
         }
     }
 
+    public void PlayerDeathBoxOverlap(DeathBox deathbox, ref Overlap overlap)
+    {
+            _physicsComponent.Velocity.Y = -200;
+            // _canJump = true;
+    }
+
     public static void CreateAnimations()
     {
         _animator.LoadAnimationFile("mario");
@@ -44,18 +51,20 @@ public class Player : ObjectBase<Player>
         _animator.AddAnimationTransition("walk", "jump", ShouldJumpAnim);
         _animator.AddAnimationTransition("jump", "idle", ShouldIdleFromFallAnim);
         _animator.AddAnimationTransition("jump", "walk", ShouldRunFromFallAnim);
+        _animator.AddAnimationTransition("walk", "turn", ShouldTurnFromWalk);
+        _animator.AddAnimationTransition("turn", "walk", ShouldWalkFromTurn);
     }
 
     private void HandleInput()
     {
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadLeft))
         {
-            _physicsComponent.Velocity.X -= 15;
+            _physicsComponent.Acceleration.X -= 15;
 
         }
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadRight))
         {
-            _physicsComponent.Velocity.X += 15;
+            _physicsComponent.Acceleration.X += 15;
         }
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.A))
         {
@@ -121,12 +130,12 @@ public class Player : ObjectBase<Player>
     }
     public static bool ShouldTurnFromWalk(Player player)
     {
-        return true;
+        return player._physicsComponent.Velocity.X * player._physicsComponent.Acceleration.X < 0;
 
     }
     public static bool ShouldWalkFromTurn(Player player)
     {
-        return true;
+        return player._physicsComponent.Velocity.X * player._physicsComponent.Acceleration.X >= 0;
 
     }
     public static bool ShouldIdleFromFallAnim(Player player)
