@@ -34,15 +34,25 @@ public class Player : ObjectBase<Player>
             _physicsComponent.Acceleration.Y -= 500;
             _canJump = true;
         }
+        else
+        {
+            Die();
+        }
     }
 
     public void PlayerDeathBoxOverlap(DeathBox deathbox, ref Overlap overlap)
+    {
+        Die();
+    }
+    private void Die()
     {
         if (_isDead)
             return;
         _isDead = true;
         _physicsComponent.StaticCollisionEnabled = false;
-        _physicsComponent.Acceleration.Y = -200;
+        _physicsComponent.Velocity.Y = -100;
+        _physicsComponent.Velocity.X = 0;
+
     }
 
     public static void CreateAnimations()
