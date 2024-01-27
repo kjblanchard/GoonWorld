@@ -29,7 +29,8 @@ public class Player : ObjectBase<Player>
 
     public void PlayerGoombaOverlap(Goomba goomba, ref Overlap overlap)
     {
-        if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
+
+        if ( !_isDead && overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
         {
             _physicsComponent.Acceleration.Y -= 500;
             _canJump = true;

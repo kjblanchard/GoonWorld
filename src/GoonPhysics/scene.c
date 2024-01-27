@@ -22,6 +22,7 @@ static void CheckForNonStaticOverlaps(gpBody *body, int direction);
 
 void gpSceneUpdate(gpScene *scene, float gameTime)
 {
+    // printf("Physics update\n");
     gpSceneGravity sceneGravity;
     sceneGravity.sceneGravity = scene->gravity;
     // sceneGravity.sceneFriction = 2.25f;
@@ -44,7 +45,7 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
         body->numOverlappingBodies = 0;
         ApplyYVelocity(body, gameTime);
         ApplyXVelocity(body, gameTime);
-        // CheckForNonStaticOverlaps(body, gameTime);
+        CheckForNonStaticOverlaps(body, gameTime);
     }
 }
 
@@ -91,7 +92,7 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
                 gpBodyAddOverlap(body, staticBody, direction);
             }
         }
-        CheckForNonStaticOverlaps(body, direction);
+        // CheckForNonStaticOverlaps(body, direction);
 
         // For body in bodies, if collides,
         // then send out notify for subscribers with info of collision bounding box and body num
@@ -166,7 +167,7 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
             shouldStep = 0;
         }
     }
-    CheckForNonStaticOverlaps(body, direction);
+    // CheckForNonStaticOverlaps(body, direction);
 }
 
 gpScene *gpInitScene(void)
