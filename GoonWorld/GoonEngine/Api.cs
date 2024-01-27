@@ -111,6 +111,10 @@ public static class Api
     }
     public static class Sound
     {
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern IntPtr BgmLoad(string filename, float begin, float end);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern int BgmPlay(IntPtr bgm, float volume);
 
         [DllImport("../build/lib/libSupergoonEngine")]
         public static extern IntPtr LoadSfxHelper(string filename);

@@ -58,7 +58,7 @@ public class Player : ObjectBase<Player>
         Game.Global.Sound.PlayBgm("dead");
         _isDead = true;
         _physicsComponent.StaticCollisionEnabled = false;
-        _physicsComponent.Velocity.Y = -100;
+        _physicsComponent.Velocity.Y = -40;
         _physicsComponent.Velocity.X = 0;
 
     }
@@ -134,7 +134,7 @@ public class Player : ObjectBase<Player>
         else if (_canJump)
         {
             // Debug.InfoMessage("Big jump");
-            Api.Sound.PlaySfxOneShot(jumpSfx.LoadedSfxPtr, 1.0f);
+            Game.Global.Sound.PlaySfx(jumpSfx);
             _currentJumpTime = 0;
             _isJumping = true;
             _canJump = false;

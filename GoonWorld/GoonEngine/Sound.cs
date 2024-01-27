@@ -1,7 +1,5 @@
-using System.Runtime.InteropServices;
-using System.Linq;
-using System.Collections.Generic;
-using System;
+using GoonEngine.Content;
+
 namespace GoonEngine;
 public class Sound
 {
@@ -24,7 +22,7 @@ public class Sound
             Debug.WarnMessage($"Could no find {title} in appsettings");
             return false;
         }
-        var bgmPtr = BgmLoad(foundMusic.name, foundMusic.startLoop, foundMusic.endLoop);
+        var bgmPtr = Api.Sound.BgmLoad(foundMusic.name, foundMusic.startLoop, foundMusic.endLoop);
         if (bgmPtr == IntPtr.Zero)
         {
             Debug.WarnMessage($"Could no load {foundMusic.name} ");
@@ -38,21 +36,21 @@ public class Sound
     {
         if (LoadedBgms.TryGetValue(filename, out var bgm))
         {
-            BgmPlay(bgm, volumeOverride ?? _soundConfig.musicVolume);
+            Api.Sound.BgmPlay(bgm, volumeOverride ?? _soundConfig.musicVolume);
         }
         else
         {
             Debug.WarnMessage($"BGM is not loaded {filename}");
         }
-        // BgmPlay(LoadedBgms[filename], volumeOverride ?? _soundConfig.musicVolume);
+    }
+    public void PlaySfx(Sfx sfx, float? volumeOverride = null)
+    {
+        Api.Sound.PlaySfxOneShot(sfx.LoadedSfxPtr, volumeOverride ?? _soundConfig.musicVolume);
+
     }
 
 
 
-    [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern IntPtr BgmLoad(string filename, float begin, float end);
-    [DllImport("../build/lib/libSupergoonEngine")]
-    private static extern int BgmPlay(IntPtr bgm, float volume);
 
 
 }
