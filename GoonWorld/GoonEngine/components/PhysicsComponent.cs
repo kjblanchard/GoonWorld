@@ -16,6 +16,7 @@ public class PhysicsComponent : Component
     {
         get => Body.GravityEnabled == 0 ? false : true;
         set => Body.GravityEnabled = value ? 1 : 0;
+        // set => GravityEnabled = Body.GravityEnabled = value ? 1 : 0;
     }
     public HashSet<int> lastFrameOverlaps = new();
     private unsafe ref Body Body => ref *(Body*)_bodyPtr;
@@ -26,6 +27,9 @@ public class PhysicsComponent : Component
     {
         _bodyPtr = Api.Physics.Body.gpBodyNew(bodyRectangle);
         var bodyNum = Api.Physics.Scene.gpSceneAddBody(_bodyPtr);
+        Debug.InfoMessage($"My gravity is {Body.GravityEnabled}");
+        Body.GravityEnabled = 0;
+        Debug.InfoMessage($"My gravity is {Body.GravityEnabled}");
         _bodyNumToGameObjectDictionary[bodyNum] = this;
         _physicsComponents.Add(this);
     }
@@ -54,6 +58,8 @@ public class PhysicsComponent : Component
         {
             if (component.Parent == null)
                 return;
+            // if (component.BodyType == (int)BodyTypes.DeathBox)
+            //     return;
             component.Parent.Location.X = (int)component.BoundingBox.X;
             component.Parent.Location.Y = (int)component.BoundingBox.Y;
             component.lastFrameOverlaps.Clear();

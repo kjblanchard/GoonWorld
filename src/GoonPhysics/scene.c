@@ -37,6 +37,12 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
         gpBody *body = _currentBodies[i];
         if (!body->gravityEnabled)
             continue;
+        if (body->bodyType == 4)
+        {
+            printf("What in the world, gravity should be disabled on body type 4 and instead it is %d\n", body->gravityEnabled);
+            body->gravityEnabled = false;
+            continue;
+        }
         memcpy(body->lastFrameOverlaps, body->overlaps, sizeof(gpOverlap) * body->numOverlappingBodies);
         body->lastFrameNumOverlappingBodies = body->numOverlappingBodies;
         gpGravityBodyStep(body, &sceneGravity, gameTime);

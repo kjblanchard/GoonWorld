@@ -8,7 +8,7 @@ public struct Body
     public BoundingBox BoundingBox;
     public Vector2 Acceleration;
     public Vector2 Velocity;
-    public int NumOverlappingBodies, GravityEnabled;
+    public int NumOverlappingBodies, LastFrameNumOverlappingBodies, GravityEnabled;
     public IntPtr Overlaps;
 
     unsafe Overlap* GetOverlapNum(int overlapNum)
