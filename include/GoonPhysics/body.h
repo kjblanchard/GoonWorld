@@ -17,7 +17,7 @@ typedef struct gpBody
 {
     int bodyNum;
     int bodyType;
-    // int blockingBody;
+    int staticCollisionEnabled;
     gpBB boundingBox;
     gpVec acceleration;
     gpVec velocity;

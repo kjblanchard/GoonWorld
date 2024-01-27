@@ -38,8 +38,11 @@ public class Player : ObjectBase<Player>
 
     public void PlayerDeathBoxOverlap(DeathBox deathbox, ref Overlap overlap)
     {
+        if (_isDead)
+            return;
         _isDead = true;
-        _physicsComponent.Velocity.Y = -100;
+        _physicsComponent.StaticCollisionEnabled = false;
+        _physicsComponent.Acceleration.Y = -200;
     }
 
     public static void CreateAnimations()

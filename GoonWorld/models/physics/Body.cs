@@ -4,7 +4,7 @@ namespace GoonEngine.Models;
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
 public struct Body
 {
-    public int bodyNum, bodyType;
+    public int BodyNum, BodyType, StaticCollisionEnabled;
     public BoundingBox BoundingBox;
     public Vector2 Acceleration;
     public Vector2 Velocity;

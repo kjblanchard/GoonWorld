@@ -6,17 +6,21 @@ public class PhysicsComponent : Component
     private static List<PhysicsComponent> _physicsComponents = new();
 
     private static Dictionary<int, PhysicsComponent> _bodyNumToGameObjectDictionary = new();
-    public ref int BodyType => ref Body.bodyType;
+    public ref int BodyType => ref Body.BodyType;
     private List<Api.Physics.Body.BodyOverlapDelegate> Delegates = new();
     public ref Vector2 Acceleration => ref Body.Acceleration;
     public ref Vector2 Velocity => ref Body.Velocity;
     public bool IsOnGround => Api.Physics.Body.gpBodyIsOnGround(ref Body);
     public ref BoundingBox BoundingBox => ref Body.BoundingBox;
+    public bool StaticCollisionEnabled
+    {
+        get => Body.StaticCollisionEnabled == 0 ? false : true;
+        set => Body.StaticCollisionEnabled = value ? 1 : 0;
+    }
     public bool GravityEnabled
     {
         get => Body.GravityEnabled == 0 ? false : true;
         set => Body.GravityEnabled = value ? 1 : 0;
-        // set => GravityEnabled = Body.GravityEnabled = value ? 1 : 0;
     }
     public HashSet<int> lastFrameOverlaps = new();
     private unsafe ref Body Body => ref *(Body*)_bodyPtr;
@@ -41,9 +45,9 @@ public class PhysicsComponent : Component
         Api.Physics.Body.BodyOverlapDelegate function = (ref Body body, ref Body overlapBody, ref Overlap overlap) =>
         {
 
-            if (body.bodyNum != Body.bodyNum)
+            if (body.BodyNum != Body.BodyNum)
                 return;
-            var overlapInstance = GetGameObjectWithPhysicsBodyNum<T>(overlapBody.bodyNum);
+            var overlapInstance = GetGameObjectWithPhysicsBodyNum<T>(overlapBody.BodyNum);
             if (overlapInstance == null)
                 return;
             func(overlapInstance, ref overlap);

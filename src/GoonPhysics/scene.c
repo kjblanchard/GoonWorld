@@ -37,12 +37,6 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
         gpBody *body = _currentBodies[i];
         if (!body->gravityEnabled)
             continue;
-        if (body->bodyType == 4)
-        {
-            printf("What in the world, gravity should be disabled on body type 4 and instead it is %d\n", body->gravityEnabled);
-            body->gravityEnabled = false;
-            continue;
-        }
         memcpy(body->lastFrameOverlaps, body->overlaps, sizeof(gpOverlap) * body->numOverlappingBodies);
         body->lastFrameNumOverlappingBodies = body->numOverlappingBodies;
         gpGravityBodyStep(body, &sceneGravity, gameTime);
@@ -89,9 +83,12 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
             int intersect = gpIntersectBoxBox(&body->boundingBox, &staticBody->boundingBox);
             if (intersect)
             {
-                gpResolveOverlapY(&body->boundingBox, &staticBody->boundingBox);
+                if (body->staticCollisionEnabled)
+                {
+                    gpResolveOverlapY(&body->boundingBox, &staticBody->boundingBox);
+                    shouldStep = 0;
+                }
                 gpBodyAddOverlap(body, staticBody, direction);
-                shouldStep = 0;
             }
         }
         CheckForNonStaticOverlaps(body, direction);
@@ -141,9 +138,12 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
             if (intersect)
             {
 
-                gpResolveOverlapX(&body->boundingBox, &staticBody->boundingBox);
+                if (body->staticCollisionEnabled)
+                {
+                    gpResolveOverlapX(&body->boundingBox, &staticBody->boundingBox);
+                    shouldStep = 0;
+                }
                 gpBodyAddOverlap(body, staticBody, direction);
-                shouldStep = 0;
             }
         }
 

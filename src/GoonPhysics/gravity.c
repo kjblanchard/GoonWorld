@@ -28,6 +28,8 @@ static void GravityConstraintX(gpBody *body, double deltaTime, gpSceneGravity *s
 
 static void GravityConstraintY(gpBody *body, double gravityStep, gpSceneGravity *sceneGravity)
 {
+    body->velocity.y += body->acceleration.y;
+    body->acceleration.y = 0;
     double step = body->velocity.y + gravityStep;
     if (step >= 0)
     {

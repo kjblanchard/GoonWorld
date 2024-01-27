@@ -12,12 +12,8 @@ public class DeathBox : GameObject
             throw new Exception("Loading a player with no data somehow!");
         Location.X = (int)castedData.x;
         Location.Y = (int)castedData.y;
-        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { BodyType = (int)BodyTypes.DeathBox, GravityEnabled = false };
-        // _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { BodyType = (int)BodyTypes.DeathBox};
-        // _physicsComponent.GravityEnabled = false;
-        _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height) { Color = new Color(255, 0, 0, 255)};
+        _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { BodyType = (int)BodyTypes.DeathBox, GravityEnabled = false, StaticCollisionEnabled = false };
         AddComponent(_physicsComponent);
-        AddComponent(_drawComponent);
     }
 
     public override void Update()
