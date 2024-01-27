@@ -8,7 +8,7 @@ public class Player : ObjectBase<Player>
     private DrawComponent _drawComponent;
     private bool _isJumping;
     private bool _canJump;
-    // private bool _facingRight;
+    private bool _isDead;
     private int _jumpVelocity = 5;
     private float _currentJumpTime;
     private float _maxJumpTime = 0.25f;
@@ -31,15 +31,15 @@ public class Player : ObjectBase<Player>
     {
         if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
         {
-            _physicsComponent.Velocity.Y -= 500;
+            _physicsComponent.Acceleration.Y -= 500;
             _canJump = true;
         }
     }
 
     public void PlayerDeathBoxOverlap(DeathBox deathbox, ref Overlap overlap)
     {
-            _physicsComponent.Velocity.Y = -200;
-            // _canJump = true;
+        _isDead = true;
+        _physicsComponent.Velocity.Y = -100;
     }
 
     public static void CreateAnimations()
@@ -53,10 +53,15 @@ public class Player : ObjectBase<Player>
         _animator.AddAnimationTransition("jump", "walk", ShouldRunFromFallAnim);
         _animator.AddAnimationTransition("walk", "turn", ShouldTurnFromWalk);
         _animator.AddAnimationTransition("turn", "walk", ShouldWalkFromTurn);
+        _animator.AddAnimationTransition("walk", "dead", ShouldDieAnim);
+        _animator.AddAnimationTransition("idle", "dead", ShouldDieAnim);
+        _animator.AddAnimationTransition("jump", "dead", ShouldDieAnim);
     }
 
     private void HandleInput()
     {
+        if (_isDead)
+            return;
         if (_keyboardComponent.IsButtonDown(SdlGameControllerButton.DPadLeft))
         {
             _physicsComponent.Acceleration.X -= 15;
@@ -85,7 +90,7 @@ public class Player : ObjectBase<Player>
     {
         HandleInput();
         _canJump = _physicsComponent.IsOnGround;
-          _animationComponent.Mirror = _physicsComponent.IsOnGround ?   _physicsComponent.Velocity.X >= 0 ? false : true : _animationComponent.Mirror;
+        _animationComponent.Mirror = _physicsComponent.IsOnGround ? _physicsComponent.Velocity.X >= 0 ? false : true : _animationComponent.Mirror;
         base.Update();
     }
 
@@ -114,6 +119,11 @@ public class Player : ObjectBase<Player>
             _physicsComponent.Velocity.Y += _jumpVelocity * 5;
         }
 
+    }
+
+    public static bool ShouldDieAnim(Player player)
+    {
+        return player._isDead;
     }
 
     public static bool ShouldRunAnim(Player player)
