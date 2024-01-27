@@ -1,5 +1,6 @@
 namespace GoonEngine.Objects;
 using GoonEngine.Components;
+using GoonEngine.Content;
 using GoonEngine.Models;
 
 public class Player : ObjectBase<Player>
@@ -13,10 +14,13 @@ public class Player : ObjectBase<Player>
     private float _currentJumpTime;
     private float _maxJumpTime = 0.25f;
 
+    Sfx jumpSfx;
+
     public Player(object data) : base(data)
     {
         if (data is not TiledCS.TiledObject castedData)
             throw new Exception("Loading a player with no data somehow!");
+        jumpSfx = Sfx.LoadSfx("jump.ogg");
         _keyboardComponent = new KeyboardComponent();
         _keyboardComponent.LoadControllerSettingsFromConfig(0);
         _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
@@ -30,7 +34,7 @@ public class Player : ObjectBase<Player>
     public void PlayerGoombaOverlap(Goomba goomba, ref Overlap overlap)
     {
 
-        if ( !_isDead && overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
+        if (!_isDead && overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
         {
             _physicsComponent.Acceleration.Y -= 500;
             _canJump = true;
@@ -49,6 +53,9 @@ public class Player : ObjectBase<Player>
     {
         if (_isDead)
             return;
+        Api.Sound.SetPlayerLoops(0);
+        Game.Global.Sound.LoadBgm("dead");
+        Game.Global.Sound.PlayBgm("dead");
         _isDead = true;
         _physicsComponent.StaticCollisionEnabled = false;
         _physicsComponent.Velocity.Y = -100;
@@ -127,6 +134,7 @@ public class Player : ObjectBase<Player>
         else if (_canJump)
         {
             // Debug.InfoMessage("Big jump");
+            Api.Sound.PlaySfxOneShot(jumpSfx.LoadedSfxPtr, 1.0f);
             _currentJumpTime = 0;
             _isJumping = true;
             _canJump = false;

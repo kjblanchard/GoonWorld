@@ -33,6 +33,7 @@ public class Game
         Api.Engine.geGameSetUpdateFunc(_updateFunc);
         Api.Engine.geGameSetDrawFunc(_drawFunc);
         Api.Rendering.CreateWindowAndRenderer(Config.Config.windowConfig.windowSize.x, Config.Config.windowConfig.windowSize.y, Config.Config.windowConfig.title);
+        Api.Sound.InitializeSound();
         return true;
     }
     public static void Update(double deltaTime)

@@ -109,6 +109,18 @@ public static class Api
         [DllImport("../build/lib/libSupergoonEngine")]
         public static extern IntPtr CreateTextureFromFile(string filename);
     }
+    public static class Sound
+    {
+
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern IntPtr LoadSfxHelper(string filename);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern int PlaySfxOneShot(IntPtr sfx, float volume);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void SetPlayerLoops(int loops);
+        [DllImport("../build/lib/libSupergoonEngine")]
+        public static extern void InitializeSound();
+    }
     public static class Components
     {
         public static class TagComponent

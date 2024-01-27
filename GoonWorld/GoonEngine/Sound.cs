@@ -19,15 +19,15 @@ public class Sound
     public bool LoadBgm(string title)
     {
         var foundMusic = _soundConfig.musicToLoad.FirstOrDefault(music => music.title == title);
-        if(foundMusic == null)
+        if (foundMusic == null)
         {
-            // Could not find debug
+            Debug.WarnMessage($"Could no find {title} in appsettings");
             return false;
         }
         var bgmPtr = BgmLoad(foundMusic.name, foundMusic.startLoop, foundMusic.endLoop);
         if (bgmPtr == IntPtr.Zero)
         {
-            // Invalid bgm ptr
+            Debug.WarnMessage($"Could no load {foundMusic.name} ");
             return false;
         }
         LoadedBgms[title] = bgmPtr;
@@ -36,7 +36,15 @@ public class Sound
 
     public void PlayBgm(string filename, float? volumeOverride = null)
     {
-        BgmPlay(LoadedBgms[filename], volumeOverride ?? _soundConfig.musicVolume);
+        if (LoadedBgms.TryGetValue(filename, out var bgm))
+        {
+            BgmPlay(bgm, volumeOverride ?? _soundConfig.musicVolume);
+        }
+        else
+        {
+            Debug.WarnMessage($"BGM is not loaded {filename}");
+        }
+        // BgmPlay(LoadedBgms[filename], volumeOverride ?? _soundConfig.musicVolume);
     }
 
 

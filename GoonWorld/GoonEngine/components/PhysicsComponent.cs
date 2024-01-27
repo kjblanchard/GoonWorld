@@ -31,9 +31,7 @@ public class PhysicsComponent : Component
     {
         _bodyPtr = Api.Physics.Body.gpBodyNew(bodyRectangle);
         var bodyNum = Api.Physics.Scene.gpSceneAddBody(_bodyPtr);
-        Debug.InfoMessage($"My gravity is {Body.GravityEnabled}");
         Body.GravityEnabled = 0;
-        Debug.InfoMessage($"My gravity is {Body.GravityEnabled}");
         _bodyNumToGameObjectDictionary[bodyNum] = this;
         _physicsComponents.Add(this);
     }

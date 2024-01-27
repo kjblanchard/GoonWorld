@@ -4,10 +4,10 @@
 
 static SDL_Event event;
 
-Bgm* BgmLoad(const char* filename, float begin, float end)
+Bgm *BgmLoad(const char *filename, float begin, float end)
 {
     // These should be removed, and used to simplify
-    InitializeSound();
+    // InitializeSound();
     while (SDL_PollEvent(&event))
     {
         switch (event.type)
@@ -29,7 +29,7 @@ Bgm* BgmLoad(const char* filename, float begin, float end)
     Bgm *bgm = LoadBgm(filename, begin, end);
     if (!bgm)
     {
-        fprintf(stderr,"Could not load BGM %s", filename);
+        fprintf(stderr, "Could not load BGM %s", filename);
         return 1;
     }
     int result = PreLoadBgm(bgm);
@@ -37,43 +37,24 @@ Bgm* BgmLoad(const char* filename, float begin, float end)
     return bgm;
 }
 
-// static int SfxLoad(lua_State *L)
-// {
-//     // Arg1: String, filename
-//     const char *filename = luaL_checkstring(L, 1);
-//     Sfx *sfx = LoadSfxHelper(filename);
-//     if (!sfx)
-//     {
-//         LogError("Could not load Sfx %s", filename);
-//         lua_pushnil(L);
-//         return 1;
-//     }
-//     int result = LoadSfx(sfx);
-//     // Returns BGM pointer, or nil, which should be free'd afterwards.
-//     lua_pushlightuserdata(L, sfx);
-//     return 1;
-// }
-// static int SfxPlay(lua_State *L)
-// {
-//     // Arg1: sfx* bgm to play
-//     // Arg2  number - volume
-//     if (!lua_islightuserdata(L, 1))
-//     {
-//         LogError("Bad argument passed into playsfx, expected a userdata ptr");
-//         return 0;
-//     }
-//     float volume = luaL_checknumber(L, 2);
-//     Sfx *sfx = (Sfx *)lua_touserdata(L, 1);
-//     if (!sfx)
-//     {
-//         LogError("Pointer passed to playsfx is not able to be casted to a sfx");
-//         return 0;
-//     }
-//     PlaySfxOneShot(sfx, volume);
-//     return 0;
-// }
+static Sfx *SfxLoad(const char *filename)
+{
+    Sfx *sfx = LoadSfxHelper(filename);
+    if (!sfx)
+    {
+        // LogError("Could not load Sfx %s", filename);
+        return NULL;
+    }
+    int result = LoadSfx(sfx);
+    return sfx;
+}
+static int SfxPlay(Sfx *sfx, float volume)
+{
+    PlaySfxOneShot(sfx, volume);
+    return 0;
+}
 
-int BgmPlay(Bgm* bgm, float volume)
+int BgmPlay(Bgm *bgm, float volume)
 {
     // Arg1: Bgm* bgm to play
     // Arg2  number - volume
