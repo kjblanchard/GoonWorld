@@ -48,7 +48,6 @@ public class Goomba : ObjectBase<Goomba>
 
     public override void Update()
     {
-        Debug.InfoMessage("Goomba Update");
         base.Update();
         if (!_isDead)
         {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.6" orientation="orthogonal" renderorder="right-down" width="64" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="519">
+<map version="1.8" tiledversion="1.8.6" orientation="orthogonal" renderorder="right-down" width="64" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="520">
  <properties>
   <property name="backup" type="class" propertytype="Bgm">
    <properties>
@@ -110,7 +110,7 @@
   </layer>
  </group>
  <objectgroup id="5" name="entities">
-  <object id="147" name="PlayerStart" type="Player" gid="30" x="16" y="160" width="32" height="32">
+  <object id="147" name="PlayerStart" type="Player" gid="30" x="16" y="192" width="32" height="32">
    <properties>
     <property name="Player" type="class" propertytype="Player"/>
    </properties>
@@ -118,6 +118,7 @@
   <object id="166" name="EnemyTest" type="Enemy" gid="203" x="272" y="80" width="32" height="32"/>
   <object id="174" name="WinBox" type="WinBox" gid="240" x="976" y="160" width="48" height="64"/>
   <object id="518" type="DeathBox" gid="189" x="0" y="288" width="1024" height="16"/>
+  <object id="519" name="BrickTest" type="Brick" gid="203" x="96" y="128" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="13" name="solid">
   <object id="149" x="0" y="240">

@@ -12,6 +12,7 @@ class Program
     { "Player", (data) => new Player(data) },
     { "Enemy", (data) => new Goomba(data) },
     { "DeathBox", (data) => new DeathBox(data) },
+    // { "Brick", (data) => new Brick(data) },
 };
     static void Main()
     {
