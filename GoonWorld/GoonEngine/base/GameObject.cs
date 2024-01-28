@@ -1,4 +1,3 @@
-using GoonEngine.Components;
 using GoonEngine.Interfaces;
 namespace GoonEngine;
 
@@ -19,6 +18,8 @@ public abstract class GameObject : IStart, IUpdate
     private List<Component> _components = new();
     public ref Point Location => ref _location;
     private Point _location;
+    public bool Enabled => _enabled;
+    private bool _enabled = true;
 
     public GameObject()
     {
@@ -65,7 +66,14 @@ public abstract class GameObject : IStart, IUpdate
 
     public static void UpdateAllGameObjects()
     {
-        UpdateGameObjects.ForEach(gameobject => gameobject.Update());
+        UpdateGameObjects.ForEach(gameobject =>
+        {
+            if (gameobject.Enabled)
+            {
+                gameobject.Update();
+            }
+        }
+        );
     }
     public static void DrawGameObjectBoxes()
     {
