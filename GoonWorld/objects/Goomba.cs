@@ -1,12 +1,13 @@
 using GoonEngine.Models;
 
 namespace GoonEngine.Objects;
-// using GoonEngine.Components;
 
 public class Goomba : ObjectBase<Goomba>
 {
     private bool _movingRight = false;
-    private float _moveSpeed = 40;
+    private const float _moveSpeed = 40;
+    private const float _showDeadTime = 0.20f;
+    private float _currentDeadTime = 0;
 
     public Goomba(object data) : base(data)
     {
@@ -27,9 +28,11 @@ public class Goomba : ObjectBase<Goomba>
             case (int)OverlapDirections.gpOverlapUp:
                 break;
             case (int)OverlapDirections.gpOverlapLeft:
+                _animationComponent.Mirror = false;
                 _movingRight = true;
                 break;
             case (int)OverlapDirections.gpOverlapRight:
+                _animationComponent.Mirror = true;
                 _movingRight = false;
                 break;
         }
@@ -38,11 +41,33 @@ public class Goomba : ObjectBase<Goomba>
     public static void CreateAnimations()
     {
         _animator.LoadAnimationFile("goomba");
+        _animator.AddAnimationTransition("walk", "dead", WalkToDeadAnim);
     }
+
+    public static bool WalkToDeadAnim(Goomba goomba) => goomba._isDead;
 
     public override void Update()
     {
+        Debug.InfoMessage("Goomba Update");
         base.Update();
-        _physicsComponent.Velocity.X = _movingRight ? _moveSpeed : -_moveSpeed;
+        if (!_isDead)
+        {
+            _physicsComponent.Velocity.X = _movingRight ? _moveSpeed : -_moveSpeed;
+        }
+        else
+        {
+            _currentDeadTime += (float)DeltaTime.TotalSeconds;
+            if (_currentDeadTime >= _showDeadTime)
+            {
+                Enabled = false;
+                // _enabled = false;
+
+            }
+        }
+    }
+    public override void TakeDamage()
+    {
+        _physicsComponent.Velocity.X = 0;
+        _isDead = true;
     }
 }

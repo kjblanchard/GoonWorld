@@ -9,7 +9,6 @@ public class Player : ObjectBase<Player>
     private DrawComponent _drawComponent;
     private bool _isJumping;
     private bool _canJump;
-    private bool _isDead;
     private int _jumpVelocity = 5;
     private float _currentJumpTime;
     private float _maxJumpTime = 0.25f;
@@ -33,11 +32,14 @@ public class Player : ObjectBase<Player>
 
     public void PlayerGoombaOverlap(Goomba goomba, ref Overlap overlap)
     {
+        if (_isDead || goomba.IsDead)
+            return;
 
-        if (!_isDead && overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
+        if (overlap.OverlapDirection == (int)OverlapDirections.gpOverlapDown)
         {
             _physicsComponent.Acceleration.Y -= 500;
             _canJump = true;
+            goomba.TakeDamage();
         }
         else
         {

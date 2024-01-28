@@ -45,7 +45,6 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
         body->numOverlappingBodies = 0;
         ApplyYVelocity(body, gameTime);
         ApplyXVelocity(body, gameTime);
-        CheckForNonStaticOverlaps(body, gameTime);
     }
 }
 
@@ -57,6 +56,14 @@ static void CheckForNonStaticOverlaps(gpBody *body, int direction)
         gpBody *overlapBody = _currentBodies[i];
         if (overlapBody == body)
             continue;
+        // Check to see if this overlap already happened (this happens inside of static body)
+        for (size_t i = 0; i < body->numOverlappingBodies; i++)
+        {
+            if (body->overlaps[i].overlapBody == overlapBody)
+            {
+                continue;
+            }
+        }
         int intersect = gpIntersectBoxBox(&body->boundingBox, &overlapBody->boundingBox);
         if (intersect)
         {
@@ -92,7 +99,7 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
                 gpBodyAddOverlap(body, staticBody, direction);
             }
         }
-        // CheckForNonStaticOverlaps(body, direction);
+        CheckForNonStaticOverlaps(body, direction);
 
         // For body in bodies, if collides,
         // then send out notify for subscribers with info of collision bounding box and body num
@@ -167,7 +174,7 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
             shouldStep = 0;
         }
     }
-    // CheckForNonStaticOverlaps(body, direction);
+    CheckForNonStaticOverlaps(body, direction);
 }
 
 gpScene *gpInitScene(void)

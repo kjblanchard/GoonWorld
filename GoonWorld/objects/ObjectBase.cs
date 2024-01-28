@@ -2,12 +2,14 @@ using GoonEngine.Components;
 using GoonEngine.Models;
 namespace GoonEngine.Objects;
 
-public abstract class ObjectBase<T> : GameObject, IAnimate where T: GameObject
+public abstract class ObjectBase<T> : GameObject, IAnimate, ITakeDamage where T: GameObject
 {
 
     protected static Animator<T> _animator = new();
     protected PhysicsComponent _physicsComponent;
     protected AnimationComponent<T> _animationComponent;
+    public bool IsDead => _isDead;
+    protected bool _isDead;
 
     public ObjectBase(object data): base()
     {
@@ -19,6 +21,8 @@ public abstract class ObjectBase<T> : GameObject, IAnimate where T: GameObject
         _animationComponent = new AnimationComponent<T>(_animator);
         AddComponent(_physicsComponent, _animationComponent);
     }
+
+    public virtual void TakeDamage() { }
 
 
 }

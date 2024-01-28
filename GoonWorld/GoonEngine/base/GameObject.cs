@@ -18,8 +18,21 @@ public abstract class GameObject : IStart, IUpdate
     private List<Component> _components = new();
     public ref Point Location => ref _location;
     private Point _location;
-    public bool Enabled => _enabled;
-    private bool _enabled = true;
+    // public bool Enabled => _enabled;
+    public bool Enabled
+    {
+        get => _enabled;
+        set
+        {
+            _enabled = value;
+            foreach(var component in _components)
+            {
+                component.Enabled = value;
+            }
+
+        }
+    }
+    protected bool _enabled = true;
 
     public GameObject()
     {
@@ -77,7 +90,16 @@ public abstract class GameObject : IStart, IUpdate
     }
     public static void DrawGameObjectBoxes()
     {
-        CurrentDrawComponents.ForEach(spriteComponent => spriteComponent.Draw());
+        // CurrentDrawComponents.ForEach(spriteComponent => spriteComponent.Draw());
+        CurrentDrawComponents.ForEach(
+            spriteComponent =>
+            {
+                if (spriteComponent.Enabled)
+                {
+                    spriteComponent.Draw();
+                }
+            }
+        );
     }
 
     public static void DrawGameObjectDebugBoxes()
