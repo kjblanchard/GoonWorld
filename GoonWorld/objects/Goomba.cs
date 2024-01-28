@@ -1,10 +1,12 @@
+using GoonEngine.Models;
+
 namespace GoonEngine.Objects;
 // using GoonEngine.Components;
 
 public class Goomba : ObjectBase<Goomba>
 {
-    // private DrawComponent _drawComponent;
-    // protected PhysicsComponent _physicsComponent;
+    private bool _movingRight = false;
+    private float _moveSpeed = 40;
 
     public Goomba(object data) : base(data)
     {
@@ -14,12 +16,23 @@ public class Goomba : ObjectBase<Goomba>
         Location.Y = (int)castedData.y;
         _animationComponent.SizeMultiplier = 2;
         _physicsComponent.BodyType = (int)BodyTypes.Goomba;
-        // _physicsComponent = new PhysicsComponent(new Models.BoundingBox(castedData.x, castedData.y, castedData.width, castedData.height)) { BodyType = (int)BodyTypes.Goomba, GravityEnabled = true };
-        // _animationComponent = new Anima
-        // _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
-        // AddComponent(_drawComponent, _physicsComponent);
-        // AddComponent(_drawComponent, _physicsComponent);
-        // _drawComponent.Color = new Color(0, 0, 255, 255);
+        _physicsComponent.AddStaticBodyOverlapBeginFunc(GoombaStaticBodyOverlap);
+    }
+
+    public void GoombaStaticBodyOverlap(ref Body staticBody, ref Overlap overlap)
+    {
+        switch (overlap.OverlapDirection)
+        {
+            case (int)OverlapDirections.gpOverlapDown:
+            case (int)OverlapDirections.gpOverlapUp:
+                break;
+            case (int)OverlapDirections.gpOverlapLeft:
+                _movingRight = true;
+                break;
+            case (int)OverlapDirections.gpOverlapRight:
+                _movingRight = false;
+                break;
+        }
     }
 
     public static void CreateAnimations()
@@ -30,5 +43,6 @@ public class Goomba : ObjectBase<Goomba>
     public override void Update()
     {
         base.Update();
+        _physicsComponent.Velocity.X = _movingRight ? _moveSpeed : -_moveSpeed;
     }
 }

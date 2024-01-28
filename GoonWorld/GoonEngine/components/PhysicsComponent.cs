@@ -37,6 +37,18 @@ public class PhysicsComponent : Component
     }
 
     public delegate void OverlapDelegate<T>(T overlapType, ref Overlap overlap);
+    public delegate void StaticOverlapDelegate(ref Body body, ref Overlap overlap);
+    public void AddStaticBodyOverlapBeginFunc(StaticOverlapDelegate func)
+    {
+        Api.Physics.Body.BodyOverlapDelegate function = (ref Body body, ref Body overlapBody, ref Overlap overlap) =>
+        {
+            if (body.BodyNum != Body.BodyNum)
+                return;
+            func(ref overlapBody, ref overlap);
+        };
+        Delegates.Add(function);
+        Api.Physics.Body.gpBodyAddOverlapBeginFunc(BodyType, (int)BodyTypes.Static, function);
+    }
     //TODO we need a way to be able to remove these delegates..?
     public void AddOverlapBeginFunc<T>(int targetBodyType, OverlapDelegate<T> func) where T : GameObject
     {

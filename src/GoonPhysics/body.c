@@ -59,15 +59,6 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
 {
     if (body->numOverlappingBodies >= MAX_OVERLAP_BODIES)
         return;
-    // Check to see if we already overlapped with this body.
-    // for (size_t i = 0; i < body->numOverlappingBodies; i++)
-    // {
-    //     if (body->overlaps[i].overlapBody == overlapBody)
-    //     {
-    //         return;
-    //     }
-    // }
-
     bool newOverlap = true;
     for (size_t i = 0; i < body->lastFrameNumOverlappingBodies; i++)
     {
