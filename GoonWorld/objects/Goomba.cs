@@ -1,3 +1,4 @@
+using GoonEngine.Components;
 using GoonEngine.Models;
 
 namespace GoonEngine.Objects;
@@ -8,6 +9,7 @@ public class Goomba : ObjectBase<Goomba>
     private const float _moveSpeed = 40;
     private const float _showDeadTime = 0.20f;
     private float _currentDeadTime = 0;
+    DrawComponent _drawComponent;
 
     public Goomba(object data) : base(data)
     {
@@ -15,9 +17,11 @@ public class Goomba : ObjectBase<Goomba>
             throw new Exception("Loading a player with no data somehow!");
         Location.X = (int)castedData.x;
         Location.Y = (int)castedData.y;
+        _drawComponent = new DrawComponent((int)castedData.width, (int)castedData.height);
         _animationComponent.SizeMultiplier = 2;
         _physicsComponent.BodyType = (int)BodyTypes.Goomba;
-        _physicsComponent.AddStaticBodyOverlapBeginFunc(GoombaStaticBodyOverlap);
+        AddComponent(_drawComponent);
+        // _physicsComponent.AddStaticBodyOverlapBeginFunc(GoombaStaticBodyOverlap);
     }
 
     public void GoombaStaticBodyOverlap(ref Body staticBody, ref Overlap overlap)

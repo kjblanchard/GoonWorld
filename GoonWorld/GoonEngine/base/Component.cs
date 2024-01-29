@@ -7,7 +7,6 @@ public abstract class Component
         get => _enabled;
         set
         {
-            Debug.InfoMessage($"Enabled is {value}val");
             _enabled = value;
         }
     }
