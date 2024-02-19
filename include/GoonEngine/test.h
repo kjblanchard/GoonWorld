@@ -1,6 +1,13 @@
 #pragma once
-int Play();
-int GnInitializeEngine();
-void geSetCurrentScene(void* scene);
-void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime));
-void geGameSetDrawFunc(void (*drawFunc)());
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+    int Play();
+    int GnInitializeEngine();
+    void geSetCurrentScene(void *scene);
+    void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime));
+    void geGameSetDrawFunc(void (*drawFunc)());
+#ifdef __cplusplus
+}
+#endif

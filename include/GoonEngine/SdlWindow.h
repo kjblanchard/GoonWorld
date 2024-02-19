@@ -9,7 +9,15 @@
  *
  */
 #pragma once
+typedef struct SDL_Rect SDL_Rect;
+typedef struct SDL_Color SDL_Color;
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-int CreateWindowAndRenderer(unsigned int width, unsigned int height, const char* windowName);
-void DrawDebugRect(SDL_Rect* rect, SDL_Color* color);
-
+    int CreateWindowAndRenderer(unsigned int width, unsigned int height, const char *windowName);
+    void DrawDebugRect(SDL_Rect *rect, SDL_Color *color);
+#ifdef __cplusplus
+}
+#endif
