@@ -12,17 +12,24 @@
 
 #include <GoonPhysics/body.h>
 
-typedef struct gpSceneGravity
+#ifdef __cplusplus
+extern "C"
 {
-    float sceneGravity;
-    float sceneMaxXVelocity;
-    float sceneMinXVelocity;
-    float sceneMaxYVelocity;
-    float sceneMinYVelocity;
-    float sceneFriction;
+#endif
+    typedef struct gpSceneGravity
+    {
+        float sceneGravity;
+        float sceneMaxXVelocity;
+        float sceneMinXVelocity;
+        float sceneMaxYVelocity;
+        float sceneMinYVelocity;
+        float sceneFriction;
 
-} gpSceneGravity;
+    } gpSceneGravity;
 
-// void gpApplyGravity()
-void gpGravityBodyStep(gpBody *body, gpSceneGravity *sceneGravity, float deltaTime);
-// void gpApplyGravity(gpBody body, gpBody* collisionBodies, int numCollisionBodies);
+    // void gpApplyGravity()
+    void gpGravityBodyStep(gpBody *body, gpSceneGravity *sceneGravity, float deltaTime);
+    // void gpApplyGravity(gpBody body, gpBody* collisionBodies, int numCollisionBodies);
+#ifdef __cplusplus
+}
+#endif

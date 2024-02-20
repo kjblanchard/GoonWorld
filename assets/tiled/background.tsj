@@ -1,0 +1,25 @@
+{ "columns":0,
+ "grid":
+    {
+     "height":1,
+     "orientation":"orthogonal",
+     "width":1
+    },
+ "margin":0,
+ "name":"background",
+ "objectalignment":"topleft",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.8.6",
+ "tileheight":64,
+ "tiles":[
+        {
+         "id":0,
+         "image":"..\/img\/purple.png",
+         "imageheight":64,
+         "imagewidth":64
+        }],
+ "tilewidth":64,
+ "type":"tileset",
+ "version":"1.8"
+}

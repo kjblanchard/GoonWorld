@@ -11,6 +11,10 @@
 #pragma once
 #include <GoonPhysics/body.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 typedef struct gpScene
 {
     float gravity;
@@ -22,3 +26,7 @@ int gpSceneAddBody(gpBody* body);
 int gpSceneAddStaticBody(gpBody* body);
 void gpSceneUpdate(gpScene* scene, float gameTime);
 gpBody* gpSceneGetBody(int bodyRef);
+
+#ifdef __cplusplus
+}
+#endif

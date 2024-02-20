@@ -1,26 +1,39 @@
 #include <iostream>
+#include <algorithm>
+#include <GoonWorld/models/AppSettings.hpp>
+#include <GoonWorld/core/Sound.hpp>
 #include <GoonEngine/test.h>
 #include <GoonEngine/SdlWindow.h>
-#include <GoonEngine/Sound.h>
+#include <GoonPhysics/GoonPhysics.h>
+using namespace GoonWorld;
 void Update(double deltaTime)
 {
-    printf("Update!\n");
 }
 void Draw()
 {
-    printf("Draw!\n");
+}
+void InitializePhysics()
+{
+    auto scene = gpInitScene();
+    geSetCurrentScene(scene);
+    gpSceneSetGravity(scene, 50);
 }
 
 int main()
 {
-    // Initialize engine
     GnInitializeEngine();
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
-    CreateWindowAndRenderer(640, 480, "CPP TEST!");
     InitializeSound();
-    auto bgmPtr = BgmLoad("assets/audio/test.ogg", 20.397, 43.08);
-    BgmPlay(bgmPtr, 0.5);
-    //
+    auto settings = new AppSettings("assets/config/appsettings.json");
+    CreateWindowAndRenderer(settings->WindowConfig.WindowSize.x,
+                            settings->WindowConfig.WindowSize.y,
+                            settings->WindowConfig.Title.c_str());
+    InitializePhysics();
+    auto sound = new Sound(settings->SoundConfigs);
+    auto result = sound->LoadBgm("rangers");
+    sound->PlayBgm("rangers");
+    // Load the level from Tiled.
+    // game.CurrentLevel = new Tiled("level1");
     Play();
 }

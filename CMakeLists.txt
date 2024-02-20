@@ -56,7 +56,6 @@ add_library(${LIBRARY_TARGET_NAME}
     ${FILES}
 )
 set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 99)
-set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 find_package(PkgConfig REQUIRED)
 include(CTest)
 
@@ -216,6 +215,7 @@ target_include_directories(${LIBRARY_TARGET_NAME}
 # Tests
 add_executable(${EXECUTABLE_TARGET_NAME}
     ${GOON_WORLD_FILES})
+set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 target_link_libraries(${EXECUTABLE_TARGET_NAME}
     PUBLIC
     SupergoonEngine
@@ -224,6 +224,8 @@ target_link_libraries(${EXECUTABLE_TARGET_NAME}
 target_include_directories(${EXECUTABLE_TARGET_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/GoonWorld/external/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 
 # #########################################

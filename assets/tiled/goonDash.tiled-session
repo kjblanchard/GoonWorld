@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level1.tmx",
+    "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        "templates",
-        "/Users/kevin/Documents/tiled",
         ".",
-        "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
+        "templates",
+        "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
+        "/Users/kevin/Documents/tiled"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -54,10 +54,33 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "/Users/kevin/git/goonDash/assets/tiled/background.tsx": {
+            "scaleInDock": 1
+        },
+        "/Users/kevin/git/goonDash/assets/tiled/terrain.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "background.tsj": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "background.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "level1.tmj": {
+            "expandedGroupLayers": [
+                12
+            ],
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 294.3333333333333,
+                "y": 256.6666666666667
+            }
         },
         "level1.tmx": {
             "expandedGroupLayers": [
@@ -70,6 +93,11 @@
                 "y": 64.66666666666666
             }
         },
+        "terrain.tsj": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "terrain.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
@@ -78,24 +106,28 @@
     },
     "last.executablePath": "/Applications/Tiled.app",
     "last.exportedFilePath": "/Users/kevin/git/c/goonDash/assets/tiled",
+    "last.externalTilesetPath": "/Users/kevin/git/cpp/goonEngine/assets/tiled",
     "last.imagePath": "/Users/kevin/git/c/goonDash/assets/img",
     "last.objectTemplatePath": "/Users/kevin/git/c/goonDash/assets/tiled/templates",
     "lastUsedTilesetExportFilter": "Lua files (*.lua)",
     "map.height": 18,
-    "map.lastUsedExportFilter": "Lua files (*.lua)",
-    "map.lastUsedFormat": "tmx",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "json",
     "map.layerDataFormat": null,
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "map.width": 55,
     "openFiles": [
-        "level1.tmx",
-        "terrain.tsx",
-        "background.tsx"
+        "level1.tmj",
+        "terrain.tsj",
+        "background.tsj"
     ],
     "project": "goonDash.tiled-project",
     "property.type": "Bgm",
     "recentFiles": [
+        "background.tsj",
+        "terrain.tsj",
+        "level1.tmj",
         "background.tsx",
         "terrain.tsx",
         "level1.tmx",
@@ -108,7 +140,7 @@
     ],
     "resizeMap.removeObjects": true,
     "tileset.embedInMap": false,
-    "tileset.lastUsedFormat": "tsx",
+    "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
         "height": 16,
         "width": 16

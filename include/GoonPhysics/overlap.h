@@ -11,18 +11,25 @@
 #pragma once
 // #include <GoonPhysics/body.h>
 
-struct gpBody;
-typedef enum gpOverlapDirections
+#ifdef __cplusplus
+extern "C"
 {
-    gpOverlapNoOverlap = 0,
-    gpOverlapUp,
-    gpOverlapRight,
-    gpOverlapDown,
-    gpOverlapLeft
-} gpOverlapDirections;
+#endif
+    struct gpBody;
+    typedef enum gpOverlapDirections
+    {
+        gpOverlapNoOverlap = 0,
+        gpOverlapUp,
+        gpOverlapRight,
+        gpOverlapDown,
+        gpOverlapLeft
+    } gpOverlapDirections;
 
-typedef struct gpOverlap
-{
-    int overlapDirection;
-    struct gpBody *overlapBody;
-} gpOverlap;
+    typedef struct gpOverlap
+    {
+        int overlapDirection;
+        struct gpBody *overlapBody;
+    } gpOverlap;
+#ifdef __cplusplus
+}
+#endif

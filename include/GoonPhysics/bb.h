@@ -9,10 +9,18 @@
  *
  */
 #pragma once
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-typedef struct gpBB {
-    double x, y, w, h;
-} gpBB;
+    typedef struct gpBB
+    {
+        double x, y, w, h;
+    } gpBB;
 
-gpBB gpBBNew(double x, double y, double w, double h);
-gpBB gpBBCopy(gpBB body);
+    gpBB gpBBNew(double x, double y, double w, double h);
+    gpBB gpBBCopy(gpBB body);
+#ifdef __cplusplus
+}
+#endif

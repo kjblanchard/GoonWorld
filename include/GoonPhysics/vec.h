@@ -9,17 +9,24 @@
  *
  */
 #pragma once
-/**
- * @brief Vector 2 class for goon physics
- *
- */
-typedef struct gpVec
+#ifdef __cplusplus
+extern "C"
 {
-    float x, y;
-} gpVec;
-/**
- * @brief Creates a vector 2 with x/y you pass in
- *
- * @return gpVec
- */
-gpVec gpV(float x, float y);
+#endif
+    /**
+     * @brief Vector 2 class for goon physics
+     *
+     */
+    typedef struct gpVec
+    {
+        float x, y;
+    } gpVec;
+    /**
+     * @brief Creates a vector 2 with x/y you pass in
+     *
+     * @return gpVec
+     */
+    gpVec gpV(float x, float y);
+#ifdef __cplusplus
+}
+#endif

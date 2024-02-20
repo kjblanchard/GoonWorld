@@ -9,11 +9,17 @@
  *
  */
 #pragma once
-
 #include <GoonPhysics/bb.h>
 
-void gpResolveOverlapY(gpBB *lhs, gpBB *rhs);
-void gpResolveOverlapX(gpBB *lhs, gpBB *rhs);
-void gpResolveOverlap(gpBB *lhs, gpBB *rhs);
-int gpIntersectBoxBox(gpBB* lhs, gpBB* rhs);
-int gpGetOverlapDirection(gpBB* lhs, gpBB* rhs);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+    void gpResolveOverlapY(gpBB *lhs, gpBB *rhs);
+    void gpResolveOverlapX(gpBB *lhs, gpBB *rhs);
+    void gpResolveOverlap(gpBB *lhs, gpBB *rhs);
+    int gpIntersectBoxBox(gpBB *lhs, gpBB *rhs);
+    int gpGetOverlapDirection(gpBB *lhs, gpBB *rhs);
+#ifdef __cplusplus
+}
+#endif
