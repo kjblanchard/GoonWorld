@@ -8,7 +8,7 @@ namespace GoonWorld
     public:
         Tiled(const char *filename);
         uint Width, Height, TileWidth, TileHeight;
-    private:
+
     };
 
 }

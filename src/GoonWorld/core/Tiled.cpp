@@ -5,30 +5,46 @@
 #include <GoonWorld/core/Tiled.hpp>
 #include <GoonEngine/SdlSurface.h>
 using json = nlohmann::json;
+using jsonClass = nlohmann::json_abi_v3_11_3::json;
 using namespace GoonWorld;
 
 const char *_assetPrefix = "assets/";
 const std::string _tiledPrefix = "tiled/";
 
-std::vector<std::pair<int, SDL_Surface *>> LoadTilesets(nlohmann::json_abi_v3_11_3::json tilesets)
+jsonClass GetTilesetJsonForGid(uint gid, jsonClass tilesets)
 {
+    jsonClass *foundTilesetJson = nullptr;
+    bool found = false;
     for (auto &tileset : tilesets)
     {
-        uint firstGid = tileset["firstgid"];
-        std::string tilesetSource = tileset["source"];
-        std::ifstream tilesetRead(_assetPrefix + _tiledPrefix + tilesetSource);
-        json tilesetData = json::parse(tilesetRead);
-        // do the thing
+        int firstGid = tileset["firstgid"];
+        if (gid >= firstGid)
+        {
+            foundTilesetJson = &tileset;
+        }
+        break;
     }
+    if (!foundTilesetJson)
+    {
+        printf("Could not find tileset for git %ud\n", gid);
+        return nullptr;
+    }
+    std::string tilesetSource = (*foundTilesetJson)["source"];
+    std::ifstream tilesetRead(_assetPrefix + _tiledPrefix + tilesetSource);
+    json tilesetData = json::parse(tilesetRead);
+    // do the thing
+    return *foundTilesetJson;
 }
 
 Tiled::Tiled(const char *filename)
 {
+
     auto pathPrefix = _assetPrefix + _tiledPrefix + filename + ".tmj";
     std::ifstream file(pathPrefix);
     json data = json::parse(file);
     auto tilesets = data["tilesets"];
-    auto loadedTilesets = LoadTilesets(tilesets);
+
+    // auto loadedTilesets = LoadTilesets(tilesets);
     Width = data["width"];
     Height = data["height"];
     TileWidth = data["tilewidth"];
