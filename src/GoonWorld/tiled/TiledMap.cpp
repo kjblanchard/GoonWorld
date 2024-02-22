@@ -6,7 +6,7 @@
 using json = nlohmann::json;
 using namespace GoonWorld;
 
-const TiledMap::TiledMapTileset *const TiledMap::GetTiledMapTilesetForGid(int gid)
+const TiledMap::TiledMapTileset *const TiledMap::GetGidTiledMapTileset(int gid)
 {
     TiledMap::TiledMapTileset *tiledMapTileset = nullptr;
     for (auto tileset = TiledmapTilesets.begin(); tileset != TiledmapTilesets.end(); ++tileset)
@@ -26,7 +26,7 @@ const TiledMap::TiledMapTileset *const TiledMap::GetTiledMapTilesetForGid(int gi
     return tiledMapTileset;
 }
 
-const TiledMap::Tileset *const TiledMap::GetTilesetForTiledMapTileset(const TiledMapTileset *tiledMapTileset)
+const TiledMap::Tileset *const TiledMap::GetTiledMapTilesetTileset(const TiledMapTileset *tiledMapTileset)
 {
     for (auto tileset = Tilesets.begin(); tileset != Tilesets.end(); ++tileset)
     {
@@ -37,7 +37,7 @@ const TiledMap::Tileset *const TiledMap::GetTilesetForTiledMapTileset(const Tile
     return nullptr;
 }
 
-SDL_Rect TiledMap::GetSourceRectForGid_Int(int gid, const TiledMap::Tileset* tileset)
+SDL_Rect TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset* tileset)
 {
     if (tileset->Type == TilesetType::Image)
     {
@@ -59,11 +59,11 @@ SDL_Rect TiledMap::GetSourceRectForGid_Int(int gid, const TiledMap::Tileset* til
     }
     return SDL_Rect{0, 0, 0, 0};
 }
-SDL_Rect TiledMap::GetSourceRectForGid(int gid)
+SDL_Rect TiledMap::GetGidSourceRect(int gid)
 {
-    auto tiledMapTileset = GetTiledMapTilesetForGid(gid);
-    auto tileset = GetTilesetForTiledMapTileset(tiledMapTileset);
-    return GetSourceRectForGid_Int(gid, tileset);
+    auto tiledMapTileset = GetGidTiledMapTileset(gid);
+    auto tileset = GetTiledMapTilesetTileset(tiledMapTileset);
+    return GetSourceRectForGidWithTileset(gid, tileset);
     // return GetSurfaceForGid(gid, )
 }
 

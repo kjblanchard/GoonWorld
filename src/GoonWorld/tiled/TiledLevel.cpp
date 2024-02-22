@@ -94,10 +94,10 @@ void TiledLevel::CreateBackgroundAtlas()
                         auto tileGid = groupLayer.Data[index];
                         if (tileGid == 0)
                             continue;
-                        auto tiledMapTileset = _mapData->GetTiledMapTilesetForGid(tileGid);
-                        auto tileset = _mapData->GetTilesetForTiledMapTileset(tiledMapTileset);
+                        auto tiledMapTileset = _mapData->GetGidTiledMapTileset(tileGid);
+                        auto tileset = _mapData->GetTiledMapTilesetTileset(tiledMapTileset);
                         auto tileSurface = GetSurfaceForGid(tileGid, tileset);
-                        auto sourceRect = _mapData->GetSourceRectForGid(tileGid);
+                        auto sourceRect = _mapData->GetGidSourceRect(tileGid);
                         auto dstX = x * _mapData->TileWidth;
                         auto dstY = y * _mapData->TileHeight;
                         // Adjust background image as tiled draws it from the opposite end.

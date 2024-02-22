@@ -5,6 +5,9 @@ struct SDL_Rect;
 
 namespace GoonWorld
 {
+    /**
+     * @brief The types of tilesets from tiled that is supported.
+     */
     enum class TilesetType
     {
         Default,
@@ -12,6 +15,9 @@ namespace GoonWorld
         Tile,
     };
 
+    /**
+     * @brief A model of a tiledmap json.
+     */
     class TiledMap
     {
     public:
@@ -45,12 +51,10 @@ namespace GoonWorld
         };
 
     public:
-        SDL_Rect GetSourceRectForGid(int gid);
-        // const TiledMapTileset &GetTiledMapTilesetForGid(int gid);
-        // const Tileset &GetTilesetForTiledMapTileset(TiledMapTileset &tilesetName);
-        const TiledMapTileset *const GetTiledMapTilesetForGid(int gid);
-        const Tileset *const GetTilesetForTiledMapTileset(const TiledMapTileset *tilesetName);
         TiledMap(std::string filename);
+        SDL_Rect GetGidSourceRect(int gid);
+        const TiledMapTileset *const GetGidTiledMapTileset(int gid);
+        const Tileset *const GetTiledMapTilesetTileset(const TiledMapTileset *tilesetName);
 
     public:
         int Width, Height, TileWidth, TileHeight;
@@ -60,6 +64,6 @@ namespace GoonWorld
         std::vector<Layer> Layers;
 
     private:
-        SDL_Rect GetSourceRectForGid_Int(int gid, const TiledMap::Tileset *tileset);
+        SDL_Rect GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset);
     };
 }
