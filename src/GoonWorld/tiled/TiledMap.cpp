@@ -6,7 +6,7 @@
 using json = nlohmann::json;
 using namespace GoonWorld;
 
-TiledMap::TiledMapTileset TiledMap::GetTiledMapTilesetForGid(int gid)
+const TiledMap::TiledMapTileset *const TiledMap::GetTiledMapTilesetForGid(int gid)
 {
     TiledMap::TiledMapTileset *tiledMapTileset = nullptr;
     for (auto tileset = TiledmapTilesets.begin(); tileset != TiledmapTilesets.end(); ++tileset)
@@ -21,27 +21,29 @@ TiledMap::TiledMapTileset TiledMap::GetTiledMapTilesetForGid(int gid)
     if (!tiledMapTileset)
     {
         printf("Could not find tileset for git %ud\n", gid);
+        return nullptr;
     }
-    return *tiledMapTileset;
+    return tiledMapTileset;
 }
 
-TiledMap::Tileset TiledMap::GetTilesetForTiledMapTileset(TiledMapTileset &tiledMapTileset)
+const TiledMap::Tileset *const TiledMap::GetTilesetForTiledMapTileset(const TiledMapTileset *tiledMapTileset)
 {
-    for (auto tileset : Tilesets)
+    for (auto tileset = Tilesets.begin(); tileset != Tilesets.end(); ++tileset)
     {
-        auto fullname = tileset.Name + ".tsj";
-        if (tiledMapTileset.Source == fullname)
-            return tileset;
+        auto fullname = tileset->Name + ".tsj";
+        if (tiledMapTileset->Source == fullname)
+            return &(*tileset);
     }
+    return nullptr;
 }
 
-SDL_Rect TiledMap::GetSourceRectForGid_Int(int gid, TiledMap::Tileset tileset)
+SDL_Rect TiledMap::GetSourceRectForGid_Int(int gid, const TiledMap::Tileset* tileset)
 {
-    if (tileset.Type == TilesetType::Image)
+    if (tileset->Type == TilesetType::Image)
     {
-        for (auto &tile : tileset.Tiles)
+        for (auto &tile : tileset->Tiles)
         {
-            if (tile.Id + tileset.FirstGid == gid)
+            if (tile.Id + tileset->FirstGid == gid)
             {
                 return SDL_Rect{0, 0, tile.ImageWidth, tile.ImageHeight};
             }
@@ -51,9 +53,9 @@ SDL_Rect TiledMap::GetSourceRectForGid_Int(int gid, TiledMap::Tileset tileset)
     {
         // Subtract 1 from gid, since 0 is counted as nothing in tiled.
         --gid;
-        int x = (gid % tileset.Columns) * tileset.TileWidth;
-        int y = (gid / tileset.Columns) * tileset.TileHeight;
-        return SDL_Rect{x, y, tileset.TileWidth, tileset.TileHeight};
+        int x = (gid % tileset->Columns) * tileset->TileWidth;
+        int y = (gid / tileset->Columns) * tileset->TileHeight;
+        return SDL_Rect{x, y, tileset->TileWidth, tileset->TileHeight};
     }
     return SDL_Rect{0, 0, 0, 0};
 }

@@ -15,7 +15,7 @@ namespace GoonWorld
     private:
         void LoadSurfaces();
         void CreateBackgroundAtlas();
-        struct SDL_Surface *GetSurfaceForGid(int gid, const TiledMap::Tileset &tileset);
+        struct SDL_Surface *GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset);
 
     private:
         std::vector<std::pair<std::string, struct SDL_Surface *>> _loadedTilesets;

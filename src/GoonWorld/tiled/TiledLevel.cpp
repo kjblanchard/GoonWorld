@@ -50,13 +50,13 @@ void TiledLevel::LoadSurfaces()
         }
     }
 }
-SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset &tileset)
+SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset)
 {
-    if (tileset.Type == TilesetType::Image)
+    if (tileset->Type == TilesetType::Image)
     {
-        for (auto &tile : tileset.Tiles)
+        for (auto &tile : tileset->Tiles)
         {
-            if (tile.Id + tileset.FirstGid == gid)
+            if (tile.Id + tileset->FirstGid == gid)
             {
                 for (auto surface : _loadedTilesets)
                 {
@@ -70,7 +70,7 @@ SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset &tile
     {
         for (auto surface : _loadedTilesets)
         {
-            if (surface.first == tileset.Image)
+            if (surface.first == tileset->Image)
                 return surface.second;
         }
     }
@@ -101,7 +101,7 @@ void TiledLevel::CreateBackgroundAtlas()
                         auto dstX = x * _mapData->TileWidth;
                         auto dstY = y * _mapData->TileHeight;
                         // Adjust background image as tiled draws it from the opposite end.
-                        if (tileset.Type == TilesetType::Image)
+                        if (tileset->Type == TilesetType::Image)
                         {
                             dstY -= (sourceRect.h - _mapData->TileHeight);
                         }

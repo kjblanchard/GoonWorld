@@ -46,8 +46,10 @@ namespace GoonWorld
 
     public:
         SDL_Rect GetSourceRectForGid(int gid);
-        TiledMapTileset GetTiledMapTilesetForGid(int gid);
-        Tileset GetTilesetForTiledMapTileset(TiledMapTileset &tilesetName);
+        // const TiledMapTileset &GetTiledMapTilesetForGid(int gid);
+        // const Tileset &GetTilesetForTiledMapTileset(TiledMapTileset &tilesetName);
+        const TiledMapTileset *const GetTiledMapTilesetForGid(int gid);
+        const Tileset *const GetTilesetForTiledMapTileset(const TiledMapTileset *tilesetName);
         TiledMap(std::string filename);
 
     public:
@@ -58,6 +60,6 @@ namespace GoonWorld
         std::vector<Layer> Layers;
 
     private:
-        SDL_Rect GetSourceRectForGid_Int(int gid, TiledMap::Tileset tileset);
+        SDL_Rect GetSourceRectForGid_Int(int gid, const TiledMap::Tileset *tileset);
     };
 }
