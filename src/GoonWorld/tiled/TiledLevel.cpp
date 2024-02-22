@@ -28,6 +28,7 @@ void TiledLevel::SetTextureAtlas()
     };
     SetBackgroundAtlas(_loadedAtlas, &rect);
 }
+
 void TiledLevel::LoadSurfaces()
 {
     for (auto &tileset : _mapData->Tilesets)
@@ -97,11 +98,14 @@ void TiledLevel::CreateBackgroundAtlas()
                         auto tileset = _mapData->GetTilesetForTiledMapTileset(tiledMapTileset);
                         auto tileSurface = GetSurfaceForGid(tileGid, tileset);
                         auto sourceRect = _mapData->GetSourceRectForGid(tileGid);
-                        int dstX = x * _mapData->TileWidth;
-                        int dstY = y * _mapData->TileHeight;
+                        auto dstX = x * _mapData->TileWidth;
+                        auto dstY = y * _mapData->TileHeight;
+                        // Adjust background image as tiled draws it from the opposite end.
+                        if (tileset.Type == TilesetType::Image)
+                        {
+                            dstY -= (sourceRect.h - _mapData->TileHeight);
+                        }
                         auto dstRect = SDL_Rect{dstX, dstY, sourceRect.w, sourceRect.h};
-                        // // May need to adjust background image
-
                         BlitSurface(
                             tileSurface,
                             &sourceRect,
