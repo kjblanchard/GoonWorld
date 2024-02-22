@@ -85,7 +85,6 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
     int shouldStep = stepSize != 0 ? 1 : 0;
     while (shouldStep)
     {
-        double bodyInitialY = body->boundingBox.y;
         body->boundingBox.y += stepSize;
         // Check for collisions for each static body
         // If it is a blocking body, then we should set shouldStep to False
@@ -138,7 +137,6 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
     int direction = stepSize > 0 ? gpOverlapRight : gpOverlapLeft;
     while (shouldStep)
     {
-        double bodyInitialX = body->boundingBox.x;
         body->boundingBox.x += stepSize;
         // Check for collisions for each body
         // For body in bodies, if collides,
@@ -235,4 +233,5 @@ gpBody *gpSceneGetBody(int bodyRef)
     {
         return _currentBodies[bodyRef];
     }
+    return NULL;
 }

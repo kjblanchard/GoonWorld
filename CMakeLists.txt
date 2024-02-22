@@ -160,6 +160,7 @@ set(FULL_COMPILE_OPTIONS
     -Wdeprecated
     -Wno-newline-eof
     -Wno-strict-prototypes
+    -Wno-sign-compare
     -pthread
 )
 

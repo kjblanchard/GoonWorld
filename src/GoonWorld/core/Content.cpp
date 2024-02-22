@@ -22,6 +22,7 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     default:
         break;
     }
+    return nullptr;
 }
 template <typename T>
 T *Content::GetLoadedContentOfType(const char *filename)

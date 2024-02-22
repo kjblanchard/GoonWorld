@@ -37,6 +37,7 @@ void (*GameUpdateFunc)(double deltaTime) = NULL;
 
 void *MusicUpdateWrapper(void *arg)
 {
+    (void)arg;
     return NULL;
 }
 
@@ -81,7 +82,7 @@ static int loop_func()
     // Handle SDL inputs
     shouldQuit = sdlEventLoop();
     if (shouldQuit)
-        return 0;
+        return false;
     // TODO make these static and pass into as ref to stop allocations
     // Initialize time this frame
     double deltaTimeSeconds = 1 / (double)g_refreshRate;
@@ -123,6 +124,7 @@ static int loop_func()
     }
 
     SDL_RenderPresent(g_pRenderer);
+    return true;
 }
 
 int Play()
@@ -131,23 +133,25 @@ int Play()
     {
         loop_func();
     }
+    return true;
 }
 int GnInitializeEngine()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
     {
         fprintf(stderr, "Could not Initialize SDL!\nError: %s", SDL_GetError());
-        return 1;
+        return false;
     }
     if (!IMG_Init(IMG_INIT_PNG))
     {
         fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
-        return 1;
+        return false;
     }
 
     geInitializeKeyboard();
     geInitializeJoysticks();
     InitializeDebugLogFile();
+    return true;
 }
 
 void geSetCurrentScene(void *scene)

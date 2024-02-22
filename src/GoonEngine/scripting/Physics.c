@@ -3,7 +3,7 @@
 #include <GoonPhysics/aabb.h>
 #include <GoonPhysics/overlap.h>
 
-int AddBodyToScene(SDL_Rect* bodyRect, int bodyType)
+int AddBodyToScene(SDL_Rect *bodyRect, int bodyType)
 {
     gpBB bb = gpBBNew(bodyRect->x, bodyRect->y, bodyRect->w, bodyRect->h);
     gpBody *body = gpBodyNew(bb);
@@ -12,7 +12,7 @@ int AddBodyToScene(SDL_Rect* bodyRect, int bodyType)
     return bodyNum;
 }
 
-int AddStaticBodyToScene(SDL_Rect* bodySdlRect)
+int AddStaticBodyToScene(SDL_Rect *bodySdlRect)
 {
     gpBB bb = gpBBNew(bodySdlRect->x, bodySdlRect->y, bodySdlRect->w, bodySdlRect->h);
     gpBody *body = gpBodyNew(bb);
@@ -29,7 +29,7 @@ gpBody *GetBodyFromScene(int bodyNum)
 
 struct overlap
 {
-    gpBody* body;
+    gpBody *body;
     int direction;
 };
 
@@ -49,16 +49,18 @@ int ToggleBodyGravity(int bodyNum, int gravity)
 {
     gpBody *body = GetBodyFromScene(bodyNum);
     if (!body)
-        return 1;
+        return false;
     body->gravityEnabled = gravity;
+    return true;
 }
 
 int SetBodyType(int bodyNum, int bodyType)
 {
     gpBody *body = GetBodyFromScene(bodyNum);
     if (!body)
-        return 1;
+        return false;
     body->bodyType = bodyType;
+    return true;
 }
 
 int IsBodyOnGround(int bodyNum)
@@ -68,7 +70,7 @@ int IsBodyOnGround(int bodyNum)
     {
         return 1;
     }
-     return gpBodyIsOnGround(body);
+    return gpBodyIsOnGround(body);
 }
 
 int GetOverlapDirection(int bodyNum, int overlapBodyNum)
@@ -88,7 +90,7 @@ gpVec GetBodyCoordinates(int bodyRef)
     if (!body)
     {
         // LogWarn("Could not get body num %d from the physics scene", bodyRef);
-        return gpV(0,0);
+        return gpV(0, 0);
     }
     return gpV(body->boundingBox.x, body->boundingBox.y);
 }
@@ -119,8 +121,9 @@ int SetBodyVelocity(int bodyRef, gpVec velocity)
     gpBody *body = gpSceneGetBody(bodyRef);
     if (!body)
     {
-        return 1;
+        return false;
     }
     body->velocity.x = velocity.x;
     body->velocity.y = velocity.y;
+    return true;
 }

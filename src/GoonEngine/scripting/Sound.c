@@ -6,60 +6,55 @@ static SDL_Event event;
 
 Bgm *BgmLoad(const char *filename, float begin, float end)
 {
-    // These should be removed, and used to simplify
-    // InitializeSound();
+    // TODO this shouldn't be pumping out events here, remove this.  This is here to remove the lag from loading initially, but we could be losing events here.
     while (SDL_PollEvent(&event))
     {
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            return true;
-            break;
-        case SDL_KEYDOWN:
-        case SDL_KEYUP:
-            // HandleKeyboardEvent(&event, L);
-            break;
-        default:
-            break;
-        }
     }
-    // Arg1: String, filename
-    // Arg2: float begin loop marker
-    // Arg3: float end loop marker
     Bgm *bgm = LoadBgm(filename, begin, end);
     if (!bgm)
     {
         fprintf(stderr, "Could not load BGM %s", filename);
-        return 1;
+        return NULL;
     }
     int result = PreLoadBgm(bgm);
+    if (!result)
+    {
+        fprintf(stderr, "Could not preload BGM %s", filename);
+        return NULL;
+    }
     // Returns BGM pointer, or nil, which should be free'd afterwards.
     return bgm;
 }
 
-static Sfx *SfxLoad(const char *filename)
-{
-    Sfx *sfx = LoadSfxHelper(filename);
-    if (!sfx)
-    {
-        // LogError("Could not load Sfx %s", filename);
-        return NULL;
-    }
-    int result = LoadSfx(sfx);
-    return sfx;
-}
-static int SfxPlay(Sfx *sfx, float volume)
-{
-    PlaySfxOneShot(sfx, volume);
-    return 0;
-}
+// static Sfx *SfxLoad(const char *filename)
+// {
+//     Sfx *sfx = LoadSfxHelper(filename);
+//     if (!sfx)
+//     {
+//         // LogError("Could not load Sfx %s", filename);
+//         return NULL;
+//     }
+//     int result = LoadSfx(sfx);
+//     if (!result)
+//     {
+//         fprintf(stderr, "Could not load sfx %s", filename);
+//     }
+//     return sfx;
+// }
+// static int SfxPlay(Sfx *sfx, float volume)
+// {
+//     PlaySfxOneShot(sfx, volume);
+//     return 0;
+// }
 
 int BgmPlay(Bgm *bgm, float volume)
 {
-    // Arg1: Bgm* bgm to play
-    // Arg2  number - volume
     int result = PreLoadBgm(bgm);
-    PlayBgm(bgm, volume);
+    if (!result)
+    {
+        fprintf(stderr, "Could not play BGM %s", bgm->bgm_name);
+    }
+    PlayBgm(volume);
     return 0;
 }
 

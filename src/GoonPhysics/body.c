@@ -80,7 +80,7 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
         OverlapFunc func = OverlapBeginFunctions[bodyType][overlapBodyType];
         if (func)
         {
-            printf("Firing func at %d %d at loc %x\n", bodyType, overlapBodyType, func);
+            printf("Firing func at %d %d at loc\n", bodyType, overlapBodyType);
             func(body, overlapBody, &body->overlaps[currentOverlap]);
         }
     }
