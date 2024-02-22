@@ -2,10 +2,8 @@
 #include <GoonEngine/SdlSurface.h>
 
 SDL_Texture *g_BackgroundAtlas = NULL;
-SDL_Rect g_backgroundDrawRect = { 0, 0, 0, 0 };
+SDL_Rect g_backgroundDrawRect = {0, 0, 0, 0};
 extern SDL_Renderer *g_pRenderer;
-
-
 
 void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
 {
@@ -45,17 +43,21 @@ void BlitSurface(
     SDL_Rect *dstRect)
 {
     int result = SDL_BlitSurface(srcSurface, srcRect, dstSurface, dstRect);
-    if(result)
+    if (result)
     {
         fprintf(stderr, "Failed to blit surface %s", SDL_GetError());
     }
 }
-SDL_Texture *CreateTextureFromFile(const char* filename)
+SDL_Texture *CreateTextureFromFile(const char *filename)
 {
-    SDL_Surface* surface =  LoadSurfaceFromFile(filename);
-    SDL_Texture* texture = CreateTextureFromSurface(surface);
+    SDL_Surface *surface = LoadSurfaceFromFile(filename);
+    SDL_Texture *texture = CreateTextureFromSurface(surface);
     return texture;
+}
 
+void DestroyTexture(SDL_Texture *texture)
+{
+    SDL_DestroyTexture(texture);
 }
 
 SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
@@ -71,15 +73,14 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
 }
 
 // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
-void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip)
+void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip)
 {
     // SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
     SDL_RenderCopyEx(g_pRenderer,
-    texture,
-    srcRect,
-    dstRect,
-    0,
-    NULL,
-    (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE
-    );
+                     texture,
+                     srcRect,
+                     dstRect,
+                     0,
+                     NULL,
+                     (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
