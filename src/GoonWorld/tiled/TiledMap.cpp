@@ -49,6 +49,8 @@ SDL_Rect TiledMap::GetSourceRectForGid_Int(int gid, TiledMap::Tileset tileset)
     }
     else
     {
+        // Subtract 1 from gid, since 0 is counted as nothing in tiled.
+        --gid;
         int x = (gid % tileset.Columns) * tileset.TileWidth;
         int y = (gid / tileset.Columns) * tileset.TileHeight;
         return SDL_Rect{x, y, tileset.TileWidth, tileset.TileHeight};
