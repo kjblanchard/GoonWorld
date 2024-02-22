@@ -1,30 +1,24 @@
-#include <fstream>
 #include <string>
-#include <json/json.hpp>
-#include <GoonWorld/tiled/Tiled.hpp>
+#include <GoonWorld/tiled/TiledLevel.hpp>
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/shared/Constants.hpp>
-using json = nlohmann::json;
-using loadSurface = std::vector<std::pair<std::string, SDL_Surface *>>;
-using namespace GoonEngine;
 using namespace GoonWorld;
 
-Tiled::Tiled(const char *filename)
+TiledLevel::TiledLevel(const char *filename)
 {
-    _mapData = std::make_shared<TiledMap>(filename);
+    _mapData = std::make_unique<TiledMap>(filename);
     LoadSurfaces();
-    // _loadedAtlas = DrawBackgroundAtlas();
-    _loadedAtlas = CreateTextureFromSurface(DrawBackgroundAtlas());
+    CreateBackgroundAtlas();
 }
 
-Tiled::~Tiled()
+TiledLevel::~TiledLevel()
 {
     DestroyTexture(_loadedAtlas);
 }
 
-void Tiled::SetTextureAtlas()
+void TiledLevel::SetTextureAtlas()
 {
     auto rect = SDL_Rect{
         0,
@@ -34,7 +28,7 @@ void Tiled::SetTextureAtlas()
     };
     SetBackgroundAtlas(_loadedAtlas, &rect);
 }
-void Tiled::LoadSurfaces()
+void TiledLevel::LoadSurfaces()
 {
     for (auto &tileset : _mapData->Tilesets)
     {
@@ -55,7 +49,7 @@ void Tiled::LoadSurfaces()
         }
     }
 }
-SDL_Surface *Tiled::GetSurfaceForGid(uint gid, TiledMap::Tileset &tileset)
+SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset &tileset)
 {
     if (tileset.Type == TilesetType::Image)
     {
@@ -82,7 +76,7 @@ SDL_Surface *Tiled::GetSurfaceForGid(uint gid, TiledMap::Tileset &tileset)
     printf("Could not find loaded surface for git %ud\n", gid);
     return nullptr;
 }
-SDL_Surface *Tiled::DrawBackgroundAtlas()
+void TiledLevel::CreateBackgroundAtlas()
 {
     auto atlas = LoadTextureAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
     for (auto &group : _mapData->Groups)
@@ -118,5 +112,5 @@ SDL_Surface *Tiled::DrawBackgroundAtlas()
             }
         }
     }
-    return atlas;
+    _loadedAtlas = CreateTextureFromSurface(atlas);
 }

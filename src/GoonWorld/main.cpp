@@ -2,17 +2,20 @@
 #include <algorithm>
 #include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/core/Sound.hpp>
-#include <GoonWorld/tiled/Tiled.hpp>
+#include <GoonWorld/tiled/TiledLevel.hpp>
 #include <GoonEngine/test.h>
 #include <GoonEngine/SdlWindow.h>
 #include <GoonPhysics/GoonPhysics.h>
 using namespace GoonWorld;
+
 void Update(double deltaTime)
 {
 }
+
 void Draw()
 {
 }
+
 void InitializePhysics()
 {
     auto scene = gpInitScene();
@@ -33,10 +36,8 @@ int main()
     InitializePhysics();
     auto sound = new Sound(settings->SoundConfigs);
     auto result = sound->LoadBgm("rangers");
-    auto level1 = Tiled("level1");
+    auto level1 = TiledLevel("level1");
     level1.SetTextureAtlas();
     sound->PlayBgm("rangers");
-    // Load the level from Tiled.
-    // game.CurrentLevel = new Tiled("level1");
     Play();
 }
