@@ -160,6 +160,7 @@ TiledMap::TiledMap(std::string filename)
                     object.ObjectType = objectJson["type"];
                     object.X = objectJson["x"];
                     object.Y = objectJson["y"];
+                    Objects.push_back(object);
                 }
                 Layers.push_back(layer);
             }

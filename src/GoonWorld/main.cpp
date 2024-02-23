@@ -10,7 +10,13 @@
 #include <GoonPhysics/GoonPhysics.h>
 using namespace GoonWorld;
 
-static Game* game;
+static Game *game;
+static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameObjectSpawnMap = {
+    {"Player", [](TiledMap::TiledObject &object)
+     {
+         return new Player(object);
+     }},
+};
 void InitializePhysics()
 {
     auto scene = gpInitScene();
@@ -44,6 +50,13 @@ int main()
     auto level1 = TiledLevel("level1");
     level1.SetTextureAtlas();
     sound->PlayBgm("rangers");
-    auto player = Player();
+    for (auto &object : level1.GetAllObjects())
+    {
+        auto iter = GameObjectSpawnMap.find(object.ObjectType);
+        if (iter == GameObjectSpawnMap.end())
+            continue;
+        (*iter).second(object);
+    }
+    // auto player = Player();
     Play();
 }

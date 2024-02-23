@@ -3,9 +3,10 @@
 
 using namespace GoonWorld;
 
-Player::Player()
+Player::Player(TiledMap::TiledObject &object)
 {
-    _debugDrawComponent = new DebugDrawComponent(Point{32, 32});
+    _location = Point{object.X, object.Y};
+    _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     AddComponent(_debugDrawComponent);
 }
 Player::~Player()

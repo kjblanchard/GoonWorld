@@ -17,6 +17,7 @@ namespace GoonWorld
          * @param filename The file to load from json
          */
         TiledLevel(const char *filename);
+        std::vector<TiledMap::TiledObject> GetAllObjects();
         ~TiledLevel();
         /**
          * @brief Set the Texture Atlas object in the engine, so that we draw it on updates.

@@ -8,7 +8,7 @@
 namespace GoonWorld
 {
     class Component;
-    class GameObject : IUpdate, IStart
+    class GameObject : public IUpdate, public IStart
     {
     public:
         GameObject();

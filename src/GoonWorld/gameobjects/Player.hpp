@@ -1,14 +1,13 @@
 #pragma once
-
 #include <GoonWorld/base/GameObject.hpp>
 
 namespace GoonWorld
 {
     class DebugDrawComponent;
-    class Player : GameObject
+    class Player : public GameObject
     {
     public:
-        Player();
+        Player(TiledMap::TiledObject &object);
         ~Player();
 
     private:

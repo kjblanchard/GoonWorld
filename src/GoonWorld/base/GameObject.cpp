@@ -9,7 +9,7 @@ TimeSpan _deltaTime = TimeSpan(0);
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{32, 32})
 {
-    Game::Instance()->UpdateObjects.push_back(this);
+    Game::Instance()->UpdateObjects.push_back(std::shared_ptr<IUpdate>(this));
 }
 GameObject::GameObject(TiledMap::TiledObject)
     : GameObject()

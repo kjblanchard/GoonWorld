@@ -12,6 +12,10 @@ TiledLevel::TiledLevel(const char *filename)
     LoadSurfaces();
     CreateBackgroundAtlas();
 }
+std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
+{
+    return _mapData->Objects;
+}
 
 TiledLevel::~TiledLevel()
 {

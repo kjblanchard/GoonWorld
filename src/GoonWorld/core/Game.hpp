@@ -10,7 +10,7 @@ namespace GoonWorld
     {
     public:
         static inline Game *Instance() { return _gameInstance; }
-        std::vector<IUpdate *> UpdateObjects;
+        std::vector<std::shared_ptr<IUpdate> > UpdateObjects;
         std::vector<IDraw *> DrawObjects;
 
         Game();
