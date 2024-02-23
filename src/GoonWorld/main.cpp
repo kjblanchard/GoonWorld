@@ -1,5 +1,7 @@
 #include <iostream>
 #include <algorithm>
+#include <GoonWorld/gameobjects/Player.hpp>
+#include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
@@ -8,14 +10,7 @@
 #include <GoonPhysics/GoonPhysics.h>
 using namespace GoonWorld;
 
-void Update(double deltaTime)
-{
-}
-
-void Draw()
-{
-}
-
+static Game* game;
 void InitializePhysics()
 {
     auto scene = gpInitScene();
@@ -23,8 +18,18 @@ void InitializePhysics()
     gpSceneSetGravity(scene, 50);
 }
 
+void Update(double dub)
+{
+    game->Update();
+}
+void Draw()
+{
+    game->Draw();
+}
+
 int main()
 {
+    game = new Game();
     GnInitializeEngine();
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
@@ -39,5 +44,6 @@ int main()
     auto level1 = TiledLevel("level1");
     level1.SetTextureAtlas();
     sound->PlayBgm("rangers");
+    auto player = Player();
     Play();
 }

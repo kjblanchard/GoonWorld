@@ -1,3 +1,4 @@
+#include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/base/Component.hpp>
 using namespace GoonWorld;
@@ -6,8 +7,9 @@ unsigned int GameObject::_numGameObjects = 0;
 TimeSpan _deltaTime = TimeSpan(0);
 
 GameObject::GameObject()
-    : _id(_numGameObjects++)
+    : _id(_numGameObjects++), _location(Point{32, 32})
 {
+    Game::Instance()->UpdateObjects.push_back(this);
 }
 GameObject::GameObject(TiledMap::TiledObject)
     : GameObject()
@@ -22,6 +24,10 @@ void GameObject::Start() const
 }
 void GameObject::Update() const
 {
+    for (auto component : _components)
+    {
+        component->Update();
+    }
 }
 void GameObject::AddComponent(Component *component)
 {

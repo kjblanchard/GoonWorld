@@ -22,3 +22,18 @@ void Component::OnComponentAdd(GameObject &parent)
     _parent = &parent;
     GameObjectComponentTypeMap[_parent->Id()][_componentType] = this;
 }
+void Component::Enabled(bool isEnabled)
+{
+    if (isEnabled)
+        OnEnabled();
+    else
+        OnDisabled();
+}
+void Component::OnEnabled()
+{
+    _enabled = true;
+}
+void Component::OnDisabled()
+{
+    _enabled = false;
+}

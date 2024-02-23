@@ -19,11 +19,6 @@ namespace GoonWorld
         inline unsigned int Id() { return _id; }
         inline Point Location() { return _location; }
         void AddComponent(Component *component);
-        template <typename... Components>
-        inline void AddComponent(Components *...components)
-        {
-            AddComponent(components...);
-        }
         Component *GetComponent(unsigned int componentType);
         template <typename T>
         T *GetComponentOfType(unsigned int componentType);
