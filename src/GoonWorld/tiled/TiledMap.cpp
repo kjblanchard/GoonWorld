@@ -37,7 +37,7 @@ const TiledMap::Tileset *const TiledMap::GetTiledMapTilesetTileset(const TiledMa
     return nullptr;
 }
 
-SDL_Rect TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset* tileset)
+SDL_Rect TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset)
 {
     if (tileset->Type == TilesetType::Image)
     {
@@ -147,6 +147,22 @@ TiledMap::TiledMap(std::string filename)
         }
         else if (layerType == "objectgroup")
         {
+            auto layer = Layer();
+            auto name = layerJson["name"];
+            if (name == "entities")
+            {
+                for (auto &objectJson : layerJson["objects"])
+                {
+                    auto object = TiledObject();
+                    object.Id = objectJson["id"];
+                    object.Height = objectJson["height"];
+                    object.Width = objectJson["width"];
+                    object.ObjectType = objectJson["type"];
+                    object.X = objectJson["x"];
+                    object.Y = objectJson["y"];
+                }
+                Layers.push_back(layer);
+            }
         }
     }
 }

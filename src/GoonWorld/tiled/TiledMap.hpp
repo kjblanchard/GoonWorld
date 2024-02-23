@@ -21,6 +21,16 @@ namespace GoonWorld
     class TiledMap
     {
     public:
+        struct TiledProperty
+        {
+            std::string Name, PropertyType;
+        };
+        struct TiledObject
+        {
+            int Id, Height, Width, X, Y;
+            std::string ObjectType;
+            std::vector<TiledProperty> Properties;
+        };
         struct Tile
         {
             int Id, ImageHeight, ImageWidth = 0;
@@ -33,6 +43,7 @@ namespace GoonWorld
             int Columns, TileHeight, TileWidth, FirstGid = 0;
             std::string Name, Image;
         };
+
         struct TiledMapTileset
         {
             int FirstGid = 0;
@@ -43,6 +54,7 @@ namespace GoonWorld
             int Height, Width;
             std::string Type, Name;
             std::vector<int> Data;
+            std::vector<TiledObject> Objects;
         };
         struct LayerGroup
         {
