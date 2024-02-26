@@ -23,7 +23,7 @@ static SDL_Event event;
 static bool shouldQuit = false;
 
 static uint64_t lastFrameMilliseconds;
-static float msBuildup;
+static double msBuildup;
 
 // TODO this should be different, it is inside of SDLwindow.c
 extern SDL_Renderer *g_pRenderer;
@@ -32,8 +32,6 @@ extern int g_refreshRate;
 
 void (*DrawUpdateFunc)() = NULL;
 void (*GameUpdateFunc)(double deltaTime) = NULL;
-
-
 
 void *MusicUpdateWrapper(void *arg)
 {
@@ -79,7 +77,6 @@ static int loop_func()
     Uint64 delta = beginFrame - lastFrameMilliseconds;
     msBuildup += delta;
     lastFrameMilliseconds = beginFrame;
-    // Handle SDL inputs
     shouldQuit = sdlEventLoop();
     if (shouldQuit)
         return false;
@@ -89,11 +86,11 @@ static int loop_func()
     double deltaTimeMs = 1000 / (double)g_refreshRate;
     if (msBuildup < deltaTimeMs)
         return true;
-    geUpdateKeyboard();
 
-    // Run Update and update physics as many times as needed
     while (msBuildup >= deltaTimeMs)
     {
+        geUpdateKeyboard();
+        geUpdateControllers();
         UpdateSound();
         if (g_pScene)
         {
@@ -105,14 +102,12 @@ static int loop_func()
         }
         msBuildup -= deltaTimeMs;
     }
-    geUpdateControllers();
 
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
     SDL_RenderClear(g_pRenderer);
     if (g_BackgroundAtlas)
     {
         int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
-
         if (drawResult != 0)
         {
             LogError("Did not draw properly, Error %s\n", SDL_GetError());
@@ -124,6 +119,16 @@ static int loop_func()
     }
 
     SDL_RenderPresent(g_pRenderer);
+    // Handle waiting if Vsync is off
+    Uint64 endTime = beginFrame + deltaTimeMs;
+    Uint64 currentTime = SDL_GetTicks64();
+
+    // If there's time remaining until the next frame, delay the execution
+    if (endTime > currentTime)
+    {
+        Uint32 delayTime = (Uint32)(endTime - currentTime);
+        SDL_Delay(delayTime);
+    }
     return true;
 }
 

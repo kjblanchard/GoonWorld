@@ -10,7 +10,7 @@ Component::Component(int componentType)
 void Component::Start() const
 {
 }
-void Component::Update() const
+void Component::Update()
 {
 }
 Component::~Component()
@@ -21,6 +21,7 @@ void Component::OnComponentAdd(GameObject &parent)
 {
     _parent = &parent;
     GameObjectComponentTypeMap[_parent->Id()][_componentType] = this;
+    Enabled(true);
 }
 void Component::Enabled(bool isEnabled)
 {

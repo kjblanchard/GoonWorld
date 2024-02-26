@@ -9,12 +9,20 @@
  *
  */
 #pragma once
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include <GoonEngine/InputEvent.h>
 
 typedef union SDL_Event SDL_Event;
 
 int HandleKeyboardEvent(SDL_Event *event);
 void geInitializeKeyboard();
 void geUpdateKeyboard();
-bool geKeyJustReleased(const SDL_Scancode key);
-bool geKeyJustPressed(const SDL_Scancode key);
-bool geKeyHeldDown(SDL_Scancode key);
+bool geKeyJustReleased(const int key);
+bool geKeyJustPressed(const int key);
+bool geKeyHeldDown(int key);
+#ifdef __cplusplus
+}
+#endif

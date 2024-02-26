@@ -5,6 +5,7 @@ namespace GoonWorld
 {
     class IUpdate;
     class IDraw;
+    class AppSettings;
 
     class Game
     {
@@ -12,6 +13,7 @@ namespace GoonWorld
         static inline Game *Instance() { return _gameInstance; }
         std::vector<std::shared_ptr<IUpdate> > UpdateObjects;
         std::vector<IDraw *> DrawObjects;
+        AppSettings* GameSettings;
 
         Game();
         ~Game();

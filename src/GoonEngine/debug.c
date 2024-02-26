@@ -22,7 +22,8 @@ static void Log(LogLevel level, const char *data_to_write);
 /**
  * @brief The log level to log at, this should be sent in via settings.
  */
-static LogLevel logLevel = Log_LInfo;
+// static LogLevel logLevel = Log_LInfo;
+static LogLevel logLevel = Log_LDebug;
 static const char *logFileName = "errors.log";
 
 int InitializeDebugLogFile()
@@ -68,9 +69,9 @@ static void LogSetup(LogLevel level, const char *fmt, va_list args)
 
 static int ShouldLog(LogLevel level)
 {
-    #ifdef GN_RELEASE_BUILD
+#ifdef GN_RELEASE_BUILD
     return false;
-    #endif
+#endif
     return logLevel <= level;
 }
 
@@ -108,6 +109,17 @@ void LogError(const char *fmt, ...)
     va_list args;
     va_start(args, fmt);
     LogSetup(Log_LError, fmt, args);
+}
+
+void LogCritical(const char *fmt, ...)
+{
+    if (!ShouldLog(Log_LCritical))
+        return;
+    va_list args;
+    va_start(args, fmt);
+    LogSetup(Log_LCritical, fmt, args);
+    fprintf(stderr, "Critical error, exiting!");
+    exit(1);
 }
 
 void SetLogLevel(int newLevel)

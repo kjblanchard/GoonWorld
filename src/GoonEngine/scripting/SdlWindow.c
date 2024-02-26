@@ -1,4 +1,5 @@
 #include <GoonEngine/gnpch.h>
+#include <GoonEngine/debug.h>
 #include <GoonEngine/SdlWindow.h>
 #include <GoonEngine/color.h>
 
@@ -25,7 +26,8 @@ int CreateWindowAndRenderer(uint width, uint height, const char* windowName)
         fprintf(stderr,"Window could not be created, Error: %s", SDL_GetError());
         return 0;
     }
-    g_pRenderer = SDL_CreateRenderer(g_pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    // g_pRenderer = SDL_CreateRenderer(g_pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    g_pRenderer = SDL_CreateRenderer(g_pWindow, -1, SDL_RENDERER_ACCELERATED);
     if (g_pRenderer == NULL)
     {
         fprintf(stderr, "Renderer could not be created, Error: %s", SDL_GetError());
@@ -34,6 +36,7 @@ int CreateWindowAndRenderer(uint width, uint height, const char* windowName)
     SDL_DisplayMode mode;
     SDL_GetWindowDisplayMode(g_pWindow, &mode);
     g_refreshRate = mode.refresh_rate ? mode.refresh_rate : 60;
+    LogDebug("Refresh rate is set to %d", g_refreshRate);
     // g_refreshRate = 120;
     return 0;
 }

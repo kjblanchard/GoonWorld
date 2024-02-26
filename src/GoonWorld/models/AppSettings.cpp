@@ -23,4 +23,8 @@ AppSettings::AppSettings(const char *filepath)
         music.LoopEnd = song["endLoop"];
         SoundConfigs.Music.push_back(music);
     }
+    auto keyboardConfigJson = data["keyboardConfig"];
+    auto controllerConfigJson = data["controllerConfig"];
+    KeyboardConfig.PlayerButtonKeyVector = keyboardConfigJson.get<decltype(KeyboardConfig.PlayerButtonKeyVector)>();
+    ControllerConfig.PlayerButtonVector = controllerConfigJson.get<decltype(ControllerConfig.PlayerButtonVector)>();
 }

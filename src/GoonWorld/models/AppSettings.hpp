@@ -32,9 +32,19 @@ namespace GoonWorld
             float MusicVolume;
             std::vector<Music> Music;
         };
+        struct KeyboardConfig
+        {
+            std::vector<std::vector<std::vector<int>>> PlayerButtonKeyVector;
+        };
+        struct ControllerConfig
+        {
+            std::vector<std::vector<int>> PlayerButtonVector;
+        };
         WindowConfig WindowConfig;
         GraphicsConfig GraphicsConfig;
         SoundConfig SoundConfigs;
+        KeyboardConfig KeyboardConfig;
+        ControllerConfig ControllerConfig;
     };
 
 };

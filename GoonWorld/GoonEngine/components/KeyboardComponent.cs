@@ -22,12 +22,8 @@ public class KeyboardComponent : Component
         // For each controller button
         for (int i = 0; i < playerKeyboard.Count; i++)
         {
-            // For each mapped button (once implemented, for now break after first)
-            for (int j = 0; j < playerKeyboard[i].Count; j++)
-            {
-                ButtonMap[(SdlGameControllerButton)i] = (SdlScancodes)playerKeyboard[i][j];
-                break;
-            }
+            // TODO should loop over every button in the button map, but for now just get the first
+            ButtonMap[(SdlGameControllerButton)i] = (SdlScancodes)playerKeyboard[i][i];
             joystickMap[i] = playerGamepad[i];
         }
     }

@@ -40,12 +40,12 @@ int main()
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
     InitializeSound();
-    auto settings = new AppSettings("assets/config/appsettings.json");
-    CreateWindowAndRenderer(settings->WindowConfig.WindowSize.x,
-                            settings->WindowConfig.WindowSize.y,
-                            settings->WindowConfig.Title.c_str());
+    game->GameSettings = new AppSettings("assets/config/appsettings.json");
+    CreateWindowAndRenderer(game->GameSettings->WindowConfig.WindowSize.x,
+                            game->GameSettings->WindowConfig.WindowSize.y,
+                            game->GameSettings->WindowConfig.Title.c_str());
     InitializePhysics();
-    auto sound = new Sound(settings->SoundConfigs);
+    auto sound = new Sound(game->GameSettings->SoundConfigs);
     auto result = sound->LoadBgm("rangers");
     auto level1 = TiledLevel("level1");
     level1.SetTextureAtlas();

@@ -22,7 +22,7 @@ GameObject::~GameObject()
 void GameObject::Start() const
 {
 }
-void GameObject::Update() const
+void GameObject::Update()
 {
     for (auto component : _components)
     {
@@ -33,6 +33,13 @@ void GameObject::AddComponent(Component *component)
 {
     component->OnComponentAdd(*this);
     _components.push_back(std::shared_ptr<Component>(component));
+}
+void GameObject::AddComponent(std::initializer_list<Component *> componentList)
+{
+    for (auto component : componentList)
+    {
+        AddComponent(component);
+    }
 }
 Component *GameObject::GetComponent(unsigned int componentType)
 {

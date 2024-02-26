@@ -15,10 +15,11 @@ namespace GoonWorld
         GameObject(TiledMap::TiledObject);
         virtual ~GameObject();
         virtual void Start() const override;
-        virtual void Update() const override;
+        virtual void Update() override;
         inline unsigned int Id() { return _id; }
         inline Point Location() { return _location; }
         void AddComponent(Component *component);
+        void AddComponent(std::initializer_list<Component *> componentList);
         Component *GetComponent(unsigned int componentType);
         template <typename T>
         T *GetComponentOfType(unsigned int componentType);
@@ -39,5 +40,4 @@ namespace GoonWorld
         auto thing = GetComponent(componentType);
         return thing ? static_cast<T>(thing) : nullptr;
     }
-
 }

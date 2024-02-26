@@ -4,8 +4,8 @@ namespace GoonWorld
     class IUpdate
     {
     public:
-        virtual void Update() const = 0;
-        virtual ~IUpdate(){}
+        virtual void Update() = 0;
+        virtual ~IUpdate() {}
     };
 
 }

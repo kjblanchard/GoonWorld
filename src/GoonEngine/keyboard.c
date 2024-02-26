@@ -31,22 +31,23 @@ int HandleKeyboardEvent(SDL_Event *event)
     {
         return true;
     }
+
     return true;
 }
 
-bool geKeyHeldDown(SDL_Scancode key)
+bool geKeyHeldDown(int key)
 {
     return _previousKeyboardState[key] && _currentKeyboardState[key];
 }
 
-bool geKeyJustPressed(const SDL_Scancode key)
+bool geKeyJustPressed(const int key)
 {
     return _currentKeyboardState[key] && !_previousKeyboardState[key];
 }
 
 // bool geKeyHeldDown(SDL_Scancode key)
 // bool geKeyJustPressed(const SDL_Scancode key)
-bool geKeyJustReleased(const SDL_Scancode key)
+bool geKeyJustReleased(const int key)
 {
     return !_currentKeyboardState[key] && _previousKeyboardState[key];
 }

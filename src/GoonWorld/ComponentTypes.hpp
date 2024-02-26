@@ -4,6 +4,7 @@ namespace GoonWorld
     {
         Default,
         DebugDrawComponent,
+        Input,
         Max,
     };
 }
