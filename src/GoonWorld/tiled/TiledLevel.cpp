@@ -3,6 +3,8 @@
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/SdlSurface.h>
+#include <GoonPhysics/scene.h>
+#include <GoonPhysics/body.h>
 #include <GoonWorld/shared/Constants.hpp>
 using namespace GoonWorld;
 
@@ -53,6 +55,16 @@ void TiledLevel::LoadSurfaces()
             _loadedTilesets.push_back({tileset.Image, surface});
         }
     }
+}
+void TiledLevel::LoadSolidObjects()
+{
+    for(auto& solid : _mapData->Objects)
+    {
+        auto box = gpBBNew(solid.X, solid.Y, solid.Width, solid.Height);
+        auto body = gpBodyNew(box);
+        gpSceneAddStaticBody(body);
+    }
+
 }
 SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset)
 {

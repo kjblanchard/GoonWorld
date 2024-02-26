@@ -18,6 +18,7 @@ namespace GoonWorld
          */
         TiledLevel(const char *filename);
         std::vector<TiledMap::TiledObject> GetAllObjects();
+        inline std::vector<TiledMap::TiledObject> GetAllSolidObjects() const { return _mapData->SolidObjects; }
         ~TiledLevel();
         /**
          * @brief Set the Texture Atlas object in the engine, so that we draw it on updates.
@@ -29,6 +30,7 @@ namespace GoonWorld
          * @brief Loads all the surfaces from the tilesets in this level, so that we can blit them properly
          */
         void LoadSurfaces();
+        void LoadSolidObjects();
         /**
          * @brief Create a Background Atlas object and blits everything to it
          */

@@ -8,6 +8,8 @@
 #include <GoonEngine/test.h>
 #include <GoonEngine/SdlWindow.h>
 #include <GoonPhysics/GoonPhysics.h>
+#include <GoonEngine/SdlSurface.h>
+#include <GoonEngine/color.h>
 using namespace GoonWorld;
 
 static Game *game;
@@ -31,6 +33,15 @@ void Update(double dub)
 void Draw()
 {
     game->Draw();
+    if (game->GetCurrentLevel())
+    {
+        for (auto &solid : game->GetCurrentLevel()->GetAllSolidObjects())
+        {
+            auto box = SDL_Rect{solid.X, solid.Y, solid.Width, solid.Height};
+            auto color = Color{0,255,0,255};
+            DrawDebugRect(&box, &color);
+        }
+    }
 }
 
 int main()
@@ -49,6 +60,7 @@ int main()
     auto result = sound->LoadBgm("rangers");
     auto level1 = TiledLevel("level1");
     level1.SetTextureAtlas();
+    game->SetCurrentLevel(&level1);
     sound->PlayBgm("rangers");
     for (auto &object : level1.GetAllObjects())
     {

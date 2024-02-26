@@ -75,6 +75,7 @@ namespace GoonWorld
         std::vector<LayerGroup> Groups;
         std::vector<Layer> Layers;
         std::vector<TiledObject> Objects;
+        std::vector<TiledObject> SolidObjects;
 
     private:
         SDL_Rect GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset);

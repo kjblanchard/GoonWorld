@@ -164,6 +164,44 @@ TiledMap::TiledMap(std::string filename)
                 }
                 Layers.push_back(layer);
             }
+            else if (name == "solid")
+            {
+                for (auto &objectJson : layerJson["objects"])
+                {
+                    auto object = TiledObject();
+                    object.Id = objectJson["id"];
+                    object.X = objectJson["x"];
+                    object.Y = objectJson["y"];
+                    // int pointsLength = objectJson["polygon"].size() / 2;
+                    std::vector<SDL_Point> points;
+                    // for (auto i = 0; i < pointsLength; ++i)
+                    for (auto& point : objectJson["polygon"])
+                    {
+                        // points.push_back(SDL_Point{objectJson["polygon"][i * 2], objectJson["polygon"][i * 2 + 1]});
+                        points.push_back(SDL_Point{point["x"], point["y"]});
+                    }
+                    int minX = object.X + (*std::min_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                                                             { return a.x < b.x; }))
+                                              .x;
+
+                    int minY = object.Y + (*std::min_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                                                             { return a.y < b.y; }))
+                                              .y;
+
+                    int maxX = object.X + (*std::max_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                                                             { return a.x < b.x; }))
+                                              .x;
+
+                    int maxY = object.Y + (*std::max_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                                                             { return a.y < b.y; }))
+                                              .y;
+                    object.X = minX;
+                    object.Y = minY;
+                    object.Width = maxX - minX;
+                    object.Height = maxY - minY;
+                    SolidObjects.push_back(object);
+                }
+            }
         }
     }
 }
