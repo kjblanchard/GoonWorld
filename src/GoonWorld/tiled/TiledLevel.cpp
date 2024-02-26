@@ -12,6 +12,7 @@ TiledLevel::TiledLevel(const char *filename)
 {
     _mapData = std::make_unique<TiledMap>(filename);
     LoadSurfaces();
+    LoadSolidObjects();
     CreateBackgroundAtlas();
 }
 std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
@@ -58,7 +59,7 @@ void TiledLevel::LoadSurfaces()
 }
 void TiledLevel::LoadSolidObjects()
 {
-    for(auto& solid : _mapData->Objects)
+    for(auto& solid : _mapData->SolidObjects)
     {
         auto box = gpBBNew(solid.X, solid.Y, solid.Width, solid.Height);
         auto body = gpBodyNew(box);

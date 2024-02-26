@@ -1,4 +1,5 @@
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
 using namespace GoonWorld;
@@ -18,6 +19,7 @@ Game::~Game()
 }
 void Game::Update()
 {
+    RigidbodyComponent::PhysicsUpdate();
     for (auto object : UpdateObjects)
     {
         object->Update();

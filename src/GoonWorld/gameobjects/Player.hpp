@@ -5,6 +5,7 @@ namespace GoonWorld
 {
     class DebugDrawComponent;
     class PlayerInputComponent;
+    class RigidbodyComponent;
     class Player : public GameObject
     {
     public:
@@ -16,5 +17,6 @@ namespace GoonWorld
     private:
         DebugDrawComponent *_debugDrawComponent;
         PlayerInputComponent *_playerInputComponent;
+        RigidbodyComponent *_rigidbodyComponent;
     };
 }

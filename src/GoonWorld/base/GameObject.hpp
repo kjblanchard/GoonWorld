@@ -17,7 +17,7 @@ namespace GoonWorld
         virtual void Start() const override;
         virtual void Update() override;
         inline unsigned int Id() { return _id; }
-        inline Point Location() { return _location; }
+        inline Point &Location() { return _location; }
         void AddComponent(Component *component);
         void AddComponent(std::initializer_list<Component *> componentList);
         Component *GetComponent(unsigned int componentType);

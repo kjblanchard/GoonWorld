@@ -17,7 +17,7 @@ namespace GoonWorld
         virtual void Update() override;
         virtual void OnComponentAdd(GameObject &parent);
         virtual ~Component();
-        inline GameObject &Parent() { return *_parent; }
+        inline GameObject *Parent() { return _parent; }
         inline bool IsEnabled() const override { return _enabled; }
         void Enabled(bool isEnabled) override;
         void OnEnabled() override;
