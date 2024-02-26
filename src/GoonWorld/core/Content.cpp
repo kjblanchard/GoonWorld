@@ -2,7 +2,7 @@
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/core/Content.hpp>
 
-using namespace GoonEngine;
+using namespace GoonWorld;
 
 static std::unordered_map<const char *, void *> _loadedContent;
 
@@ -12,13 +12,15 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
 
     if (iter != _loadedContent.end())
         return iter->second;
+    void *loadedContent;
     switch (contentType)
     {
-        {
-        case ContentTypes::Surface:
-            auto load = LoadSurfaceFromFile(filename);
-            return load ? _loadedContent[filename] = load : nullptr;
-        }
+    case ContentTypes::Surface:
+        loadedContent = LoadSurfaceFromFile(filename);
+        return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
+    case ContentTypes::Texture:
+        loadedContent = CreateTextureFromFile(filename);
+        return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
     default:
         break;
     }

@@ -23,8 +23,22 @@ AppSettings::AppSettings(const char *filepath)
         music.LoopEnd = song["endLoop"];
         SoundConfigs.Music.push_back(music);
     }
-    auto keyboardConfigJson = data["keyboardConfig"];
-    auto controllerConfigJson = data["controllerConfig"];
+    auto &keyboardConfigJson = data["keyboardConfig"];
+    auto &controllerConfigJson = data["controllerConfig"];
     KeyboardConfig.PlayerButtonKeyVector = keyboardConfigJson.get<decltype(KeyboardConfig.PlayerButtonKeyVector)>();
     ControllerConfig.PlayerButtonVector = controllerConfigJson.get<decltype(ControllerConfig.PlayerButtonVector)>();
+    auto &animationConfigJson = data["animationConfig"];
+    for (auto &[key, value] : animationConfigJson.items())
+    {
+        Animation animation;
+        animation.Default = value["default"];
+        for (auto &anim : value["animations"])
+        {
+            struct AnimationConfig animConfig;
+            animConfig.Name = anim["name"];
+            animConfig.Looping = anim["looping"];
+            animation.Animations.push_back(animConfig);
+        }
+        AnimationConfig[key] = animation;
+    }
 }

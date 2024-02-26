@@ -6,6 +6,7 @@ namespace GoonWorld
         DebugDrawComponent,
         Input,
         Rigidbody,
+        Animation,
         Max,
     };
 }

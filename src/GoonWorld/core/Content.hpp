@@ -1,10 +1,11 @@
 #pragma once
-namespace GoonEngine
+namespace GoonWorld
 {
     enum class ContentTypes
     {
         Default,
         Surface,
+        Texture,
     };
 
     class Content

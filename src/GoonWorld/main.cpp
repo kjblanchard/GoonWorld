@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <algorithm>
 #include <GoonWorld/gameobjects/Player.hpp>
@@ -10,6 +11,7 @@
 #include <GoonPhysics/GoonPhysics.h>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/color.h>
+#include <GoonWorld/animation/Animator.hpp>
 using namespace GoonWorld;
 
 static Game *game;
@@ -38,7 +40,7 @@ void Draw()
         for (auto &solid : game->GetCurrentLevel()->GetAllSolidObjects())
         {
             auto box = SDL_Rect{solid.X, solid.Y, solid.Width, solid.Height};
-            auto color = Color{0,255,0,255};
+            auto color = Color{0, 255, 0, 255};
             DrawDebugRect(&box, &color);
         }
     }
@@ -69,6 +71,8 @@ int main()
             continue;
         (*iter).second(object);
     }
-    // auto player = Player();
+
+    auto thing = Animator("mario");
+
     Play();
 }

@@ -6,7 +6,6 @@ using GoonEngine.Components;
 namespace GoonEngine;
 public class Animator<T> where T : GameObject
 {
-    private static string GetImagePath(string filename) => $"assets/img/{filename}.png";
     public AsepriteDocument BaseDocument => _loadedDocument;
     private AsepriteDocument _loadedDocument;
     public string DefaultAnimation;

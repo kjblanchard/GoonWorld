@@ -40,11 +40,22 @@ namespace GoonWorld
         {
             std::vector<std::vector<int>> PlayerButtonVector;
         };
+        struct AnimationConfig
+        {
+            std::string Name;
+            bool Looping;
+        };
+        struct Animation
+        {
+            std::string Default;
+            std::vector<AnimationConfig> Animations;
+        };
         WindowConfig WindowConfig;
         GraphicsConfig GraphicsConfig;
         SoundConfig SoundConfigs;
         KeyboardConfig KeyboardConfig;
         ControllerConfig ControllerConfig;
+        std::unordered_map<std::string, Animation> AnimationConfig;
     };
 
 };
