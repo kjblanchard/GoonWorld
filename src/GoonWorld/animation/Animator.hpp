@@ -7,12 +7,15 @@ namespace GoonWorld
     class Animator
     {
     public:
-        static std::unordered_map<std::string, Animator *> LoadedAnimators;
-        Animator(std::string filepath);
+        static Animator *GetAnimator(std::string filepath);
+        Animation *GetAnimation(std::string name);
 
     private:
+        Animator(std::string filepath);
         AsepriteDocument _loadedDocument;
         std::vector<Animation> _animations;
         std::string _defaultAnimation;
+        static std::unordered_map<std::string, Animator *> _loadedAnimators;
+        friend class AnimationComponent;
     };
 }

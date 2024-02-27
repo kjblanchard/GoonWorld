@@ -2,7 +2,8 @@
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <string>
 #include <vector>
-struct SDL_Texture;
+#include <SDL2/SDL_render.h>
+// struct SDL_Texture;
 namespace GoonWorld
 {
     struct Animation

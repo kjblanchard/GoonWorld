@@ -1,21 +1,25 @@
+#pragma once
 #include <chrono>
-
-class TimeSpan
+namespace GoonWorld
 {
-public:
-    // Constructor taking duration in seconds
-    TimeSpan(double seconds) : _durationSeconds(std::chrono::duration<double>(seconds)) {}
-
-    inline double GetSeconds() const
+    class TimeSpan
     {
-        return _durationSeconds.count();
-    }
+    public:
+        // Constructor taking duration in seconds
+        TimeSpan(double seconds) : _durationSeconds(std::chrono::duration<double>(seconds)) {}
 
-    inline long long GetMilliseconds() const
-    {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(_durationSeconds).count();
-    }
+        inline double GetSeconds() const
+        {
+            return _durationSeconds.count();
+        }
 
-private:
-    std::chrono::duration<double> _durationSeconds;
-};
+        inline long long GetMilliseconds() const
+        {
+            return std::chrono::duration_cast<std::chrono::milliseconds>(_durationSeconds).count();
+        }
+
+    private:
+        std::chrono::duration<double> _durationSeconds;
+    };
+
+}

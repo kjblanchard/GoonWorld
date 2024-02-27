@@ -6,6 +6,7 @@ namespace GoonWorld
     {
         bool *Condition;
         bool ConditionMatch;
+        std::string CurrentAnimation;
         std::string NextAnimation;
     };
 

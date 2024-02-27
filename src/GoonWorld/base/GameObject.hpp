@@ -23,9 +23,9 @@ namespace GoonWorld
         Component *GetComponent(unsigned int componentType);
         template <typename T>
         T *GetComponentOfType(unsigned int componentType);
+        static TimeSpan DeltaTime;
 
     protected:
-        static TimeSpan _deltaTime;
         unsigned int _id;
         Point _location;
         std::vector<std::shared_ptr<Component>> _components;

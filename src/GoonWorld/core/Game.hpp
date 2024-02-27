@@ -20,7 +20,7 @@ namespace GoonWorld
 
         Game();
         ~Game();
-        void Update();
+        void Update(double time);
         void Draw();
 
     private:

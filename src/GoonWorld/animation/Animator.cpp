@@ -9,7 +9,15 @@
 using json = nlohmann::json;
 using namespace GoonWorld;
 
-std::unordered_map<std::string, Animator *> Animator::LoadedAnimators;
+std::unordered_map<std::string, Animator *> Animator::_loadedAnimators;
+
+Animator *Animator::GetAnimator(std::string filepath)
+{
+    auto iter = _loadedAnimators.find(filepath);
+    if (iter != _loadedAnimators.end())
+        return iter->second;
+    return _loadedAnimators[filepath] = new Animator(filepath);
+}
 
 Animator::Animator(std::string filepath)
 {
@@ -37,4 +45,10 @@ Animator::Animator(std::string filepath)
         anim.Image = (SDL_Texture *)Content::LoadContent(ContentTypes::Texture, fullPathImg.c_str());
         _animations.push_back(anim);
     }
+}
+Animation *Animator::GetAnimation(std::string name)
+{
+    auto it = std::find_if(_animations.begin(), _animations.end(), [&name](const Animation &anim)
+                           { return anim.Name == name; });
+    return it == _animations.end() ? nullptr : &*it;
 }

@@ -2,6 +2,8 @@
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/PlayerInputComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
+#include <GoonWorld/components/AnimationComponent.hpp>
+#include <GoonWorld/animation/AnimationTransition.hpp>
 #include <SDL2/SDL_rect.h>
 
 using namespace GoonWorld;
@@ -13,30 +15,104 @@ Player::Player(TiledMap::TiledObject &object)
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
-    AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent});
+    _animationComponent = new AnimationComponent("mario");
+    _animationComponent->SizeMultiplier = 2;
+    AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+    CreateAnimationTransitions();
 }
 void Player::Update()
 {
-    // puts("Player update");
+
+    // Handle input.
+
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_UP))
     {
         _rigidbodyComponent->Acceleration().y -= 15;
-        // _location.y -= 1;
     }
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_DOWN))
     {
         _rigidbodyComponent->Acceleration().y += 15;
-        // _location.y += 1;
     }
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
         _rigidbodyComponent->Acceleration().x -= 15;
-        // _location.x -= 1;
     }
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_RIGHT))
     {
         _rigidbodyComponent->Acceleration().x += 15;
-        // _location.x += 1;
+    }
+    if (_playerInputComponent->IsButtonPressed(GameControllerButton::A))
+    {
+        Jump();
+    }
+    else if (_playerInputComponent->IsButtonReleased(GameControllerButton::A))
+    {
+        _isJumping = false;
+    }
+
+    _canJump = _rigidbodyComponent->IsOnGround();
+    _animationComponent->Mirror = _rigidbodyComponent->IsOnGround() ? _rigidbodyComponent->Velocity().x >= 0 ? false : true : _animationComponent->Mirror;
+
+    _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
+    _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
+    _shouldRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
+    if (_shouldRunAnim)
+    {
+    }
+
+    GameObject::Update();
+}
+void Player::CreateAnimationTransitions()
+{
+    auto fallTransition = new AnimationTransition();
+    fallTransition->Condition = &_shouldFallAnim;
+    fallTransition->ConditionMatch = true;
+    fallTransition->NextAnimation = "jump";
+    fallTransition->CurrentAnimation = "idle";
+    _animationComponent->AddTransition(fallTransition);
+
+    auto fallToIdleTransition = new AnimationTransition();
+    fallToIdleTransition->Condition = &_shouldIdleAnim;
+    fallToIdleTransition->ConditionMatch = true;
+    fallToIdleTransition->NextAnimation = "idle";
+    fallToIdleTransition->CurrentAnimation = "jump";
+    _animationComponent->AddTransition(fallToIdleTransition);
+
+    auto idleToWalkTransition = new AnimationTransition();
+    idleToWalkTransition->Condition = &_shouldRunAnim;
+    idleToWalkTransition->ConditionMatch = true;
+    idleToWalkTransition->NextAnimation = "walk";
+    idleToWalkTransition->CurrentAnimation = "idle";
+    _animationComponent->AddTransition(idleToWalkTransition);
+
+    auto walkToIdleTransition = new AnimationTransition();
+    walkToIdleTransition->Condition = &_shouldIdleAnim;
+    walkToIdleTransition->ConditionMatch = true;
+    walkToIdleTransition->NextAnimation = "idle";
+    walkToIdleTransition->CurrentAnimation = "walk";
+    _animationComponent->AddTransition(walkToIdleTransition);
+}
+void Player::Jump()
+{
+    if (_isJumping)
+    {
+        if (_currentJumpTime < _maxJumpTime)
+        {
+            _rigidbodyComponent->Velocity().y -= _jumpVelocity;
+            _currentJumpTime += (float)DeltaTime.GetSeconds();
+        }
+        else
+        {
+            _isJumping = _canJump = false;
+        }
+    }
+    else if (_canJump)
+    {
+        // Play jump sound
+        _currentJumpTime = 0;
+        _isJumping = true;
+        _canJump = false;
+        _rigidbodyComponent->Velocity().y += _jumpVelocity * 5;
     }
 }
 Player::~Player()

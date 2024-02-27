@@ -4,7 +4,7 @@
 using namespace GoonWorld;
 
 unsigned int GameObject::_numGameObjects = 0;
-TimeSpan _deltaTime = TimeSpan(0);
+TimeSpan GameObject::DeltaTime = TimeSpan(0);
 
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{32, 32})

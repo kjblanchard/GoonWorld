@@ -30,7 +30,7 @@ void InitializePhysics()
 
 void Update(double dub)
 {
-    game->Update();
+    game->Update(dub);
 }
 void Draw()
 {
@@ -71,8 +71,6 @@ int main()
             continue;
         (*iter).second(object);
     }
-
-    auto thing = Animator("mario");
 
     Play();
 }
