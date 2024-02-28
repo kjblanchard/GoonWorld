@@ -24,8 +24,9 @@ namespace GoonWorld
         // Jump
     private:
         bool _isJumping, _canJump;
-        int _jumpVelocity = 5;
-        float _currentJumpTime, _maxJumpTime = 0.25f;
+        int _jumpFrameVelocity, _initialJumpVelocity, _runSpeed, _moveSpeed, _initialMoveVelocity;
+        float _currentJumpTime, _maxJumpTime;
+
 
     private:
         void CreateAnimationTransitions();

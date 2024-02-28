@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <GoonWorld/tiled/TiledMap.hpp>
+#include <GoonEngine/point.h>
 struct SDL_Surface;
 struct SDL_Texture;
 namespace GoonWorld
@@ -25,6 +26,7 @@ namespace GoonWorld
          */
         void SetTextureAtlas();
 
+        inline Point GetGravity() { return _gravity; }
     private:
         /**
          * @brief Loads all the surfaces from the tilesets in this level, so that we can blit them properly
@@ -44,9 +46,12 @@ namespace GoonWorld
          */
         struct SDL_Surface *GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset);
 
+        void LoadGravity();
+
     private:
         std::vector<std::pair<std::string, struct SDL_Surface *>> _loadedTilesets;
         struct SDL_Texture *_loadedAtlas;
         std::unique_ptr<TiledMap> _mapData;
+        Point _gravity;
     };
 }

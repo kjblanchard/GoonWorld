@@ -5,6 +5,7 @@
 #include <GoonWorld/common/TimeSpan.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonEngine/SdlSurface.h>
+#include <chrono>
 using namespace GoonWorld;
 
 AnimationComponent::AnimationComponent(std::string animator)
@@ -27,7 +28,8 @@ void AnimationComponent::Update()
     }
     if (_currentAnimation->StartFrame == _currentAnimation->EndFrame)
         return;
-    _secondsThisFrame += GameObject::DeltaTime.GetSeconds() * AnimationSpeed;
+    // auto msDouble = std::chrono::duration_cast<std::chrono::milliseconds>(GameObject::DeltaTime);
+    _secondsThisFrame += GameObject::DeltaTime.GetTotalMilliseconds() * AnimationSpeed;
     auto frameSeconds = _currentAnimationDocument->frames[_currentFrame].duration;
     if (_secondsThisFrame >= frameSeconds)
     {

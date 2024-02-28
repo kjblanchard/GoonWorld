@@ -23,7 +23,7 @@ namespace GoonWorld
     public:
         struct TiledProperty
         {
-            std::string Name, PropertyType;
+            std::string Name, PropertyType, ValueJsonString;
         };
         struct TiledObject
         {
@@ -76,6 +76,7 @@ namespace GoonWorld
         std::vector<Layer> Layers;
         std::vector<TiledObject> Objects;
         std::vector<TiledObject> SolidObjects;
+        std::vector<TiledProperty> Properties;
 
     private:
         SDL_Rect GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset);

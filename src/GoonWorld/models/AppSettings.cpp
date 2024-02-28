@@ -27,6 +27,13 @@ AppSettings::AppSettings(const char *filepath)
     auto &controllerConfigJson = data["controllerConfig"];
     KeyboardConfig.PlayerButtonKeyVector = keyboardConfigJson.get<decltype(KeyboardConfig.PlayerButtonKeyVector)>();
     ControllerConfig.PlayerButtonVector = controllerConfigJson.get<decltype(ControllerConfig.PlayerButtonVector)>();
+    auto &playerConfigJson = data["playerConfig"];
+    PlayerConfigs.MoveSpeed = playerConfigJson["moveSpeed"];
+    PlayerConfigs.RunSpeed = playerConfigJson["runSpeed"];
+    PlayerConfigs.FrameJumpAcceleration = playerConfigJson["frameJumpAcceleration"];
+    PlayerConfigs.InitialJumpVelocity = playerConfigJson["initialJumpVelocity"];
+    PlayerConfigs.MaxJumpTime = playerConfigJson["maxJumpTime"];
+    PlayerConfigs.InitialMoveVelocity = playerConfigJson["initialMoveVelocity"];
     auto &animationConfigJson = data["animationConfig"];
     for (auto &[key, value] : animationConfigJson.items())
     {

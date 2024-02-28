@@ -21,16 +21,16 @@ static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
          return new Player(object);
      }},
 };
-void InitializePhysics()
+gpScene *InitializePhysics()
 {
     auto scene = gpInitScene();
     geSetCurrentScene(scene);
-    gpSceneSetGravity(scene, 50);
+    return scene;
 }
 
-void Update(double dub)
+void Update(double timeMs)
 {
-    game->Update(dub);
+    game->Update(timeMs);
 }
 void Draw()
 {
@@ -57,10 +57,12 @@ int main()
     CreateWindowAndRenderer(game->GameSettings->WindowConfig.WindowSize.x,
                             game->GameSettings->WindowConfig.WindowSize.y,
                             game->GameSettings->WindowConfig.Title.c_str());
-    InitializePhysics();
+    auto scene = InitializePhysics();
     auto sound = new Sound(game->GameSettings->SoundConfigs);
     auto result = sound->LoadBgm("rangers");
     auto level1 = TiledLevel("level1");
+    gpSceneSetGravity(scene, level1.GetGravity().y);
+    gpSceneSetFriction(scene, level1.GetGravity().x);
     level1.SetTextureAtlas();
     game->SetCurrentLevel(&level1);
     sound->PlayBgm("rangers");

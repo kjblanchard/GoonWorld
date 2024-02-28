@@ -18,10 +18,11 @@ Game::Game()
 Game::~Game()
 {
 }
-void Game::Update(double time)
+void Game::Update(double timeMs)
 {
     RigidbodyComponent::PhysicsUpdate();
-    GameObject::DeltaTime = TimeSpan(time);
+    auto totalSeconds = timeMs / 1000;
+    GameObject::DeltaTime = TimeSpan(totalSeconds);
     for (auto object : UpdateObjects)
     {
         object->Update();

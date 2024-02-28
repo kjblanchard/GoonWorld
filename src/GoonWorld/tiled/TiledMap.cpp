@@ -72,7 +72,7 @@ TiledMap::TiledMap(std::string filename)
     auto pathPrefix = AssetPrefix + TiledPrefix + filename + ".tmj";
     std::ifstream file(pathPrefix);
     json data = json::parse(file);
-    auto tilesets = data["tilesets"];
+    auto &tilesets = data["tilesets"];
     Width = data["width"];
     Height = data["height"];
     TileWidth = data["tilewidth"];
@@ -175,7 +175,7 @@ TiledMap::TiledMap(std::string filename)
                     // int pointsLength = objectJson["polygon"].size() / 2;
                     std::vector<SDL_Point> points;
                     // for (auto i = 0; i < pointsLength; ++i)
-                    for (auto& point : objectJson["polygon"])
+                    for (auto &point : objectJson["polygon"])
                     {
                         // points.push_back(SDL_Point{objectJson["polygon"][i * 2], objectJson["polygon"][i * 2 + 1]});
                         points.push_back(SDL_Point{point["x"], point["y"]});
@@ -203,5 +203,13 @@ TiledMap::TiledMap(std::string filename)
                 }
             }
         }
+    }
+    for (auto &propertyJson : data["properties"])
+    {
+        TiledProperty property;
+        property.Name = propertyJson["name"];
+        property.PropertyType = propertyJson["propertytype"];
+        property.ValueJsonString = propertyJson["value"].dump();
+        Properties.push_back(property);
     }
 }

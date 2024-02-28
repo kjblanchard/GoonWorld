@@ -45,6 +45,10 @@ namespace GoonWorld
             std::string Name;
             bool Looping;
         };
+        struct PlayerConfig
+        {
+            float InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, MoveSpeed, RunSpeed, MaxJumpTime;
+        };
         struct Animation
         {
             std::string Default;
@@ -55,6 +59,7 @@ namespace GoonWorld
         SoundConfig SoundConfigs;
         KeyboardConfig KeyboardConfig;
         ControllerConfig ControllerConfig;
+        PlayerConfig PlayerConfigs;
         std::unordered_map<std::string, Animation> AnimationConfig;
     };
 

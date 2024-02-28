@@ -6,11 +6,13 @@
 #include <GoonPhysics/scene.h>
 #include <GoonPhysics/body.h>
 #include <GoonWorld/shared/Constants.hpp>
+#include <json/json.hpp>
 using namespace GoonWorld;
 
 TiledLevel::TiledLevel(const char *filename)
 {
     _mapData = std::make_unique<TiledMap>(filename);
+    LoadGravity();
     LoadSurfaces();
     LoadSolidObjects();
     CreateBackgroundAtlas();
@@ -59,13 +61,12 @@ void TiledLevel::LoadSurfaces()
 }
 void TiledLevel::LoadSolidObjects()
 {
-    for(auto& solid : _mapData->SolidObjects)
+    for (auto &solid : _mapData->SolidObjects)
     {
         auto box = gpBBNew(solid.X, solid.Y, solid.Width, solid.Height);
         auto body = gpBodyNew(box);
         gpSceneAddStaticBody(body);
     }
-
 }
 SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset)
 {
@@ -134,4 +135,15 @@ void TiledLevel::CreateBackgroundAtlas()
         }
     }
     _loadedAtlas = CreateTextureFromSurface(atlas);
+}
+void TiledLevel::LoadGravity()
+{
+    for (auto &property : _mapData->Properties)
+    {
+        if (property.Name != "gravity")
+            continue;
+        auto gravityJson = nlohmann::json::parse(property.ValueJsonString);
+        _gravity.x = gravityJson["x"];
+        _gravity.y = gravityJson["y"];
+    }
 }

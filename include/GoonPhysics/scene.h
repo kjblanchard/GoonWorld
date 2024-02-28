@@ -18,10 +18,12 @@ extern "C"
 typedef struct gpScene
 {
     float gravity;
+    float friction;
 } gpScene;
 
 gpScene* gpInitScene(void);
 void gpSceneSetGravity(gpScene *scene, float gravity);
+void gpSceneSetFriction(gpScene *scene, float friction);
 int gpSceneAddBody(gpBody* body);
 int gpSceneAddStaticBody(gpBody* body);
 void gpSceneUpdate(gpScene* scene, float gameTime);

@@ -22,13 +22,11 @@ static void CheckForNonStaticOverlaps(gpBody *body, int direction);
 
 void gpSceneUpdate(gpScene *scene, float gameTime)
 {
-    // printf("Physics update\n");
     gpSceneGravity sceneGravity;
     sceneGravity.sceneGravity = scene->gravity;
-    // sceneGravity.sceneFriction = 2.25f;
-    sceneGravity.sceneFriction = 0.45;
-    sceneGravity.sceneMaxXVelocity = 100000;
-    sceneGravity.sceneMaxYVelocity = 100000;
+    sceneGravity.sceneFriction = scene->friction;
+    sceneGravity.sceneMaxXVelocity = 500;
+    sceneGravity.sceneMaxYVelocity = 500;
     // sceneGravity.sceneMinYVelocity = 0.001;
     sceneGravity.sceneMinYVelocity = 0.1;
     sceneGravity.sceneMinXVelocity = 5;
@@ -182,7 +180,7 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
 
 gpScene *gpInitScene(void)
 {
-    gpScene *scene = malloc(sizeof(*scene));
+    gpScene *scene = calloc(1, sizeof(*scene));
     _currentBodies = calloc(_currentCapacityBodies, _currentCapacityBodies * sizeof(gpBody *));
     _currentStaticBodies = calloc(_currentCapacityStaticBodies, _currentCapacityBodies * sizeof(gpBody *));
     return scene;
@@ -191,6 +189,10 @@ gpScene *gpInitScene(void)
 void gpSceneSetGravity(gpScene *scene, float gravity)
 {
     scene->gravity = gravity;
+}
+void gpSceneSetFriction(gpScene *scene, float friction)
+{
+    scene->friction = friction / 100;
 }
 
 int gpSceneAddBody(gpBody *body)

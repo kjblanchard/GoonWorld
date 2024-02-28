@@ -58,38 +58,20 @@
             "type": "class"
         },
         {
-            "id": 1,
-            "name": "Direction",
-            "storageType": "int",
-            "type": "enum",
-            "values": [
-                "Up",
-                "Down",
-                "Left",
-                "Right"
-            ],
-            "valuesAsFlags": false
-        },
-        {
-            "id": 3,
-            "name": "FileOverride",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "banana"
-            ],
-            "valuesAsFlags": false
-        },
-        {
-            "id": 4,
+            "id": 6,
             "members": [
                 {
-                    "name": "name",
-                    "type": "string",
-                    "value": ""
+                    "name": "x",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "y",
+                    "type": "float",
+                    "value": 0
                 }
             ],
-            "name": "Player",
+            "name": "Vector",
             "type": "class"
         }
     ]
