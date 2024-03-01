@@ -6,6 +6,7 @@
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
+#include <GoonEngine/debug.h>
 #include <SDL2/SDL_rect.h>
 
 using namespace GoonWorld;
@@ -26,28 +27,40 @@ Player::Player(TiledMap::TiledObject &object)
     auto &playerConfig = Game::Instance()->GameSettings->PlayerConfigs;
     _jumpFrameVelocity = playerConfig.FrameJumpAcceleration;
     _initialJumpVelocity = playerConfig.InitialJumpVelocity;
-    _runSpeed = playerConfig.RunSpeed;
-    _moveSpeed = playerConfig.MoveSpeed;
+    _runSpeedBoost = playerConfig.RunSpeedBoost;
+    _walkSpeedBoost = playerConfig.WalkSpeedBoost;
+    _maxWalkSpeed = playerConfig.MaxWalkSpeed;
+    _maxRunSpeed = playerConfig.MaxRunSpeed;
+    // _runSpeed = playerConfig.RunSpeed;
+    // _moveSpeed = playerConfig.MoveSpeed;
     _maxJumpTime = playerConfig.MaxJumpTime;
     _initialMoveVelocity = playerConfig.InitialMoveVelocity;
     //
 }
 void Player::Update()
 {
-
-    // Handle input.
+    bool isRunning = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
+    _rigidbodyComponent->MaxVelocity().x = isRunning ? _maxRunSpeed : _maxWalkSpeed;
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
         if (_rigidbodyComponent->Velocity().x == 0)
             _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
-        _rigidbodyComponent->Acceleration().x -= _moveSpeed * DeltaTime.GetTotalSeconds();
+        else
+        {
+            auto moveSpeed = _walkSpeedBoost;
+            _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
+        }
     }
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_RIGHT))
     {
         if (_rigidbodyComponent->Velocity().x == 0)
             _rigidbodyComponent->Acceleration().x += _initialMoveVelocity;
-        _rigidbodyComponent->Acceleration().x += _moveSpeed * DeltaTime.GetTotalSeconds();
+        else
+        {
+            auto moveSpeed = _walkSpeedBoost;
+            _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
+        }
     }
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
     {
@@ -59,7 +72,7 @@ void Player::Update()
     }
 
     _canJump = _rigidbodyComponent->IsOnGround();
-    _animationComponent->Mirror = _rigidbodyComponent->IsOnGround() ? _rigidbodyComponent->Velocity().x >= 0 ? false : true : _animationComponent->Mirror;
+    // _animationComponent->Mirror = _rigidbodyComponent->IsOnGround() ? _rigidbodyComponent->Velocity().x >= 0 ? false : true : _animationComponent->Mirror;
 
     _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
     _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
@@ -67,7 +80,12 @@ void Player::Update()
     if (_shouldRunAnim)
     {
     }
-    printf("Jumping: %d\n", _isJumping);
+    if (_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
+    {
+        _animationComponent->Mirror = _rigidbodyComponent->Velocity().x < 0;
+    }
+    // LogInfo("Velocity: X: %f, Y: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y);
+    // printf("Jumping: %d\n", _isJumping);
 
     GameObject::Update();
 }

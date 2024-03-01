@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <json/json_fwd.hpp>
 #include <GoonEngine/point.h>
 
 namespace GoonWorld
@@ -47,7 +48,7 @@ namespace GoonWorld
         };
         struct PlayerConfig
         {
-            float InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, MoveSpeed, RunSpeed, MaxJumpTime;
+            float InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, WalkSpeedBoost, RunSpeedBoost, MaxWalkSpeed, MaxRunSpeed, MaxJumpTime;
         };
         struct Animation
         {
@@ -61,6 +62,9 @@ namespace GoonWorld
         ControllerConfig ControllerConfig;
         PlayerConfig PlayerConfigs;
         std::unordered_map<std::string, Animation> AnimationConfig;
+
+    private:
+        void LoadPlayerConfigFromJson(nlohmann::json &playerConfigJson);
     };
 
 };

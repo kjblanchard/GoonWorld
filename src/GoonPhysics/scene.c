@@ -192,7 +192,7 @@ void gpSceneSetGravity(gpScene *scene, float gravity)
 }
 void gpSceneSetFriction(gpScene *scene, float friction)
 {
-    scene->friction = friction / 100;
+    scene->friction = friction;
 }
 
 int gpSceneAddBody(gpBody *body)

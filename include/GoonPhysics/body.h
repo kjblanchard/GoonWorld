@@ -25,6 +25,7 @@ extern "C"
         gpBB boundingBox;
         gpVec acceleration;
         gpVec velocity;
+        gpVec maxVelocity;
         int numOverlappingBodies;
         int lastFrameNumOverlappingBodies;
         int gravityEnabled;
@@ -37,6 +38,8 @@ extern "C"
     gpBody *gpBodyNew(gpBB boundingBox);
     void gpBodySetPosition(gpBody *body, gpVec pos);
     void gpBodySetVelocity(gpBody *body, gpVec vel);
+
+    void gpBodySetMaxVelocityX(gpBody *body, float maxVel);
     void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction);
     int gpBodyIsOnGround(gpBody *body);
     typedef void (*OverlapFunc)(gpBody *body, gpBody *overlapBody, struct gpOverlap *overlap);

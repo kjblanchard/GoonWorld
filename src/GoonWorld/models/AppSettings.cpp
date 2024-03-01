@@ -27,13 +27,10 @@ AppSettings::AppSettings(const char *filepath)
     auto &controllerConfigJson = data["controllerConfig"];
     KeyboardConfig.PlayerButtonKeyVector = keyboardConfigJson.get<decltype(KeyboardConfig.PlayerButtonKeyVector)>();
     ControllerConfig.PlayerButtonVector = controllerConfigJson.get<decltype(ControllerConfig.PlayerButtonVector)>();
+    // Player config
     auto &playerConfigJson = data["playerConfig"];
-    PlayerConfigs.MoveSpeed = playerConfigJson["moveSpeed"];
-    PlayerConfigs.RunSpeed = playerConfigJson["runSpeed"];
-    PlayerConfigs.FrameJumpAcceleration = playerConfigJson["frameJumpAcceleration"];
-    PlayerConfigs.InitialJumpVelocity = playerConfigJson["initialJumpVelocity"];
-    PlayerConfigs.MaxJumpTime = playerConfigJson["maxJumpTime"];
-    PlayerConfigs.InitialMoveVelocity = playerConfigJson["initialMoveVelocity"];
+    LoadPlayerConfigFromJson(playerConfigJson);
+
     auto &animationConfigJson = data["animationConfig"];
     for (auto &[key, value] : animationConfigJson.items())
     {
@@ -48,4 +45,16 @@ AppSettings::AppSettings(const char *filepath)
         }
         AnimationConfig[key] = animation;
     }
+}
+
+void AppSettings::LoadPlayerConfigFromJson(nlohmann::json &playerConfigJson)
+{
+    PlayerConfigs.WalkSpeedBoost = playerConfigJson["walkSpeedBoost"];
+    PlayerConfigs.RunSpeedBoost = playerConfigJson["runSpeedBoost"];
+    PlayerConfigs.MaxWalkSpeed = playerConfigJson["maxWalkSpeed"];
+    PlayerConfigs.MaxRunSpeed = playerConfigJson["maxRunSpeed"];
+    PlayerConfigs.FrameJumpAcceleration = playerConfigJson["frameJumpAcceleration"];
+    PlayerConfigs.InitialJumpVelocity = playerConfigJson["initialJumpVelocity"];
+    PlayerConfigs.MaxJumpTime = playerConfigJson["maxJumpTime"];
+    PlayerConfigs.InitialMoveVelocity = playerConfigJson["initialMoveVelocity"];
 }

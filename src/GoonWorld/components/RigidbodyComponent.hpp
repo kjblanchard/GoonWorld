@@ -15,6 +15,7 @@ namespace GoonWorld
         inline bool IsOnGround() { return gpBodyIsOnGround(_body); }
         inline gpVec &Velocity() { return _body->velocity; }
         inline gpVec &Acceleration() { return _body->acceleration; }
+        inline gpVec &MaxVelocity() { return _body->maxVelocity; }
 
     private:
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
