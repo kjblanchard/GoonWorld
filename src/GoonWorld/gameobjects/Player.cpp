@@ -22,8 +22,11 @@ Player::Player(TiledMap::TiledObject &object)
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
     CreateAnimationTransitions();
+    InitializePlayerConfig();
+}
 
-    // Initialze Player config
+void Player::InitializePlayerConfig()
+{
     auto &playerConfig = Game::Instance()->GameSettings->PlayerConfigs;
     _jumpFrameVelocity = playerConfig.FrameJumpAcceleration;
     _initialJumpVelocity = playerConfig.InitialJumpVelocity;
@@ -31,11 +34,8 @@ Player::Player(TiledMap::TiledObject &object)
     _walkSpeedBoost = playerConfig.WalkSpeedBoost;
     _maxWalkSpeed = playerConfig.MaxWalkSpeed;
     _maxRunSpeed = playerConfig.MaxRunSpeed;
-    // _runSpeed = playerConfig.RunSpeed;
-    // _moveSpeed = playerConfig.MoveSpeed;
     _maxJumpTime = playerConfig.MaxJumpTime;
     _initialMoveVelocity = playerConfig.InitialMoveVelocity;
-    //
 }
 void Player::Update()
 {
@@ -72,7 +72,6 @@ void Player::Update()
     }
 
     _canJump = _rigidbodyComponent->IsOnGround();
-    // _animationComponent->Mirror = _rigidbodyComponent->IsOnGround() ? _rigidbodyComponent->Velocity().x >= 0 ? false : true : _animationComponent->Mirror;
 
     _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
     _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;

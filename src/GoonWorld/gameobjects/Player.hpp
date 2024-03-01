@@ -28,6 +28,7 @@ namespace GoonWorld
         float _currentJumpTime, _maxJumpTime;
 
     private:
+        void InitializePlayerConfig();
         void CreateAnimationTransitions();
         void Jump();
         DebugDrawComponent *_debugDrawComponent;
