@@ -17,7 +17,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # File globbing
 # #########################################
 message(STATUS "Getting all files for cmake..")
-file(GLOB_RECURSE FILES src/GoonEngine/*.c* src/GoonPhysics/*.c*)
+file(GLOB_RECURSE ENGINE_FILES external/sg_engine/src/GoonEngine/*.c* external/sg_physics/src/GoonPhysics/*.c*)
 file(GLOB_RECURSE GOON_WORLD_FILES src/GoonWorld/*.c*)
 
 # #########################################
@@ -53,7 +53,7 @@ endif(EMSCRIPTEN)
 message(STATUS "Initializing the project")
 add_library(${LIBRARY_TARGET_NAME}
     SHARED
-    ${FILES}
+    ${ENGINE_FILES}
 )
 set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 99)
 find_package(PkgConfig REQUIRED)
@@ -78,7 +78,8 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 if(GOON_BUILD_PCH)
     message(STATUS "Setting up PCH, mac needs objc")
     target_precompile_headers(${LIBRARY_TARGET_NAME} PRIVATE
-        "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/include/GoonEngine/gnpch.h>")
+        # "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/include/GoonEngine/gnpch.h>")
+        "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/GoonEngine/gnpch.h>")
 endif(GOON_BUILD_PCH)
 
 # #########################################
@@ -188,7 +189,6 @@ set(LIBRARIES_TO_LINK
 foreach(LIBRARY ${LIBRARIES_TO_LINK})
     # Check if the target exists, if we are building it then we should link to it.
     if(TARGET ${LIBRARY})
-        # target_link_libraries(${LIBRARY_TARGET_NAME} PRIVATE ${LIBRARY})
         target_link_libraries(${LIBRARY_TARGET_NAME} PRIVATE ${LIBRARY})
     endif()
 endforeach()
@@ -210,6 +210,8 @@ target_link_directories(${LIBRARY_TARGET_NAME}
 target_include_directories(${LIBRARY_TARGET_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/sg_physics/include/
     /usr/local/include
 )
 
