@@ -97,7 +97,7 @@ void Player::Update()
         }
     }
     // LogInfo("Velocity: X: %f, Y: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y);
-    printf("Running: %d\n", isRunning);
+    // printf("Running: %d\n", isRunning);
 
     GameObject::Update();
 }

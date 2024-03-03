@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <GoonWorld/gameobjects/Player.hpp>
+#include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/core/Sound.hpp>
@@ -20,6 +21,10 @@ static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
      {
          return new Player(object);
      }},
+     {"Enemy", [](TiledMap::TiledObject& object)
+     {
+        return new Goomba(object);
+     }}
 };
 gpScene *InitializePhysics()
 {
