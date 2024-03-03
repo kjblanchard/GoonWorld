@@ -26,6 +26,7 @@ extern "C"
         gpVec acceleration;
         gpVec velocity;
         gpVec maxVelocity;
+        gpVec friction;
         int numOverlappingBodies;
         int lastFrameNumOverlappingBodies;
         int gravityEnabled;

@@ -32,6 +32,7 @@ gpBody *gpBodyNew(gpBB boundingBox)
     body->numOverlappingBodies = 0;
     body->velocity = gpV(0, 0);
     body->maxVelocity = gpV(0, 0);
+    body->friction = gpV(0,0);
     body->boundingBox = boundingBox;
     body->bodyNum = -1;
     return body;

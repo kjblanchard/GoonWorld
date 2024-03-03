@@ -27,6 +27,7 @@ extern "C"
      * @return gpVec
      */
     gpVec gpV(float x, float y);
+    gpVec gpVAdd(gpVec lhs, gpVec rhs);
 #ifdef __cplusplus
 }
 #endif

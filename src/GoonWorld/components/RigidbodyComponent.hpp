@@ -16,6 +16,7 @@ namespace GoonWorld
         inline gpVec &Velocity() { return _body->velocity; }
         inline gpVec &Acceleration() { return _body->acceleration; }
         inline gpVec &MaxVelocity() { return _body->maxVelocity; }
+        inline gpVec &Friction() { return _body->friction; }
 
     private:
         static std::vector<RigidbodyComponent *> _currentRigidbodies;

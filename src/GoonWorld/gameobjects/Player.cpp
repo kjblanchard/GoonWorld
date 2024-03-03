@@ -43,31 +43,45 @@ void Player::Update()
     _canJump = _rigidbodyComponent->IsOnGround();
     HandleInput();
     _isTurning = CheckIsTurning();
+
+    // Turn faster.
     if (_isTurning)
     {
-        HandleTurningPhysics();
+        _rigidbodyComponent->Acceleration().x *= 2;
     }
-    if (!_rigidbodyComponent->IsOnGround())
+    // Do not control in the air so well.
+    if (!_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
     {
+        if (_rigidbodyComponent->Velocity().x > 0)
+        {
+            if (_rigidbodyComponent->Acceleration().x < 0)
+            {
+                _rigidbodyComponent->Acceleration().x /= 1.25;
+            }
+        }
+        else
+        {
+            if (_rigidbodyComponent->Acceleration().x > 0)
+            {
+                _rigidbodyComponent->Acceleration().x /= 1.25;
+            }
+        }
     }
     AnimationUpdate();
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+
+    LogInfo("Velocity X: %f, FrictionX: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Friction().x);
+    LogInfo("Is Turning: %d", _isTurning);
     GameObject::Update();
-}
-void Player::HandleTurningPhysics()
-{
-}
-void Player::HandleAirPhysics()
-{
 }
 
 bool Player::CheckIsTurning()
 {
     if (!_rigidbodyComponent->IsOnGround() || _rigidbodyComponent->Velocity().x == 0)
         return false;
-    return ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x <= 0) ||
-            (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x >= 0));
+    return ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
+            (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0));
 }
 
 bool Player::ShouldMirrorImage()
@@ -91,13 +105,15 @@ void Player::AnimationUpdate()
     _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
     _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
-    _shouldTurnAnim = _rigidbodyComponent->IsOnGround() &&
-                      ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
-                       (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0));
+    _shouldTurnAnim = _isTurning;
 }
 float Player::CalculateFrameMaxVelocity()
 {
-    return _isRunning ? _maxRunSpeed : _maxWalkSpeed;
+    if (_isRunning)
+        return _maxRunSpeed;
+    if (std::abs(_rigidbodyComponent->Velocity().x) > _maxWalkSpeed)
+        return _maxRunSpeed;
+    return _maxWalkSpeed;
 }
 
 void Player::HandleInput()
@@ -106,11 +122,20 @@ void Player::HandleInput()
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
+        // If we are not moving, get a boost
         if (_rigidbodyComponent->Velocity().x == 0)
             _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
+            // If we are running or in the air?
+        else if (_isRunning || !_rigidbodyComponent->IsOnGround())
+        {
+            auto moveSpeed = _runSpeedBoost;
+            LogInfo("Movespeed is %d", moveSpeed);
+            _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
+        }
         else
         {
-            auto moveSpeed = _isRunning ? _runSpeedBoost : _walkSpeedBoost;
+            auto moveSpeed = _rigidbodyComponent->Velocity().x < -_maxWalkSpeed ? 0 : _walkSpeedBoost;
+            LogInfo("Movespeed is %d", moveSpeed);
             _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
         }
     }

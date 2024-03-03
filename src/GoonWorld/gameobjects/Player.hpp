@@ -31,8 +31,6 @@ namespace GoonWorld
         void HandleInput();
         void AnimationUpdate();
         bool ShouldMirrorImage();
-        void HandleTurningPhysics();
-        void HandleAirPhysics();
         bool CheckIsTurning();
         void InitializePlayerConfig();
         void CreateAnimationTransitions();

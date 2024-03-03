@@ -7,3 +7,7 @@ gpVec gpV(float x, float y)
     vec.y = y;
     return vec;
 }
+gpVec gpVAdd(gpVec lhs, gpVec rhs)
+{
+    return gpV(lhs.x + rhs.x, lhs.y + rhs.y);
+}

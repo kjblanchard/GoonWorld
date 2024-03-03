@@ -75,7 +75,7 @@ static void GravityConstraintY(gpBody *body, double gravityStep, gpSceneGravity 
 void gpGravityBodyStep(gpBody *body, gpSceneGravity *sceneGravity, float deltaTime)
 {
     double gravityStep = sceneGravity->sceneGravity * deltaTime;
-    double frictionStep = sceneGravity->sceneFriction * deltaTime;
+    double frictionStep = (sceneGravity->sceneFriction + body->friction.x) * deltaTime;
 
     // Keep Y in Bounds for Max Speed
     GravityConstraintY(body, gravityStep, sceneGravity);
