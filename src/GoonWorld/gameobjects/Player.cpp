@@ -40,40 +40,49 @@ void Player::InitializePlayerConfig()
 }
 void Player::Update()
 {
-    bool isRunning = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
-    _rigidbodyComponent->MaxVelocity().x = isRunning ? _maxRunSpeed : _maxWalkSpeed;
-
-    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
-    {
-        if (_rigidbodyComponent->Velocity().x == 0)
-            _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
-        else
-        {
-            auto moveSpeed = isRunning ? _runSpeedBoost : _walkSpeedBoost;
-            _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
-        }
-    }
-    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_RIGHT))
-    {
-        if (_rigidbodyComponent->Velocity().x == 0)
-            _rigidbodyComponent->Acceleration().x += _initialMoveVelocity;
-        else
-        {
-            auto moveSpeed = isRunning ? _runSpeedBoost : _walkSpeedBoost;
-            _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
-        }
-    }
-    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
-    {
-        Jump();
-    }
-    else if (_playerInputComponent->IsButtonReleased(GameControllerButton::A))
-    {
-        _isJumping = false;
-    }
-
     _canJump = _rigidbodyComponent->IsOnGround();
+    HandleInput();
+    _isTurning = CheckIsTurning();
+    if (_isTurning)
+    {
+        HandleTurningPhysics();
+    }
+    if (!_rigidbodyComponent->IsOnGround())
+    {
+    }
+    AnimationUpdate();
+    _animationComponent->Mirror = ShouldMirrorImage();
+    _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+    GameObject::Update();
+}
+void Player::HandleTurningPhysics()
+{
+}
+void Player::HandleAirPhysics()
+{
+}
 
+bool Player::CheckIsTurning()
+{
+    if (!_rigidbodyComponent->IsOnGround() || _rigidbodyComponent->Velocity().x == 0)
+        return false;
+    return ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x <= 0) ||
+            (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x >= 0));
+}
+
+bool Player::ShouldMirrorImage()
+{
+    if (_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
+    {
+        if (_shouldTurnAnim)
+            return !(_rigidbodyComponent->Velocity().x < 0);
+        return _rigidbodyComponent->Velocity().x < 0;
+    }
+    return _animationComponent->Mirror;
+}
+
+void Player::AnimationUpdate()
+{
     if (_rigidbodyComponent->Velocity().x != 0 && _rigidbodyComponent->IsOnGround())
     {
         _animationComponent->AnimationSpeed = std::abs(_rigidbodyComponent->Velocity().x) / 100.0f;
@@ -85,21 +94,44 @@ void Player::Update()
     _shouldTurnAnim = _rigidbodyComponent->IsOnGround() &&
                       ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
                        (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0));
-    if (_shouldRunAnim)
+}
+float Player::CalculateFrameMaxVelocity()
+{
+    return _isRunning ? _maxRunSpeed : _maxWalkSpeed;
+}
+
+void Player::HandleInput()
+{
+    _isRunning = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
+
+    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
-    }
-    if (_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
-    {
-        _animationComponent->Mirror = _rigidbodyComponent->Velocity().x < 0;
-        if (_shouldTurnAnim)
+        if (_rigidbodyComponent->Velocity().x == 0)
+            _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
+        else
         {
-            _animationComponent->Mirror = !_animationComponent->Mirror;
+            auto moveSpeed = _isRunning ? _runSpeedBoost : _walkSpeedBoost;
+            _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
         }
     }
-    // LogInfo("Velocity: X: %f, Y: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y);
-    // printf("Running: %d\n", isRunning);
-
-    GameObject::Update();
+    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_RIGHT))
+    {
+        if (_rigidbodyComponent->Velocity().x == 0)
+            _rigidbodyComponent->Acceleration().x += _initialMoveVelocity;
+        else
+        {
+            auto moveSpeed = _isRunning ? _runSpeedBoost : _walkSpeedBoost;
+            _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
+        }
+    }
+    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+    {
+        Jump();
+    }
+    else if (_playerInputComponent->IsButtonReleased(GameControllerButton::A))
+    {
+        _isJumping = false;
+    }
 }
 void Player::CreateAnimationTransitions()
 {

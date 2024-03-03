@@ -18,7 +18,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # #########################################
 message(STATUS "Getting all files for cmake..")
 file(GLOB_RECURSE ENGINE_FILES external/sg_engine/src/GoonEngine/*.c* external/sg_physics/src/GoonPhysics/*.c*)
-file(GLOB_RECURSE GOON_WORLD_FILES src/GoonWorld/*.c*)
+file(GLOB_RECURSE GOON_WORLD_FILES src/GoonWorld/*.cpp*)
 
 # #########################################
 # Platform specific Project setup

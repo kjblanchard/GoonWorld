@@ -5,8 +5,8 @@
     },
     "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        ".",
         "/Users/kevin/Documents/tiled",
+        ".",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
         "templates"
     ],
@@ -76,10 +76,10 @@
                 12
             ],
             "scale": 2,
-            "selectedLayer": 6,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 309.25,
-                "y": 228
+                "x": 448,
+                "y": 238
             }
         },
         "level1.tmx": {
