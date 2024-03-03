@@ -6,6 +6,7 @@
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
+#include <cmath>
 #include <GoonEngine/debug.h>
 #include <SDL2/SDL_rect.h>
 
@@ -48,7 +49,7 @@ void Player::Update()
             _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
         else
         {
-            auto moveSpeed = _walkSpeedBoost;
+            auto moveSpeed = isRunning ? _runSpeedBoost : _walkSpeedBoost;
             _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
         }
     }
@@ -58,7 +59,7 @@ void Player::Update()
             _rigidbodyComponent->Acceleration().x += _initialMoveVelocity;
         else
         {
-            auto moveSpeed = _walkSpeedBoost;
+            auto moveSpeed = isRunning ? _runSpeedBoost : _walkSpeedBoost;
             _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
         }
     }
@@ -72,6 +73,11 @@ void Player::Update()
     }
 
     _canJump = _rigidbodyComponent->IsOnGround();
+
+    if (_rigidbodyComponent->Velocity().x != 0 && _rigidbodyComponent->IsOnGround())
+    {
+        _animationComponent->AnimationSpeed = std::abs(_rigidbodyComponent->Velocity().x) / 100.0f;
+    }
 
     _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
     _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
@@ -91,7 +97,7 @@ void Player::Update()
         }
     }
     // LogInfo("Velocity: X: %f, Y: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y);
-    // printf("Jumping: %d\n", _isJumping);
+    printf("Running: %d\n", isRunning);
 
     GameObject::Update();
 }

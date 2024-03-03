@@ -23,7 +23,7 @@ namespace GoonWorld
         bool _shouldIdleAnim = false;
         // Jump
     private:
-        bool _isJumping, _canJump;
+        bool _isJumping, _canJump, _isTurning;
         int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity;
         float _currentJumpTime, _maxJumpTime;
 
