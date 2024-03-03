@@ -76,12 +76,19 @@ void Player::Update()
     _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
     _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
+    _shouldTurnAnim = _rigidbodyComponent->IsOnGround() &&
+                      ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
+                       (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0));
     if (_shouldRunAnim)
     {
     }
     if (_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
     {
         _animationComponent->Mirror = _rigidbodyComponent->Velocity().x < 0;
+        if (_shouldTurnAnim)
+        {
+            _animationComponent->Mirror = !_animationComponent->Mirror;
+        }
     }
     // LogInfo("Velocity: X: %f, Y: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y);
     // printf("Jumping: %d\n", _isJumping);
@@ -90,6 +97,21 @@ void Player::Update()
 }
 void Player::CreateAnimationTransitions()
 {
+
+    auto walkToTurnTransition = new AnimationTransition();
+    walkToTurnTransition->Condition = &_shouldTurnAnim;
+    walkToTurnTransition->ConditionMatch = true;
+    walkToTurnTransition->NextAnimation = "turn";
+    walkToTurnTransition->CurrentAnimation = "walk";
+    _animationComponent->AddTransition(walkToTurnTransition);
+
+    auto turnToWalkAnim = new AnimationTransition();
+    turnToWalkAnim->Condition = &_shouldTurnAnim;
+    turnToWalkAnim->ConditionMatch = false;
+    turnToWalkAnim->NextAnimation = "walk";
+    turnToWalkAnim->CurrentAnimation = "turn";
+    _animationComponent->AddTransition(turnToWalkAnim);
+
     auto fallTransition = new AnimationTransition();
     fallTransition->Condition = &_shouldFallAnim;
     fallTransition->ConditionMatch = true;
@@ -97,12 +119,26 @@ void Player::CreateAnimationTransitions()
     fallTransition->CurrentAnimation = "idle";
     _animationComponent->AddTransition(fallTransition);
 
+    auto walkToJumpTransition = new AnimationTransition();
+    walkToJumpTransition->Condition = &_shouldFallAnim;
+    walkToJumpTransition->ConditionMatch = true;
+    walkToJumpTransition->NextAnimation = "jump";
+    walkToJumpTransition->CurrentAnimation = "walk";
+    _animationComponent->AddTransition(walkToJumpTransition);
+
     auto fallToIdleTransition = new AnimationTransition();
     fallToIdleTransition->Condition = &_shouldIdleAnim;
     fallToIdleTransition->ConditionMatch = true;
     fallToIdleTransition->NextAnimation = "idle";
     fallToIdleTransition->CurrentAnimation = "jump";
     _animationComponent->AddTransition(fallToIdleTransition);
+
+    auto fallToWalkTransition = new AnimationTransition();
+    fallToWalkTransition->Condition = &_shouldRunAnim;
+    fallToWalkTransition->ConditionMatch = true;
+    fallToWalkTransition->NextAnimation = "walk";
+    fallToWalkTransition->CurrentAnimation = "jump";
+    _animationComponent->AddTransition(fallToWalkTransition);
 
     auto idleToWalkTransition = new AnimationTransition();
     idleToWalkTransition->Condition = &_shouldRunAnim;

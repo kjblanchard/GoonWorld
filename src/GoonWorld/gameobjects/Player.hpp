@@ -18,7 +18,7 @@ namespace GoonWorld
         // Animation
     private:
         bool _shouldFallAnim = false;
-
+        bool _shouldTurnAnim = false;
         bool _shouldRunAnim = false;
         bool _shouldIdleAnim = false;
         // Jump

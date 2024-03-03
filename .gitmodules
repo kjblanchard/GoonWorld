@@ -1,6 +1,3 @@
-[submodule "external/goonPhysics"]
-	path = external/goonPhysics
-	url = https://github.com/kjblanchard/goonPhysics.git
 [submodule "external/sg_sound"]
 	path = external/sg_sound
 	url = https://github.com/supergoongaming/sg_sound.git
