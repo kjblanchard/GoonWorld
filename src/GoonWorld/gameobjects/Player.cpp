@@ -49,22 +49,13 @@ void Player::Update()
     {
         _rigidbodyComponent->Acceleration().x *= 2;
     }
-    // Do not control in the air so well.
-    if (!_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
+    // Do not control in the air so well in the opposite direction.
+    if (!_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Acceleration().x != 0)
     {
-        if (_rigidbodyComponent->Velocity().x > 0)
+        if ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
+            (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0))
         {
-            if (_rigidbodyComponent->Acceleration().x < 0)
-            {
-                _rigidbodyComponent->Acceleration().x /= 1.25;
-            }
-        }
-        else
-        {
-            if (_rigidbodyComponent->Acceleration().x > 0)
-            {
-                _rigidbodyComponent->Acceleration().x /= 1.25;
-            }
+            _rigidbodyComponent->Acceleration().x /= 3;
         }
     }
     AnimationUpdate();
@@ -125,7 +116,7 @@ void Player::HandleInput()
         // If we are not moving, get a boost
         if (_rigidbodyComponent->Velocity().x == 0)
             _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
-            // If we are running or in the air?
+        // If we are running or in the air?
         else if (_isRunning || !_rigidbodyComponent->IsOnGround())
         {
             auto moveSpeed = _runSpeedBoost;

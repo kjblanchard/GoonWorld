@@ -15,13 +15,12 @@ namespace GoonWorld
 
         ~Player();
 
-        // Animation
     private:
         bool _shouldFallAnim = false;
         bool _shouldTurnAnim = false;
         bool _shouldRunAnim = false;
         bool _shouldIdleAnim = false;
-        // Jump
+
     private:
         bool _isJumping, _canJump, _isTurning, _isRunning;
         int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity;
