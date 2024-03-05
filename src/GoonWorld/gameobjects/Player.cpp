@@ -62,8 +62,8 @@ void Player::Update()
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
 
-    LogInfo("Velocity X: %f, FrictionX: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Friction().x);
-    LogInfo("Is Turning: %d", _isTurning);
+    // LogInfo("Velocity X: %f, FrictionX: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Friction().x);
+    // LogInfo("Is Turning: %d", _isTurning);
     GameObject::Update();
 }
 
@@ -120,13 +120,13 @@ void Player::HandleInput()
         else if (_isRunning || !_rigidbodyComponent->IsOnGround())
         {
             auto moveSpeed = _runSpeedBoost;
-            LogInfo("Movespeed is %d", moveSpeed);
+            // LogInfo("Movespeed is %d", moveSpeed);
             _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
         }
         else
         {
             auto moveSpeed = _rigidbodyComponent->Velocity().x < -_maxWalkSpeed ? 0 : _walkSpeedBoost;
-            LogInfo("Movespeed is %d", moveSpeed);
+            // LogInfo("Movespeed is %d", moveSpeed);
             _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
         }
     }
