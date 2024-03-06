@@ -1,3 +1,5 @@
+#include <external/stb_image.h>
+#include <GoonEngine/debug.h>
 #include <GoonEngine/gnpch.h>
 #include <GoonEngine/SdlSurface.h>
 
@@ -16,13 +18,41 @@ void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
 
 SDL_Surface *LoadSurfaceFromFile(const char *filePath)
 {
-    SDL_Surface *tileSurface = IMG_Load(filePath);
-    if (!tileSurface)
+    int width, height, channels;
+    unsigned char *imageData = stbi_load(filePath, &width, &height, &channels, STBI_rgb_alpha);
+    if (!imageData)
     {
-        fprintf(stderr, "Could not load image %s, Error:\n%s\n", filePath, IMG_GetError());
+        LogError("Failed to load image data: %s", stbi_failure_reason());
         return NULL;
     }
-    return tileSurface;
+    // Calculate pitch
+    int pitch;
+    pitch = width * channels;
+    pitch = (pitch + 3) & ~3;
+    // Setup relevance bitmask
+    int32_t Rmask, Gmask, Bmask, Amask;
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+    Rmask = 0x000000FF;
+    Gmask = 0x0000FF00;
+    Bmask = 0x00FF0000;
+    Amask = (channels == 4) ? 0xFF000000 : 0;
+#else
+    int s = (bytesPerPixel == 4) ? 0 : 8;
+    Rmask = 0xFF000000 >> s;
+    Gmask = 0x00FF0000 >> s;
+    Bmask = 0x0000FF00 >> s;
+    Amask = 0x000000FF >> s;
+#endif
+    SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(imageData, width, height, channels * 8, pitch, Rmask, Gmask,
+                                                    Bmask, Amask);
+
+    if (!surface)
+    {
+        LogError("Could not create surface from data %s, Error:\n%s", filePath, SDL_GetError());
+        return NULL;
+    }
+    stbi_image_free(imageData);
+    return surface;
 }
 SDL_Surface *LoadTextureAtlas(int width, int height)
 {

@@ -147,11 +147,11 @@ int GnInitializeEngine()
         fprintf(stderr, "Could not Initialize SDL!\nError: %s", SDL_GetError());
         return false;
     }
-    if (!IMG_Init(IMG_INIT_PNG))
-    {
-        fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
-        return false;
-    }
+    // if (!IMG_Init(IMG_INIT_PNG))
+    // {
+    //     fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
+    //     return false;
+    // }
 
     geInitializeKeyboard();
     geInitializeJoysticks();

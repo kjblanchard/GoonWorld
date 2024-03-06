@@ -55,7 +55,7 @@ add_library(${LIBRARY_TARGET_NAME}
     SHARED
     ${ENGINE_FILES}
 )
-set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 99)
+set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
 find_package(PkgConfig REQUIRED)
 include(CTest)
 
@@ -97,21 +97,8 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # #########################################
 # 1. Look for a SDL2 package, 2. look for the SDL2 component and 3. fail if none can be found
 find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
-find_package(SDL2_image
-    NAMES SDL2_Image libSDL2_Image SDL2_image libSDL2_image libSDL2_image
-    CONFIG COMPONENTS SDL2_image
-    HINTS /usr/local/lib)
-find_package(SDL2_ttf
-    NAMES SDL2_ttf libSDL2_ttf SDL2_Ttf libSDL2_Ttf libSDL2_Ttf
-    CONFIG COMPONENTS SDL2_ttf
-    HINTS /usr/local/lib)
-
 # 1. Look for a SDL2 package, 2. Look for the SDL2maincomponent and 3. DO NOT fail when SDL2main is not available
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
-
-# Build my Libraries and include directories regardless
-# add_subdirectory(./external/goonPhysics)
-# target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/goonPhysics/include/)
 add_subdirectory(./external/sg_sound)
 target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/sg_sound/src/)
 
@@ -179,11 +166,7 @@ target_compile_options(${LIBRARY_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS})
 set(LIBRARIES_TO_LINK
     SDL2::SDL2main
     SDL2::SDL2-static
-    SDL2_image::SDL2_image-static
-
-    # goonPhysics
     supergoonSound
-    SupergoonUI
 )
 
 foreach(LIBRARY ${LIBRARIES_TO_LINK})

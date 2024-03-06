@@ -26,12 +26,11 @@ Player::Player(TiledMap::TiledObject &object)
     _animationComponent = new AnimationComponent("mario");
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    bodyOverlapArgs args{1, 2, nullptr};
-    args.overlapFunc = [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-    {
-        Player *playerInstance = static_cast<Player *>(args);
-        playerInstance->GoombaOverlapFunc(body, overlapBody, overlap);
-    };
+    bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                         {
+                             Player *playerInstance = static_cast<Player *>(args);
+                             playerInstance->GoombaOverlapFunc(body, overlapBody, overlap);
+                         }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -244,7 +243,7 @@ void Player::Jump()
 }
 void Player::GoombaOverlapFunc(gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
-    Goomba* goomba = static_cast<Goomba*>(overlapBody->funcArgs);
+    Goomba *goomba = static_cast<Goomba *>(overlapBody->funcArgs);
     puts("Overlap with goomba first time bro");
     goomba->GoombaOverlap();
 }
