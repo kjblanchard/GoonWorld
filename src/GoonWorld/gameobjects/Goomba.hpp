@@ -1,5 +1,6 @@
 #pragma once
 #include <GoonWorld/base/GameObject.hpp>
+typedef struct gpOverlap;
 namespace GoonWorld
 {
     class DebugDrawComponent;
@@ -19,6 +20,8 @@ namespace GoonWorld
         DebugDrawComponent *_debugDrawComponent;
         RigidbodyComponent *_rigidbodyComponent;
         AnimationComponent *_animationComponent;
+        bool _movingRight;
+        void GoombaStaticBodyOverlap(gpOverlap* overlap);
         bool _shouldWalkAnim;
     };
 }

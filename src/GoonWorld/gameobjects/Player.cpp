@@ -243,7 +243,6 @@ void Player::Jump()
 void Player::GoombaOverlapFunc(gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Goomba *goomba = static_cast<Goomba *>(overlapBody->funcArgs);
-    puts("Overlap with goomba first time bro");
     goomba->GoombaOverlap();
 }
 Player::~Player()
