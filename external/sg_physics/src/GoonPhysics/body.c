@@ -3,21 +3,10 @@
 #include <GoonPhysics/overlap.h>
 
 #define MAX_OVERLAP_BODIES 10
-#define MAX_BODY_TYPES 10
-// static OverlapFunc **OverlapBeginFunctions;
-static OverlapFunc OverlapBeginFunctions[MAX_BODY_TYPES][MAX_BODY_TYPES];
-static OverlapFunc OverlapFunctions[MAX_BODY_TYPES][MAX_BODY_TYPES];
-void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, OverlapFunc func)
+void gpBodyAddOverlapBeginFunc(gpBody *body, bodyOverlapArgs args)
 {
-    // printf("Adding func.. to pos %d, %d\n", bodyType, overlapBodyType);
-    OverlapBeginFunctions[bodyType][overlapBodyType] = func;
-
-    // OverlapBeginFunctions[bodyType][overlapBodyType](NULL,NULL);
-}
-
-void gpBodyAddOverlapFunc(int bodyType, int overlapBodyType, OverlapFunc func)
-{
-    OverlapFunctions[bodyType][overlapBodyType] = func;
+    body->overlapFunctions = realloc(body->overlapFunctions, ++body->numOverlapFunctions);
+    body->overlapFunctions[body->numOverlapFunctions - 1] = args;
 }
 
 gpBody *gpBodyNew(gpBB boundingBox)
@@ -30,11 +19,14 @@ gpBody *gpBodyNew(gpBB boundingBox)
     body->gravityEnabled = 1;
     body->staticCollisionEnabled = 1;
     body->numOverlappingBodies = 0;
+    body->numOverlapFunctions = 0;
+    body->overlapFunctions = calloc(0, sizeof(bodyOverlapArgs));
     body->velocity = gpV(0, 0);
     body->maxVelocity = gpV(0, 0);
-    body->friction = gpV(0,0);
+    body->friction = gpV(0, 0);
     body->boundingBox = boundingBox;
     body->bodyNum = -1;
+    body->funcArgs = NULL;
     return body;
 }
 
@@ -78,21 +70,18 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
     ++body->numOverlappingBodies;
     if (newOverlap)
     {
-        // Fire function type
-        OverlapFunc func = OverlapBeginFunctions[bodyType][overlapBodyType];
-        if (func)
+        for (size_t i = 0; i < body->numOverlapFunctions; i++)
         {
-            printf("Firing func at %d %d at loc\n", bodyType, overlapBodyType);
-            func(body, overlapBody, &body->overlaps[currentOverlap]);
+            if (body->overlapFunctions[i].bodyType != bodyType ||
+                body->overlapFunctions[i].overlapBodyType != overlapBodyType ||
+                !body->overlapFunctions[i].overlapFunc)
+                continue;
+            body->overlapFunctions[i].overlapFunc(body->funcArgs, body, overlapBody, &body->overlaps[currentOverlap]);
         }
     }
     else
     {
-        OverlapFunc func = OverlapFunctions[bodyType][overlapBodyType];
-        if (func)
-        {
-            func(body, overlapBody, &body->overlaps[currentOverlap]);
-        }
+        // Already overlap, do something else
     }
 }
 

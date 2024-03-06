@@ -10,9 +10,15 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
+    _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
+}
+void Goomba::GoombaOverlap()
+{
+    auto id = _id;
+    printf("Goomba id, %d\n", _id);
 }
 void Goomba::Update()
 {

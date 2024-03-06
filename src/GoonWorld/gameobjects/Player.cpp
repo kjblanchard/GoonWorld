@@ -6,6 +6,9 @@
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
+#include <GoonWorld/gameobjects/Goomba.hpp>
+#include <GoonPhysics/body.h>
+#include <GoonPhysics/overlap.h>
 #include <cmath>
 #include <GoonEngine/debug.h>
 #include <SDL2/SDL_rect.h>
@@ -19,9 +22,17 @@ Player::Player(TiledMap::TiledObject &object)
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
+    _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario");
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+    bodyOverlapArgs args{1, 2, nullptr};
+    args.overlapFunc = [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+    {
+        Player *playerInstance = static_cast<Player *>(args);
+        playerInstance->GoombaOverlapFunc(body, overlapBody, overlap);
+    };
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     CreateAnimationTransitions();
     InitializePlayerConfig();
 }
@@ -230,6 +241,12 @@ void Player::Jump()
         _canJump = false;
         _rigidbodyComponent->Velocity().y += _initialJumpVelocity;
     }
+}
+void Player::GoombaOverlapFunc(gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    Goomba* goomba = static_cast<Goomba*>(overlapBody->funcArgs);
+    puts("Overlap with goomba first time bro");
+    goomba->GoombaOverlap();
 }
 Player::~Player()
 {

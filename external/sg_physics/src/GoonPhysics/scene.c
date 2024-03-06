@@ -69,7 +69,7 @@ static void CheckForNonStaticOverlaps(gpBody *body, int direction)
         int intersect = gpIntersectBoxBox(&body->boundingBox, &overlapBody->boundingBox);
         if (intersect)
         {
-            printf("Adding overlap of direction %d between body type %d and body type %d\n", direction, body->bodyType, overlapBody->bodyType);
+            // printf("Adding overlap of direction %d between body type %d and body type %d\n", direction, body->bodyType, overlapBody->bodyType);
             gpBodyAddOverlap(body, overlapBody, direction);
         }
     }

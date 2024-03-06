@@ -17,6 +17,17 @@
 extern "C"
 {
 #endif
+    typedef struct gpBody gpBody;
+    typedef struct gpOverlap gpOverlap;
+    typedef void (*OverlapFunc)(void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+
+    typedef struct bodyOverlapArgs
+    {
+        int bodyType, overlapBodyType;
+        OverlapFunc overlapFunc;
+
+    } bodyOverlapArgs;
+
     typedef struct gpBody
     {
         int bodyNum;
@@ -30,7 +41,9 @@ extern "C"
         int numOverlappingBodies;
         int lastFrameNumOverlappingBodies;
         int gravityEnabled;
-        // int bodyOnGround;
+        bodyOverlapArgs *overlapFunctions;
+        int numOverlapFunctions;
+        void *funcArgs;
         struct gpOverlap *overlaps;
         struct gpOverlap *lastFrameOverlaps;
 
@@ -39,14 +52,12 @@ extern "C"
     gpBody *gpBodyNew(gpBB boundingBox);
     void gpBodySetPosition(gpBody *body, gpVec pos);
     void gpBodySetVelocity(gpBody *body, gpVec vel);
-
     void gpBodySetMaxVelocityX(gpBody *body, float maxVel);
     void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction);
     int gpBodyIsOnGround(gpBody *body);
-    typedef void (*OverlapFunc)(gpBody *body, gpBody *overlapBody, struct gpOverlap *overlap);
 
-    void gpBodyAddOverlapBeginFunc(int bodyType, int overlapBodyType, OverlapFunc func);
-    void gpBodyAddOverlapFunc(int bodyType, int overlapBodyType, OverlapFunc func);
+    // Overlap functions
+    void gpBodyAddOverlapBeginFunc(gpBody *body, bodyOverlapArgs args);
 
 #ifdef __cplusplus
 }

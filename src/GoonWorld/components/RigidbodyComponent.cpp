@@ -14,9 +14,15 @@ RigidbodyComponent::RigidbodyComponent(SDL_Rect *rect)
     _body = gpBodyNew(bb);
     _bodyNum = gpSceneAddBody(_body);
     _body->gravityEnabled = 1;
+    // _body->funcArgs = this;
     _currentRigidbodies.push_back(this);
     // Location = Point{rect->x, rect->y};
     // Size = Point{rect->w, rect->h};
+}
+void RigidbodyComponent::OnComponentAdd(GameObject &parent)
+{
+    _body->funcArgs = (void*)&parent;
+    Component::OnComponentAdd(parent);
 }
 void RigidbodyComponent::PhysicsUpdate()
 {

@@ -17,10 +17,13 @@ namespace GoonWorld
         inline gpVec &Acceleration() { return _body->acceleration; }
         inline gpVec &MaxVelocity() { return _body->maxVelocity; }
         inline gpVec &Friction() { return _body->friction; }
+        inline void SetBodyType(int bodyType) { _body->bodyType = bodyType; }
+        // TODO move this
+        gpBody *_body;
 
     private:
+        void OnComponentAdd(GameObject &parent) override;
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;
-        gpBody *_body;
     };
 }

@@ -10,6 +10,7 @@ namespace GoonWorld
     {
     public:
         Goomba(TiledMap::TiledObject &object);
+        void GoombaOverlap();
         void Update() override;
         ~Goomba();
 
