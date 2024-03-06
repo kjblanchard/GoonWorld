@@ -55,6 +55,9 @@ add_library(${LIBRARY_TARGET_NAME}
     SHARED
     ${ENGINE_FILES}
 )
+add_executable(${EXECUTABLE_TARGET_NAME}
+    ${GOON_WORLD_FILES})
+set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
 find_package(PkgConfig REQUIRED)
 include(CTest)
@@ -78,8 +81,10 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 if(GOON_BUILD_PCH)
     message(STATUS "Setting up PCH, mac needs objc")
     target_precompile_headers(${LIBRARY_TARGET_NAME} PRIVATE
-        # "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/include/GoonEngine/gnpch.h>")
         "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/GoonEngine/gnpch.h>")
+        target_precompile_headers(${EXECUTABLE_TARGET_NAME} PRIVATE
+    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/GoonWorld/gnpch.hpp>")
+
 endif(GOON_BUILD_PCH)
 
 # #########################################
@@ -97,6 +102,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # #########################################
 # 1. Look for a SDL2 package, 2. look for the SDL2 component and 3. fail if none can be found
 find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
+
 # 1. Look for a SDL2 package, 2. Look for the SDL2maincomponent and 3. DO NOT fail when SDL2main is not available
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 add_subdirectory(./external/sg_sound)
@@ -199,9 +205,6 @@ target_include_directories(${LIBRARY_TARGET_NAME}
 )
 
 # Tests
-add_executable(${EXECUTABLE_TARGET_NAME}
-    ${GOON_WORLD_FILES})
-set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 target_link_libraries(${EXECUTABLE_TARGET_NAME}
     PUBLIC
     SupergoonEngine

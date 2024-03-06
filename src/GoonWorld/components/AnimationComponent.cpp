@@ -1,3 +1,4 @@
+#include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/Animator.hpp>
@@ -5,7 +6,6 @@
 #include <GoonWorld/common/TimeSpan.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonEngine/SdlSurface.h>
-#include <chrono>
 using namespace GoonWorld;
 
 AnimationComponent::AnimationComponent(std::string animator)

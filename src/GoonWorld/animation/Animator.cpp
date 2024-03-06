@@ -1,11 +1,10 @@
+#include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/animation/Animator.hpp>
 #include <GoonWorld/models/AsepriteDocument.hpp>
 #include <GoonWorld/animation/Animation.hpp>
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/core/Content.hpp>
-#include <fstream>
-#include <json/json.hpp>
 using json = nlohmann::json;
 using namespace GoonWorld;
 

@@ -1,3 +1,4 @@
+#include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
@@ -9,8 +10,6 @@
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
-#include <cmath>
-#include <GoonEngine/debug.h>
 #include <SDL2/SDL_rect.h>
 
 using namespace GoonWorld;
