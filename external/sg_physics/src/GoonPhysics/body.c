@@ -5,8 +5,8 @@
 #define MAX_OVERLAP_BODIES 10
 void gpBodyAddOverlapBeginFunc(gpBody *body, bodyOverlapArgs args)
 {
-    body->overlapFunctions = realloc(body->overlapFunctions, ++body->numOverlapFunctions);
-    body->overlapFunctions[body->numOverlapFunctions - 1] = args;
+    body->overlapFunctions[body->numOverlapFunctions++] = args;
+    body->overlapFunctions = realloc(body->overlapFunctions, body->numOverlapFunctions + 1 * sizeof(bodyOverlapArgs));
 }
 
 gpBody *gpBodyNew(gpBB boundingBox)
@@ -20,7 +20,8 @@ gpBody *gpBodyNew(gpBB boundingBox)
     body->staticCollisionEnabled = 1;
     body->numOverlappingBodies = 0;
     body->numOverlapFunctions = 0;
-    body->overlapFunctions = calloc(0, sizeof(bodyOverlapArgs));
+    // body->overlapFunctions = calloc(10, sizeof(bodyOverlapArgs));
+    body->overlapFunctions = calloc(1, sizeof(bodyOverlapArgs));
     body->velocity = gpV(0, 0);
     body->maxVelocity = gpV(0, 0);
     body->friction = gpV(0, 0);
