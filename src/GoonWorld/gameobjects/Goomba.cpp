@@ -15,29 +15,20 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(2);
-    bodyOverlapArgs staticOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Static, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                                      {
-                                          Goomba *goombaInstance = static_cast<Goomba *>(args);
-                                          goombaInstance->GoombaStaticBodyOverlap(overlap);
-                                      }};
-    bodyOverlapArgs marioOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                                     {
-                                         Goomba *goombaInstance = static_cast<Goomba *>(args);
-                                         goombaInstance->GoombaMarioOverlap(overlap);
-                                     }};
-    bodyOverlapArgs marioOverlapArgss{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                                     {
-                                         Goomba *goombaInstance = static_cast<Goomba *>(args);
-                                         goombaInstance->GoombaMarioOverlap(overlap);
-                                     }};
-    // bodyOverlapArgs marioOverlapArgssss{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-    //                                  {
-    //                                      Goomba *goombaInstance = static_cast<Goomba *>(args);
-    //                                      goombaInstance->GoombaMarioOverlap(overlap);
-    //                                  }};
-    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
     _animationComponent = new AnimationComponent("goomba");
     _animationComponent->SizeMultiplier = 2;
+    auto staticOverlapArgs = bodyOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Static, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                                             {
+                                                 Goomba *goombaInstance = static_cast<Goomba *>(args);
+                                                 goombaInstance->GoombaStaticBodyOverlap(overlap);
+                                             }};
+    auto marioOverlapArgs = bodyOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                                            {
+                                                Goomba *goombaInstance = static_cast<Goomba *>(args);
+                                                goombaInstance->GoombaMarioOverlap(overlap);
+                                            }};
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
     AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
 }
 void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
