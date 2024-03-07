@@ -1,40 +1,104 @@
 #include <math.h>
 #include <stdio.h>
 #include <GoonPhysics/aabb.h>
+#include <GoonPhysics/overlap.h>
 
-typedef enum {
-    NoOverlap,
-    OverlapTop,
-    OverlapBottom,
-    OverlapLeft,
-    OverlapRight,
-} OverlapDirection;
+// typedef enum
+// {
+//     NoOverlap,
+//     OverlapTop,
+//     OverlapBottom,
+//     OverlapLeft,
+//     OverlapRight,
+// } OverlapDirection;
+bool gpBBEmpty(const gpBB *r)
+{
+    return ((!r) || (r->w <= 0) || (r->h <= 0)) ? true : false;
+}
 
-int gpGetOverlapDirection(gpBB* lhs, gpBB* rhs)
+bool gpIntersectRect(const gpBB *A, const gpBB *B, gpBB *result)
+{
+    int Amin, Amax, Bmin, Bmax;
+
+    if (!A || !B || !result)
+    {
+        // TODO error message
+        return false;
+    }
+
+    /* Special cases for empty rects */
+    if (gpBBEmpty(A) || gpBBEmpty(B))
+    {
+        return false;
+    }
+
+    /* Horizontal intersection */
+    Amin = A->x;
+    Amax = Amin + A->w;
+    Bmin = B->x;
+    Bmax = Bmin + B->w;
+    if (Bmin > Amin)
+        Amin = Bmin;
+    result->x = Amin;
+    if (Bmax < Amax)
+        Amax = Bmax;
+    result->w = Amax - Amin;
+
+    /* Vertical intersection */
+    Amin = A->y;
+    Amax = Amin + A->h;
+    Bmin = B->y;
+    Bmax = Bmin + B->h;
+    if (Bmin > Amin)
+        Amin = Bmin;
+    result->y = Amin;
+    if (Bmax < Amax)
+        Amax = Bmax;
+    result->h = Amax - Amin;
+
+    return !gpBBEmpty(result);
+}
+int gpCalculateIntersectionDirection(const gpBB *intersectionAreaRect, const gpBB *yourCollisionBox)
+{
+    if (intersectionAreaRect->w < intersectionAreaRect->h)
+    {
+        if (intersectionAreaRect->x > yourCollisionBox->x)
+            return gpOverlapRight;
+        return gpOverlapLeft;
+    }
+    if (intersectionAreaRect->y > yourCollisionBox->y)
+        return gpOverlapDown;
+    return gpOverlapUp;
+}
+
+int gpGetOverlapDirection(gpBB *lhs, gpBB *rhs)
 {
     // Check for overlap on the top side
-    if (lhs->y + lhs->h > rhs->y && lhs->y < rhs->y) {
-        return OverlapTop;
+    if (lhs->y + lhs->h > rhs->y && lhs->y < rhs->y)
+    {
+        return gpOverlapUp;
     }
 
     // Check for overlap on the bottom side
-    if (lhs->y < rhs->y + rhs->h && lhs->y + lhs->h > rhs->y + rhs->h) {
-        return OverlapBottom;
+    if (lhs->y < rhs->y + rhs->h && lhs->y + lhs->h > rhs->y)
+    {
+        return gpOverlapDown;
     }
 
     // Check for overlap on the left side
-    if (lhs->x + lhs->w > rhs->x && lhs->x < rhs->x) {
-        return OverlapLeft;
+    if (lhs->x + lhs->w > rhs->x && lhs->x < rhs->x)
+    {
+        return gpOverlapLeft;
     }
 
     // Check for overlap on the right side
-    if (lhs->x < rhs->x + rhs->w && lhs->x + lhs->w > rhs->x + rhs->w) {
-        return OverlapRight;
+    if (lhs->x < rhs->x + rhs->w && lhs->x + lhs->w > rhs->x + rhs->w)
+    {
+        return gpOverlapRight;
     }
 
-    return NoOverlap;
+    return gpOverlapNoOverlap;
 }
-
 
 int gpIntersectBoxBox(gpBB *lhs, gpBB *rhs)
 {
@@ -79,7 +143,8 @@ void gpResolveOverlap(gpBB *lhs, gpBB *rhs)
     result.h = Amax - Amin;
 
     // Resolve overlap independently in x and y directions
-    if (result.h > 0) {
+    if (result.h > 0)
+    {
         // Determine the direction of overlap for the y-axis
         double overlapY = (lhs->y + lhs->h / 2 < rhs->y + rhs->h / 2) ? -result.h : result.h;
 
@@ -87,7 +152,8 @@ void gpResolveOverlap(gpBB *lhs, gpBB *rhs)
         lhs->y += overlapY;
     }
 
-    if (result.w > 0) {
+    if (result.w > 0)
+    {
         // Determine the direction of overlap for the x-axis
         double overlapX = (lhs->x + lhs->w / 2 < rhs->x + rhs->w / 2) ? -result.w : result.w;
 
@@ -97,7 +163,7 @@ void gpResolveOverlap(gpBB *lhs, gpBB *rhs)
 }
 void gpResolveOverlapY(gpBB *lhs, gpBB *rhs)
 {
-       gpBB result;
+    gpBB result;
 
     double Amin, Amax, Bmin, Bmax;
 
@@ -125,7 +191,7 @@ void gpResolveOverlapY(gpBB *lhs, gpBB *rhs)
         Amax = Bmax;
     result.h = Amax - Amin;
 
-        // Resolve overlap independently in x and y directions
+    // Resolve overlap independently in x and y directions
     // if (result.w > 0) {
     //     // Determine the direction of overlap for the x-axis
     //     double overlapX = (lhs->x + lhs->w / 2 < rhs->x + rhs->w / 2) ? -result.w : result.w;
@@ -134,20 +200,19 @@ void gpResolveOverlapY(gpBB *lhs, gpBB *rhs)
     //     lhs->x += overlapX;
     // }
 
-    if (result.h > 0) {
+    if (result.h > 0)
+    {
         // Determine the direction of overlap for the y-axis
         double overlapY = (lhs->y + lhs->h / 2 < rhs->y + rhs->h / 2) ? -result.h : result.h;
 
         // Resolve overlap in the y-axis
         lhs->y += overlapY;
     }
-
-
 }
 
 void gpResolveOverlapX(gpBB *lhs, gpBB *rhs)
 {
-       gpBB result;
+    gpBB result;
 
     double Amin, Amax, Bmin, Bmax;
 
@@ -175,8 +240,9 @@ void gpResolveOverlapX(gpBB *lhs, gpBB *rhs)
         Amax = Bmax;
     result.h = Amax - Amin;
 
-        // Resolve overlap independently in x and y directions
-    if (result.w > 0) {
+    // Resolve overlap independently in x and y directions
+    if (result.w > 0)
+    {
         // Determine the direction of overlap for the x-axis
         double overlapX = (lhs->x + lhs->w / 2 < rhs->x + rhs->w / 2) ? -result.w : result.w;
 
@@ -191,7 +257,4 @@ void gpResolveOverlapX(gpBB *lhs, gpBB *rhs)
     //     // Resolve overlap in the y-axis
     //     lhs->y += overlapY;
     // }
-
-
 }
-

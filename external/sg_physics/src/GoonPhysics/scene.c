@@ -66,10 +66,11 @@ static void CheckForNonStaticOverlaps(gpBody *body, int direction)
         }
         if (!newOverlap)
             continue;
-        int intersect = gpIntersectBoxBox(&body->boundingBox, &overlapBody->boundingBox);
+        gpBB overlapArea;
+        int intersect = gpIntersectRect(&body->boundingBox, &overlapBody->boundingBox, &overlapArea);
         if (intersect)
         {
-            // printf("Adding overlap of direction %d between body type %d and body type %d\n", direction, body->bodyType, overlapBody->bodyType);
+            int direction = gpCalculateIntersectionDirection(&overlapArea, &body->boundingBox);
             gpBodyAddOverlap(body, overlapBody, direction);
         }
     }
@@ -87,6 +88,9 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
         // Check for collisions for each static body
         // If it is a blocking body, then we should set shouldStep to False
         int direction = stepSize > 0 ? gpOverlapDown : gpOverlapUp;
+        // Problem, if we are moving down on ground (due to gravity)
+        // This direction gets passed into check for nonstatic overlaps
+        // This causes a problem.
         for (size_t i = 0; i < _currentNumStaticBodies; i++)
         {
             gpBody *staticBody = _currentStaticBodies[i];

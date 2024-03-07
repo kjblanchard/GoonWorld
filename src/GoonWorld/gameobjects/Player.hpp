@@ -45,7 +45,7 @@ namespace GoonWorld
         AnimationComponent *_animationComponent;
 
     private:
-        void GoombaOverlapFunc(gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        void GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
         // friend void GoombaOverlapFuncCallback(void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

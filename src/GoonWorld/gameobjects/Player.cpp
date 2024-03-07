@@ -28,7 +28,7 @@ Player::Player(TiledMap::TiledObject &object)
     bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
                          {
                              Player *playerInstance = static_cast<Player *>(args);
-                             playerInstance->GoombaOverlapFunc(body, overlapBody, overlap);
+                             playerInstance->GoombaOverlapFunc(overlapBody, overlap);
                          }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     CreateAnimationTransitions();
@@ -240,10 +240,18 @@ void Player::Jump()
         _rigidbodyComponent->Velocity().y += _initialJumpVelocity;
     }
 }
-void Player::GoombaOverlapFunc(gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
-    Goomba *goomba = static_cast<Goomba *>(overlapBody->funcArgs);
-    goomba->GoombaOverlap();
+    switch (overlap->overlapDirection)
+    {
+    case gpOverlapDirections::gpOverlapDown:
+        LogInfo("Goomba should die!");
+        break;
+
+    default:
+        LogInfo("Player should die!");
+        break;
+    }
 }
 Player::~Player()
 {

@@ -15,11 +15,14 @@
 extern "C"
 {
 #endif
+    bool gpBBEmpty(const gpBB *r);
+    bool gpIntersectRect(const gpBB *A, const gpBB *B, gpBB *result);
     void gpResolveOverlapY(gpBB *lhs, gpBB *rhs);
     void gpResolveOverlapX(gpBB *lhs, gpBB *rhs);
     void gpResolveOverlap(gpBB *lhs, gpBB *rhs);
     int gpIntersectBoxBox(gpBB *lhs, gpBB *rhs);
     int gpGetOverlapDirection(gpBB *lhs, gpBB *rhs);
+    int gpCalculateIntersectionDirection(const gpBB *intersectionAreaRect, const gpBB *yourCollisionBox);
 #ifdef __cplusplus
 }
 #endif

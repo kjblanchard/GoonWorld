@@ -13,8 +13,8 @@ gpBody *gpBodyNew(gpBB boundingBox)
 {
     gpBody *body;
     body = calloc(1, sizeof(*body));
-    body->overlaps = calloc(MAX_OVERLAP_BODIES, sizeof(gpOverlap *));
-    body->lastFrameOverlaps = calloc(MAX_OVERLAP_BODIES, sizeof(gpOverlap *));
+    body->overlaps = calloc(MAX_OVERLAP_BODIES, sizeof(gpOverlap));
+    body->lastFrameOverlaps = calloc(MAX_OVERLAP_BODIES, sizeof(gpOverlap));
     body->bodyType = 1;
     body->gravityEnabled = 1;
     body->staticCollisionEnabled = 1;

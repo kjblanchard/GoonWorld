@@ -1,4 +1,5 @@
 #include <GoonPhysics/overlap.h>
+#include <GoonWorld/BodyTypes.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
@@ -13,21 +14,32 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(2);
-    bodyOverlapArgs args{2, 0, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                         {
-                             Goomba *goombaInstance = static_cast<Goomba *>(args);
-                             goombaInstance->GoombaStaticBodyOverlap(overlap);
-                         }};
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
-    //  _rigidbodyComponent->
+    // bodyOverlapArgs staticOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Static, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+    //                                   {
+    //                                       Goomba *goombaInstance = static_cast<Goomba *>(args);
+    //                                       goombaInstance->GoombaStaticBodyOverlap(overlap);
+    //                                   }};
+    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
+    // bodyOverlapArgs marioOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+    //                                  {
+    //                                      Goomba *goombaInstance = static_cast<Goomba *>(args);
+    //                                      goombaInstance->GoombaMarioOverlap(overlap);
+    //                                  }};
+    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
     _animationComponent = new AnimationComponent("goomba");
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
 }
-void Goomba::GoombaOverlap()
+void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
 {
-    // auto id = _id;
-    // printf("Goomba id, %d\n", _id);
+    switch (overlap->overlapDirection)
+    {
+    case gpOverlapDirections::gpOverlapUp:
+        LogInfo("I should die");
+        break;
+    default:
+        break;
+    }
 }
 
 void Goomba::Update()
