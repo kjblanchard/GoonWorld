@@ -1,4 +1,5 @@
 #include <GoonPhysics/overlap.h>
+#include <GoonPhysics/body.h>
 #include <GoonWorld/BodyTypes.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
@@ -24,8 +25,17 @@ Goomba::Goomba(TiledMap::TiledObject &object)
                                          Goomba *goombaInstance = static_cast<Goomba *>(args);
                                          goombaInstance->GoombaMarioOverlap(overlap);
                                      }};
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
+    bodyOverlapArgs marioOverlapArgss{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                                     {
+                                         Goomba *goombaInstance = static_cast<Goomba *>(args);
+                                         goombaInstance->GoombaMarioOverlap(overlap);
+                                     }};
+    // bodyOverlapArgs marioOverlapArgssss{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+    //                                  {
+    //                                      Goomba *goombaInstance = static_cast<Goomba *>(args);
+    //                                      goombaInstance->GoombaMarioOverlap(overlap);
+    //                                  }};
+    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
     _animationComponent = new AnimationComponent("goomba");
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
