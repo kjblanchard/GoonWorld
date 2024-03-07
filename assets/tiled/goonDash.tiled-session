@@ -7,8 +7,8 @@
     "expandedProjectPaths": [
         "/Users/kevin/Documents/tiled",
         ".",
-        "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
-        "templates"
+        "templates",
+        "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -75,11 +75,11 @@
             "expandedGroupLayers": [
                 12
             ],
-            "scale": 2,
+            "scale": 0.8903,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 448,
-                "y": 238
+                "x": 864.8770077501964,
+                "y": 540.2673256205774
             }
         },
         "level1.tmx": {
