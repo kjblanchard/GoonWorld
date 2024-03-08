@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>

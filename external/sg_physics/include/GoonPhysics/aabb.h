@@ -9,6 +9,7 @@
  *
  */
 #pragma once
+#include <stdbool.h>
 #include <GoonPhysics/bb.h>
 
 #ifdef __cplusplus

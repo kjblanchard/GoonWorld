@@ -1,6 +1,6 @@
+#include <GoonEngine/gnpch.h>
 #include <external/stb_image.h>
 #include <GoonEngine/debug.h>
-#include <GoonEngine/gnpch.h>
 #include <GoonEngine/SdlSurface.h>
 
 SDL_Texture *g_BackgroundAtlas = NULL;

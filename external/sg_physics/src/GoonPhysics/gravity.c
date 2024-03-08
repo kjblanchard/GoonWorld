@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
 #include <GoonPhysics/gravity.h>

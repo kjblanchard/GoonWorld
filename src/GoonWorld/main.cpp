@@ -1,4 +1,3 @@
-#include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/core/Game.hpp>

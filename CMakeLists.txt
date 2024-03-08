@@ -102,6 +102,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # Have both of these already built, and then we find them.
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 find_package(supergoonSound REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 
 # #########################################

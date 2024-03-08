@@ -1,4 +1,3 @@
-#include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
 using json = nlohmann::json;
 using namespace GoonWorld;

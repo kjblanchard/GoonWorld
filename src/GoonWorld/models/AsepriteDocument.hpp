@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <json/json_fwd.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace GoonWorld
 {
