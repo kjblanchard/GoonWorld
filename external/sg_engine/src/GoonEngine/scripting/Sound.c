@@ -26,26 +26,26 @@ Bgm *BgmLoad(const char *filename, float begin, float end)
     return bgm;
 }
 
-// static Sfx *SfxLoad(const char *filename)
-// {
-//     Sfx *sfx = LoadSfxHelper(filename);
-//     if (!sfx)
-//     {
-//         // LogError("Could not load Sfx %s", filename);
-//         return NULL;
-//     }
-//     int result = LoadSfx(sfx);
-//     if (!result)
-//     {
-//         fprintf(stderr, "Could not load sfx %s", filename);
-//     }
-//     return sfx;
-// }
-// static int SfxPlay(Sfx *sfx, float volume)
-// {
-//     PlaySfxOneShot(sfx, volume);
-//     return 0;
-// }
+Sfx *geSfxLoad(const char *filename)
+{
+    Sfx *sfx = LoadSfxHelper(filename);
+    if (!sfx)
+    {
+        // LogError("Could not load Sfx %s", filename);
+        return NULL;
+    }
+    int result = LoadSfx(sfx);
+    if (!result)
+    {
+        fprintf(stderr, "Could not load sfx %s", filename);
+    }
+    return sfx;
+}
+int geSfxPlay(Sfx *sfx, float volume)
+{
+    PlaySfxOneShot(sfx, volume);
+    return 0;
+}
 
 int BgmPlay(Bgm *bgm, float volume)
 {

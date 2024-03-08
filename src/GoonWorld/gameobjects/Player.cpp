@@ -10,9 +10,12 @@
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
+#include <GoonEngine/Sound.h>
 #include <SDL2/SDL_rect.h>
 
 using namespace GoonWorld;
+
+static Sfx* jumpSound;
 
 Player::Player(TiledMap::TiledObject &object)
 {
@@ -23,14 +26,16 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario");
+    jumpSound = LoadSfxHelper("assets/audio/jump.ogg");
+
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                         {
-                             Player *playerInstance = static_cast<Player *>(args);
-                             playerInstance->GoombaOverlapFunc(overlapBody, overlap);
-                         }};
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
+    // bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+    //                      {
+    //                          Player *playerInstance = static_cast<Player *>(args);
+    //                          playerInstance->GoombaOverlapFunc(overlapBody, overlap);
+    //                      }};
+    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     CreateAnimationTransitions();
     InitializePlayerConfig();
 }
@@ -238,6 +243,7 @@ void Player::Jump()
         _isJumping = true;
         _canJump = false;
         _rigidbodyComponent->Velocity().y += _initialJumpVelocity;
+        PlaySfxOneShot(jumpSound, 1.0f);
     }
 }
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
