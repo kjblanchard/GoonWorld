@@ -65,7 +65,7 @@ include(CTest)
 # #########################################
 # Options
 # #########################################
-option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" OFF)
+option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" ON)
 option(GOON_BUILD_PCH "Uses a PCH file to try and speed up compilation" ON)
 option(GOON_DEBUG_LUA "Includes socket so that we can debug lua remotely" OFF)
 option(GOON_MULTITHREADED_SOUND "Adds multithreaded support for sound updates, experimental and has a memory leak somehow" OFF)
@@ -82,9 +82,8 @@ if(GOON_BUILD_PCH)
     message(STATUS "Setting up PCH, mac needs objc")
     target_precompile_headers(${LIBRARY_TARGET_NAME} PRIVATE
         "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/GoonEngine/gnpch.h>")
-        target_precompile_headers(${EXECUTABLE_TARGET_NAME} PRIVATE
-    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/GoonWorld/gnpch.hpp>")
-
+    target_precompile_headers(${EXECUTABLE_TARGET_NAME} PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/GoonWorld/gnpch.hpp>")
 endif(GOON_BUILD_PCH)
 
 # #########################################
@@ -105,8 +104,10 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # 1. Look for a SDL2 package, 2. Look for the SDL2maincomponent and 3. DO NOT fail when SDL2main is not available
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
-add_subdirectory(./external/sg_sound)
-target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/sg_sound/src/)
+find_package(supergoonSound REQUIRED)
+
+# add_subdirectory(./external/sg_sound)
+# target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/sg_sound/src/)
 
 # #########################################
 # Platform Specific Build settings
@@ -170,10 +171,8 @@ target_compile_options(${LIBRARY_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS})
 # Linking Options
 # #########################################
 set(LIBRARIES_TO_LINK
+    supergoonSound::supergoonSound
     SDL2::SDL2main
-    # Already linked by supergoon sound
-    # SDL2::SDL2-static
-    supergoonSound
 )
 
 foreach(LIBRARY ${LIBRARIES_TO_LINK})
