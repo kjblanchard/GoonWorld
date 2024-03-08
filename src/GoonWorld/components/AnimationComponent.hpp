@@ -21,6 +21,7 @@ namespace GoonWorld
         void OnComponentAdd(GameObject &parent) override;
         int SizeMultiplier;
         inline void AddTransition(AnimationTransition *transition) { _transitions.push_back(transition); }
+        void AddTransition(std::string from, std::string to, bool matchCondition, bool* matchRef);
         bool Mirror = false;
 
     private:

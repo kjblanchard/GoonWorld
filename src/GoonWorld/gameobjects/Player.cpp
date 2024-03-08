@@ -69,6 +69,8 @@ void Player::Update()
         printf("Kill time: %f\n", _goombaKillTime);
     }
 
+    _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
+
     _canJump = _rigidbodyComponent->IsOnGround();
     HandleInput();
     _isTurning = CheckIsTurning();
@@ -90,9 +92,8 @@ void Player::Update()
     AnimationUpdate();
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+    LogInfo("Is jumping: %d, Can Jum %d", _isJumping, _canJump);
 
-    // LogInfo("Velocity X: %f, FrictionX: %f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Friction().x);
-    // LogInfo("Is Turning: %d", _isTurning);
     GameObject::Update();
 }
 
@@ -121,12 +122,12 @@ void Player::AnimationUpdate()
     {
         _animationComponent->AnimationSpeed = std::abs(_rigidbodyComponent->Velocity().x) / 100.0f;
     }
-
     _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
     _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
     _shouldTurnAnim = _isTurning;
 }
+
 float Player::CalculateFrameMaxVelocity()
 {
     if (_isRunning)
@@ -180,62 +181,14 @@ void Player::HandleInput()
 }
 void Player::CreateAnimationTransitions()
 {
-
-    auto walkToTurnTransition = new AnimationTransition();
-    walkToTurnTransition->Condition = &_shouldTurnAnim;
-    walkToTurnTransition->ConditionMatch = true;
-    walkToTurnTransition->NextAnimation = "turn";
-    walkToTurnTransition->CurrentAnimation = "walk";
-    _animationComponent->AddTransition(walkToTurnTransition);
-
-    auto turnToWalkAnim = new AnimationTransition();
-    turnToWalkAnim->Condition = &_shouldTurnAnim;
-    turnToWalkAnim->ConditionMatch = false;
-    turnToWalkAnim->NextAnimation = "walk";
-    turnToWalkAnim->CurrentAnimation = "turn";
-    _animationComponent->AddTransition(turnToWalkAnim);
-
-    auto fallTransition = new AnimationTransition();
-    fallTransition->Condition = &_shouldFallAnim;
-    fallTransition->ConditionMatch = true;
-    fallTransition->NextAnimation = "jump";
-    fallTransition->CurrentAnimation = "idle";
-    _animationComponent->AddTransition(fallTransition);
-
-    auto walkToJumpTransition = new AnimationTransition();
-    walkToJumpTransition->Condition = &_shouldFallAnim;
-    walkToJumpTransition->ConditionMatch = true;
-    walkToJumpTransition->NextAnimation = "jump";
-    walkToJumpTransition->CurrentAnimation = "walk";
-    _animationComponent->AddTransition(walkToJumpTransition);
-
-    auto fallToIdleTransition = new AnimationTransition();
-    fallToIdleTransition->Condition = &_shouldIdleAnim;
-    fallToIdleTransition->ConditionMatch = true;
-    fallToIdleTransition->NextAnimation = "idle";
-    fallToIdleTransition->CurrentAnimation = "jump";
-    _animationComponent->AddTransition(fallToIdleTransition);
-
-    auto fallToWalkTransition = new AnimationTransition();
-    fallToWalkTransition->Condition = &_shouldRunAnim;
-    fallToWalkTransition->ConditionMatch = true;
-    fallToWalkTransition->NextAnimation = "walk";
-    fallToWalkTransition->CurrentAnimation = "jump";
-    _animationComponent->AddTransition(fallToWalkTransition);
-
-    auto idleToWalkTransition = new AnimationTransition();
-    idleToWalkTransition->Condition = &_shouldRunAnim;
-    idleToWalkTransition->ConditionMatch = true;
-    idleToWalkTransition->NextAnimation = "walk";
-    idleToWalkTransition->CurrentAnimation = "idle";
-    _animationComponent->AddTransition(idleToWalkTransition);
-
-    auto walkToIdleTransition = new AnimationTransition();
-    walkToIdleTransition->Condition = &_shouldIdleAnim;
-    walkToIdleTransition->ConditionMatch = true;
-    walkToIdleTransition->NextAnimation = "idle";
-    walkToIdleTransition->CurrentAnimation = "walk";
-    _animationComponent->AddTransition(walkToIdleTransition);
+    _animationComponent->AddTransition("turn", "walk", false, &_shouldTurnAnim);
+    _animationComponent->AddTransition("walk", "turn", true, &_shouldTurnAnim);
+    _animationComponent->AddTransition("idle", "jump", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("walk", "jump", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("jump", "idle", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("jump", "walk", true, &_shouldRunAnim);
+    _animationComponent->AddTransition("idle", "walk", true, &_shouldRunAnim);
+    _animationComponent->AddTransition("walk", "idle", true, &_shouldIdleAnim);
 }
 void Player::Jump()
 {
@@ -253,7 +206,6 @@ void Player::Jump()
     }
     else if (_canJump)
     {
-        // Play jump sound
         _currentJumpTime = 0;
         _isJumping = true;
         _canJump = false;
@@ -264,24 +216,19 @@ void Player::Jump()
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
-    switch (overlap->overlapDirection)
+    if (goomba->IsDead())
+        return;
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown && !_goombaKillTime)
     {
-    case gpOverlapDirections::gpOverlapDown:
-        if (goomba->IsDead() || _goombaKillTime)
-            return;
         _goombaKillTime += DeltaTime.GetTotalSeconds();
-        // _rigidbodyComponent->Velocity().y = -100;
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
         _currentJumpTime = 0;
         _isJumping = true;
         _enemyJustKilled = true;
-        goomba->DamageGoomba(this);
-        break;
-
-    default:
-        LogInfo("Player should die!");
-        break;
+        goomba->TakeDamage();
+        return;
     }
+    puts("Player should die");
 }
 Player::~Player()
 {

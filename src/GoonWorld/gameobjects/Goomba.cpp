@@ -40,18 +40,10 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
     AddComponent({_rigidbodyComponent, _animationComponent});
 
-    auto walkToDieTransition = new AnimationTransition();
-    walkToDieTransition->Condition = &_isDead;
-    walkToDieTransition->ConditionMatch = true;
-    walkToDieTransition->NextAnimation = "dead";
-    walkToDieTransition->CurrentAnimation = "walk";
-    _animationComponent->AddTransition(walkToDieTransition);
+    _animationComponent->AddTransition("walk", "dead", true, &_isDead);
 }
-void Goomba::DamageGoomba(Player *player)
+void Goomba::TakeDamage()
 {
-    // Player *player = (Player *)overlap->overlapBody->funcArgs;
-    if (player->CanDamage())
-        return;
     if (_isDead)
         return;
     PlaySfxOneShot(dieSound, 1.0f);

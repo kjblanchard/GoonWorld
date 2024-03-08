@@ -1,5 +1,6 @@
 #pragma once
 #include <GoonWorld/base/GameObject.hpp>
+#include <GoonWorld/interfaces/ITakeDamage.hpp>
 typedef struct gpOverlap gpOverlap;
 namespace GoonWorld
 {
@@ -8,12 +9,13 @@ namespace GoonWorld
     class RigidbodyComponent;
     class AnimationComponent;
     class Player;
-    class Goomba : public GameObject
+    class Goomba : public GameObject, ITakeDamage
     {
     public:
         Goomba(TiledMap::TiledObject &object);
         inline bool IsDead() { return _isDead; }
         void Update() override;
+        void TakeDamage() override;
         void DamageGoomba(Player* player);
         ~Goomba();
 

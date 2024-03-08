@@ -74,3 +74,8 @@ SDL_Rect AnimationComponent::GetDrawRect()
 {
     return SDL_Rect{Parent()->Location().x + _offset.x, Parent()->Location().y + _offset.y, SpriteImageRect.w * SizeMultiplier, SpriteImageRect.h * SizeMultiplier};
 }
+
+void AnimationComponent::AddTransition(std::string from, std::string to, bool matchCondition, bool *matchRef)
+{
+    _transitions.push_back(new AnimationTransition(from, to, matchCondition, matchRef));
+}
