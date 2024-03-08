@@ -10,12 +10,13 @@
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
+#include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/Sound.h>
 #include <SDL2/SDL_rect.h>
 
 using namespace GoonWorld;
 
-static Sfx* jumpSound;
+static Sfx *jumpSound;
 
 Player::Player(TiledMap::TiledObject &object)
 {
@@ -26,16 +27,16 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario");
-    jumpSound = LoadSfxHelper("assets/audio/jump.ogg");
+    jumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    // bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-    //                      {
-    //                          Player *playerInstance = static_cast<Player *>(args);
-    //                          playerInstance->GoombaOverlapFunc(overlapBody, overlap);
-    //                      }};
-    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
+    bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                         {
+                             Player *playerInstance = static_cast<Player *>(args);
+                             playerInstance->GoombaOverlapFunc(overlapBody, overlap);
+                         }};
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     CreateAnimationTransitions();
     InitializePlayerConfig();
 }
@@ -54,6 +55,20 @@ void Player::InitializePlayerConfig()
 }
 void Player::Update()
 {
+    if (_enemyJustKilled)
+    {
+        _goombaKillTime += DeltaTime.GetTotalSeconds();
+        if (_goombaKillTime > 0.3)
+        {
+            _enemyJustKilled = false;
+            _goombaKillTime = 0;
+        }
+    }
+    if (_goombaKillTime)
+    {
+        printf("Kill time: %f\n", _goombaKillTime);
+    }
+
     _canJump = _rigidbodyComponent->IsOnGround();
     HandleInput();
     _isTurning = CheckIsTurning();
@@ -242,16 +257,25 @@ void Player::Jump()
         _currentJumpTime = 0;
         _isJumping = true;
         _canJump = false;
-        _rigidbodyComponent->Velocity().y += _initialJumpVelocity;
+        _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
         PlaySfxOneShot(jumpSound, 1.0f);
     }
 }
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
+    Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     switch (overlap->overlapDirection)
     {
     case gpOverlapDirections::gpOverlapDown:
-        LogInfo("Goomba should die!");
+        if (goomba->IsDead() || _goombaKillTime)
+            return;
+        _goombaKillTime += DeltaTime.GetTotalSeconds();
+        // _rigidbodyComponent->Velocity().y = -100;
+        _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
+        _currentJumpTime = 0;
+        _isJumping = true;
+        _enemyJustKilled = true;
+        goomba->DamageGoomba(this);
         break;
 
     default:

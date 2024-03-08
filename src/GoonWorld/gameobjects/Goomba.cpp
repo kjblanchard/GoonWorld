@@ -5,7 +5,13 @@
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
+#include <GoonEngine/Sound.h>
+#include <GoonWorld/core/Content.hpp>
+#include <GoonWorld/animation/AnimationTransition.hpp>
+#include <GoonWorld/gameobjects/Player.hpp>
 using namespace GoonWorld;
+
+static Sfx *dieSound = nullptr;
 
 Goomba::Goomba(TiledMap::TiledObject &object)
 {
@@ -28,15 +34,42 @@ Goomba::Goomba(TiledMap::TiledObject &object)
                                                 goombaInstance->GoombaMarioOverlap(overlap);
                                             }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
-    AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
+    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
+    if (!dieSound)
+        dieSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "death");
+    // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
+    AddComponent({_rigidbodyComponent, _animationComponent});
+
+    auto walkToDieTransition = new AnimationTransition();
+    walkToDieTransition->Condition = &_isDead;
+    walkToDieTransition->ConditionMatch = true;
+    walkToDieTransition->NextAnimation = "dead";
+    walkToDieTransition->CurrentAnimation = "walk";
+    _animationComponent->AddTransition(walkToDieTransition);
+}
+void Goomba::DamageGoomba(Player *player)
+{
+    // Player *player = (Player *)overlap->overlapBody->funcArgs;
+    if (player->CanDamage())
+        return;
+    if (_isDead)
+        return;
+    PlaySfxOneShot(dieSound, 1.0f);
+    _isDead = true;
 }
 void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
 {
+    Player *player = (Player *)overlap->overlapBody->funcArgs;
+    if (player->CanDamage())
+        return;
     switch (overlap->overlapDirection)
     {
     case gpOverlapDirections::gpOverlapUp:
-        LogInfo("I should die");
+        if (_isDead)
+            return;
+        // LogInfo("I should die");
+        PlaySfxOneShot(dieSound, 1.0f);
+        _isDead = true;
         break;
     default:
         break;
@@ -45,8 +78,21 @@ void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
 
 void Goomba::Update()
 {
+    if (_isDead)
+    {
+        if (_currentDeadTime < _deadTimer)
+        {
+            _currentDeadTime += DeltaTime.GetTotalSeconds();
+            _rigidbodyComponent->Enabled(false);
+        }
+        else
+        {
+            _animationComponent->Enabled(false);
+            return;
+        }
+    }
     auto speed = _movingRight ? 40 : -40;
-    _rigidbodyComponent->Velocity().x = speed;
+    _rigidbodyComponent->Velocity().x = _isDead ? 0 : speed;
     GameObject::Update();
 }
 void Goomba::GoombaStaticBodyOverlap(gpOverlap *overlap)

@@ -1,6 +1,7 @@
 #include <GoonWorld/gnpch.hpp>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/core/Content.hpp>
+#include <GoonEngine/Sound.h>
 
 using namespace GoonWorld;
 
@@ -17,14 +18,19 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     {
     case ContentTypes::Surface:
         loadedContent = LoadSurfaceFromFile(filename);
-        return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
+        // return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
+        break;
     case ContentTypes::Texture:
         loadedContent = CreateTextureFromFile(filename);
-        return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
+        // return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
+        break;
+    case ContentTypes::Sfx:
+        loadedContent = LoadSfxHelper(("assets/audio/" + std::string(filename) + ".ogg").c_str());
+        break;
     default:
         break;
     }
-    return nullptr;
+    return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
 }
 template <typename T>
 T *Content::GetLoadedContentOfType(const char *filename)

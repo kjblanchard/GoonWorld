@@ -18,7 +18,7 @@ static gpBody **_currentStaticBodies;
 
 static void ApplyYVelocity(gpBody *body, float gameTime);
 static void ApplyXVelocity(gpBody *body, float gameTime);
-static void CheckForNonStaticOverlaps(gpBody *body, int direction);
+static void CheckForNonStaticOverlaps(gpBody *body);
 
 void gpSceneUpdate(gpScene *scene, float gameTime)
 {
@@ -46,7 +46,7 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
     }
 }
 
-static void CheckForNonStaticOverlaps(gpBody *body, int direction)
+static void CheckForNonStaticOverlaps(gpBody *body)
 {
     // Check for non static bodies
     for (size_t i = 0; i < _currentNumBodies; i++)
@@ -105,7 +105,7 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
                 gpBodyAddOverlap(body, staticBody, direction);
             }
         }
-        CheckForNonStaticOverlaps(body, direction);
+        CheckForNonStaticOverlaps(body);
 
         // For body in bodies, if collides,
         // then send out notify for subscribers with info of collision bounding box and body num
@@ -179,7 +179,7 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
             shouldStep = 0;
         }
     }
-    CheckForNonStaticOverlaps(body, direction);
+    CheckForNonStaticOverlaps(body);
 }
 
 gpScene *gpInitScene(void)

@@ -41,6 +41,8 @@ install:
 	@cmake --install build --config $(CMAKE_BUILD_TYPE)
 package:
 	@$(PACKAGE_COMMAND)
+sound:
+	@cd ./external/sg_sound && make rebuild
 rebuild: BUILD_SYSTEM = $(PRIMARY_BUILD_SYSTEM)
 rebuild: clean configure build install
 brebuild: BUILD_SYSTEM = $(BACKUP_BUILD_SYSTEM)

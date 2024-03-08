@@ -14,6 +14,7 @@ namespace GoonWorld
     {
     public:
         Player(TiledMap::TiledObject &object);
+        inline bool CanDamage() { return _enemyJustKilled == false; }
         void Update() override;
 
         ~Player();
@@ -25,9 +26,9 @@ namespace GoonWorld
         bool _shouldIdleAnim = false;
 
     private:
-        bool _isJumping, _canJump, _isTurning, _isRunning;
+        bool _isJumping, _canJump, _isTurning, _isRunning, _enemyJustKilled = false;
         int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity;
-        float _currentJumpTime, _maxJumpTime;
+        float _currentJumpTime, _maxJumpTime, _goombaKillTime;
 
     private:
         void HandleInput();

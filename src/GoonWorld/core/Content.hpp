@@ -6,6 +6,7 @@ namespace GoonWorld
         Default,
         Surface,
         Texture,
+        Sfx,
     };
 
     class Content
