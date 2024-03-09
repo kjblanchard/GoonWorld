@@ -70,13 +70,13 @@ int main()
                             game->GameSettings->WindowConfig.Title.c_str());
     auto scene = InitializePhysics();
     auto sound = new Sound(game->GameSettings->SoundConfigs);
-    auto result = sound->LoadBgm("rangers");
+    auto result = sound->LoadBgm("platformer");
     auto level1 = TiledLevel("level1");
     gpSceneSetGravity(scene, level1.GetGravity().y);
     gpSceneSetFriction(scene, level1.GetGravity().x);
     level1.SetTextureAtlas();
     game->SetCurrentLevel(&level1);
-    sound->PlayBgm("rangers");
+    sound->PlayBgm("platformer");
     for (auto &object : level1.GetAllObjects())
     {
         auto iter = GameObjectSpawnMap.find(object.ObjectType);
