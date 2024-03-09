@@ -27,9 +27,7 @@ Mushroom::Mushroom(SDL_Rect *rect)
     _animationComponent->SizeMultiplier = 2;
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
     mushroomSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "mushroom");
-    // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
     AddComponent({_rigidbodyComponent, _animationComponent});
-    // AddComponent({_rigidbodyComponent});
 }
 void Mushroom::Update()
 {

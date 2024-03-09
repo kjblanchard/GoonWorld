@@ -14,20 +14,20 @@
 using namespace GoonWorld;
 
 static Game *game;
+static const bool SOLID_DEBUG = false;
 static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameObjectSpawnMap = {
     {"Player", [](TiledMap::TiledObject &object)
      {
          return new Player(object);
      }},
-     {"Enemy", [](TiledMap::TiledObject& object)
+    {"Enemy", [](TiledMap::TiledObject &object)
      {
-        return new Goomba(object);
+         return new Goomba(object);
      }},
-     {"Brick", [](TiledMap::TiledObject& object)
+    {"Brick", [](TiledMap::TiledObject &object)
      {
-        return new ItemBrick(object);
-     }}
-};
+         return new ItemBrick(object);
+     }}};
 gpScene *InitializePhysics()
 {
     auto scene = gpInitScene();
@@ -44,11 +44,15 @@ void Draw()
     game->Draw();
     if (game->GetCurrentLevel())
     {
-        for (auto &solid : game->GetCurrentLevel()->GetAllSolidObjects())
+        // Drawing debug rects on solids
+        if (SOLID_DEBUG)
         {
-            auto box = SDL_Rect{solid.X, solid.Y, solid.Width, solid.Height};
-            auto color = Color{0, 255, 0, 255};
-            DrawDebugRect(&box, &color);
+            for (auto &solid : game->GetCurrentLevel()->GetAllSolidObjects())
+            {
+                auto box = SDL_Rect{solid.X, solid.Y, solid.Width, solid.Height};
+                auto color = Color{0, 255, 0, 255};
+                DrawDebugRect(&box, &color);
+            }
         }
     }
 }

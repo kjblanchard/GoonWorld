@@ -47,9 +47,16 @@ Player::Player(TiledMap::TiledObject &object)
                                      Player *playerInstance = static_cast<Player *>(args);
                                      playerInstance->ItemBoxOverlapFunc(overlapBody, overlap);
                                  }};
+    // Put this here to remove mario bug
+    bodyOverlapArgs mushroomArgs2{1, (int)BodyTypes::Mushroom, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                                 {
+                                     Player *playerInstance = static_cast<Player *>(args);
+                                     playerInstance->ItemBoxOverlapFunc(overlapBody, overlap);
+                                 }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, mushroomArgs);
+    _debugDrawComponent->Enabled(false);
     CreateAnimationTransitions();
     InitializePlayerConfig();
 }

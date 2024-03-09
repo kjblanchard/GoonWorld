@@ -8,6 +8,7 @@
 using namespace GoonWorld;
 
 static Sfx *bumpSound;
+static Sfx *itemSound;
 
 ItemBrick::ItemBrick(TiledMap::TiledObject &object)
 {
@@ -23,6 +24,7 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
     bumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "bump");
+    itemSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "powerup");
     // AddComponent({_debugDrawComponent, _rigidbodyComponent});
     AddComponent({_rigidbodyComponent});
 }
@@ -43,6 +45,7 @@ void ItemBrick::TakeDamage()
         auto shroom = new Mushroom(&loc);
         shroom->Push(true);
         _contents = 0;
+        gsPlaySfxOneShot(itemSound, 1.0f);
         break;
     }
 

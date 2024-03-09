@@ -28,7 +28,8 @@
 ### Full Game
 - MIT
 ### Sounds
-- [Mushroom](https://freesound.org/people/timgormly/sounds/170155/)
+- [Mushroom](https://freesound.org/people/timgormly/sounds/170155/) - Attribution
+- [Powerup](https://freesound.org/people/ProjectsU012/sounds/341629/) - Attribution
 
 ## Libraries
 - [Supergoon Sound](https://github.com/icculus/mojoAL/blob/main/LICENSE.txt) - ZLIB | OpenAL implementation - Mojoal wrapper
