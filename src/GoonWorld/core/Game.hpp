@@ -12,11 +12,12 @@ namespace GoonWorld
     {
     public:
         static inline Game *Instance() { return _gameInstance; }
-        std::vector<std::shared_ptr<IUpdate> > UpdateObjects;
+        static inline long long GetTicks() { return _ticks; }
+        std::vector<std::shared_ptr<IUpdate>> UpdateObjects;
         std::vector<IDraw *> DrawObjects;
-        inline void SetCurrentLevel(TiledLevel* level) { _loadedLevel = level; }
-        inline TiledLevel* GetCurrentLevel() const { return _loadedLevel;}
-        AppSettings* GameSettings;
+        inline void SetCurrentLevel(TiledLevel *level) { _loadedLevel = level; }
+        inline TiledLevel *GetCurrentLevel() const { return _loadedLevel; }
+        AppSettings *GameSettings;
 
         Game();
         ~Game();
@@ -25,7 +26,7 @@ namespace GoonWorld
 
     private:
         static Game *_gameInstance;
-        TiledLevel* _loadedLevel;
-
+        static long long _ticks;
+        TiledLevel *_loadedLevel;
     };
 }

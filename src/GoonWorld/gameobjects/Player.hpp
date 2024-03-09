@@ -20,13 +20,10 @@ namespace GoonWorld
         ~Player();
 
     private:
-        bool _shouldFallAnim = false;
-        bool _shouldTurnAnim = false;
-        bool _shouldRunAnim = false;
-        bool _shouldIdleAnim = false;
+        bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
 
     private:
-        bool _isJumping, _canJump, _isTurning, _isRunning, _enemyJustKilled = false;
+        bool _isJumping, _canJump, _isTurning, _isRunningButtonDown, _enemyJustKilled;
         int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity;
         float _currentJumpTime, _maxJumpTime, _goombaKillTime;
 
@@ -34,9 +31,12 @@ namespace GoonWorld
         void HandleInput();
         void AnimationUpdate();
         bool ShouldMirrorImage();
-        bool CheckIsTurning();
+        void EnemyKilledTick();
+        void TurnPhysics();
+        void AirPhysics();
         void InitializePlayerConfig();
         void CreateAnimationTransitions();
+        void HandleLeftRightMovement(bool movingRight);
         void Jump();
         float CalculateFrameMaxVelocity();
 

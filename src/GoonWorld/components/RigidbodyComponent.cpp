@@ -1,3 +1,4 @@
+#include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/scene.h>
@@ -19,9 +20,13 @@ RigidbodyComponent::RigidbodyComponent(SDL_Rect *rect)
     // Location = Point{rect->x, rect->y};
     // Size = Point{rect->w, rect->h};
 }
+// bool RigidbodyComponent::IsOnGround()
+// {
+//     return Game::GetTicks() == _isOnGroundCached ? _isOnGround : _isOnGround = gpBodyIsOnGround(_body);
+// }
 void RigidbodyComponent::OnComponentAdd(GameObject &parent)
 {
-    _body->funcArgs = (void*)&parent;
+    _body->funcArgs = (void *)&parent;
     Component::OnComponentAdd(parent);
 }
 void RigidbodyComponent::PhysicsUpdate()

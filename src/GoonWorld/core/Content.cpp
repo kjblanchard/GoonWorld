@@ -26,6 +26,7 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
         break;
     case ContentTypes::Sfx:
         loadedContent = gsLoadSfxHelper(("assets/audio/" + std::string(filename) + ".ogg").c_str());
+        gsLoadSfx((Sfx *)loadedContent);
         break;
     default:
         break;

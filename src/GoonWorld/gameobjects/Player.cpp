@@ -13,7 +13,6 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/Sound.h>
 #include <SDL2/SDL_rect.h>
-
 using namespace GoonWorld;
 
 static Sfx *jumpSound;
@@ -53,34 +52,40 @@ void Player::InitializePlayerConfig()
     _maxJumpTime = playerConfig.MaxJumpTime;
     _initialMoveVelocity = playerConfig.InitialMoveVelocity;
 }
+
 void Player::Update()
 {
     if (_enemyJustKilled)
-    {
-        _goombaKillTime += DeltaTime.GetTotalSeconds();
-        if (_goombaKillTime > 0.3)
-        {
-            _enemyJustKilled = false;
-            _goombaKillTime = 0;
-        }
-    }
-    if (_goombaKillTime)
-    {
-        printf("Kill time: %f\n", _goombaKillTime);
-    }
-
+        EnemyKilledTick();
     _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
-
     _canJump = _rigidbodyComponent->IsOnGround();
     HandleInput();
-    _isTurning = CheckIsTurning();
-
-    // Turn faster.
-    if (_isTurning)
+    // _isTurning = CheckIsTurning();
+    TurnPhysics();
+    AirPhysics();
+    AnimationUpdate();
+    _animationComponent->Mirror = ShouldMirrorImage();
+    _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+    GameObject::Update();
+}
+void Player::EnemyKilledTick()
+{
+    _goombaKillTime += DeltaTime.GetTotalSeconds();
+    if (_goombaKillTime > 0.3)
     {
-        _rigidbodyComponent->Acceleration().x *= 2;
+        _enemyJustKilled = false;
+        _goombaKillTime = 0;
     }
-    // Do not control in the air so well in the opposite direction.
+}
+
+void Player::TurnPhysics()
+{
+    if (_isTurning)
+        _rigidbodyComponent->Acceleration().x *= 2;
+}
+
+void Player::AirPhysics()
+{
     if (!_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Acceleration().x != 0)
     {
         if ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
@@ -89,20 +94,6 @@ void Player::Update()
             _rigidbodyComponent->Acceleration().x /= 3;
         }
     }
-    AnimationUpdate();
-    _animationComponent->Mirror = ShouldMirrorImage();
-    _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
-    LogInfo("Is jumping: %d, Can Jum %d", _isJumping, _canJump);
-
-    GameObject::Update();
-}
-
-bool Player::CheckIsTurning()
-{
-    if (!_rigidbodyComponent->IsOnGround() || _rigidbodyComponent->Velocity().x == 0)
-        return false;
-    return ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
-            (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0));
 }
 
 bool Player::ShouldMirrorImage()
@@ -130,7 +121,7 @@ void Player::AnimationUpdate()
 
 float Player::CalculateFrameMaxVelocity()
 {
-    if (_isRunning)
+    if (_isRunningButtonDown)
         return _maxRunSpeed;
     if (std::abs(_rigidbodyComponent->Velocity().x) > _maxWalkSpeed)
         return _maxRunSpeed;
@@ -139,46 +130,61 @@ float Player::CalculateFrameMaxVelocity()
 
 void Player::HandleInput()
 {
-    _isRunning = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
+    _isRunningButtonDown = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
-        // If we are not moving, get a boost
-        if (_rigidbodyComponent->Velocity().x == 0)
-            _rigidbodyComponent->Acceleration().x -= _initialMoveVelocity;
-        // If we are running or in the air?
-        else if (_isRunning || !_rigidbodyComponent->IsOnGround())
-        {
-            auto moveSpeed = _runSpeedBoost;
-            // LogInfo("Movespeed is %d", moveSpeed);
-            _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
-        }
-        else
-        {
-            auto moveSpeed = _rigidbodyComponent->Velocity().x < -_maxWalkSpeed ? 0 : _walkSpeedBoost;
-            // LogInfo("Movespeed is %d", moveSpeed);
-            _rigidbodyComponent->Acceleration().x -= moveSpeed * DeltaTime.GetTotalSeconds();
-        }
+        HandleLeftRightMovement(false);
     }
-    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_RIGHT))
+
+    else if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_RIGHT))
     {
-        if (_rigidbodyComponent->Velocity().x == 0)
-            _rigidbodyComponent->Acceleration().x += _initialMoveVelocity;
-        else
-        {
-            auto moveSpeed = _isRunning ? _runSpeedBoost : _walkSpeedBoost;
-            _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
-        }
+        HandleLeftRightMovement(true);
     }
+
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
     {
         Jump();
     }
+
     else if (_playerInputComponent->IsButtonReleased(GameControllerButton::A))
     {
         _isJumping = false;
     }
 }
+
+void Player::HandleLeftRightMovement(bool movingRight)
+{
+    auto moveDirectionMultiplier = movingRight ? 1 : -1;
+    // If we are not moving set initial velocity.
+    if (_rigidbodyComponent->Velocity().x == 0)
+    {
+        _rigidbodyComponent->Acceleration().x += _initialMoveVelocity * moveDirectionMultiplier;
+        return;
+    }
+
+    else if (_isRunningButtonDown)
+    {
+        auto moveSpeed = _runSpeedBoost * moveDirectionMultiplier;
+        _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
+    }
+
+    else
+    {
+        // Check to see if we are walking but moving faster than our walk speed, if so no movespeed boost
+        auto moveSpeed = std::abs(_rigidbodyComponent->Velocity().x) > _maxWalkSpeed ? 0 : _walkSpeedBoost * moveDirectionMultiplier;
+        _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
+    }
+
+    if (!_rigidbodyComponent->IsOnGround() || _rigidbodyComponent->Velocity().x == 0)
+        _isTurning = false;
+    else
+    {
+        _isTurning = ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
+                      (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0));
+    }
+}
+
 void Player::CreateAnimationTransitions()
 {
     _animationComponent->AddTransition("turn", "walk", false, &_shouldTurnAnim);
@@ -190,6 +196,7 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("idle", "walk", true, &_shouldRunAnim);
     _animationComponent->AddTransition("walk", "idle", true, &_shouldIdleAnim);
 }
+
 void Player::Jump()
 {
     if (_isJumping)
@@ -230,6 +237,7 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     }
     puts("Player should die");
 }
+
 Player::~Player()
 {
 }

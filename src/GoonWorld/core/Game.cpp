@@ -5,6 +5,7 @@
 #include <GoonWorld/interfaces/IDraw.hpp>
 using namespace GoonWorld;
 Game *Game::_gameInstance = nullptr;
+long long Game::_ticks = 0;
 
 Game::Game()
 {
@@ -20,6 +21,7 @@ Game::~Game()
 }
 void Game::Update(double timeMs)
 {
+    ++_ticks;
     RigidbodyComponent::PhysicsUpdate();
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
