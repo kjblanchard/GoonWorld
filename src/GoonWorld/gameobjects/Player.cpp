@@ -45,7 +45,7 @@ Player::Player(TiledMap::TiledObject &object)
     bodyOverlapArgs mushroomArgs{1, (int)BodyTypes::Mushroom, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
                                  {
                                      Player *playerInstance = static_cast<Player *>(args);
-                                     playerInstance->ItemBoxOverlapFunc(overlapBody, overlap);
+                                     playerInstance->MushroomOverlapFunc(overlapBody, overlap);
                                  }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
