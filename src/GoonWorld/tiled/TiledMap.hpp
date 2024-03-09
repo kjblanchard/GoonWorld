@@ -24,6 +24,7 @@ namespace GoonWorld
         struct TiledProperty
         {
             std::string Name, PropertyType, ValueJsonString;
+            int ValueInt;
         };
         struct TiledObject
         {

@@ -5,9 +5,9 @@
     },
     "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        "/Users/kevin/Documents/tiled",
         ".",
         "templates",
+        "/Users/kevin/Documents/tiled",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -75,11 +75,11 @@
             "expandedGroupLayers": [
                 12
             ],
-            "scale": 0.8903,
+            "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 864.8770077501964,
-                "y": 540.2673256205774
+                "x": 451.25,
+                "y": 240
             }
         },
         "level1.tmx": {
@@ -123,7 +123,7 @@
         "background.tsj"
     ],
     "project": "goonDash.tiled-project",
-    "property.type": "Vector",
+    "property.type": "int",
     "recentFiles": [
         "background.tsj",
         "terrain.tsj",

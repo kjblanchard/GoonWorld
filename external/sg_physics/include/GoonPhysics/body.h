@@ -33,6 +33,7 @@ extern "C"
         int bodyNum;
         int bodyType;
         int staticCollisionEnabled;
+        int staticBody;
         gpBB boundingBox;
         gpVec acceleration;
         gpVec velocity;
@@ -50,6 +51,7 @@ extern "C"
     } gpBody;
 
     gpBody *gpBodyNew(gpBB boundingBox);
+    gpBody *gpBodyNewStatic(gpBB boundingBox);
     void gpBodySetPosition(gpBody *body, gpVec pos);
     void gpBodySetVelocity(gpBody *body, gpVec vel);
     void gpBodySetMaxVelocityX(gpBody *body, float maxVel);

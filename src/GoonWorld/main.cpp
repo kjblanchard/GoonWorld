@@ -9,6 +9,7 @@
 #include <GoonPhysics/GoonPhysics.h>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/color.h>
+#include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/animation/Animator.hpp>
 using namespace GoonWorld;
 
@@ -21,6 +22,10 @@ static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
      {"Enemy", [](TiledMap::TiledObject& object)
      {
         return new Goomba(object);
+     }},
+     {"Brick", [](TiledMap::TiledObject& object)
+     {
+        return new ItemBrick(object);
      }}
 };
 gpScene *InitializePhysics()

@@ -13,7 +13,7 @@
 - Learn github actions to build and publish outside developer environment
 - Create a simple "Super mario bros" clone.
 
-#### Stretch Goals
+### Stretch Goals
 - Game build on Mobile (IOS priority)
 
 ## Components
@@ -27,14 +27,14 @@
 ## Licenses
 ### Full Game
 - MIT
+### Sounds
+- [Mushroom](https://freesound.org/people/timgormly/sounds/170155/)
 
-### Libraries
+## Libraries
 - [Supergoon Sound](https://github.com/icculus/mojoAL/blob/main/LICENSE.txt) - ZLIB | OpenAL implementation - Mojoal wrapper
 - [Supergoon Physics](https://github.com/kjblanchard/goonPhysics) - MIT | Simple AABB physics simulation
 - [SDL](https://www.libsdl.org/license.php) - ZLIB - Low level Windowing / Eventing
-- [SDL_Image](https://www.libsdl.org/license.php) - ZLIB - Loads Different picture types into SDL_Textures
-- [SDL_Ttf](https://www.libsdl.org/license.php) - ZLIB - Loads True type fonts multi-platform with Freetype and Harfbuzz
 - [doxygen](https://doxygen.nl) - GPL | Automatic documentation
 
-### Valgrind
+## Valgrind
 valgrind --track-origins=yes --leak-check=yes --leak-resolution=low --show-leak-kinds=definite ./SupergoonDash 2>&1 | tee memcheck.txt

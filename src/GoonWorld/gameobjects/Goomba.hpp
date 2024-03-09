@@ -5,7 +5,6 @@ typedef struct gpOverlap gpOverlap;
 namespace GoonWorld
 {
     class DebugDrawComponent;
-    class PlayerInputComponent;
     class RigidbodyComponent;
     class AnimationComponent;
     class Player;

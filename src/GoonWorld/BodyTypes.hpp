@@ -1,3 +1,4 @@
+#pragma once
 namespace GoonWorld
 {
     enum class BodyTypes
@@ -5,6 +6,8 @@ namespace GoonWorld
         Static = 0,
         Player,
         Goomba,
+        ItemBrick,
+        Mushroom,
         Max,
     };
 }

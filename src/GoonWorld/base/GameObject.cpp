@@ -7,9 +7,15 @@ unsigned int GameObject::_numGameObjects = 0;
 TimeSpan GameObject::DeltaTime = TimeSpan(0);
 
 GameObject::GameObject()
-    : _id(_numGameObjects++), _location(Point{32, 32})
+    : _id(_numGameObjects++), _location(Point{0, 0})
 {
     Game::Instance()->UpdateObjects.push_back(std::shared_ptr<IUpdate>(this));
+    _enabled = true;
+}
+GameObject::GameObject(SDL_Rect *rect)
+    : GameObject()
+{
+    _location = Point{rect->x, rect->y};
 }
 GameObject::GameObject(TiledMap::TiledObject)
     : GameObject()
@@ -47,4 +53,28 @@ Component *GameObject::GetComponent(unsigned int componentType)
     if (it == Component::GameObjectComponentTypeMap[_id].end())
         return nullptr;
     return it->second;
+}
+void GameObject::Enabled(bool isEnabled)
+{
+    if (_enabled == isEnabled)
+        return;
+    _enabled = isEnabled;
+    if (_enabled)
+        OnEnabled();
+    else
+        OnDisabled();
+}
+void GameObject::OnEnabled()
+{
+    for (auto component : _components)
+    {
+        component->Enabled(true);
+    }
+}
+void GameObject::OnDisabled()
+{
+    for (auto component : _components)
+    {
+        component->Enabled(false);
+    }
 }

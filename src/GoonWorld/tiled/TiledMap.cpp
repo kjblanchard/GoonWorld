@@ -157,6 +157,15 @@ TiledMap::TiledMap(std::string filename)
                     object.ObjectType = objectJson["type"];
                     object.X = objectJson["x"];
                     object.Y = objectJson["y"];
+                    for (auto &property : objectJson["properties"])
+                    {
+                        // TODO use union in property class
+                        auto prop = TiledProperty();
+                        prop.Name = property["name"];
+                        prop.PropertyType = property["propertytype"];
+                        prop.ValueInt = property["value"];
+                        object.Properties.push_back(prop);
+                    }
                     Objects.push_back(object);
                 }
                 Layers.push_back(layer);

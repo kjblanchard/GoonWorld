@@ -31,6 +31,17 @@
             "type": "class"
         },
         {
+            "id": 7,
+            "name": "BoxContents",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "Empty",
+                "Mushroom"
+            ],
+            "valuesAsFlags": false
+        },
+        {
             "id": 2,
             "members": [
                 {

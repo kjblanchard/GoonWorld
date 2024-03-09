@@ -228,7 +228,7 @@ int gpSceneAddStaticBody(gpBody *body)
         }
         _currentCapacityStaticBodies *= 2;
     }
-    body->bodyType = 0;
+    // body->bodyType = 0;
     // _currentBodies[_currentNumBodies] = body;
     _currentStaticBodies[_currentNumStaticBodies] = body;
     ++_currentNumStaticBodies;

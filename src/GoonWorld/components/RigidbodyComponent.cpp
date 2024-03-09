@@ -9,16 +9,12 @@ using namespace GoonWorld;
 std::vector<RigidbodyComponent *> RigidbodyComponent::_currentRigidbodies;
 
 RigidbodyComponent::RigidbodyComponent(SDL_Rect *rect)
-    : Component((int)ComponentTypes::Rigidbody)
+    : Component((int)ComponentTypes::Rigidbody), _static(false)
 {
     auto bb = gpBBNew(rect->x, rect->y, rect->w, rect->h);
     _body = gpBodyNew(bb);
-    _bodyNum = gpSceneAddBody(_body);
     _body->gravityEnabled = 1;
-    // _body->funcArgs = this;
     _currentRigidbodies.push_back(this);
-    // Location = Point{rect->x, rect->y};
-    // Size = Point{rect->w, rect->h};
 }
 // bool RigidbodyComponent::IsOnGround()
 // {
@@ -28,6 +24,15 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
 {
     _body->funcArgs = (void *)&parent;
     Component::OnComponentAdd(parent);
+    if (_static)
+    {
+        _body->staticBody = true;
+        _bodyNum = gpSceneAddStaticBody(_body);
+    }
+    else
+    {
+        _bodyNum = gpSceneAddBody(_body);
+    }
 }
 void RigidbodyComponent::PhysicsUpdate()
 {

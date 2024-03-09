@@ -62,6 +62,7 @@ void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
         // LogInfo("I should die");
         gsPlaySfxOneShot(dieSound, 1.0f);
         _isDead = true;
+        _rigidbodyComponent->GravityEnabled(false);
         break;
     default:
         break;
@@ -79,7 +80,8 @@ void Goomba::Update()
         }
         else
         {
-            _animationComponent->Enabled(false);
+            Enabled(false);
+            // _animationComponent->Enabled(false);
             return;
         }
     }

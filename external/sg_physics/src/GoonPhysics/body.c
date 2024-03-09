@@ -28,6 +28,7 @@ gpBody *gpBodyNew(gpBB boundingBox)
     body->boundingBox = boundingBox;
     body->bodyNum = -1;
     body->funcArgs = NULL;
+    body->staticBody = 0;
     return body;
 }
 
@@ -47,6 +48,7 @@ gpBody *gpBodyNewStatic(gpBB boundingBox)
 {
     gpBody *body = gpBodyNew(boundingBox);
     body->bodyType = 0;
+    body->staticBody = 1;
     return body;
 }
 
@@ -93,7 +95,7 @@ int gpBodyIsOnGround(gpBody *body)
     {
         gpBody *overlap = body->overlaps[i].overlapBody;
         // If we are not a static body (type0), then continue
-        if (overlap->bodyType)
+        if (!overlap->staticBody)
         {
             continue;
         }

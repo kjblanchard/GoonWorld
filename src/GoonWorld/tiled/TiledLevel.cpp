@@ -63,7 +63,7 @@ void TiledLevel::LoadSolidObjects()
     for (auto &solid : _mapData->SolidObjects)
     {
         auto box = gpBBNew(solid.X, solid.Y, solid.Width, solid.Height);
-        auto body = gpBodyNew(box);
+        auto body = gpBodyNewStatic(box);
         gpSceneAddStaticBody(body);
     }
 }

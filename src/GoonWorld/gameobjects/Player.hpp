@@ -47,6 +47,8 @@ namespace GoonWorld
 
     private:
         void GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
+        void ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
+        void MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
         // friend void GoombaOverlapFuncCallback(void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

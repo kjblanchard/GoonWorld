@@ -8,6 +8,8 @@
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
+#include <GoonWorld/gameobjects/Mushroom.hpp>
+#include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
@@ -35,7 +37,19 @@ Player::Player(TiledMap::TiledObject &object)
                              Player *playerInstance = static_cast<Player *>(args);
                              playerInstance->GoombaOverlapFunc(overlapBody, overlap);
                          }};
+    bodyOverlapArgs brickArgs{1, (int)BodyTypes::ItemBrick, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                              {
+                                  Player *playerInstance = static_cast<Player *>(args);
+                                  playerInstance->ItemBoxOverlapFunc(overlapBody, overlap);
+                              }};
+    bodyOverlapArgs mushroomArgs{1, (int)BodyTypes::Mushroom, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                                 {
+                                     Player *playerInstance = static_cast<Player *>(args);
+                                     playerInstance->ItemBoxOverlapFunc(overlapBody, overlap);
+                                 }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, mushroomArgs);
     CreateAnimationTransitions();
     InitializePlayerConfig();
 }
@@ -171,6 +185,7 @@ void Player::HandleLeftRightMovement(bool movingRight)
 
     else
     {
+        // TODO this is causing an issue where you actually can't turn if you are hitting this, need to expand
         // Check to see if we are walking but moving faster than our walk speed, if so no movespeed boost
         auto moveSpeed = std::abs(_rigidbodyComponent->Velocity().x) > _maxWalkSpeed ? 0 : _walkSpeedBoost * moveDirectionMultiplier;
         _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
@@ -187,7 +202,9 @@ void Player::HandleLeftRightMovement(bool movingRight)
 
 void Player::CreateAnimationTransitions()
 {
+    _animationComponent->AddTransition("turn", "idle", true, &_shouldIdleAnim);
     _animationComponent->AddTransition("turn", "walk", false, &_shouldTurnAnim);
+    _animationComponent->AddTransition("turn", "jump", true, &_shouldFallAnim);
     _animationComponent->AddTransition("walk", "turn", true, &_shouldTurnAnim);
     _animationComponent->AddTransition("idle", "jump", true, &_shouldFallAnim);
     _animationComponent->AddTransition("walk", "jump", true, &_shouldFallAnim);
@@ -236,6 +253,21 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
         return;
     }
     puts("Player should die");
+}
+
+void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
+{
+    ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
+    {
+        itemBox->TakeDamage();
+    }
+}
+
+void Player::MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
+{
+    Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
+    mushroom->TakeDamage();
 }
 
 Player::~Player()
