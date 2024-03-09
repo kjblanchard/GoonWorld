@@ -210,7 +210,7 @@ void Player::Jump()
         _isJumping = true;
         _canJump = false;
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
-        PlaySfxOneShot(jumpSound, 1.0f);
+        gsPlaySfxOneShot(jumpSound, 1.0f);
     }
 }
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)

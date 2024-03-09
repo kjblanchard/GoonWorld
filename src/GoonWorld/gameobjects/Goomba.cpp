@@ -46,7 +46,7 @@ void Goomba::TakeDamage()
 {
     if (_isDead)
         return;
-    PlaySfxOneShot(dieSound, 1.0f);
+    gsPlaySfxOneShot(dieSound, 1.0f);
     _isDead = true;
 }
 void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
@@ -60,7 +60,7 @@ void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
         if (_isDead)
             return;
         // LogInfo("I should die");
-        PlaySfxOneShot(dieSound, 1.0f);
+        gsPlaySfxOneShot(dieSound, 1.0f);
         _isDead = true;
         break;
     default:

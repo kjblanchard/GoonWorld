@@ -91,7 +91,7 @@ static int loop_func()
     {
         geUpdateKeyboard();
         geUpdateControllers();
-        UpdateSound();
+        gsUpdateSound();
         if (g_pScene)
         {
             gpSceneUpdate(g_pScene, deltaTimeSeconds);

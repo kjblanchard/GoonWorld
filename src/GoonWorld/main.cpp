@@ -54,7 +54,7 @@ int main()
     GnInitializeEngine();
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
-    InitializeSound();
+    gsInitializeSound();
     game->GameSettings = new AppSettings("assets/config/appsettings.json");
     CreateWindowAndRenderer(game->GameSettings->WindowConfig.WindowSize.x,
                             game->GameSettings->WindowConfig.WindowSize.y,

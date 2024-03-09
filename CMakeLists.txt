@@ -67,7 +67,7 @@ include(CTest)
 # #########################################
 option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" OFF)
 option(GOON_BUILD_PCH "Uses a PCH file to try and speed up compilation" ON)
-option(GOON_DEBUG_LUA "Includes socket so that we can debug lua remotely" OFF)
+option(GOON_DEBUG_SOUND "Builds sound from subdirectory instead of using a made package so we can debug" OFF)
 option(GOON_MULTITHREADED_SOUND "Adds multithreaded support for sound updates, experimental and has a memory leak somehow" OFF)
 option(GOON_BENCHMARKING "Enables benchmarking functions, adds overhead" OFF)
 option(GOON_BUILD_TESTING "Should we enable testing with ctest" OFF)
@@ -101,9 +101,15 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # #########################################
 # Have both of these already built, and then we find them.
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
-find_package(supergoonSound REQUIRED)
-find_package(nlohmann_json 3.2.0 REQUIRED)
 
+if(GOON_DEBUG_SOUND)
+    add_subdirectory(./external/sg_sound)
+    target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/sg_sound/src/)
+else()
+    find_package(supergoonSound REQUIRED)
+endif(GOON_DEBUG_SOUND)
+
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 # #########################################
 # Platform Specific Build settings
@@ -168,6 +174,7 @@ target_compile_options(${LIBRARY_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS})
 # #########################################
 set(LIBRARIES_TO_LINK
     supergoonSound::supergoonSound
+    supergoonSound
     SDL2::SDL2main
 )
 
@@ -183,8 +190,6 @@ target_link_libraries(${LIBRARY_TARGET_NAME}
     PRIVATE
     ${LUA_LIBRARIES}
     ${GOONSOUND_LIBRARIES}
-
-    # ${GOONPHYSICS_LIBRARIES}
     ${LIB_SOCKET}
 )
 target_link_directories(${LIBRARY_TARGET_NAME}

@@ -10,13 +10,13 @@ Bgm *BgmLoad(const char *filename, float begin, float end)
     while (SDL_PollEvent(&event))
     {
     }
-    Bgm *bgm = LoadBgm(filename, begin, end);
+    Bgm *bgm = gsLoadBgm(filename, begin, end);
     if (!bgm)
     {
         fprintf(stderr, "Could not load BGM %s", filename);
         return NULL;
     }
-    int result = PreLoadBgm(bgm);
+    int result = gsPreLoadBgm(bgm);
     if (!result)
     {
         fprintf(stderr, "Could not preload BGM %s", filename);
@@ -28,13 +28,13 @@ Bgm *BgmLoad(const char *filename, float begin, float end)
 
 Sfx *geSfxLoad(const char *filename)
 {
-    Sfx *sfx = LoadSfxHelper(filename);
+    Sfx *sfx = gsLoadSfxHelper(filename);
     if (!sfx)
     {
         // LogError("Could not load Sfx %s", filename);
         return NULL;
     }
-    int result = LoadSfx(sfx);
+    int result = gsLoadSfx(sfx);
     if (!result)
     {
         fprintf(stderr, "Could not load sfx %s", filename);
@@ -43,18 +43,18 @@ Sfx *geSfxLoad(const char *filename)
 }
 int geSfxPlay(Sfx *sfx, float volume)
 {
-    PlaySfxOneShot(sfx, volume);
+    gsPlaySfxOneShot(sfx, volume);
     return 0;
 }
 
 int BgmPlay(Bgm *bgm, float volume)
 {
-    int result = PreLoadBgm(bgm);
+    int result = gsPreLoadBgm(bgm);
     if (!result)
     {
         fprintf(stderr, "Could not play BGM %s", bgm->bgm_name);
     }
-    PlayBgm(volume);
+    gsPlayBgm(volume);
     return 0;
 }
 

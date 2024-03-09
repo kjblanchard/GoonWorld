@@ -6,7 +6,7 @@ extern "C"
 #endif
 
     Bgm *BgmLoad(const char *filename, float begin, float end);
-    int BgmPlay(struct Bgm *bgm, float volume);
+    int BgmPlay(Bgm *bgm, float volume);
     Sfx *geSfxLoad(const char *filename);
 int geSfxPlay(Sfx *sfx, float volume);
 #ifdef __cplusplus
