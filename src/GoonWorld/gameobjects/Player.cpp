@@ -14,12 +14,14 @@
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/Sound.h>
+#include <GoonWorld/core/Sound.hpp>
 #include <SDL2/SDL_rect.h>
 using namespace GoonWorld;
 
 static Sfx *jumpSound;
 
 Player::Player(TiledMap::TiledObject &object)
+    : _isDead(false), _isDying(false)
 {
     _location = Point{object.X, object.Y};
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
@@ -47,9 +49,18 @@ Player::Player(TiledMap::TiledObject &object)
                                      Player *playerInstance = static_cast<Player *>(args);
                                      playerInstance->MushroomOverlapFunc(overlapBody, overlap);
                                  }};
+    bodyOverlapArgs deathBoxArgs{1, (int)BodyTypes::DeathBox, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                                 {
+                                     Player *playerInstance = static_cast<Player *>(args);
+                                     if (playerInstance->_isDead || playerInstance->_isDying)
+                                         return;
+                                     playerInstance->_noDeathVelocity = true;
+                                     playerInstance->TakeDamage();
+                                 }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, mushroomArgs);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, deathBoxArgs);
     _debugDrawComponent->Enabled(false);
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -72,6 +83,21 @@ void Player::Update()
 {
     if (_enemyJustKilled)
         EnemyKilledTick();
+    if (_isDying)
+    {
+        if (_currentDeadTime < _deadTimer)
+        {
+            _currentDeadTime += DeltaTime.GetTotalSeconds();
+            _rigidbodyComponent->Velocity().y = 0;
+        }
+        else
+        {
+            if (!_noDeathVelocity)
+                _rigidbodyComponent->Velocity().y = -250;
+            _isDying = false;
+            _isDead = true;
+        }
+    }
     _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
     _canJump = _rigidbodyComponent->IsOnGround();
     HandleInput();
@@ -145,6 +171,8 @@ float Player::CalculateFrameMaxVelocity()
 
 void Player::HandleInput()
 {
+    if (_isDead || _isDying)
+        return;
     _isRunningButtonDown = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
@@ -213,6 +241,10 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("jump", "walk", true, &_shouldRunAnim);
     _animationComponent->AddTransition("idle", "walk", true, &_shouldRunAnim);
     _animationComponent->AddTransition("walk", "idle", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("walk", "dead", true, &_isDying);
+    _animationComponent->AddTransition("idle", "dead", true, &_isDying);
+    _animationComponent->AddTransition("turn", "dead", true, &_isDying);
+    _animationComponent->AddTransition("jump", "dead", true, &_isDying);
 }
 
 void Player::Jump()
@@ -240,6 +272,8 @@ void Player::Jump()
 }
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
+    if (_isDead || _isDying)
+        return;
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     if (goomba->IsDead())
         return;
@@ -250,14 +284,30 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
         _currentJumpTime = 0;
         _isJumping = true;
         _enemyJustKilled = true;
+        _noDeathVelocity = false;
         goomba->TakeDamage();
         return;
     }
-    puts("Player should die");
+    TakeDamage();
+}
+void Player::TakeDamage()
+{
+    Game::Instance()->PlayerDie(this);
+    Game::Instance()->GetSound()->LoadBgm("dead");
+    Game::Instance()->GetSound()->PlayBgm("dead");
+    geSetPlayerLoops(0);
+
+    _isDying = true;
+    _rigidbodyComponent->SetCollidesWithStaticBody(false);
+    _rigidbodyComponent->Velocity().x = 0;
+    _rigidbodyComponent->Velocity().y = 0;
+    _currentDeadTime = 0;
 }
 
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
+    if (_isDead || _isDying)
+        return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
@@ -267,6 +317,8 @@ void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 
 void Player::MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
+    if (_isDead || _isDying)
+        return;
     Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
     mushroom->TakeDamage();
 }

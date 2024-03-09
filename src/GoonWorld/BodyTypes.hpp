@@ -8,6 +8,7 @@ namespace GoonWorld
         Goomba,
         ItemBrick,
         Mushroom,
+        DeathBox,
         Max,
     };
 }

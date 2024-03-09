@@ -21,6 +21,7 @@ namespace GoonWorld
         inline gpVec &MaxVelocity() { return _body->maxVelocity; }
         inline gpVec &Friction() { return _body->friction; }
         inline void SetStaticBody(bool isStatic) {_static = isStatic;}
+        inline void SetCollidesWithStaticBody(bool doesCollide) {_body->staticCollisionEnabled = doesCollide;}
         inline void SetBodyType(BodyTypes bodyType) { _body->bodyType = (int)bodyType; }
         inline void SetBodyType(int bodyType) { _body->bodyType = bodyType; }
         // TODO move this

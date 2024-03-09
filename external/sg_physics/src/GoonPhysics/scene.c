@@ -116,7 +116,8 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
             // If we are set to be blocked by the other body,
             // then set should step to 0, and revert body back to initial
             // body->boundingBox.y -= stepSize;
-            body->velocity.y = 0.0;
+            if (body->staticCollisionEnabled)
+                body->velocity.y = 0.0;
             continue;
         }
         iterYStep -= stepSize;

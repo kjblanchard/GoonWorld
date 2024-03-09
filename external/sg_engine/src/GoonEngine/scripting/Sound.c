@@ -57,6 +57,10 @@ int BgmPlay(Bgm *bgm, float volume)
     gsPlayBgm(volume);
     return 0;
 }
+int geSetPlayerLoops(int loops)
+{
+    gsSetPlayerLoops(loops);
+}
 
 // static int DestroyBgm(lua_State *L)
 // {

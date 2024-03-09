@@ -10,6 +10,7 @@
 #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/color.h>
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
+#include <GoonWorld/gameobjects/DeathBox.hpp>
 #include <GoonWorld/animation/Animator.hpp>
 using namespace GoonWorld;
 
@@ -23,6 +24,10 @@ static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
     {"Enemy", [](TiledMap::TiledObject &object)
      {
          return new Goomba(object);
+     }},
+    {"DeathBox", [](TiledMap::TiledObject &object)
+     {
+         return new DeathBox(object);
      }},
     {"Brick", [](TiledMap::TiledObject &object)
      {
@@ -75,6 +80,7 @@ int main()
     gpSceneSetGravity(scene, level1.GetGravity().y);
     gpSceneSetFriction(scene, level1.GetGravity().x);
     level1.SetTextureAtlas();
+    game->SetSound(sound);
     game->SetCurrentLevel(&level1);
     sound->PlayBgm("platformer");
     for (auto &object : level1.GetAllObjects())

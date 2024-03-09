@@ -9,6 +9,7 @@ extern "C"
     int BgmPlay(Bgm *bgm, float volume);
     Sfx *geSfxLoad(const char *filename);
 int geSfxPlay(Sfx *sfx, float volume);
+int geSetPlayerLoops(int loops);
 #ifdef __cplusplus
 }
 #endif
