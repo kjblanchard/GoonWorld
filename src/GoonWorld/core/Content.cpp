@@ -5,7 +5,7 @@
 
 using namespace GoonWorld;
 
-static std::unordered_map<const char *, void *> _loadedContent;
+static std::unordered_map<std::string, void *> _loadedContent;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
 {
@@ -18,11 +18,9 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     {
     case ContentTypes::Surface:
         loadedContent = LoadSurfaceFromFile(filename);
-        // return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
         break;
     case ContentTypes::Texture:
         loadedContent = CreateTextureFromFile(filename);
-        // return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
         break;
     case ContentTypes::Sfx:
         loadedContent = gsLoadSfxHelper(("assets/audio/" + std::string(filename) + ".ogg").c_str());
@@ -31,7 +29,13 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     default:
         break;
     }
-    return loadedContent ? _loadedContent[filename] = loadedContent : nullptr;
+    if (!loadedContent)
+    {
+        LogWarn("Couldn't load content %s", filename);
+        return nullptr;
+    }
+    _loadedContent[filename] = (void *)loadedContent;
+    return loadedContent;
 }
 template <typename T>
 T *Content::GetLoadedContentOfType(const char *filename)

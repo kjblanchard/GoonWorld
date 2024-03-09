@@ -34,7 +34,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
                                                 goombaInstance->GoombaMarioOverlap(overlap);
                                             }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
-    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
     if (!dieSound)
         dieSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "death");
     // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
