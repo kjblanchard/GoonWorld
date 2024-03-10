@@ -4,6 +4,7 @@
 #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
+#include <GoonPhysics/scene.h>
 using namespace GoonWorld;
 Game *Game::_gameInstance = nullptr;
 long long Game::_ticks = 0;
@@ -57,4 +58,12 @@ void Game::PlayerDie(Player *player)
 void Game::PlayerBig(Player *player)
 {
     _playerBig = player;
+    if (_playerBig)
+    {
+        gpSceneSetEnabled(false);
+    }
+    else
+    {
+        gpSceneSetEnabled(true);
+    }
 }

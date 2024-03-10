@@ -357,6 +357,7 @@ void Player::Powerup()
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
         Game::Instance()->PlayerBig(this);
+        // Should probably end and process nothing else this frame after this
     }
 
     // End
@@ -364,6 +365,7 @@ void Player::Powerup()
     {
         _isTurningBig = false;
         Game::Instance()->PlayerBig(nullptr);
+        _rigidbodyComponent->_body->boundingBox.y -= 26;
         auto newSize = Point{32, 64};
         _rigidbodyComponent->SizeChange(newSize);
         _animationComponent->Offset(Point{0, -4});

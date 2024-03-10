@@ -16,6 +16,9 @@ static gpBody **_currentBodies;
 // Static Bodies
 static int _currentNumStaticBodies = 0;
 static int _currentCapacityStaticBodies = 4;
+
+// Should we be doing things
+static int _isEnabled = 1;
 static gpBody **_currentStaticBodies;
 
 static void ApplyYVelocity(gpBody *body, float gameTime);
@@ -24,6 +27,8 @@ static void CheckForNonStaticOverlaps(gpBody *body);
 
 void gpSceneUpdate(gpScene *scene, float gameTime)
 {
+    if (!_isEnabled)
+        return;
     gpSceneGravity sceneGravity;
     sceneGravity.sceneGravity = scene->gravity;
     sceneGravity.sceneFriction = scene->friction;
@@ -35,6 +40,8 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
 
     for (size_t i = 0; i < _currentNumBodies; i++)
     {
+        if (!_isEnabled)
+            return;
         gpBody *body = _currentBodies[i];
         if (!body->gravityEnabled)
             continue;
@@ -50,6 +57,8 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
 
 static void CheckForNonStaticOverlaps(gpBody *body)
 {
+    if (!_isEnabled)
+        return;
     // Check for non static bodies
     for (size_t i = 0; i < _currentNumBodies; i++)
     {
@@ -84,7 +93,7 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
     double iterYStep = initialYStep;
     double stepSize = (int)initialYStep != 0 ? initialYStep > 0 ? 1 : -1 : initialYStep;
     int shouldStep = stepSize != 0 ? 1 : 0;
-    while (shouldStep)
+    while (shouldStep && _isEnabled)
     {
         body->boundingBox.y += stepSize;
         // Check for collisions for each static body
@@ -140,7 +149,7 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
     double stepSize = (int)initialXStep != 0 ? initialXStep > 0 ? 1 : -1 : initialXStep;
     int shouldStep = stepSize != 0 ? 1 : 0;
     int direction = stepSize > 0 ? gpOverlapRight : gpOverlapLeft;
-    while (shouldStep)
+    while (shouldStep && _isEnabled)
     {
         body->boundingBox.x += stepSize;
         // Check for collisions for each body
@@ -243,4 +252,9 @@ gpBody *gpSceneGetBody(int bodyRef)
         return _currentBodies[bodyRef];
     }
     return NULL;
+}
+
+void gpSceneSetEnabled(int isEnabled)
+{
+    _isEnabled = isEnabled;
 }

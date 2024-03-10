@@ -15,19 +15,20 @@
 extern "C"
 {
 #endif
-typedef struct gpScene
-{
-    float gravity;
-    float friction;
-} gpScene;
+    typedef struct gpScene
+    {
+        float gravity;
+        float friction;
+    } gpScene;
 
-gpScene* gpInitScene(void);
-void gpSceneSetGravity(gpScene *scene, float gravity);
-void gpSceneSetFriction(gpScene *scene, float friction);
-int gpSceneAddBody(gpBody* body);
-int gpSceneAddStaticBody(gpBody* body);
-void gpSceneUpdate(gpScene* scene, float gameTime);
-gpBody* gpSceneGetBody(int bodyRef);
+    gpScene *gpInitScene(void);
+    void gpSceneSetGravity(gpScene *scene, float gravity);
+    void gpSceneSetFriction(gpScene *scene, float friction);
+    int gpSceneAddBody(gpBody *body);
+    int gpSceneAddStaticBody(gpBody *body);
+    void gpSceneUpdate(gpScene *scene, float gameTime);
+    void gpSceneSetEnabled(int isEnabled);
+    gpBody *gpSceneGetBody(int bodyRef);
 
 #ifdef __cplusplus
 }
