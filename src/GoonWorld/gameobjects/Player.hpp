@@ -25,10 +25,12 @@ namespace GoonWorld
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
 
     private:
-        bool _isJumping, _canJump, _isTurning, _isRunningButtonDown, _enemyJustKilled, _isDying, _isDead, _noDeathVelocity;
-        int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity;
-        float _currentJumpTime, _maxJumpTime, _goombaKillTime, _currentDeadTime;
-        const float _deadTimer = 0.50;
+        bool _isJumping, _canJump, _isTurning, _isRunningButtonDown, _enemyJustKilled, _isDying, _isDead, _noDeathVelocity, _isTurningBig;
+        int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity, _currentBigIterations;
+        float _currentJumpTime, _maxJumpTime, _goombaKillTime, _currentDeadTime, _currentBigIterationTime;
+        const float _deadTimer = 0.65;
+        const int _bigIterations = 4;
+        const float _bigIterationTime = 0.1;
 
     private:
         void HandleInput();

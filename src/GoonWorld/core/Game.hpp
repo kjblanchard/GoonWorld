@@ -20,8 +20,13 @@ namespace GoonWorld
         inline void SetCurrentLevel(TiledLevel *level) { _loadedLevel = level; }
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel; }
         inline Sound *GetSound() const { return _sound; }
-        inline void SetSound(Sound* sound) {if(!_sound) _sound = sound;}
+        inline void SetSound(Sound *sound)
+        {
+            if (!_sound)
+                _sound = sound;
+        }
         void PlayerDie(Player *player);
+        void PlayerBig(Player *player);
         AppSettings *GameSettings;
 
         Game();
@@ -31,6 +36,7 @@ namespace GoonWorld
 
     private:
         Player *_playerDying;
+        Player *_playerBig;
         static Game *_gameInstance;
         static long long _ticks;
         TiledLevel *_loadedLevel;

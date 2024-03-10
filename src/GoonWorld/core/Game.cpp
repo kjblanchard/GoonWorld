@@ -23,12 +23,18 @@ Game::~Game()
 void Game::Update(double timeMs)
 {
     ++_ticks;
-    RigidbodyComponent::PhysicsUpdate();
+    if (!_playerBig)
+    {
+        RigidbodyComponent::PhysicsUpdate();
+    }
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
-    if (_playerDying)
+    if (_playerDying || _playerBig)
     {
-        _playerDying->Update();
+        if (_playerDying)
+            _playerDying->Update();
+        if (_playerBig)
+            _playerBig->Update();
         return;
     }
     for (auto object : UpdateObjects)
@@ -47,4 +53,8 @@ void Game::Draw()
 void Game::PlayerDie(Player *player)
 {
     _playerDying = player;
+}
+void Game::PlayerBig(Player *player)
+{
+    _playerBig = player;
 }

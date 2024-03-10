@@ -16,6 +16,7 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/Sound.h>
 #include <GoonWorld/core/Sound.hpp>
+#include <GoonWorld/common/Helpers.hpp>
 #include <SDL2/SDL_rect.h>
 using namespace GoonWorld;
 
@@ -82,6 +83,11 @@ void Player::InitializePlayerConfig()
 
 void Player::Update()
 {
+    if (_isTurningBig)
+    {
+        Powerup();
+        return;
+    }
     if (_enemyJustKilled)
         EnemyKilledTick();
     if (_isDying)
@@ -172,7 +178,7 @@ float Player::CalculateFrameMaxVelocity()
 
 void Player::HandleInput()
 {
-    if (_isDead || _isDying)
+    if (_isDead || _isDying || _isTurningBig)
         return;
     _isRunningButtonDown = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
 
@@ -337,20 +343,55 @@ void Player::MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     if (_isDead || _isDying)
         return;
     Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
+    if (!mushroom->IsEnabled())
+        return;
     Powerup();
     mushroom->TakeDamage();
 }
 
 void Player::Powerup()
 {
-    auto currentAnim = _animationComponent->GetCurrentAnimation();
-    auto newName = currentAnim.second->Name;
-    std::string newAnim = newName + "b";
-    _animationComponent->ChangeAnimation(newAnim);
-    auto newSize = Point{32, 64};
-    _rigidbodyComponent->SizeChange(newSize);
-    _animationComponent->Offset(Point{0, -4});
-    _debugDrawComponent->Size = newSize;
+    if (!_isTurningBig)
+    {
+        _isTurningBig = true;
+        _currentBigIterations = 0;
+        _currentBigIterationTime = 0;
+        Game::Instance()->PlayerBig(this);
+    }
+
+    // End
+    if (_currentBigIterations > _bigIterations)
+    {
+        _isTurningBig = false;
+        Game::Instance()->PlayerBig(nullptr);
+        auto newSize = Point{32, 64};
+        _rigidbodyComponent->SizeChange(newSize);
+        _animationComponent->Offset(Point{0, -4});
+        _debugDrawComponent->Size = newSize;
+    }
+    // Regular loop
+    else
+    {
+        _currentBigIterationTime += DeltaTime.GetTotalSeconds();
+        if (_currentBigIterationTime > _bigIterationTime)
+        {
+            _currentBigIterationTime -= _bigIterationTime;
+            ++_currentBigIterations;
+
+            auto currentAnim = _animationComponent->GetCurrentAnimation();
+            auto newName = currentAnim.second->Name;
+            auto isBig = endsWith(newName, "b");
+            if (isBig)
+            {
+                newName.erase(newName.size() - 1);
+            }
+            else
+            {
+                newName = newName + "b";
+            }
+            _animationComponent->ChangeAnimation(newName);
+        }
+    }
 }
 
 Player::~Player()
