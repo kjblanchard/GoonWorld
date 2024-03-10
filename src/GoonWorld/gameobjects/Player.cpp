@@ -21,6 +21,7 @@
 using namespace GoonWorld;
 
 static Sfx *jumpSound;
+static Sfx *powerdownSound;
 
 Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false)
@@ -33,6 +34,7 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -36});
     jumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
+    powerdownSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "powerdown");
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
@@ -85,11 +87,29 @@ void Player::Update()
 {
     if (_isTurningBig)
     {
-        Powerup();
+        Powerup(_isBig);
         return;
     }
     if (_enemyJustKilled)
         EnemyKilledTick();
+    // Invincible timer and display
+    if (_isInvincible)
+    {
+        _currentInvincibleTime += DeltaTime.GetTotalSeconds();
+        _isInvincible = _currentInvincibleTime <= _invincibleTime;
+        if (_currentInvincibleTime < 0.2)
+            _animationComponent->Visible(false);
+        else if (_currentInvincibleTime > 0.2 && _currentInvincibleTime < 0.4)
+            _animationComponent->Visible(true);
+        else if (_currentInvincibleTime > 0.4 && _currentInvincibleTime < 0.6)
+            _animationComponent->Visible(false);
+        else if (_currentInvincibleTime > 0.6 && _currentInvincibleTime < 0.8)
+            _animationComponent->Visible(true);
+        else if (_currentInvincibleTime > 0.8 && _currentInvincibleTime < 0.9999999999)
+            _animationComponent->Visible(false);
+        else
+            _animationComponent->Visible(true);
+    }
     if (_isDying)
     {
         if (_currentDeadTime < _deadTimer)
@@ -316,6 +336,16 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 }
 void Player::TakeDamage()
 {
+    if (_isInvincible)
+        return;
+    if (_isBig)
+    {
+        gsPlaySfxOneShot(powerdownSound, 0.5);
+        Powerup(false);
+        _currentInvincibleTime = 0;
+        _isInvincible = true;
+        return;
+    }
     Game::Instance()->PlayerDie(this);
     Game::Instance()->GetSound()->LoadBgm("dead");
     Game::Instance()->GetSound()->PlayBgm("dead");
@@ -346,12 +376,14 @@ void Player::MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
     if (!mushroom->IsEnabled())
         return;
-    Powerup();
+    Powerup(true);
     mushroom->TakeDamage();
 }
 
-void Player::Powerup()
+// void Player::PowerChange()
+void Player::Powerup(bool isGettingBig)
 {
+    _isBig = isGettingBig;
     if (!_isTurningBig)
     {
         _isTurningBig = true;
@@ -366,14 +398,27 @@ void Player::Powerup()
     {
         _isTurningBig = false;
         Game::Instance()->PlayerBig(nullptr);
-        // _rigidbodyComponent->_body->boundingBox.y -= 26;
-        auto newSize = Point{32, 64};
-        _location.y -= 32;
-        _rigidbodyComponent->_body->boundingBox.y -= 32;
-        _rigidbodyComponent->SizeChange(newSize);
-        _animationComponent->Offset(Point{0, -4});
-        // _animationComponent->Offset(Point{0,-40});
-        _debugDrawComponent->Size = newSize;
+        if (_isBig)
+        {
+            // _rigidbodyComponent->_body->boundingBox.y -= 26;
+            auto newSize = Point{32, 64};
+            _location.y -= 32;
+            _rigidbodyComponent->_body->boundingBox.y -= 32;
+            _rigidbodyComponent->SizeChange(newSize);
+            _animationComponent->Offset(Point{0, -4});
+            // _animationComponent->Offset(Point{0,-40});
+            _debugDrawComponent->Size = newSize;
+        }
+        else
+        {
+            // _rigidbodyComponent->_body->boundingBox.y -= 26;
+            auto newSize = Point{32, 32};
+            _location.y += 32;
+            _rigidbodyComponent->_body->boundingBox.y += 32;
+            _rigidbodyComponent->SizeChange(newSize);
+            _animationComponent->Offset(Point{0, -36});
+            _debugDrawComponent->Size = newSize;
+        }
     }
     // Regular loop
     else

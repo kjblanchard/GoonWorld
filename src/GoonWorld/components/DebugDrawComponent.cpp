@@ -6,7 +6,7 @@
 using namespace GoonWorld;
 
 DebugDrawComponent::DebugDrawComponent(Point size)
-    : Component((int)ComponentTypes::DebugDrawComponent), DrawColor{255, 0, 0, 255}, Size(size)
+    : Component((int)ComponentTypes::DebugDrawComponent), DrawColor{255, 0, 0, 255}, Size(size), _visible(true)
 {
 }
 void DebugDrawComponent::Draw()

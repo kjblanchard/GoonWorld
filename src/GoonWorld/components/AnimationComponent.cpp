@@ -9,7 +9,7 @@
 using namespace GoonWorld;
 
 AnimationComponent::AnimationComponent(std::string animator)
-    : Component((int)ComponentTypes::Animation), _animator(Animator::GetAnimator(animator)), AnimationSpeed(1.0)
+    : Component((int)ComponentTypes::Animation), _animator(Animator::GetAnimator(animator)), AnimationSpeed(1.0), _visible(true)
 {
     _currentAnimationDocument = &_animator->_loadedDocument;
     ChangeAnimation(_animator->_defaultAnimation);
@@ -18,6 +18,7 @@ AnimationComponent::AnimationComponent(std::string animator)
 AnimationComponent::AnimationComponent(std::string animator, Point offset)
     : AnimationComponent(animator)
 {
+    _visible = true;
     _offset = offset;
 }
 void AnimationComponent::Update()

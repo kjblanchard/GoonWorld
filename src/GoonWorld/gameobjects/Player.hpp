@@ -25,10 +25,11 @@ namespace GoonWorld
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
 
     private:
-        bool _isJumping, _canJump, _isTurning, _isRunningButtonDown, _enemyJustKilled, _isDying, _isDead, _noDeathVelocity, _isTurningBig;
+        bool _isJumping, _canJump, _isTurning, _isRunningButtonDown, _enemyJustKilled, _isDying, _isDead, _noDeathVelocity, _isTurningBig, _isBig, _isInvincible;
         int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity, _currentBigIterations;
-        float _currentJumpTime, _maxJumpTime, _goombaKillTime, _currentDeadTime, _currentBigIterationTime;
+        float _currentJumpTime, _maxJumpTime, _goombaKillTime, _currentDeadTime, _currentBigIterationTime, _currentInvincibleTime;
         const float _deadTimer = 0.65;
+        const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
         const float _bigIterationTime = 0.1;
 
@@ -54,7 +55,7 @@ namespace GoonWorld
         void GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
         void ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
         void MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
-        void Powerup();
+        void Powerup(bool isGettingBig);
         // friend void GoombaOverlapFuncCallback(void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

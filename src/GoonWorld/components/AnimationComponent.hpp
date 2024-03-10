@@ -23,6 +23,8 @@ namespace GoonWorld
         inline std::pair<int, Animation *> GetCurrentAnimation() const { return {_currentFrame, _currentAnimation}; };
         void ChangeAnimation(std::string &, int frameInAnim);
         void ChangeAnimation(std::string &);
+        inline void Visible(bool isVisible) override { _visible = isVisible; }
+        inline bool IsVisible() override { return _visible; }
         inline void Offset(Point offset) { _offset = offset; }
         int SizeMultiplier;
         inline void AddTransition(AnimationTransition *transition) { _transitions.push_back(transition); }
@@ -39,5 +41,6 @@ namespace GoonWorld
         int _currentFrame;
         Point _offset = Point{0, 0};
         std::vector<AnimationTransition *> _transitions;
+        bool _visible;
     };
 }

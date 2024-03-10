@@ -47,7 +47,8 @@ void Game::Draw()
 {
     for (auto object : DrawObjects)
     {
-        object->Draw();
+        if (object->IsVisible())
+            object->Draw();
     }
 }
 
