@@ -14,6 +14,12 @@ AnimationComponent::AnimationComponent(std::string animator)
     _currentAnimationDocument = &_animator->_loadedDocument;
     ChangeAnimation(_animator->_defaultAnimation);
 }
+
+AnimationComponent::AnimationComponent(std::string animator, Point offset)
+    : AnimationComponent(animator)
+{
+    _offset = offset;
+}
 void AnimationComponent::Update()
 {
     for (auto &transition : _transitions)
@@ -28,7 +34,6 @@ void AnimationComponent::Update()
     }
     if (_currentAnimation->StartFrame == _currentAnimation->EndFrame)
         return;
-    // auto msDouble = std::chrono::duration_cast<std::chrono::milliseconds>(GameObject::DeltaTime);
     _secondsThisFrame += GameObject::DeltaTime.GetTotalMilliseconds() * AnimationSpeed;
     auto frameSeconds = _currentAnimationDocument->frames[_currentFrame].duration;
     if (_secondsThisFrame >= frameSeconds)
@@ -43,10 +48,28 @@ void AnimationComponent::Update()
         };
     }
 }
+void AnimationComponent::ChangeAnimation(std::string &anim, int frameInAnim)
+{
+    auto newAnimation = _animator->GetAnimation(anim);
+    if (!newAnimation)
+        return;
+    _currentAnimation = newAnimation;
+    _currentAnimationString = anim;
+    _currentFrame = frameInAnim;
+    SpriteImageRect = SDL_Rect{
+        _currentAnimationDocument->frames[_currentFrame].frame.x,
+        _currentAnimationDocument->frames[_currentFrame].frame.y,
+        _currentAnimationDocument->frames[_currentFrame].frame.w,
+        _currentAnimationDocument->frames[_currentFrame].frame.h,
+    };
+}
 void AnimationComponent::ChangeAnimation(std::string &nextAnim)
 {
+    auto newAnimation = _animator->GetAnimation(nextAnim);
+    if (!newAnimation)
+        return;
     _currentAnimationString = nextAnim;
-    _currentAnimation = _animator->GetAnimation(nextAnim);
+    _currentAnimation = newAnimation;
     _currentFrame = _currentAnimation->StartFrame;
     _secondsThisFrame = 0;
     SpriteImageRect = SDL_Rect{

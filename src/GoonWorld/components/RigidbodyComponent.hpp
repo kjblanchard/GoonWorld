@@ -14,14 +14,19 @@ namespace GoonWorld
         RigidbodyComponent(SDL_Rect *rect);
         static void PhysicsUpdate();
         // bool IsOnGround();
-        inline void GravityEnabled(bool isEnabled) {_body->gravityEnabled = isEnabled; }
+        inline void GravityEnabled(bool isEnabled) { _body->gravityEnabled = isEnabled; }
         inline bool IsOnGround() { return gpBodyIsOnGround(_body); }
+        inline void SizeChange(Point newSize)
+        {
+            _body->boundingBox.w = newSize.x;
+            _body->boundingBox.h = newSize.y;
+        }
         inline gpVec &Velocity() { return _body->velocity; }
         inline gpVec &Acceleration() { return _body->acceleration; }
         inline gpVec &MaxVelocity() { return _body->maxVelocity; }
         inline gpVec &Friction() { return _body->friction; }
-        inline void SetStaticBody(bool isStatic) {_static = isStatic;}
-        inline void SetCollidesWithStaticBody(bool doesCollide) {_body->staticCollisionEnabled = doesCollide;}
+        inline void SetStaticBody(bool isStatic) { _static = isStatic; }
+        inline void SetCollidesWithStaticBody(bool doesCollide) { _body->staticCollisionEnabled = doesCollide; }
         inline void SetBodyType(BodyTypes bodyType) { _body->bodyType = (int)bodyType; }
         inline void SetBodyType(int bodyType) { _body->bodyType = bodyType; }
         // TODO move this

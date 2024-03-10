@@ -7,6 +7,7 @@
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
+#include <GoonWorld/animation/Animation.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
@@ -29,11 +30,12 @@ Player::Player(TiledMap::TiledObject &object)
     auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
-    _animationComponent = new AnimationComponent("mario");
+    _animationComponent = new AnimationComponent("mario", Point{0, -36});
     jumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+    _debugDrawComponent->Enabled(false);
     bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
                          {
                              Player *playerInstance = static_cast<Player *>(args);
@@ -61,7 +63,6 @@ Player::Player(TiledMap::TiledObject &object)
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, mushroomArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, deathBoxArgs);
-    _debugDrawComponent->Enabled(false);
     CreateAnimationTransitions();
     InitializePlayerConfig();
 }
@@ -231,6 +232,7 @@ void Player::HandleLeftRightMovement(bool movingRight)
 
 void Player::CreateAnimationTransitions()
 {
+    // Small
     _animationComponent->AddTransition("turn", "idle", true, &_shouldIdleAnim);
     _animationComponent->AddTransition("turn", "walk", false, &_shouldTurnAnim);
     _animationComponent->AddTransition("turn", "jump", true, &_shouldFallAnim);
@@ -245,6 +247,21 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("idle", "dead", true, &_isDying);
     _animationComponent->AddTransition("turn", "dead", true, &_isDying);
     _animationComponent->AddTransition("jump", "dead", true, &_isDying);
+    // Big
+    _animationComponent->AddTransition("turnb", "idleb", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("turnb", "walkb", false, &_shouldTurnAnim);
+    _animationComponent->AddTransition("turnb", "jumpb", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("walkb", "turnb", true, &_shouldTurnAnim);
+    _animationComponent->AddTransition("idleb", "jumpb", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("walkb", "jumpb", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("jumpb", "idleb", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("jumpb", "walkb", true, &_shouldRunAnim);
+    _animationComponent->AddTransition("idleb", "walkb", true, &_shouldRunAnim);
+    _animationComponent->AddTransition("walkb", "idleb", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("walkb", "dead", true, &_isDying);
+    _animationComponent->AddTransition("idleb", "dead", true, &_isDying);
+    _animationComponent->AddTransition("turnb", "dead", true, &_isDying);
+    _animationComponent->AddTransition("jumpb", "dead", true, &_isDying);
 }
 
 void Player::Jump()
@@ -320,7 +337,20 @@ void Player::MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     if (_isDead || _isDying)
         return;
     Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
+    Powerup();
     mushroom->TakeDamage();
+}
+
+void Player::Powerup()
+{
+    auto currentAnim = _animationComponent->GetCurrentAnimation();
+    auto newName = currentAnim.second->Name;
+    std::string newAnim = newName + "b";
+    _animationComponent->ChangeAnimation(newAnim);
+    auto newSize = Point{32, 64};
+    _rigidbodyComponent->SizeChange(newSize);
+    _animationComponent->Offset(Point{0, -4});
+    _debugDrawComponent->Size = newSize;
 }
 
 Player::~Player()

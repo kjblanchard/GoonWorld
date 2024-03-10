@@ -30,8 +30,12 @@ void GameObject::Start() const
 }
 void GameObject::Update()
 {
-    for (auto component : _components)
+    // if (!IsEnabled())
+    //     return;
+    for (auto &component : _components)
     {
+        // if (!component->IsEnabled())
+        //     continue;
         component->Update();
     }
 }
