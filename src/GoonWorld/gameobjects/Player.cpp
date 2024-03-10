@@ -36,7 +36,7 @@ Player::Player(TiledMap::TiledObject &object)
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    _debugDrawComponent->Enabled(false);
+    // _debugDrawComponent->Enabled(false);
     bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
                          {
                              Player *playerInstance = static_cast<Player *>(args);
@@ -114,6 +114,7 @@ void Player::Update()
     AnimationUpdate();
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+    LogInfo("Velocity %f:%f\nPos %f:%f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y, _rigidbodyComponent->_body->boundingBox.x, _rigidbodyComponent->_body->boundingBox.y);
     GameObject::Update();
 }
 void Player::EnemyKilledTick()
@@ -365,10 +366,13 @@ void Player::Powerup()
     {
         _isTurningBig = false;
         Game::Instance()->PlayerBig(nullptr);
-        _rigidbodyComponent->_body->boundingBox.y -= 26;
+        // _rigidbodyComponent->_body->boundingBox.y -= 26;
         auto newSize = Point{32, 64};
+        _location.y -= 32;
+        _rigidbodyComponent->_body->boundingBox.y -= 32;
         _rigidbodyComponent->SizeChange(newSize);
         _animationComponent->Offset(Point{0, -4});
+        // _animationComponent->Offset(Point{0,-40});
         _debugDrawComponent->Size = newSize;
     }
     // Regular loop
@@ -386,10 +390,12 @@ void Player::Powerup()
             if (isBig)
             {
                 newName.erase(newName.size() - 1);
+                _animationComponent->Offset(Point{0, -36});
             }
             else
             {
                 newName = newName + "b";
+                _animationComponent->Offset(Point{0, -40});
             }
             _animationComponent->ChangeAnimation(newName);
         }
