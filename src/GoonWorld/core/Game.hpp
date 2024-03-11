@@ -1,5 +1,8 @@
 #pragma once
 #include <vector>
+#include <GoonWorld/base/GameObject.hpp>
+
+typedef struct gpScene gpScene;
 
 namespace GoonWorld
 {
@@ -28,18 +31,24 @@ namespace GoonWorld
         void PlayerDie(Player *player);
         void PlayerBig(Player *player);
         AppSettings *GameSettings;
+        void LoadLevel(std::string levelName);
 
-        Game();
+        Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> spawnMap);
         ~Game();
         void Update(double time);
         void Draw();
 
     private:
+        void LoadGameObjects();
+        void InitializePhysics();
         Player *_playerDying;
         Player *_playerBig;
+        gpScene* _scene;
+        // TiledLevel* _currentLevel;
         static Game *_gameInstance;
         static long long _ticks;
         TiledLevel *_loadedLevel;
         Sound *_sound;
+        std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> _spawnMap;
     };
 }

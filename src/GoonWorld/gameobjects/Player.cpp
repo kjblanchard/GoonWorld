@@ -134,7 +134,6 @@ void Player::Update()
     AnimationUpdate();
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
-    LogInfo("Velocity %f:%f\nPos %f:%f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y, _rigidbodyComponent->_body->boundingBox.x, _rigidbodyComponent->_body->boundingBox.y);
     GameObject::Update();
 }
 void Player::EnemyKilledTick()
