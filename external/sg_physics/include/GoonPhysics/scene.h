@@ -29,6 +29,8 @@ extern "C"
     void gpSceneUpdate(gpScene *scene, float gameTime);
     void gpSceneSetEnabled(int isEnabled);
     gpBody *gpSceneGetBody(int bodyRef);
+    void gpSceneRemoveBody(int bodyNum);
+    void gpSceneFree(gpScene* scene);
 
 #ifdef __cplusplus
 }

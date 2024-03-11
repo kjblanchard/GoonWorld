@@ -52,6 +52,7 @@ extern "C"
 
     gpBody *gpBodyNew(gpBB boundingBox);
     gpBody *gpBodyNewStatic(gpBB boundingBox);
+    void gpBodyFree(gpBody* body);
     void gpBodySetPosition(gpBody *body, gpVec pos);
     void gpBodySetVelocity(gpBody *body, gpVec vel);
     void gpBodySetMaxVelocityX(gpBody *body, float maxVel);

@@ -106,3 +106,11 @@ int gpBodyIsOnGround(gpBody *body)
     }
     return 0;
 }
+
+void gpBodyFree(gpBody *body)
+{
+    free(body->overlaps);
+    free(body->lastFrameOverlaps);
+    free(body->overlapFunctions);
+    free(body);
+}

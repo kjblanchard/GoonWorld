@@ -18,6 +18,9 @@ RigidbodyComponent::RigidbodyComponent(SDL_Rect *rect)
 }
 RigidbodyComponent::~RigidbodyComponent()
 {
+    puts("Destroyed rigidbody component");
+    gpSceneRemoveBody(_bodyNum);
+    // gpBodyFree(_body);
 }
 // bool RigidbodyComponent::IsOnGround()
 // {

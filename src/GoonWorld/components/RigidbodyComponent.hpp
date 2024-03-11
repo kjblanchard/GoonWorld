@@ -30,6 +30,7 @@ namespace GoonWorld
         inline void SetCollidesWithStaticBody(bool doesCollide) { _body->staticCollisionEnabled = doesCollide; }
         inline void SetBodyType(BodyTypes bodyType) { _body->bodyType = (int)bodyType; }
         inline void SetBodyType(int bodyType) { _body->bodyType = bodyType; }
+        static inline void ResetRigidBodyVector() { _currentRigidbodies.clear(); }
         // TODO move this
         gpBody *_body;
 

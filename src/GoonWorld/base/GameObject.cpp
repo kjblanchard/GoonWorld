@@ -23,6 +23,7 @@ GameObject::GameObject(TiledMap::TiledObject)
 }
 GameObject::~GameObject()
 {
+    puts("Gameobject dead");
     Component::GameObjectComponentTypeMap.erase(_id);
 }
 void GameObject::Start() const

@@ -114,6 +114,8 @@ void Game::RestartLevel()
     DrawObjects.clear();
     _playerDying = nullptr;
     _playerBig = nullptr;
+    InitializePhysics();
+    RigidbodyComponent::ResetRigidBodyVector();
     LoadLevel(_loadedLevel->GetName());
 }
 
@@ -140,6 +142,8 @@ void Game::LoadGameObjects()
 }
 void Game::InitializePhysics()
 {
+    if (_scene)
+        gpSceneFree(_scene);
     _scene = gpInitScene();
     geSetCurrentScene(_scene);
 }

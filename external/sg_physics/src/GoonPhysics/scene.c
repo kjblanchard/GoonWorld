@@ -43,7 +43,7 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
         if (!_isEnabled)
             return;
         gpBody *body = _currentBodies[i];
-        if (!body->gravityEnabled)
+        if (!body || !body->gravityEnabled)
             continue;
         memcpy(body->lastFrameOverlaps, body->overlaps, sizeof(gpOverlap) * body->numOverlappingBodies);
         body->lastFrameNumOverlappingBodies = body->numOverlappingBodies;
@@ -197,6 +197,10 @@ static void ApplyXVelocity(gpBody *body, float gameTime)
 gpScene *gpInitScene(void)
 {
     gpScene *scene = calloc(1, sizeof(*scene));
+    _currentNumBodies = 0;
+    _currentNumStaticBodies = 0;
+    _currentCapacityBodies = 4;
+    _currentCapacityStaticBodies = 4;
     _currentBodies = calloc(_currentCapacityBodies, _currentCapacityBodies * sizeof(gpBody *));
     _currentStaticBodies = calloc(_currentCapacityStaticBodies, _currentCapacityBodies * sizeof(gpBody *));
     return scene;
@@ -257,4 +261,19 @@ gpBody *gpSceneGetBody(int bodyRef)
 void gpSceneSetEnabled(int isEnabled)
 {
     _isEnabled = isEnabled;
+}
+
+void gpSceneRemoveBody(int bodyNum)
+{
+    if (bodyNum < _currentNumBodies && _currentBodies[bodyNum])
+    {
+        gpBodyFree(_currentBodies[bodyNum]);
+        _currentBodies[bodyNum] = NULL;
+    }
+}
+void gpSceneFree(gpScene *scene)
+{
+    free(_currentBodies);
+    free(_currentStaticBodies);
+    free(scene);
 }
