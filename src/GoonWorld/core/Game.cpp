@@ -110,8 +110,8 @@ void Game::RestartLevel()
         return;
     }
     _shouldRestart = false;
-    for (size_t i = 0; i < 1000; i++)
-    {
+    // for (size_t i = 0; i < 1000; i++)
+    // {
         // Get rid of all update objects and draw objects
         UpdateObjects.clear();
         DrawObjects.clear();
@@ -134,7 +134,7 @@ void Game::RestartLevel()
         _loadedLevel->RestartLevel();
         LoadGameObjects();
         _shouldRestart = false;
-    }
+    // }
 }
 
 void Game::LoadLevel(std::string level)

@@ -15,6 +15,7 @@ Animator *Animator::GetAnimator(std::string filepath)
     auto iter = _loadedAnimators.find(filepath);
     if (iter != _loadedAnimators.end())
         return iter->second;
+    LogInfo("Creating new animator");
     return _loadedAnimators[filepath] = new Animator(filepath);
 }
 

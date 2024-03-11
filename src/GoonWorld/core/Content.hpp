@@ -16,6 +16,7 @@ namespace GoonWorld
         template <typename T>
         static T *GetLoadedContentOfType(const char *filename);
         static void *GetLoadedContent(const char *filename);
+        static void ClearContent();
 
     private:
     };

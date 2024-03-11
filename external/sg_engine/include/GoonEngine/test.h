@@ -6,6 +6,7 @@ extern "C"
 {
 #endif
     int Play();
+    int ExitEngine();
     int GnInitializeEngine();
     void geSetCurrentScene(void *scene);
     void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime));

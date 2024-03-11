@@ -48,4 +48,5 @@ int main()
     geGameSetDrawFunc(Draw);
     game->LoadLevel("level1");
     Play();
+    delete game;
 }

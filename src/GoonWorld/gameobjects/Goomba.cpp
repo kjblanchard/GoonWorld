@@ -38,7 +38,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     if (!dieSound)
         dieSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "death");
     // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
-    AddComponent({_rigidbodyComponent, _animationComponent});
+    AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
 
     _animationComponent->AddTransition("walk", "dead", true, &_isDead);
 }

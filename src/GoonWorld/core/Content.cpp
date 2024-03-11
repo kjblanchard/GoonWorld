@@ -48,3 +48,7 @@ void *Content::GetLoadedContent(const char *filename)
     auto iter = _loadedContent.find(filename);
     return iter != _loadedContent.end() ? iter->second : nullptr;
 }
+
+void Content::ClearContent()
+{
+}

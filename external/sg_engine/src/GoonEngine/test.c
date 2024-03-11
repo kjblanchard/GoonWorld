@@ -172,3 +172,6 @@ void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime))
 {
     GameUpdateFunc = updateFunc;
 }
+int ExitEngine()
+{
+}
