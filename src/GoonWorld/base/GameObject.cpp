@@ -5,11 +5,14 @@ using namespace GoonWorld;
 
 unsigned int GameObject::_numGameObjects = 0;
 TimeSpan GameObject::DeltaTime = TimeSpan(0);
+std::vector<std::shared_ptr<GameObject>> GameObject::_gameobjects;
 
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{0, 0})
 {
-    Game::Instance()->UpdateObjects.push_back(std::shared_ptr<IUpdate>(this));
+    // Game::Instance()->UpdateObjects.push_back(std::shared_ptr<IUpdate>(this));
+    Game::Instance()->UpdateObjects.push_back(this);
+    _gameobjects.push_back(std::shared_ptr<GameObject>(this));
     _enabled = true;
 }
 GameObject::GameObject(SDL_Rect *rect)

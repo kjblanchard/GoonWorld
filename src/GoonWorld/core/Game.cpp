@@ -110,13 +110,31 @@ void Game::RestartLevel()
         return;
     }
     _shouldRestart = false;
-    UpdateObjects.clear();
-    DrawObjects.clear();
-    _playerDying = nullptr;
-    _playerBig = nullptr;
-    InitializePhysics();
-    RigidbodyComponent::ResetRigidBodyVector();
-    LoadLevel(_loadedLevel->GetName());
+    for (size_t i = 0; i < 1000; i++)
+    {
+        // Get rid of all update objects and draw objects
+        UpdateObjects.clear();
+        DrawObjects.clear();
+        // Is there any more gameobjects we are forgetting about?
+        // I think we should have a master list of gos
+        GameObject::_gameobjects.clear();
+
+        _playerDying = nullptr;
+        _playerBig = nullptr;
+        InitializePhysics();
+        RigidbodyComponent::ResetRigidBodyVector();
+        // LoadLevel(_loadedLevel->GetName());
+        // Move this to func?
+
+        auto result = _sound->LoadBgm("platformer");
+        gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
+        gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
+        _loadedLevel->SetTextureAtlas();
+        _sound->PlayBgm("platformer");
+        _loadedLevel->RestartLevel();
+        LoadGameObjects();
+        _shouldRestart = false;
+    }
 }
 
 void Game::LoadLevel(std::string level)

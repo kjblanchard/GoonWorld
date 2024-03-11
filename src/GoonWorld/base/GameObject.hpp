@@ -32,6 +32,8 @@ namespace GoonWorld
         template <typename T>
         T *GetComponentOfType(unsigned int componentType);
         static TimeSpan DeltaTime;
+        // TODO make this private
+        static std::vector<std::shared_ptr<GameObject>> _gameobjects;
 
     protected:
         unsigned int _id;

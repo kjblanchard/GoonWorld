@@ -21,6 +21,7 @@ namespace GoonWorld
         const inline std::string &GetName() const { return _name; }
         std::vector<TiledMap::TiledObject> GetAllObjects();
         inline std::vector<TiledMap::TiledObject> GetAllSolidObjects() const { return _mapData->SolidObjects; }
+        void RestartLevel();
         ~TiledLevel();
         /**
          * @brief Set the Texture Atlas object in the engine, so that we draw it on updates.

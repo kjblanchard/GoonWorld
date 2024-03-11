@@ -273,6 +273,20 @@ void gpSceneRemoveBody(int bodyNum)
 }
 void gpSceneFree(gpScene *scene)
 {
+    for (size_t i = 0; i < _currentNumBodies; i++)
+    {
+        if(_currentBodies[i])
+        {
+            gpBodyFree(_currentBodies[i]);
+        }
+    }
+    for (size_t i = 0; i < _currentNumStaticBodies; i++)
+    {
+        if(_currentStaticBodies[i])
+        {
+            gpBodyFree(_currentStaticBodies[i]);
+        }
+    }
     free(_currentBodies);
     free(_currentStaticBodies);
     free(scene);

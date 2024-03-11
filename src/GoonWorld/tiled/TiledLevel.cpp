@@ -47,14 +47,16 @@ void TiledLevel::LoadSurfaces()
             for (auto &tile : tileset.Tiles)
             {
                 auto surfacePath = AssetPrefix + TiledPrefix + tile.Image;
-                auto surface = LoadSurfaceFromFile(surfacePath.c_str());
+                // auto surface = LoadSurfaceFromFile(surfacePath.c_str());
+                auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
                 _loadedTilesets.push_back({tile.Image, surface});
             }
         }
         else
         {
             auto surfacePath = AssetPrefix + TiledPrefix + tileset.Image;
-            auto surface = LoadSurfaceFromFile(surfacePath.c_str());
+            // auto surface = LoadSurfaceFromFile(surfacePath.c_str());
+            auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
             _loadedTilesets.push_back({tileset.Image, surface});
         }
     }
@@ -97,6 +99,9 @@ SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset *tile
 }
 void TiledLevel::CreateBackgroundAtlas()
 {
+    // TODO this should be reworked, but for now don't create one if it already exists, for reloading
+    if (_loadedAtlas)
+        return;
     auto atlas = LoadTextureAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
     for (auto &group : _mapData->Groups)
     {
@@ -146,4 +151,10 @@ void TiledLevel::LoadGravity()
         _gravity.x = gravityJson["x"];
         _gravity.y = gravityJson["y"];
     }
+}
+
+void TiledLevel::RestartLevel()
+{
+    LoadSolidObjects();
+    // CreateBackgroundAtlas();
 }

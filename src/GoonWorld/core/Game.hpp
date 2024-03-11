@@ -18,7 +18,8 @@ namespace GoonWorld
     public:
         static inline Game *Instance() { return _gameInstance; }
         static inline long long GetTicks() { return _ticks; }
-        std::vector<std::shared_ptr<IUpdate>> UpdateObjects;
+        // std::vector<std::shared_ptr<IUpdate>> UpdateObjects;
+        std::vector<IUpdate *> UpdateObjects;
         std::vector<IDraw *> DrawObjects;
         inline void SetCurrentLevel(TiledLevel *level) { _loadedLevel = level; }
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel; }
@@ -45,7 +46,7 @@ namespace GoonWorld
         Player *_playerDying;
         Player *_playerBig;
         bool _shouldRestart = false;
-        gpScene* _scene;
+        gpScene *_scene;
         // TiledLevel* _currentLevel;
         static Game *_gameInstance;
         static long long _ticks;
