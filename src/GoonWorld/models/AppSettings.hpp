@@ -31,7 +31,7 @@ namespace GoonWorld
         struct SoundConfig
         {
             float MusicVolume;
-            std::vector<Music> Music;
+            std::vector<struct Music> Music;
         };
         struct KeyboardConfig
         {

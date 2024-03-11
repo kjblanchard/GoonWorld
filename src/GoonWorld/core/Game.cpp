@@ -17,7 +17,7 @@ long long Game::_ticks = 0;
 static const bool SOLID_DEBUG = false;
 
 Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> spawnMap)
-    : _spawnMap(spawnMap)
+    : _spawnMap(spawnMap), _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr)
 {
     if (_gameInstance)
     {

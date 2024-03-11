@@ -12,6 +12,8 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+# Adding PIC to enable linux builds test
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # #########################################
 # File globbing
@@ -51,10 +53,18 @@ endif(EMSCRIPTEN)
 # Initialize
 # #########################################
 message(STATUS "Initializing the project")
+# Linux use static?
+if(LINUX)
+add_library(${LIBRARY_TARGET_NAME}
+    STATIC
+    ${ENGINE_FILES}
+)
+else()
 add_library(${LIBRARY_TARGET_NAME}
     SHARED
     ${ENGINE_FILES}
 )
+endif(LINUX)
 add_executable(${EXECUTABLE_TARGET_NAME}
     ${GOON_WORLD_FILES})
 set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
@@ -67,7 +77,7 @@ include(CTest)
 # #########################################
 option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" OFF)
 option(GOON_BUILD_PCH "Uses a PCH file to try and speed up compilation" ON)
-option(GOON_DEBUG_SOUND "Builds sound from subdirectory instead of using a made package so we can debug" OFF)
+option(GOON_DEBUG_SOUND "Builds sound from subdirectory instead of using a made package so we can debug" ON)
 option(GOON_MULTITHREADED_SOUND "Adds multithreaded support for sound updates, experimental and has a memory leak somehow" OFF)
 option(GOON_BENCHMARKING "Enables benchmarking functions, adds overhead" OFF)
 option(GOON_BUILD_TESTING "Should we enable testing with ctest" OFF)

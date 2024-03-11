@@ -40,3 +40,9 @@
 
 ## Valgrind
 valgrind --track-origins=yes --leak-check=yes --leak-resolution=low --show-leak-kinds=definite ./SupergoonDash 2>&1 | tee memcheck.txt
+
+<!-- Linux steps -->
+cmake . -B build -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF
+git submodule init external/sg_sound
+git submodule update external/sg_sound
+<!-- That is in the json library -->

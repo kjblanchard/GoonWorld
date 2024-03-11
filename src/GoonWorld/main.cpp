@@ -42,8 +42,8 @@ void Draw()
 
 int main()
 {
-    game = new Game(GameObjectSpawnMap);
     GnInitializeEngine();
+    game = new Game(GameObjectSpawnMap);
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
     game->LoadLevel("level1");

@@ -4,7 +4,7 @@
 #include <GoonEngine/SdlSurface.h>
 
 SDL_Texture *g_BackgroundAtlas = NULL;
-SDL_Rect g_backgroundDrawRect = {0, 0, 0, 0};
+SDL_Rect g_backgroundDrawRect;
 extern SDL_Renderer *g_pRenderer;
 
 void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)

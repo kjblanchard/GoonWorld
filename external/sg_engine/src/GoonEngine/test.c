@@ -107,6 +107,7 @@ static int loop_func()
     SDL_RenderClear(g_pRenderer);
     if (g_BackgroundAtlas)
     {
+        LogInfo("What");
         int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
         if (drawResult != 0)
         {
@@ -142,6 +143,7 @@ int Play()
 }
 int GnInitializeEngine()
 {
+    int result = InitializeDebugLogFile();
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
     {
         fprintf(stderr, "Could not Initialize SDL!\nError: %s", SDL_GetError());
@@ -155,7 +157,6 @@ int GnInitializeEngine()
 
     geInitializeKeyboard();
     geInitializeJoysticks();
-    InitializeDebugLogFile();
     return true;
 }
 

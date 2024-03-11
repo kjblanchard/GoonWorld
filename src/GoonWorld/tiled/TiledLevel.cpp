@@ -9,6 +9,7 @@
 using namespace GoonWorld;
 
 TiledLevel::TiledLevel(const char *filename)
+: _loadedAtlas (nullptr)
 {
     _mapData = std::make_unique<TiledMap>(filename);
     _name = filename;
