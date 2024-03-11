@@ -12,6 +12,7 @@ namespace GoonWorld
     {
     public:
         RigidbodyComponent(SDL_Rect *rect);
+        ~RigidbodyComponent();
         static void PhysicsUpdate();
         // bool IsOnGround();
         inline void GravityEnabled(bool isEnabled) { _body->gravityEnabled = isEnabled; }

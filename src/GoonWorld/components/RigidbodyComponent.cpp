@@ -16,6 +16,9 @@ RigidbodyComponent::RigidbodyComponent(SDL_Rect *rect)
     _body->gravityEnabled = 1;
     _currentRigidbodies.push_back(this);
 }
+RigidbodyComponent::~RigidbodyComponent()
+{
+}
 // bool RigidbodyComponent::IsOnGround()
 // {
 //     return Game::GetTicks() == _isOnGroundCached ? _isOnGround : _isOnGround = gpBodyIsOnGround(_body);

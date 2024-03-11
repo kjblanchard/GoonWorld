@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <GoonWorld/base/Component.hpp>
+#include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <SDL2/SDL_rect.h>
 #include <GoonEngine/point.h>
@@ -9,7 +10,6 @@ namespace GoonWorld
     class Animator;
     class Animation;
     class AsepriteDocument;
-    class AnimationTransition;
     class AnimationComponent : public Component, IDraw
     {
     public:
