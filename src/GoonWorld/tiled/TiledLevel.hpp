@@ -18,6 +18,7 @@ namespace GoonWorld
          * @param filename The file to load from json
          */
         TiledLevel(const char *filename);
+        const inline std::string &GetName() const { return _name; }
         std::vector<TiledMap::TiledObject> GetAllObjects();
         inline std::vector<TiledMap::TiledObject> GetAllSolidObjects() const { return _mapData->SolidObjects; }
         ~TiledLevel();
@@ -27,6 +28,7 @@ namespace GoonWorld
         void SetTextureAtlas();
 
         inline Point GetGravity() { return _gravity; }
+
     private:
         /**
          * @brief Loads all the surfaces from the tilesets in this level, so that we can blit them properly
@@ -49,6 +51,7 @@ namespace GoonWorld
         void LoadGravity();
 
     private:
+        std::string _name;
         std::vector<std::pair<std::string, struct SDL_Surface *>> _loadedTilesets;
         struct SDL_Texture *_loadedAtlas;
         std::unique_ptr<TiledMap> _mapData;

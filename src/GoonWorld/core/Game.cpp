@@ -40,6 +40,8 @@ Game::~Game()
 void Game::Update(double timeMs)
 {
     ++_ticks;
+    if (_shouldRestart)
+        RestartLevel();
     if (!_playerBig)
     {
         RigidbodyComponent::PhysicsUpdate();
@@ -97,6 +99,22 @@ void Game::PlayerBig(Player *player)
     {
         gpSceneSetEnabled(true);
     }
+}
+void Game::RestartLevel()
+{
+    if (!_loadedLevel)
+        return;
+    if (!_shouldRestart)
+    {
+        _shouldRestart = true;
+        return;
+    }
+    _shouldRestart = false;
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    _playerDying = nullptr;
+    _playerBig = nullptr;
+    LoadLevel(_loadedLevel->GetName());
 }
 
 void Game::LoadLevel(std::string level)

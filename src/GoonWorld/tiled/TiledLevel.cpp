@@ -11,6 +11,7 @@ using namespace GoonWorld;
 TiledLevel::TiledLevel(const char *filename)
 {
     _mapData = std::make_unique<TiledMap>(filename);
+    _name = filename;
     LoadGravity();
     LoadSurfaces();
     LoadSolidObjects();

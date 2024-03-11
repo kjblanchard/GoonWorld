@@ -198,8 +198,15 @@ float Player::CalculateFrameMaxVelocity()
 
 void Player::HandleInput()
 {
-    if (_isDead || _isDying || _isTurningBig)
+    if (_isDying || _isTurningBig)
         return;
+    if (_isDead)
+    {
+        if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+        {
+            Game::Instance()->RestartLevel();
+        }
+    }
     _isRunningButtonDown = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))

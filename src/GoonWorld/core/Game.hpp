@@ -31,6 +31,7 @@ namespace GoonWorld
         void PlayerDie(Player *player);
         void PlayerBig(Player *player);
         AppSettings *GameSettings;
+        void RestartLevel();
         void LoadLevel(std::string levelName);
 
         Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> spawnMap);
@@ -43,6 +44,7 @@ namespace GoonWorld
         void InitializePhysics();
         Player *_playerDying;
         Player *_playerBig;
+        bool _shouldRestart = false;
         gpScene* _scene;
         // TiledLevel* _currentLevel;
         static Game *_gameInstance;
