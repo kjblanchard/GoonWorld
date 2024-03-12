@@ -236,7 +236,7 @@ void Player::HandleLeftRightMovement(bool movingRight)
     // If we are not moving set initial velocity.
     if (_rigidbodyComponent->Velocity().x == 0)
     {
-        _rigidbodyComponent->Acceleration().x += _initialMoveVelocity * moveDirectionMultiplier;
+        _rigidbodyComponent->Velocity().x += _initialMoveVelocity * moveDirectionMultiplier;
         return;
     }
 
@@ -303,20 +303,25 @@ void Player::CreateAnimationTransitions()
 
 void Player::Jump()
 {
+    static float jumpTimer;
     if (_isJumping)
     {
         if (_currentJumpTime < _maxJumpTime)
         {
+            jumpTimer += (_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
             _rigidbodyComponent->Acceleration().y += (_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
             _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
         }
         else
         {
+            LogInfo("Full jump velocity is %f", jumpTimer);
             _isJumping = _canJump = false;
         }
     }
     else if (_canJump)
     {
+        jumpTimer += _initialJumpVelocity;
+        jumpTimer = 0;
         _currentJumpTime = 0;
         _isJumping = true;
         _canJump = false;

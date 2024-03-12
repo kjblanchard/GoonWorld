@@ -62,6 +62,8 @@ erebuild: CONFIGURE_FLAGS = $(EMSCRIPTEN_CONFIGURE_FLAGS)
 erebuild: clean configure build
 run:
 	@cd ./$(BUILD_FOLDER)/$(BINARY_FOLDER) && ./$(BINARY_NAME)
+erun:
+	@emrun ./$(BUILD_FOLDER)/$(BINARY_FOLDER)/$(BINARY_NAME).html
 dotnet:
 	@cd ./GoonWorld && dotnet build && dotnet run
 dotnetPublish:

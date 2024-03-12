@@ -36,7 +36,7 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
     sceneGravity.sceneMaxYVelocity = 500;
     // sceneGravity.sceneMinYVelocity = 0.001;
     sceneGravity.sceneMinYVelocity = 0.1;
-    sceneGravity.sceneMinXVelocity = 5;
+    sceneGravity.sceneMinXVelocity = 10;
 
     for (size_t i = 0; i < _currentNumBodies; i++)
     {

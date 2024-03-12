@@ -16,37 +16,62 @@ void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
     g_backgroundDrawRect.w = rect->w;
 }
 
-SDL_Surface *LoadSurfaceFromFile(const char *filePath, void** data)
+static void flipImageVertically(unsigned char *data, int width, int height, int channels)
+{
+    int rowSize = width * channels;
+
+    for (int i = 0; i < height / 2; ++i)
+    {
+        int rowIndex1 = i * rowSize;
+        int rowIndex2 = (height - 1 - i) * rowSize;
+
+        for (int j = 0; j < rowSize; ++j)
+        {
+            unsigned char temp = data[rowIndex1 + j];
+            data[rowIndex1 + j] = data[rowIndex2 + j];
+            data[rowIndex2 + j] = temp;
+        }
+    }
+}
+
+SDL_Surface *LoadSurfaceFromFile(const char *filePath, void **data)
 {
     int req_format = STBI_rgb_alpha;
-int width, height, orig_format;
-// unsigned char* data = stbi_load(filePath, &width, &height, &orig_format, req_format);
- *data = stbi_load(filePath, &width, &height, &orig_format, req_format);
-if (*data == NULL) {
-    SDL_Log("Loading image failed: %s", stbi_failure_reason());
-    exit(1);
-}
+    int width, height, orig_format;
+    *data = stbi_load(filePath, &width, &height, &orig_format, req_format);
+#ifdef __EMSCRIPTEN__
+    flipImageVertically((char *)(*data), width, height, orig_format);
+#endif
+    if (*data == NULL)
+    {
+        SDL_Log("Loading image failed: %s", stbi_failure_reason());
+        exit(1);
+    }
 
-int depth, pitch;
-Uint32 pixel_format;
-if (req_format == STBI_rgb) {
-    depth = 24;
-    pitch = 3*width; // 3 bytes per pixel * pixels per row
-    pixel_format = SDL_PIXELFORMAT_RGB24;
-} else { // STBI_rgb_alpha (RGBA)
-    depth = 32;
-    pitch = 4*width;
-    pixel_format = SDL_PIXELFORMAT_RGBA32;
-}
+    int depth, pitch;
+    Uint32 pixel_format;
+    if (req_format == STBI_rgb)
+    {
+        depth = 24;
+        pitch = 3 * width; // 3 bytes per pixel * pixels per row
+        pixel_format = SDL_PIXELFORMAT_RGB24;
+    }
+    else
+    { // STBI_rgb_alpha (RGBA)
+        depth = 32;
+        pitch = 4 * width;
+        pixel_format = SDL_PIXELFORMAT_RGBA32;
+    }
 
-SDL_Surface* surf = SDL_CreateRGBSurfaceWithFormatFrom((void*)*data, width, height,
-                                                       depth, pitch, pixel_format);
+    SDL_Surface *surf = SDL_CreateRGBSurfaceWithFormatFrom((void *)*data, width, height,
+                                                           depth, pitch, pixel_format);
 
-if (surf == NULL) {
-    SDL_Log("Creating surface failed: %s", SDL_GetError());
-    stbi_image_free(*data);
-    exit(1);
-}
+    if (surf == NULL)
+    {
+        SDL_Log("Creating surface failed: %s", SDL_GetError());
+        stbi_image_free(*data);
+        exit(1);
+    }
 
     if (!surf)
     {
@@ -56,11 +81,10 @@ if (surf == NULL) {
     // stbi_image_free(data);
     return surf;
 }
-    void DestroyPixelData(void* data)
-    {
-        stbi_image_free(data);
-
-    }
+void DestroyPixelData(void *data)
+{
+    stbi_image_free(data);
+}
 
 SDL_Surface *LoadTextureAtlas(int width, int height)
 {
@@ -80,6 +104,7 @@ void BlitSurface(
     SDL_Surface *dstSurface,
     SDL_Rect *dstRect)
 {
+    // int result = SDL_BlitSurface(srcSurface, srcRect, dstSurface, dstRect);
     int result = SDL_BlitSurface(srcSurface, srcRect, dstSurface, dstRect);
     if (result)
     {
@@ -88,7 +113,7 @@ void BlitSurface(
 }
 SDL_Texture *CreateTextureFromFile(const char *filename)
 {
-    void* data = NULL;
+    void *data = NULL;
     SDL_Surface *surface = LoadSurfaceFromFile(filename, &data);
     SDL_Texture *texture = CreateTextureFromSurface(surface);
     stbi_image_free(data);
@@ -127,4 +152,5 @@ void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, boo
                      0,
                      NULL,
                      (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+    //  (shouldFlip) ? SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL : SDL_FLIP_NONE | SDL_FLIP_VERTICAL);
 }

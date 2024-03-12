@@ -12,6 +12,7 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # Adding PIC to enable linux builds test
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -29,6 +30,7 @@ message(STATUS "Changing the platform specific settings")
 
 if(EMSCRIPTEN)
     message(STATUS "Configuring Emscripten")
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
 elseif(APPLE)
     if(NOT IOS) # MACOS #
         message(STATUS "Configuring Macos")
@@ -53,18 +55,20 @@ endif(EMSCRIPTEN)
 # Initialize
 # #########################################
 message(STATUS "Initializing the project")
+
 # Linux use static?
 if(LINUX)
-add_library(${LIBRARY_TARGET_NAME}
-    STATIC
-    ${ENGINE_FILES}
-)
+    add_library(${LIBRARY_TARGET_NAME}
+        STATIC
+        ${ENGINE_FILES}
+    )
 else()
-add_library(${LIBRARY_TARGET_NAME}
-    SHARED
-    ${ENGINE_FILES}
-)
+    add_library(${LIBRARY_TARGET_NAME}
+        SHARED
+        ${ENGINE_FILES}
+    )
 endif(LINUX)
+
 add_executable(${EXECUTABLE_TARGET_NAME}
     ${GOON_WORLD_FILES})
 set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
@@ -101,8 +105,10 @@ endif(GOON_BUILD_PCH)
 # #########################################
 # If we are debug, we should use the local path, otherwise use the location of embuilder from the docker image
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(EMBUILDER_PATH embuilder)
     target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE -DGN_DEBUG_BUILD)
 else()
+    set(EMBUILDER_PATH /emsdk/upstream/emscripten/embuilder)
     target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE -DGN_RELEASE_BUILD)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
@@ -119,11 +125,13 @@ else()
     find_package(supergoonSound REQUIRED)
 endif(GOON_DEBUG_SOUND)
 
-find_package(nlohmann_json 3.2.0 REQUIRED)
-
 # #########################################
 # Platform Specific Build settings
 # #########################################
+if(EMSCRIPTEN)
+    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s 'DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[\"$autoResumeAudioContext\",\"$dynCall\"]'")
+endif(EMSCRIPTEN)
 
 # #########################################
 # Compile Definitions
@@ -212,6 +220,7 @@ target_include_directories(${LIBRARY_TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/external/sg_physics/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/nlohmann/include/
     /usr/local/include
 )
 

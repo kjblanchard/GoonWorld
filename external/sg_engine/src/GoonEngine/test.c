@@ -11,6 +11,9 @@
 
 // Physics
 #include <GoonPhysics/scene.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 static gpScene *g_pScene;
 
@@ -92,6 +95,7 @@ static int loop_func()
         geUpdateKeyboard();
         geUpdateControllers();
         gsUpdateSound();
+        // LogWarn("Update time: %f", deltaTimeMs);
         if (g_pScene)
         {
             gpSceneUpdate(g_pScene, deltaTimeSeconds);
@@ -107,7 +111,6 @@ static int loop_func()
     SDL_RenderClear(g_pRenderer);
     if (g_BackgroundAtlas)
     {
-        LogInfo("What");
         int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
         if (drawResult != 0)
         {
@@ -133,13 +136,24 @@ static int loop_func()
     return true;
 }
 
+static void LoopWrap()
+{
+    loop_func();
+}
+
 int Play()
 {
+#ifdef __EMSCRIPTEN__
+    // emscripten_set_main_loop(loop_wrap, g_refreshRate, 1);
+    // emscripten_set_main_loop(LoopWrap, 60, 1);
+    emscripten_set_main_loop(LoopWrap, 144, 1);
+#else
     while (!shouldQuit)
     {
         loop_func();
     }
     return true;
+#endif
 }
 int GnInitializeEngine()
 {

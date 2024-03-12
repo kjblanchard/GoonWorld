@@ -47,17 +47,17 @@ int CloseDebugLogFile()
 }
 static void Log(LogLevel level, const char *thing_to_write)
 {
-    // time_t current_time;
-    // time(&current_time);
-    // struct tm *gm_time = gmtime(&current_time);
-    // char buf[500];
-    // strftime(buf, sizeof(buf), "%m-%d-%H:%M-%S", gm_time);
-    // FILE *outStream = level == Log_LError ? stderr : stdout;
-    // fprintf(outStream, "%s: %s end\n", buf, thing_to_write);
-    // if (level == Log_LError && open_debug_file)
-    // {
-    //     fprintf(open_debug_file, "%s: %s\n", buf, thing_to_write);
-    // }
+    time_t current_time;
+    time(&current_time);
+    struct tm *gm_time = gmtime(&current_time);
+    char buf[30];
+    strftime(buf, sizeof(buf), "%m-%d-%H:%M-%S", gm_time);
+    FILE *outStream = level == Log_LError ? stderr : stdout;
+    fprintf(outStream, "%s: %s end\n", buf, thing_to_write);
+    if (level == Log_LError && open_debug_file)
+    {
+        fprintf(open_debug_file, "%s: %s\n", buf, thing_to_write);
+    }
 }
 static void LogSetup(LogLevel level, const char *fmt, va_list args)
 {
