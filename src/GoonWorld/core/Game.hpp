@@ -18,11 +18,10 @@ namespace GoonWorld
     public:
         static inline Game *Instance() { return _gameInstance; }
         static inline long long GetTicks() { return _ticks; }
-        // std::vector<std::shared_ptr<IUpdate>> UpdateObjects;
         std::vector<IUpdate *> UpdateObjects;
         std::vector<IDraw *> DrawObjects;
-        inline void SetCurrentLevel(TiledLevel *level) { _loadedLevel = level; }
-        inline TiledLevel *GetCurrentLevel() const { return _loadedLevel; }
+        void SetCurrentLevel(TiledLevel *level);
+        inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
         inline Sound *GetSound() const { return _sound; }
         inline void SetSound(Sound *sound)
         {
@@ -50,7 +49,7 @@ namespace GoonWorld
         // TiledLevel* _currentLevel;
         static Game *_gameInstance;
         static long long _ticks;
-        TiledLevel *_loadedLevel;
+        std::unique_ptr<TiledLevel> _loadedLevel;
         Sound *_sound;
         std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> _spawnMap;
     };

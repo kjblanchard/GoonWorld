@@ -5,14 +5,14 @@
 
 using namespace GoonWorld;
 
-static std::unordered_map<std::string, void *> _loadedContent;
+static std::unordered_map<std::string, std::pair<ContentTypes, void *>> _loadedContent;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
 {
     auto iter = _loadedContent.find(filename);
 
     if (iter != _loadedContent.end())
-        return iter->second;
+        return iter->second.second;
     void *loadedContent;
     switch (contentType)
     {
@@ -35,7 +35,7 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
         LogWarn("Couldn't load content %s", filename);
         return nullptr;
     }
-    _loadedContent[filename] = (void *)loadedContent;
+    _loadedContent[filename] = {contentType, (void *)loadedContent};
     return loadedContent;
 }
 template <typename T>
@@ -46,9 +46,26 @@ T *Content::GetLoadedContentOfType(const char *filename)
 void *Content::GetLoadedContent(const char *filename)
 {
     auto iter = _loadedContent.find(filename);
-    return iter != _loadedContent.end() ? iter->second : nullptr;
+    return iter != _loadedContent.end() ? iter->second.second : nullptr;
 }
 
 void Content::ClearContent()
 {
+    for (auto &[key, value] : _loadedContent)
+    {
+        switch (value.first)
+        {
+        case ContentTypes::Sfx:
+            gsUnloadSfx((Sfx *)value.second);
+            break;
+        case ContentTypes::Surface:
+            DestroySurface((SDL_Surface *)value.second);
+            break;
+        case ContentTypes::Texture:
+            DestroyTexture((SDL_Texture *)value.second);
+            break;
+        default:
+            break;
+        }
+    }
 }

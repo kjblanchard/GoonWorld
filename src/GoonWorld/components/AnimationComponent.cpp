@@ -101,5 +101,5 @@ SDL_Rect AnimationComponent::GetDrawRect()
 
 void AnimationComponent::AddTransition(std::string from, std::string to, bool matchCondition, bool *matchRef)
 {
-    _transitions.push_back(new AnimationTransition(from, to, matchCondition, matchRef));
+    _transitions.push_back(std::make_unique<AnimationTransition>(from, to, matchCondition, matchRef));
 }

@@ -84,6 +84,10 @@ SDL_Texture *CreateTextureFromFile(const char *filename)
     SDL_Texture *texture = CreateTextureFromSurface(surface);
     return texture;
 }
+void DestroySurface(SDL_Surface *surface)
+{
+    SDL_FreeSurface(surface);
+}
 
 void DestroyTexture(SDL_Texture *texture)
 {

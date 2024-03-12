@@ -9,6 +9,7 @@
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
+#include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/test.h>
 #include <GoonPhysics/scene.h>
 using namespace GoonWorld;
@@ -17,7 +18,7 @@ long long Game::_ticks = 0;
 static const bool SOLID_DEBUG = false;
 
 Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> spawnMap)
-    : _spawnMap(spawnMap), _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr)
+    : _spawnMap(spawnMap), _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr)
 {
     if (_gameInstance)
     {
@@ -36,6 +37,7 @@ Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObjec
 }
 Game::~Game()
 {
+    Content::ClearContent();
 }
 void Game::Update(double timeMs)
 {
@@ -112,36 +114,40 @@ void Game::RestartLevel()
     _shouldRestart = false;
     // for (size_t i = 0; i < 1000; i++)
     // {
-        // Get rid of all update objects and draw objects
-        UpdateObjects.clear();
-        DrawObjects.clear();
-        // Is there any more gameobjects we are forgetting about?
-        // I think we should have a master list of gos
-        GameObject::_gameobjects.clear();
+    // Get rid of all update objects and draw objects
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    // Is there any more gameobjects we are forgetting about?
+    // I think we should have a master list of gos
+    GameObject::_gameobjects.clear();
 
-        _playerDying = nullptr;
-        _playerBig = nullptr;
-        InitializePhysics();
-        RigidbodyComponent::ResetRigidBodyVector();
-        // LoadLevel(_loadedLevel->GetName());
-        // Move this to func?
+    _playerDying = nullptr;
+    _playerBig = nullptr;
+    InitializePhysics();
+    RigidbodyComponent::ResetRigidBodyVector();
+    // LoadLevel(_loadedLevel->GetName());
+    // Move this to func?
 
-        auto result = _sound->LoadBgm("platformer");
-        gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
-        gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
-        _loadedLevel->SetTextureAtlas();
-        _sound->PlayBgm("platformer");
-        _loadedLevel->RestartLevel();
-        LoadGameObjects();
-        _shouldRestart = false;
+    auto result = _sound->LoadBgm("platformer");
+    gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
+    gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
+    _loadedLevel->SetTextureAtlas();
+    _sound->PlayBgm("platformer");
+    _loadedLevel->RestartLevel();
+    LoadGameObjects();
+    _shouldRestart = false;
     // }
+}
+void Game::SetCurrentLevel(TiledLevel *level)
+{
+    _loadedLevel = std::unique_ptr<TiledLevel>(level);
 }
 
 void Game::LoadLevel(std::string level)
 {
 
     auto result = _sound->LoadBgm("platformer");
-    _loadedLevel = new TiledLevel(level.c_str());
+    _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();

@@ -27,7 +27,7 @@ namespace GoonWorld
         inline bool IsVisible() override { return _visible; }
         inline void Offset(Point offset) { _offset = offset; }
         int SizeMultiplier;
-        inline void AddTransition(AnimationTransition *transition) { _transitions.push_back(transition); }
+        inline void AddTransition(AnimationTransition *transition) { _transitions.push_back(std::unique_ptr<AnimationTransition>(transition)); }
         void AddTransition(std::string from, std::string to, bool matchCondition, bool *matchRef);
         bool Mirror = false;
 
@@ -40,7 +40,7 @@ namespace GoonWorld
         double _secondsThisFrame;
         int _currentFrame;
         Point _offset = Point{0, 0};
-        std::vector<AnimationTransition *> _transitions;
+        std::vector<std::unique_ptr<AnimationTransition>> _transitions;
         bool _visible;
     };
 }

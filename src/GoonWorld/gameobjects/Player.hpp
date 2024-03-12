@@ -25,9 +25,9 @@ namespace GoonWorld
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
 
     private:
-        bool _isJumping, _canJump, _isTurning, _isRunningButtonDown, _enemyJustKilled, _isDying, _isDead, _noDeathVelocity, _isTurningBig, _isBig, _isInvincible;
-        int _jumpFrameVelocity, _initialJumpVelocity, _runSpeedBoost, _walkSpeedBoost, _maxRunSpeed, _maxWalkSpeed, _initialMoveVelocity, _currentBigIterations;
-        float _currentJumpTime, _maxJumpTime, _goombaKillTime, _currentDeadTime, _currentBigIterationTime, _currentInvincibleTime;
+        bool _isJumping = false, _canJump = false, _isTurning = false, _isRunningButtonDown = false, _enemyJustKilled = false, _isDying = false, _isDead = false, _noDeathVelocity = false, _isTurningBig = false, _isBig = false, _isInvincible = false;
+        int _jumpFrameVelocity = 0, _initialJumpVelocity = 0, _runSpeedBoost = 0, _walkSpeedBoost = 0, _maxRunSpeed = 0, _maxWalkSpeed = 0, _initialMoveVelocity = 0, _currentBigIterations = 0;
+        float _currentJumpTime = 0, _maxJumpTime = 0, _goombaKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
         const float _deadTimer = 0.65;
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
@@ -46,10 +46,10 @@ namespace GoonWorld
         void Jump();
         float CalculateFrameMaxVelocity();
 
-        DebugDrawComponent *_debugDrawComponent;
-        PlayerInputComponent *_playerInputComponent;
-        RigidbodyComponent *_rigidbodyComponent;
-        AnimationComponent *_animationComponent;
+        DebugDrawComponent *_debugDrawComponent = nullptr;
+        PlayerInputComponent *_playerInputComponent = nullptr;
+        RigidbodyComponent *_rigidbodyComponent = nullptr;
+        AnimationComponent *_animationComponent = nullptr;
 
     private:
         void GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);

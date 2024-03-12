@@ -100,7 +100,6 @@ SDL_Surface *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset *tile
 }
 void TiledLevel::CreateBackgroundAtlas()
 {
-    // TODO this should be reworked, but for now don't create one if it already exists, for reloading
     if (_loadedAtlas)
         return;
     auto atlas = LoadTextureAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);

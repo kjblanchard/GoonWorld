@@ -8,15 +8,20 @@
 using json = nlohmann::json;
 using namespace GoonWorld;
 
-std::unordered_map<std::string, Animator *> Animator::_loadedAnimators;
+std::unordered_map<std::string, std::shared_ptr<Animator>> Animator::_loadedAnimators;
 
 Animator *Animator::GetAnimator(std::string filepath)
 {
     auto iter = _loadedAnimators.find(filepath);
     if (iter != _loadedAnimators.end())
-        return iter->second;
+        return iter->second.get();
     LogInfo("Creating new animator");
-    return _loadedAnimators[filepath] = new Animator(filepath);
+    _loadedAnimators[filepath] = std::make_shared<Animator>(filepath);
+    return _loadedAnimators[filepath].get();
+}
+Animator::~Animator()
+{
+
 }
 
 Animator::Animator(std::string filepath)

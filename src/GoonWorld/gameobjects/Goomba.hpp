@@ -19,14 +19,14 @@ namespace GoonWorld
         ~Goomba();
 
     private:
-        DebugDrawComponent *_debugDrawComponent;
-        RigidbodyComponent *_rigidbodyComponent;
-        AnimationComponent *_animationComponent;
-        bool _movingRight, _isDead = false;
+        DebugDrawComponent *_debugDrawComponent = nullptr;
+        RigidbodyComponent *_rigidbodyComponent = nullptr;
+        AnimationComponent *_animationComponent = nullptr;
+        bool _movingRight = false, _isDead = false;
         const float _deadTimer = 0.5f;
         float _currentDeadTime = 0.0f;
         void GoombaStaticBodyOverlap(gpOverlap *overlap);
         void GoombaMarioOverlap(gpOverlap *overlap);
-        bool _shouldWalkAnim;
+        bool _shouldWalkAnim = false;
     };
 }
