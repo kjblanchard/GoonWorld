@@ -61,7 +61,7 @@ Player::Player(TiledMap::TiledObject &object)
                                      if (playerInstance->_isDead || playerInstance->_isDying)
                                          return;
                                      playerInstance->_noDeathVelocity = true;
-                                     playerInstance->TakeDamage();
+                                     playerInstance->Die();
                                  }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
@@ -353,8 +353,10 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 }
 void Player::TakeDamage()
 {
+    // Dont take damage
     if (_isInvincible)
         return;
+    // If big, then power down
     if (_isBig)
     {
         gsPlaySfxOneShot(powerdownSound, 0.5);
@@ -363,6 +365,11 @@ void Player::TakeDamage()
         _isInvincible = true;
         return;
     }
+    // If small, die
+    Die();
+}
+void Player::Die()
+{
     Game::Instance()->PlayerDie(this);
     Game::Instance()->GetSound()->LoadBgm("dead");
     Game::Instance()->GetSound()->PlayBgm("dead", 0);
@@ -372,6 +379,7 @@ void Player::TakeDamage()
     _rigidbodyComponent->Velocity().x = 0;
     _rigidbodyComponent->Velocity().y = 0;
     _currentDeadTime = 0;
+
 }
 
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
