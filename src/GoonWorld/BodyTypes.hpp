@@ -9,6 +9,7 @@ namespace GoonWorld
         ItemBrick,
         Mushroom,
         DeathBox,
+        Coin,
         Max,
     };
 }

@@ -26,7 +26,7 @@ namespace GoonWorld
         inline void Visible(bool isVisible) override { _visible = isVisible; }
         inline bool IsVisible() override { return _visible; }
         inline void Offset(Point offset) { _offset = offset; }
-        int SizeMultiplier;
+        int SizeMultiplier = 1;
         inline void AddTransition(AnimationTransition *transition) { _transitions.push_back(std::unique_ptr<AnimationTransition>(transition)); }
         void AddTransition(std::string from, std::string to, bool matchCondition, bool *matchRef);
         bool Mirror = false;

@@ -8,6 +8,7 @@
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/gameobjects/DeathBox.hpp>
+#include <GoonWorld/gameobjects/Coin.hpp>
 #include <GoonWorld/animation/Animator.hpp>
 using namespace GoonWorld;
 
@@ -24,6 +25,10 @@ static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
     {"DeathBox", [](TiledMap::TiledObject &object)
      {
          return new DeathBox(object);
+     }},
+    {"Coin", [](TiledMap::TiledObject &object)
+     {
+         return new Coin(object);
      }},
     {"Brick", [](TiledMap::TiledObject &object)
      {

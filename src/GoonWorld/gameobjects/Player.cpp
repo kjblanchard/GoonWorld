@@ -6,6 +6,7 @@
 #include <GoonWorld/components/PlayerInputComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
+#include <GoonWorld/gameobjects/Coin.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/animation/Animation.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
@@ -39,7 +40,7 @@ Player::Player(TiledMap::TiledObject &object)
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    // _debugDrawComponent->Enabled(false);
+    _debugDrawComponent->Enabled(false);
     bodyOverlapArgs args{1, 2, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
                          {
                              Player *playerInstance = static_cast<Player *>(args);
@@ -63,10 +64,18 @@ Player::Player(TiledMap::TiledObject &object)
                                      playerInstance->_noDeathVelocity = true;
                                      playerInstance->Die();
                                  }};
+    bodyOverlapArgs coinArgs{1, (int)BodyTypes::Coin, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                             {
+                                 Player *playerInstance = static_cast<Player *>(args);
+                                 if (playerInstance->_isDead || playerInstance->_isDying)
+                                     return;
+                                 playerInstance->CoinOverlapFunc(overlapBody, overlap);
+                             }};
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, args);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, mushroomArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, deathBoxArgs);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, coinArgs);
     CreateAnimationTransitions();
     InitializePlayerConfig();
     Game::Instance()->GetCamera()->SetFollowTarget(this);
@@ -379,7 +388,6 @@ void Player::Die()
     _rigidbodyComponent->Velocity().x = 0;
     _rigidbodyComponent->Velocity().y = 0;
     _currentDeadTime = 0;
-
 }
 
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
@@ -402,6 +410,16 @@ void Player::MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
         return;
     Powerup(true);
     mushroom->TakeDamage();
+}
+void Player::CoinOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
+{
+    if (_isDead || _isDying)
+        return;
+    Coin *coin = (Coin *)overlapBody->funcArgs;
+    if (!coin->IsEnabled())
+        return;
+    ++_coinsCollected;
+    coin->TakeDamage();
 }
 
 // void Player::PowerChange()
