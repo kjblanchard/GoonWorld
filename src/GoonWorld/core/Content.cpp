@@ -33,7 +33,6 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     default:
         break;
     }
-    LogInfo("Content count is %d", _loadedContent.size());
     if (!loadedContent)
     {
         LogWarn("Couldn't load content %s", filename);

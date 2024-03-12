@@ -16,12 +16,12 @@ Bgm *BgmLoad(const char *filename, float begin, float end)
         fprintf(stderr, "Could not load BGM %s", filename);
         return NULL;
     }
-    int result = gsPreLoadBgm(bgm);
-    if (!result)
-    {
-        fprintf(stderr, "Could not preload BGM %s", filename);
-        return NULL;
-    }
+    // int result = gsPreLoadBgm(bgm);
+    // if (!result)
+    // {
+    //     fprintf(stderr, "Could not preload BGM %s", filename);
+    //     return NULL;
+    // }
     // Returns BGM pointer, or nil, which should be free'd afterwards.
     return bgm;
 }
