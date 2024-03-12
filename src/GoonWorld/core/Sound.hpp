@@ -9,7 +9,7 @@ namespace GoonWorld
     public:
         Sound(AppSettings::SoundConfig &soundConfig);
         bool LoadBgm(const char *title);
-        void PlayBgm(const char *title);
+        void PlayBgm(const char *title, int loops = -1);
         std::unordered_map<std::string, Bgm *> LoadedMusic;
 
     private:

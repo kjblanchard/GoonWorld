@@ -248,9 +248,13 @@ void Player::HandleLeftRightMovement(bool movingRight)
 
     else
     {
-        // TODO this is causing an issue where you actually can't turn if you are hitting this, need to expand
-        // Check to see if we are walking but moving faster than our walk speed, if so no movespeed boost
-        auto moveSpeed = std::abs(_rigidbodyComponent->Velocity().x) > _maxWalkSpeed ? 0 : _walkSpeedBoost * moveDirectionMultiplier;
+        auto moveSpeed = _walkSpeedBoost * moveDirectionMultiplier;
+        // You are walking but moving faster than your max walk speed, so you gain NOTHING
+        if ((movingRight && _rigidbodyComponent->Velocity().x > _maxWalkSpeed) ||
+            (!movingRight && _rigidbodyComponent->Velocity().x < -_maxWalkSpeed))
+        {
+            moveSpeed = 0;
+        }
         _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
     }
 
@@ -354,8 +358,7 @@ void Player::TakeDamage()
     }
     Game::Instance()->PlayerDie(this);
     Game::Instance()->GetSound()->LoadBgm("dead");
-    Game::Instance()->GetSound()->PlayBgm("dead");
-    geSetPlayerLoops(0);
+    Game::Instance()->GetSound()->PlayBgm("dead", 0);
 
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);

@@ -24,11 +24,19 @@ namespace GoonWorld
         return false;
     }
 
-    void Sound::PlayBgm(const char *title)
+    void Sound::PlayBgm(const char *title, int loops)
     {
         auto bgm_it = LoadedMusic.find(title);
         if (bgm_it == LoadedMusic.end())
             return;
         BgmPlay(bgm_it->second, _soundConfig->MusicVolume);
+        if (loops == -1)
+        {
+            geSetPlayerLoops(255);
+        }
+        else
+        {
+            geSetPlayerLoops(loops);
+        }
     }
 }
