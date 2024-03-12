@@ -24,6 +24,7 @@ using namespace GoonWorld;
 
 static Sfx *jumpSound;
 static Sfx *powerdownSound;
+static Sfx *whistleSound;
 
 Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false)
@@ -37,6 +38,7 @@ Player::Player(TiledMap::TiledObject &object)
     _animationComponent = new AnimationComponent("mario", Point{0, -36});
     jumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
     powerdownSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "powerdown");
+    whistleSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "whistle");
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
@@ -64,6 +66,13 @@ Player::Player(TiledMap::TiledObject &object)
                                      playerInstance->_noDeathVelocity = true;
                                      playerInstance->Die();
                                  }};
+    bodyOverlapArgs winboxArgs{1, (int)BodyTypes::WinBox, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+                               {
+                                   Player *playerInstance = static_cast<Player *>(args);
+                                   if (playerInstance->_isDead || playerInstance->_isDying)
+                                       return;
+                                   playerInstance->Win();
+                               }};
     bodyOverlapArgs coinArgs{1, (int)BodyTypes::Coin, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
                              {
                                  Player *playerInstance = static_cast<Player *>(args);
@@ -75,6 +84,7 @@ Player::Player(TiledMap::TiledObject &object)
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, brickArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, mushroomArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, deathBoxArgs);
+    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, winboxArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, coinArgs);
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -100,6 +110,15 @@ void Player::Update()
     {
         Powerup(_isBig);
         return;
+    }
+    if (_isWinning)
+    {
+        Win();
+        return;
+    }
+    if (_isWinWalking)
+    {
+        WinWalking();
     }
     if (_enemyJustKilled)
         EnemyKilledTick();
@@ -209,9 +228,9 @@ float Player::CalculateFrameMaxVelocity()
 
 void Player::HandleInput()
 {
-    if (_isDying || _isTurningBig)
+    if (_isDying || _isTurningBig ||  _isWinning)
         return;
-    if (_isDead)
+    if (_isDead || _isWinWalking)
     {
         if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
         {
@@ -390,6 +409,35 @@ void Player::Die()
     _currentDeadTime = 0;
 }
 
+void Player::Win()
+{
+    if (!_isWinning)
+    {
+        // Stop everything, and whistle
+        _currentWhistleTime = 0;
+        _isWinning = true;
+        _rigidbodyComponent->Velocity().x = 0;
+        _rigidbodyComponent->Velocity().y = 0;
+        _rigidbodyComponent->GravityEnabled(false);
+        gsPlaySfxOneShot(whistleSound, 1.0f);
+        return;
+    }
+    // Tick until whistle time is up
+    if (_currentWhistleTime < _winningWhistleTimer)
+    {
+        _currentWhistleTime += DeltaTime.GetTotalSeconds();
+    }
+    else
+    {
+        _rigidbodyComponent->GravityEnabled(true);
+        Game::Instance()->GetSound()->LoadBgm("win");
+        Game::Instance()->GetSound()->PlayBgm("win", 0);
+        _isWinning = false;
+        _isWinWalking = true;
+    }
+    _currentDeadTime = 0;
+}
+
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
 {
     if (_isDead || _isDying)
@@ -487,6 +535,10 @@ void Player::Powerup(bool isGettingBig)
             _animationComponent->ChangeAnimation(newName);
         }
     }
+}
+void Player::WinWalking()
+{
+    _rigidbodyComponent->Velocity().x = 25;
 }
 
 Player::~Player()

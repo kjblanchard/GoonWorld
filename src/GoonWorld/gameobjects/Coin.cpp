@@ -35,6 +35,6 @@ void Coin::TakeDamage()
 {
     if (!IsEnabled())
         return;
-    gsPlaySfxOneShot(coinsound, 1.0f);
+    gsPlaySfxOneShot(coinsound, 0.25f);
     Enabled(false);
 }

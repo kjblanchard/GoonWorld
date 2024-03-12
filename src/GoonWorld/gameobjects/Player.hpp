@@ -26,9 +26,14 @@ namespace GoonWorld
 
     private:
         bool _isJumping = false, _canJump = false, _isTurning = false, _isRunningButtonDown = false, _enemyJustKilled = false, _isDying = false, _isDead = false, _noDeathVelocity = false, _isTurningBig = false, _isBig = false, _isInvincible = false;
+        bool _isWinning = false, _isWinWalking = false;
         int _jumpFrameVelocity = 0, _initialJumpVelocity = 0, _runSpeedBoost = 0, _walkSpeedBoost = 0, _maxRunSpeed = 0, _maxWalkSpeed = 0, _initialMoveVelocity = 0, _currentBigIterations = 0;
         int _coinsCollected = 0;
         float _currentJumpTime = 0, _maxJumpTime = 0, _goombaKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
+
+        float _currentWhistleTime = 0;
+        const float _winningWhistleTimer = .75;
+
         const float _deadTimer = 0.65;
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
@@ -59,6 +64,8 @@ namespace GoonWorld
         void CoinOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
         void Powerup(bool isGettingBig);
         void Die();
+        void Win();
+        void WinWalking();
         // friend void GoombaOverlapFuncCallback(void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

@@ -479,7 +479,7 @@
                  "visible":true,
                  "width":0,
                  "x":1024,
-                 "y":0
+                 "y":-128
                 }, 
                 {
                  "height":0,
