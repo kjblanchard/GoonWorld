@@ -10,5 +10,4 @@ void Camera::Update()
     if (!_followTarget)
         return;
     _cameraBounds.x = _followTarget->Location().x;
-    // _cameraBounds.y = _followTarget->Location().y;
 }

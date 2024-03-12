@@ -51,6 +51,7 @@ void Game::Update(double timeMs)
     {
         RigidbodyComponent::PhysicsUpdate();
     }
+    _camera->Update();
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
     if (_playerDying || _playerBig)

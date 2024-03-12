@@ -18,6 +18,7 @@
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <SDL2/SDL_rect.h>
+#include <GoonWorld/core/Camera.hpp>
 using namespace GoonWorld;
 
 static Sfx *jumpSound;
@@ -68,6 +69,7 @@ Player::Player(TiledMap::TiledObject &object)
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, deathBoxArgs);
     CreateAnimationTransitions();
     InitializePlayerConfig();
+    Game::Instance()->GetCamera()->SetFollowTarget(this);
 }
 
 void Player::InitializePlayerConfig()
