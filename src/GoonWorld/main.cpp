@@ -11,7 +11,7 @@
 #include <GoonWorld/animation/Animator.hpp>
 using namespace GoonWorld;
 
-static Game *game;
+static std::unique_ptr<Game> game;
 static std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameObjectSpawnMap = {
     {"Player", [](TiledMap::TiledObject &object)
      {
@@ -43,10 +43,9 @@ void Draw()
 int main()
 {
     GnInitializeEngine();
-    game = new Game(GameObjectSpawnMap);
+    game = std::make_unique<Game> (GameObjectSpawnMap);
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
     game->LoadLevel("level1");
     Play();
-    delete game;
 }

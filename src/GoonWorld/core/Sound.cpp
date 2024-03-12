@@ -6,6 +6,10 @@ namespace GoonWorld
         : _soundConfig(&soundConfig)
     {
     }
+        Sound::~Sound()
+        {
+            UnloadBgms();
+        }
 
     bool Sound::LoadBgm(const char *title)
     {
@@ -23,6 +27,14 @@ namespace GoonWorld
         }
         return false;
     }
+        void Sound:: UnloadBgms()
+        {
+            for(auto& [key, value]: LoadedMusic)
+            {
+                free(value);
+            }
+
+        }
 
     void Sound::PlayBgm(const char *title, int loops)
     {

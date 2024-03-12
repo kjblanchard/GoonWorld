@@ -31,12 +31,12 @@ Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObjec
                             GameSettings->WindowConfig.WindowSize.y,
                             GameSettings->WindowConfig.Title.c_str());
     InitializePhysics();
-    _sound = new Sound(GameSettings->SoundConfigs);
-    SetSound(_sound);
+    _sound = std::make_unique<Sound>(GameSettings->SoundConfigs);
     _gameInstance = this;
 }
 Game::~Game()
 {
+    _spawnMap.clear();
     Content::ClearContent();
 }
 void Game::Update(double timeMs)

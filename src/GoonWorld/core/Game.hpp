@@ -22,12 +22,12 @@ namespace GoonWorld
         std::vector<IDraw *> DrawObjects;
         void SetCurrentLevel(TiledLevel *level);
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
-        inline Sound *GetSound() const { return _sound; }
-        inline void SetSound(Sound *sound)
-        {
-            if (!_sound)
-                _sound = sound;
-        }
+        inline Sound *GetSound() const { return _sound.get(); }
+        // inline void SetSound(Sound *sound)
+        // {
+        //     if (!_sound)
+        //         _sound = sound;
+        // }
         void PlayerDie(Player *player);
         void PlayerBig(Player *player);
         AppSettings *GameSettings;
@@ -50,7 +50,7 @@ namespace GoonWorld
         static Game *_gameInstance;
         static long long _ticks;
         std::unique_ptr<TiledLevel> _loadedLevel;
-        Sound *_sound;
+        std::unique_ptr<Sound>_sound;
         std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> _spawnMap;
     };
 }
