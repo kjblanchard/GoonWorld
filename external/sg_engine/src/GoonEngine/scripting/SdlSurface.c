@@ -2,6 +2,7 @@
 #include <external/stb_image.h>
 #include <GoonEngine/debug.h>
 #include <GoonEngine/SdlSurface.h>
+#include <GoonEngine/color.h>
 
 SDL_Texture *g_BackgroundAtlas = NULL;
 SDL_Rect* g_backgroundDrawRect = NULL;
@@ -148,13 +149,35 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
 // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
 void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip)
 {
+
+    SDL_Rect translatedDstRect;
+    // translatedDstRect.x = g_backgroundDrawRect->x - dstRect->x;
+    translatedDstRect.x =  dstRect->x - g_backgroundDrawRect->x;
+    // translatedDstRect.y = g_backgroundDrawRect->y - dstRect->y;
+    translatedDstRect.y = dstRect->y;
+    translatedDstRect.w = dstRect->w;
+    translatedDstRect.h = dstRect->h;
     // SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
     SDL_RenderCopyEx(g_pRenderer,
                      texture,
                      srcRect,
-                     dstRect,
+                     &translatedDstRect,
                      0,
                      NULL,
                      (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
     //  (shouldFlip) ? SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL : SDL_FLIP_NONE | SDL_FLIP_VERTICAL);
+}
+
+void DrawDebugRect(SDL_Rect* dstRect, Color* color)
+{
+    SDL_Rect translatedDstRect;
+    // translatedDstRect.x = g_backgroundDrawRect->x - dstRect->x;
+    translatedDstRect.x =  dstRect->x - g_backgroundDrawRect->x;
+    // translatedDstRect.y = g_backgroundDrawRect->y - dstRect->y;
+    translatedDstRect.y = dstRect->y;
+    translatedDstRect.w = dstRect->w;
+    translatedDstRect.h = dstRect->h;
+    SDL_SetRenderDrawColor(g_pRenderer, color->R, color->G, color->B, color->A);
+    SDL_RenderDrawRect(g_pRenderer, &translatedDstRect);
+    SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
 }

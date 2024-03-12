@@ -1,7 +1,6 @@
 #include <GoonEngine/gnpch.h>
 #include <GoonEngine/debug.h>
 #include <GoonEngine/SdlWindow.h>
-#include <GoonEngine/color.h>
 
 SDL_Window *g_pWindow = 0;
 SDL_Renderer *g_pRenderer = 0;
@@ -49,11 +48,4 @@ SDL_Renderer *GetGlobalRenderer()
 SDL_Window *GetGlobalWindow()
 {
     return g_pWindow;
-}
-
-void DrawDebugRect(SDL_Rect* rect, Color* color)
-{
-    SDL_SetRenderDrawColor(g_pRenderer, color->R, color->G, color->B, color->A);
-    SDL_RenderDrawRect(g_pRenderer, rect);
-    SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
 }
