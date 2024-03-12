@@ -16,44 +16,52 @@ void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
     g_backgroundDrawRect.w = rect->w;
 }
 
-SDL_Surface *LoadSurfaceFromFile(const char *filePath)
+SDL_Surface *LoadSurfaceFromFile(const char *filePath, void* data)
 {
-    int width, height, channels;
-    unsigned char *imageData = stbi_load(filePath, &width, &height, &channels, STBI_rgb_alpha);
-    if (!imageData)
-    {
-        LogError("Failed to load image data: %s", stbi_failure_reason());
-        return NULL;
-    }
-    // Calculate pitch
-    int pitch;
-    pitch = width * channels;
-    pitch = (pitch + 3) & ~3;
-    // Setup relevance bitmask
-    int32_t Rmask, Gmask, Bmask, Amask;
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-    Rmask = 0x000000FF;
-    Gmask = 0x0000FF00;
-    Bmask = 0x00FF0000;
-    Amask = (channels == 4) ? 0xFF000000 : 0;
-#else
-    int s = (bytesPerPixel == 4) ? 0 : 8;
-    Rmask = 0xFF000000 >> s;
-    Gmask = 0x00FF0000 >> s;
-    Bmask = 0x0000FF00 >> s;
-    Amask = 0x000000FF >> s;
-#endif
-    SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(imageData, width, height, channels * 8, pitch, Rmask, Gmask,
-                                                    Bmask, Amask);
+    int req_format = STBI_rgb_alpha;
+int width, height, orig_format;
+// unsigned char* data = stbi_load(filePath, &width, &height, &orig_format, req_format);
+ data = stbi_load(filePath, &width, &height, &orig_format, req_format);
+if (data == NULL) {
+    SDL_Log("Loading image failed: %s", stbi_failure_reason());
+    exit(1);
+}
 
-    if (!surface)
+int depth, pitch;
+Uint32 pixel_format;
+if (req_format == STBI_rgb) {
+    depth = 24;
+    pitch = 3*width; // 3 bytes per pixel * pixels per row
+    pixel_format = SDL_PIXELFORMAT_RGB24;
+} else { // STBI_rgb_alpha (RGBA)
+    depth = 32;
+    pitch = 4*width;
+    pixel_format = SDL_PIXELFORMAT_RGBA32;
+}
+
+SDL_Surface* surf = SDL_CreateRGBSurfaceWithFormatFrom((void*)data, width, height,
+                                                       depth, pitch, pixel_format);
+
+if (surf == NULL) {
+    SDL_Log("Creating surface failed: %s", SDL_GetError());
+    stbi_image_free(data);
+    exit(1);
+}
+
+    if (!surf)
     {
         LogError("Could not create surface from data %s, Error:\n%s", filePath, SDL_GetError());
         return NULL;
     }
-    stbi_image_free(imageData);
-    return surface;
+    // stbi_image_free(data);
+    return surf;
 }
+    void DestroyPixelData(void* data)
+    {
+        stbi_image_free(data);
+
+    }
+
 SDL_Surface *LoadTextureAtlas(int width, int height)
 {
     SDL_Surface *atlasSurface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888);
@@ -80,8 +88,10 @@ void BlitSurface(
 }
 SDL_Texture *CreateTextureFromFile(const char *filename)
 {
-    SDL_Surface *surface = LoadSurfaceFromFile(filename);
+    void* data = NULL;
+    SDL_Surface *surface = LoadSurfaceFromFile(filename, data);
     SDL_Texture *texture = CreateTextureFromSurface(surface);
+    stbi_image_free(data);
     return texture;
 }
 void DestroySurface(SDL_Surface *surface)

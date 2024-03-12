@@ -21,11 +21,12 @@ extern "C"
     typedef struct SDL_Texture SDL_Texture;
     typedef struct SDL_Surface SDL_Surface;
 
-    SDL_Surface *LoadSurfaceFromFile(const char *filePath);
+    SDL_Surface *LoadSurfaceFromFile(const char *filePath, void* data);
     SDL_Surface *LoadTextureAtlas(int width, int height);
     // void BlitSurface(SDL_Surface *atlasSurface, SDL_Surface *tileSurface, SDL_Rect *dstRect, SDL_Rect *srcRect);
     void BlitSurface(SDL_Surface *srcSurface, SDL_Rect *srcRect, SDL_Surface *dstSurface, SDL_Rect *dstRect);
     SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface);
+    void DestroyPixelData(void* data);
     void DestroySurface(SDL_Surface* surface);
     void DestroyTexture(SDL_Texture* texture);
     void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect);
