@@ -6,7 +6,7 @@
 using namespace GoonWorld;
 
 static std::unordered_map<std::string, std::pair<ContentTypes, void *>> _loadedContent;
-static std::vector<void*> _loadedPixelData;
+static std::vector<void *> _loadedPixelData;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
 {
@@ -18,9 +18,9 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     switch (contentType)
     {
     case ContentTypes::Surface:
-    // Need to track the pixel data as well that is loaded
-    void* pixelData;
-        loadedContent = LoadSurfaceFromFile(filename, pixelData);
+        // Need to track the pixel data as well that is loaded
+        void *pixelData;
+        loadedContent = LoadSurfaceFromFile(filename, &pixelData);
         _loadedPixelData.push_back(pixelData);
         break;
     case ContentTypes::Texture:
@@ -72,7 +72,7 @@ void Content::ClearContent()
             break;
         }
     }
-    for(auto pixelData : _loadedPixelData)
+    for (auto pixelData : _loadedPixelData)
     {
         DestroyPixelData(pixelData);
     }

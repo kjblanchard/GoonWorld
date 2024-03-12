@@ -48,7 +48,6 @@ void TiledLevel::LoadSurfaces()
             for (auto &tile : tileset.Tiles)
             {
                 auto surfacePath = AssetPrefix + TiledPrefix + tile.Image;
-                // auto surface = LoadSurfaceFromFile(surfacePath.c_str());
                 auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
                 _loadedTilesets.push_back({tile.Image, surface});
             }
@@ -56,7 +55,6 @@ void TiledLevel::LoadSurfaces()
         else
         {
             auto surfacePath = AssetPrefix + TiledPrefix + tileset.Image;
-            // auto surface = LoadSurfaceFromFile(surfacePath.c_str());
             auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
             _loadedTilesets.push_back({tileset.Image, surface});
         }

@@ -16,13 +16,13 @@ void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
     g_backgroundDrawRect.w = rect->w;
 }
 
-SDL_Surface *LoadSurfaceFromFile(const char *filePath, void* data)
+SDL_Surface *LoadSurfaceFromFile(const char *filePath, void** data)
 {
     int req_format = STBI_rgb_alpha;
 int width, height, orig_format;
 // unsigned char* data = stbi_load(filePath, &width, &height, &orig_format, req_format);
- data = stbi_load(filePath, &width, &height, &orig_format, req_format);
-if (data == NULL) {
+ *data = stbi_load(filePath, &width, &height, &orig_format, req_format);
+if (*data == NULL) {
     SDL_Log("Loading image failed: %s", stbi_failure_reason());
     exit(1);
 }
@@ -39,12 +39,12 @@ if (req_format == STBI_rgb) {
     pixel_format = SDL_PIXELFORMAT_RGBA32;
 }
 
-SDL_Surface* surf = SDL_CreateRGBSurfaceWithFormatFrom((void*)data, width, height,
+SDL_Surface* surf = SDL_CreateRGBSurfaceWithFormatFrom((void*)*data, width, height,
                                                        depth, pitch, pixel_format);
 
 if (surf == NULL) {
     SDL_Log("Creating surface failed: %s", SDL_GetError());
-    stbi_image_free(data);
+    stbi_image_free(*data);
     exit(1);
 }
 
@@ -89,7 +89,7 @@ void BlitSurface(
 SDL_Texture *CreateTextureFromFile(const char *filename)
 {
     void* data = NULL;
-    SDL_Surface *surface = LoadSurfaceFromFile(filename, data);
+    SDL_Surface *surface = LoadSurfaceFromFile(filename, &data);
     SDL_Texture *texture = CreateTextureFromSurface(surface);
     stbi_image_free(data);
     return texture;
