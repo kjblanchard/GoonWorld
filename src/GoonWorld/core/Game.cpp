@@ -140,6 +140,7 @@ void Game::RestartLevel()
     _loadedLevel->RestartLevel();
     LoadGameObjects();
     _shouldRestart = false;
+    _camera->Restart();
     // }
 }
 void Game::SetCurrentLevel(TiledLevel *level)
@@ -155,6 +156,7 @@ void Game::LoadLevel(std::string level)
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();
+    _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
     _sound->PlayBgm("platformer");
     LoadGameObjects();

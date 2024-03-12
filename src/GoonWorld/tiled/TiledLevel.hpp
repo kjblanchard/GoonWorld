@@ -19,6 +19,7 @@ namespace GoonWorld
          */
         TiledLevel(const char *filename);
         const inline std::string &GetName() const { return _name; }
+        inline Point GetSize() { return Point{_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight}; }
         std::vector<TiledMap::TiledObject> GetAllObjects();
         inline std::vector<TiledMap::TiledObject> GetAllSolidObjects() const { return _mapData->SolidObjects; }
         void RestartLevel();
