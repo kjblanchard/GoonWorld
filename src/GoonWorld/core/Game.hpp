@@ -12,6 +12,7 @@ namespace GoonWorld
     class TiledLevel;
     class Player;
     class Sound;
+    class Camera;
 
     class Game
     {
@@ -23,11 +24,6 @@ namespace GoonWorld
         void SetCurrentLevel(TiledLevel *level);
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
         inline Sound *GetSound() const { return _sound.get(); }
-        // inline void SetSound(Sound *sound)
-        // {
-        //     if (!_sound)
-        //         _sound = sound;
-        // }
         void PlayerDie(Player *player);
         void PlayerBig(Player *player);
         AppSettings *GameSettings;
@@ -51,6 +47,7 @@ namespace GoonWorld
         static long long _ticks;
         std::unique_ptr<TiledLevel> _loadedLevel;
         std::unique_ptr<Sound>_sound;
+        std::unique_ptr<Camera>_camera;
         std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> _spawnMap;
     };
 }

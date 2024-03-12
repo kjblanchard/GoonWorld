@@ -18,7 +18,7 @@
 static gpScene *g_pScene;
 
 extern SDL_Texture *g_BackgroundAtlas;
-extern SDL_Rect g_backgroundDrawRect;
+extern SDL_Rect* g_backgroundDrawRect;
 
 #define MAX_STARTUP_FRAMES 1000
 
@@ -111,7 +111,9 @@ static int loop_func()
     SDL_RenderClear(g_pRenderer);
     if (g_BackgroundAtlas)
     {
-        int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
+        // int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, &g_backgroundDrawRect, &g_backgroundDrawRect);
+        // We should use the camera for this.
+        int drawResult = SDL_RenderCopy(g_pRenderer, g_BackgroundAtlas, g_backgroundDrawRect, g_backgroundDrawRect);
         if (drawResult != 0)
         {
             LogError("Did not draw properly, Error %s\n", SDL_GetError());

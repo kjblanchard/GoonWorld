@@ -12,6 +12,8 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/test.h>
 #include <GoonPhysics/scene.h>
+#include <GoonWorld/core/Camera.hpp>
+#include <GoonEngine/SdlSurface.h>
 using namespace GoonWorld;
 Game *Game::_gameInstance = nullptr;
 long long Game::_ticks = 0;
@@ -32,6 +34,7 @@ Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObjec
                             GameSettings->WindowConfig.Title.c_str());
     InitializePhysics();
     _sound = std::make_unique<Sound>(GameSettings->SoundConfigs);
+    _camera =  std::make_unique<Camera>(SDL_Rect{0,0,GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
     _gameInstance = this;
 }
 Game::~Game()
@@ -151,6 +154,7 @@ void Game::LoadLevel(std::string level)
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();
+    SetCameraRect(_camera->Bounds());
     _sound->PlayBgm("platformer");
     LoadGameObjects();
 }

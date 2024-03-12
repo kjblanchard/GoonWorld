@@ -4,16 +4,20 @@
 #include <GoonEngine/SdlSurface.h>
 
 SDL_Texture *g_BackgroundAtlas = NULL;
-SDL_Rect g_backgroundDrawRect;
+SDL_Rect* g_backgroundDrawRect = NULL;
 extern SDL_Renderer *g_pRenderer;
 
 void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
 {
     g_BackgroundAtlas = background;
-    g_backgroundDrawRect.x = rect->x;
-    g_backgroundDrawRect.y = rect->y;
-    g_backgroundDrawRect.h = rect->h;
-    g_backgroundDrawRect.w = rect->w;
+    // g_backgroundDrawRect.x = rect->x;
+    // g_backgroundDrawRect.y = rect->y;
+    // g_backgroundDrawRect.h = rect->h;
+    // g_backgroundDrawRect.w = rect->w;
+}
+void SetCameraRect(SDL_Rect *rect)
+{
+    g_backgroundDrawRect = rect;
 }
 
 static void flipImageVertically(unsigned char *data, int width, int height, int channels)

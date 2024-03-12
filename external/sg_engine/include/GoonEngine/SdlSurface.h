@@ -30,6 +30,7 @@ extern "C"
     void DestroySurface(SDL_Surface* surface);
     void DestroyTexture(SDL_Texture* texture);
     void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect);
+    void SetCameraRect(SDL_Rect *rect);
     SDL_Texture *CreateTextureFromFile(const char *filename);
     // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect);
     void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip);
