@@ -13,7 +13,6 @@
 #include <GoonEngine/test.h>
 #include <GoonPhysics/scene.h>
 #include <GoonWorld/core/Camera.hpp>
-#include <SupergoonSound/include/sound.h>
 #include <GoonEngine/SdlSurface.h>
 using namespace GoonWorld;
 Game *Game::_gameInstance = nullptr;
@@ -28,7 +27,6 @@ Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObjec
         fprintf(stderr, "Can only create one game instance");
         exit(1);
     }
-    gsInitializeSound();
     GameSettings = new AppSettings("assets/config/appsettings.json");
     CreateWindowAndRenderer(GameSettings->WindowConfig.WindowSize.x,
                             GameSettings->WindowConfig.WindowSize.y,

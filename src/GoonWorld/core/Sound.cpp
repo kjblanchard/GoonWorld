@@ -7,6 +7,7 @@ namespace GoonWorld
     Sound::Sound(AppSettings::SoundConfig &soundConfig)
         : _soundConfig(&soundConfig)
     {
+        gsInitializeSound();
     }
 
     bool Sound::LoadBgm(const char *title)

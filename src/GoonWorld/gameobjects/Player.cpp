@@ -15,7 +15,6 @@
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
-#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <SDL2/SDL_rect.h>

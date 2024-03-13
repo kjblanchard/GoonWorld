@@ -5,7 +5,6 @@
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
-#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>

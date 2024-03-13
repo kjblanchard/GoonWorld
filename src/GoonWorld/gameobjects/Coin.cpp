@@ -1,5 +1,4 @@
 #include <GoonWorld/gameobjects/Coin.hpp>
-#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Sound.hpp>
 // #include <GoonEngine/Sound.h>
 #include <GoonPhysics/overlap.h>

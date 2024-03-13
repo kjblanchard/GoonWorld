@@ -2,21 +2,17 @@
 #include <GoonEngine/test.h>
 #include <GoonEngine/gnpch.h>
 #include <GoonEngine/SdlWindow.h>
-#include <SupergoonSound/include/sound.h>
-// #include <GoonEngine/ecs/system.h>
-// #include <GoonEngine/ecs/context.h>
 #include <GoonEngine/keyboard.h>
 #include <GoonEngine/joystick.h>
 #include <GoonEngine/debug.h>
-
-// Physics
+#include <SupergoonSound/include/sound.h>
 #include <GoonPhysics/scene.h>
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
 static gpScene *g_pScene;
-
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect *g_backgroundDrawRect;
 
@@ -31,7 +27,6 @@ static double msBuildup;
 // TODO this should be different, it is inside of SDLwindow.c
 extern SDL_Renderer *g_pRenderer;
 extern int g_refreshRate;
-// extern geContext *g_Context;
 
 void (*DrawUpdateFunc)() = NULL;
 void (*GameUpdateFunc)(double deltaTime) = NULL;
@@ -50,7 +45,6 @@ void *MusicUpdateWrapper(void *arg)
  */
 static bool sdlEventLoop()
 {
-    // Event loop, Handle SDL events.
     while (SDL_PollEvent(&event))
     {
         switch (event.type)
@@ -150,9 +144,7 @@ static void LoopWrap()
 int Play()
 {
 #ifdef __EMSCRIPTEN__
-    // emscripten_set_main_loop(loop_wrap, g_refreshRate, 1);
-    // emscripten_set_main_loop(LoopWrap, 60, 1);
-    emscripten_set_main_loop(LoopWrap, 144, 1);
+    emscripten_set_main_loop(LoopWrap, g_refreshRate, 1);
 #else
     while (!shouldQuit)
     {
@@ -163,20 +155,17 @@ int Play()
 }
 int GnInitializeEngine()
 {
-    int result = InitializeDebugLogFile();
+    InitializeDebugLogFile();
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)
     {
         fprintf(stderr, "Could not Initialize SDL!\nError: %s", SDL_GetError());
         return false;
     }
-    // if (!IMG_Init(IMG_INIT_PNG))
-    // {
-    //     fprintf(stderr, "Could not Initialize SDL Image!\nError: %s", IMG_GetError());
-    //     return false;
-    // }
 
     geInitializeKeyboard();
     geInitializeJoysticks();
+    // Pump out initial events, to prevent music problems.
+    shouldQuit = sdlEventLoop();
     return true;
 }
 
