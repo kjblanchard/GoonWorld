@@ -4,7 +4,7 @@
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
 #include <GoonWorld/core/Sound.hpp>
-#include <SDL2/SDL_rect.h>
+#include <GoonEngine/rectangle.h>
 
 using namespace GoonWorld;
 
@@ -18,7 +18,7 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
         _contents = prop.ValueInt;
     }
     _location = Point{object.X, object.Y};
-    auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     // _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::ItemBrick);
@@ -44,7 +44,7 @@ void ItemBrick::TakeDamage()
         break;
     case (int)ItemBrickContents::Mushroom:
     {
-        auto loc = SDL_Rect{_location.x, _location.y - 32, 32, 32};
+        auto loc = geRectangle{_location.x, _location.y - 32, 32, 32};
         auto shroom = new Mushroom(&loc);
         shroom->Push(true);
         _contents = 0;

@@ -12,7 +12,7 @@ PlayerInputComponent::PlayerInputComponent(int playerNum)
 }
 void PlayerInputComponent::LoadInputFromConfig()
 {
-    auto &settings = *Game::Instance()->GameSettings;
+    auto &settings = GetGame().GetAppSettings();
     auto &keyboardSettings = settings.KeyboardConfig.PlayerButtonKeyVector[_playerNum];
     auto &controllerSettings = settings.ControllerConfig.PlayerButtonVector[_playerNum];
     for (auto i = 0; i < keyboardSettings.size(); ++i)

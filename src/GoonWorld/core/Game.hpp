@@ -33,19 +33,19 @@ namespace GoonWorld
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
         inline void AddUpdateObject(IUpdate *update) { UpdateObjects.push_back(update); }
         inline void AddDrawObject(IDraw *draw) { DrawObjects.push_back(draw); }
-        void RemoveObserver(Observer* observer);
-        void PushEvent(Event event);
+        inline AppSettings &GetAppSettings() { return *_gameSettings; }
         void SetCurrentLevel(TiledLevel *level);
-        AppSettings *GameSettings;
+        void RemoveObserver(Observer *observer);
+        void PushEvent(Event event);
         void LoadLevel(std::string levelName);
 
     private:
-        inline void PlayerDie(Player *player) {_playerDying = player;}
+        inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
         std::vector<IDraw *> DrawObjects;
-        void PlayerBigEvent(Event& event);
-        void PlayerDieEvent(Event& event);
+        void PlayerBigEvent(Event &event);
+        void PlayerDieEvent(Event &event);
         void LoadGameObjects();
         void InitializePhysics();
         void RestartLevel();
@@ -61,5 +61,6 @@ namespace GoonWorld
         std::unique_ptr<Camera> _camera;
         std::unique_ptr<Observer> _playerBigObserver;
         std::unique_ptr<Observer> _playerDieObserver;
+        std::unique_ptr<AppSettings> _gameSettings;
     };
 }

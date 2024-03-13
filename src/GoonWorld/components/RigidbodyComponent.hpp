@@ -3,20 +3,19 @@
 #include <GoonEngine/point.h>
 #include <GoonPhysics/body.h>
 #include <GoonWorld/BodyTypes.hpp>
+#include <GoonEngine/rectangle.h>
 
-struct SDL_Rect;
 struct gpBody;
 namespace GoonWorld
 {
     class RigidbodyComponent : public Component
     {
     public:
-        RigidbodyComponent(SDL_Rect *rect);
+        RigidbodyComponent(geRectangle *rect);
         ~RigidbodyComponent();
         static void PhysicsUpdate();
-        // bool IsOnGround();
+        bool IsOnGround();
         inline void GravityEnabled(bool isEnabled) { _body->gravityEnabled = isEnabled; }
-        inline bool IsOnGround() { return gpBodyIsOnGround(_body); }
         inline void SizeChange(Point newSize)
         {
             _body->boundingBox.w = newSize.x;

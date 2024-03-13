@@ -2,7 +2,6 @@
 #include <GoonWorld/core/Timer.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/base/Component.hpp>
-#include <SDL2/SDL_rect.h>
 using namespace GoonWorld;
 
 std::list<std::shared_ptr<Timer>> GameObject::_timers;
@@ -18,7 +17,7 @@ GameObject::GameObject()
     _gameobjects.push_back(std::shared_ptr<GameObject>(this));
     _enabled = true;
 }
-GameObject::GameObject(SDL_Rect *rect)
+GameObject::GameObject(geRectangle *rect)
     : GameObject()
 {
     _location = Point{rect->x, rect->y};

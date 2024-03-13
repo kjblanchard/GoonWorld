@@ -19,7 +19,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _location = Point{object.X, object.Y};
     _movingRight = false;
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
-    auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");

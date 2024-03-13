@@ -3,8 +3,8 @@
 #include <GoonWorld/base/Component.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
-#include <SDL2/SDL_rect.h>
 #include <GoonEngine/point.h>
+#include <GoonEngine/rectangle.h>
 namespace GoonWorld
 {
     class Animator;
@@ -16,7 +16,7 @@ namespace GoonWorld
         AnimationComponent(std::string animator);
         AnimationComponent(std::string animator, Point offset);
         float AnimationSpeed;
-        SDL_Rect SpriteImageRect;
+        geRectangle SpriteImageRect;
         void Update() override;
         void Draw() override;
         void OnComponentAdd(GameObject &parent) override;
@@ -32,7 +32,7 @@ namespace GoonWorld
         bool Mirror = false;
 
     private:
-        SDL_Rect GetDrawRect();
+        geRectangle GetDrawRect();
         std::string _currentAnimationString;
         Animator *_animator;
         Animation *_currentAnimation;

@@ -30,29 +30,19 @@ Game::Game()
         fprintf(stderr, "Can only create one game instance");
         exit(1);
     }
-    GameSettings = new AppSettings("assets/config/appsettings.json");
-    geInitializeRenderingWindow(GameSettings->WindowConfig.WindowSize.x,
-                                GameSettings->WindowConfig.WindowSize.y,
-                                GameSettings->WindowConfig.Title.c_str());
+    _gameSettings = std::make_unique< AppSettings>("assets/config/appsettings.json");
+    geInitializeRenderingWindow(_gameSettings->WindowConfig.WindowSize.x,
+                                _gameSettings->WindowConfig.WindowSize.y,
+                                _gameSettings->WindowConfig.Title.c_str());
     _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
                                                     { this->PlayerBigEvent(event); });
     _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
                                                     { this->PlayerDieEvent(event); });
     AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
     AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
-    _sound = std::make_unique<Sound>(GameSettings->SoundConfigs);
-    _camera = std::make_unique<Camera>(geRectangle{0, 0, GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
+    _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
+    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WindowSize.x, _gameSettings->WindowConfig.WindowSize.y});
     _gameInstance = this;
-}
-void Game::PlayerBigEvent(Event &event)
-{
-    auto player = static_cast<Player *>(event.eventArgs);
-    PlayerBig(player);
-}
-void Game::PlayerDieEvent(Event &event)
-{
-    auto player = static_cast<Player *>(event.eventArgs);
-    PlayerDie(player);
 }
 
 Game::~Game()
@@ -69,18 +59,6 @@ Game::~Game()
     Content::ClearContent();
 }
 
-void Game::RemoveObserver(Observer *observer)
-{
-    auto &vec = _observers[observer->EventType];
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        if (vec[i] == observer)
-        {
-            vec[i] = nullptr;
-        }
-    }
-}
-
 void Game::Update(double timeMs)
 {
     ++_ticks;
@@ -95,7 +73,6 @@ void Game::Update(double timeMs)
         RigidbodyComponent::PhysicsUpdate();
     }
     _camera->Update();
-
     // If there is a player dying or player getting big, we should only update them.
     if (_playerDying || _playerBig)
     {
@@ -105,11 +82,46 @@ void Game::Update(double timeMs)
             _playerBig->Update();
         return;
     }
-
     GameObject::UpdateTimers();
     for (auto object : UpdateObjects)
     {
         object->Update();
+    }
+}
+
+void Game::Draw()
+{
+    for (auto object : DrawObjects)
+    {
+        if (object->IsVisible())
+            object->Draw();
+    }
+
+    if (_gameSettings->DebugConfig.SolidDebug)
+    {
+        for (auto &solid : _loadedLevel->GetAllSolidObjects())
+        {
+            auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
+            auto color = geColor{0, 255, 0, 255};
+            geDrawDebugRect(&box, &color);
+        }
+    }
+}
+
+void Game::SetCurrentLevel(TiledLevel *level)
+{
+    _loadedLevel = std::unique_ptr<TiledLevel>(level);
+}
+
+void Game::RemoveObserver(Observer *observer)
+{
+    auto &vec = _observers[observer->EventType];
+    for (size_t i = 0; i < vec.size(); i++)
+    {
+        if (vec[i] == observer)
+        {
+            vec[i] = nullptr;
+        }
     }
 }
 
@@ -125,24 +137,6 @@ void Game::PushEvent(Event event)
     }
 }
 
-void Game::Draw()
-{
-    for (auto object : DrawObjects)
-    {
-        if (object->IsVisible())
-            object->Draw();
-    }
-
-    if (GameSettings->DebugConfig.SolidDebug)
-    {
-        for (auto &solid : _loadedLevel->GetAllSolidObjects())
-        {
-            auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
-            auto color = geColor{0, 255, 0, 255};
-            geDrawDebugRect(&box, &color);
-        }
-    }
-}
 
 void Game::PlayerBig(Player *player)
 {
@@ -172,10 +166,6 @@ void Game::RestartLevel()
     _loadedLevel->RestartLevel();
 }
 
-void Game::SetCurrentLevel(TiledLevel *level)
-{
-    _loadedLevel = std::unique_ptr<TiledLevel>(level);
-}
 
 void Game::LoadLevel(std::string level)
 {
@@ -210,4 +200,17 @@ void Game::InitializePhysics()
         gpSceneFree(_scene);
     _scene = gpInitScene();
     geSetCurrentScene(_scene);
+}
+
+
+void Game::PlayerBigEvent(Event &event)
+{
+    auto player = static_cast<Player *>(event.eventArgs);
+    PlayerBig(player);
+}
+
+void Game::PlayerDieEvent(Event &event)
+{
+    auto player = static_cast<Player *>(event.eventArgs);
+    PlayerDie(player);
 }

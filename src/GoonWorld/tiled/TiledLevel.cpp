@@ -31,13 +31,13 @@ TiledLevel::~TiledLevel()
 
 void TiledLevel::SetTextureAtlas()
 {
-    auto rect = SDL_Rect{
+    auto rect = geRectangle{
         0,
         0,
         _mapData->Width * _mapData->TileWidth,
         _mapData->Height * _mapData->TileHeight,
     };
-    SetBackgroundAtlas(_loadedAtlas, &rect);
+    SetBackgroundAtlas(_loadedAtlas);
 }
 
 void TiledLevel::LoadSurfaces()
@@ -127,7 +127,7 @@ void TiledLevel::CreateBackgroundAtlas()
                         {
                             dstY -= (sourceRect.h - _mapData->TileHeight);
                         }
-                        auto dstRect = SDL_Rect{dstX, dstY, sourceRect.w, sourceRect.h};
+                        auto dstRect = geRectangle{dstX, dstY, sourceRect.w, sourceRect.h};
                         BlitSurface(
                             tileSurface,
                             &sourceRect,

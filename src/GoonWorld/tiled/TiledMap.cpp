@@ -1,7 +1,7 @@
 #include <GoonWorld/tiled/TiledMap.hpp>
+#include <GoonEngine/point.h>
 #include <GoonWorld/shared/Constants.hpp>
 #include <nlohmann/json.hpp>
-#include <SDL2/SDL_rect.h>
 using json = nlohmann::json;
 using namespace GoonWorld;
 
@@ -36,7 +36,7 @@ const TiledMap::Tileset *const TiledMap::GetTiledMapTilesetTileset(const TiledMa
     return nullptr;
 }
 
-SDL_Rect TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset)
+geRectangle TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset)
 {
     if (tileset->Type == TilesetType::Image)
     {
@@ -44,7 +44,7 @@ SDL_Rect TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tiles
         {
             if (tile.Id + tileset->FirstGid == gid)
             {
-                return SDL_Rect{0, 0, tile.ImageWidth, tile.ImageHeight};
+                return geRectangle{0, 0, tile.ImageWidth, tile.ImageHeight};
             }
         }
     }
@@ -54,11 +54,11 @@ SDL_Rect TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Tiles
         --gid;
         int x = (gid % tileset->Columns) * tileset->TileWidth;
         int y = (gid / tileset->Columns) * tileset->TileHeight;
-        return SDL_Rect{x, y, tileset->TileWidth, tileset->TileHeight};
+        return geRectangle{x, y, tileset->TileWidth, tileset->TileHeight};
     }
-    return SDL_Rect{0, 0, 0, 0};
+    return geRectangle{0, 0, 0, 0};
 }
-SDL_Rect TiledMap::GetGidSourceRect(int gid)
+geRectangle TiledMap::GetGidSourceRect(int gid)
 {
     auto tiledMapTileset = GetGidTiledMapTileset(gid);
     auto tileset = GetTiledMapTilesetTileset(tiledMapTileset);
@@ -181,26 +181,26 @@ TiledMap::TiledMap(std::string filename)
                     object.X = objectJson["x"];
                     object.Y = objectJson["y"];
                     // int pointsLength = objectJson["polygon"].size() / 2;
-                    std::vector<SDL_Point> points;
+                    std::vector<Point> points;
                     // for (auto i = 0; i < pointsLength; ++i)
                     for (auto &point : objectJson["polygon"])
                     {
                         // points.push_back(SDL_Point{objectJson["polygon"][i * 2], objectJson["polygon"][i * 2 + 1]});
-                        points.push_back(SDL_Point{point["x"], point["y"]});
+                        points.push_back(Point{point["x"], point["y"]});
                     }
-                    int minX = object.X + (*std::min_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                    int minX = object.X + (*std::min_element(points.begin(), points.end(), [](const Point &a, const Point &b)
                                                              { return a.x < b.x; }))
                                               .x;
 
-                    int minY = object.Y + (*std::min_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                    int minY = object.Y + (*std::min_element(points.begin(), points.end(), [](const Point &a, const Point &b)
                                                              { return a.y < b.y; }))
                                               .y;
 
-                    int maxX = object.X + (*std::max_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                    int maxX = object.X + (*std::max_element(points.begin(), points.end(), [](const Point &a, const Point &b)
                                                              { return a.x < b.x; }))
                                               .x;
 
-                    int maxY = object.Y + (*std::max_element(points.begin(), points.end(), [](const SDL_Point &a, const SDL_Point &b)
+                    int maxY = object.Y + (*std::max_element(points.begin(), points.end(), [](const Point &a, const Point &b)
                                                              { return a.y < b.y; }))
                                               .y;
                     object.X = minX;

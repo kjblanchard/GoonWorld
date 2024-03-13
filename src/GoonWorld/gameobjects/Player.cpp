@@ -17,7 +17,6 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/common/Helpers.hpp>
-#include <SDL2/SDL_rect.h>
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
@@ -34,7 +33,7 @@ Player::Player(TiledMap::TiledObject &object)
     _location = Point{object.X, object.Y};
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _playerInputComponent = new PlayerInputComponent(0);
-    auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -36});
@@ -98,7 +97,7 @@ Player::Player(TiledMap::TiledObject &object)
 
 void Player::InitializePlayerConfig()
 {
-    auto &playerConfig = Game::Instance()->GameSettings->PlayerConfigs;
+    auto& playerConfig = GetGame().GetAppSettings().PlayerConfigs;
     _jumpFrameVelocity = playerConfig.FrameJumpAcceleration;
     _initialJumpVelocity = playerConfig.InitialJumpVelocity;
     _runSpeedBoost = playerConfig.RunSpeedBoost;

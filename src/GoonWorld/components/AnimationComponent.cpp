@@ -41,7 +41,7 @@ void AnimationComponent::Update()
     {
         _secondsThisFrame -= frameSeconds;
         _currentFrame = _currentAnimation->Looping ? (_currentFrame + 1 <= _currentAnimation->EndFrame) ? _currentFrame + 1 : _currentAnimation->StartFrame : _currentFrame;
-        SpriteImageRect = SDL_Rect{
+        SpriteImageRect = geRectangle{
             _currentAnimationDocument->frames[_currentFrame].frame.x,
             _currentAnimationDocument->frames[_currentFrame].frame.y,
             _currentAnimationDocument->frames[_currentFrame].frame.w,
@@ -57,7 +57,7 @@ void AnimationComponent::ChangeAnimation(std::string &anim, int frameInAnim)
     _currentAnimation = newAnimation;
     _currentAnimationString = anim;
     _currentFrame = frameInAnim;
-    SpriteImageRect = SDL_Rect{
+    SpriteImageRect = geRectangle{
         _currentAnimationDocument->frames[_currentFrame].frame.x,
         _currentAnimationDocument->frames[_currentFrame].frame.y,
         _currentAnimationDocument->frames[_currentFrame].frame.w,
@@ -73,7 +73,7 @@ void AnimationComponent::ChangeAnimation(std::string &nextAnim)
     _currentAnimation = newAnimation;
     _currentFrame = _currentAnimation->StartFrame;
     _secondsThisFrame = 0;
-    SpriteImageRect = SDL_Rect{
+    SpriteImageRect = geRectangle{
         _currentAnimationDocument->frames[_currentFrame].frame.x,
         _currentAnimationDocument->frames[_currentFrame].frame.y,
         _currentAnimationDocument->frames[_currentFrame].frame.w,
@@ -94,9 +94,9 @@ void AnimationComponent::OnComponentAdd(GameObject &parent)
     GetGame().AddDrawObject(this);
 }
 
-SDL_Rect AnimationComponent::GetDrawRect()
+geRectangle AnimationComponent::GetDrawRect()
 {
-    return SDL_Rect{Parent()->Location().x + _offset.x, Parent()->Location().y + _offset.y, SpriteImageRect.w * SizeMultiplier, SpriteImageRect.h * SizeMultiplier};
+    return geRectangle{Parent()->Location().x + _offset.x, Parent()->Location().y + _offset.y, SpriteImageRect.w * SizeMultiplier, SpriteImageRect.h * SizeMultiplier};
 }
 
 void AnimationComponent::AddTransition(std::string from, std::string to, bool matchCondition, bool *matchRef)

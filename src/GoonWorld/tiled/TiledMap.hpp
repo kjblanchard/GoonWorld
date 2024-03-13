@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-typedef struct SDL_Rect SDL_Rect;
+#include <GoonEngine/rectangle.h>
 
 namespace GoonWorld
 {
@@ -65,7 +65,7 @@ namespace GoonWorld
 
     public:
         TiledMap(std::string filename);
-        SDL_Rect GetGidSourceRect(int gid);
+        geRectangle GetGidSourceRect(int gid);
         const TiledMapTileset *const GetGidTiledMapTileset(int gid);
         const Tileset *const GetTiledMapTilesetTileset(const TiledMapTileset *tilesetName);
 
@@ -80,6 +80,6 @@ namespace GoonWorld
         std::vector<TiledProperty> Properties;
 
     private:
-        SDL_Rect GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset);
+        geRectangle GetSourceRectForGidWithTileset(int gid, const TiledMap::Tileset *tileset);
     };
 }

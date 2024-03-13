@@ -31,7 +31,7 @@ Animator::Animator(std::string filepath)
     std::ifstream fileStream(fullPathJson);
     auto fileJson = json::parse(fileStream);
     _loadedDocument = GoonWorld::AsepriteDocument::from_json(fileJson);
-    auto config = Game::Instance()->GameSettings->AnimationConfig[filepath];
+    auto config = Game::Instance()->GetAppSettings().AnimationConfig[filepath];
     _defaultAnimation = config.Default;
     for (auto &animation : config.Animations)
     {

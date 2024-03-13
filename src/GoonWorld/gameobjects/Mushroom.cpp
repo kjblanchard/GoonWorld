@@ -10,7 +10,7 @@ using namespace GoonWorld;
 
 const char* mushroomSound = "mushroom";
 
-Mushroom::Mushroom(SDL_Rect *rect)
+Mushroom::Mushroom(geRectangle *rect)
     : GameObject(rect), _startedMoving(false)
 {
     // _debugDrawComponent = new DebugDrawComponent(Point{rect->w, rect->h});

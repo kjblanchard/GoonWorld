@@ -4,7 +4,6 @@ typedef struct gpOverlap gpOverlap;
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/ITakeDamage.hpp>
 
-typedef struct SDL_Rect SDL_Rect;
 
 namespace GoonWorld
 {
@@ -15,7 +14,7 @@ namespace GoonWorld
     class Mushroom : public GameObject, public ITakeDamage
     {
     public:
-        Mushroom(SDL_Rect *rect);
+        Mushroom(geRectangle *rect);
         void Update() override;
         void TakeDamage() override;
         void Push(bool right);

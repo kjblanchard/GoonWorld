@@ -16,7 +16,7 @@ Coin::Coin(TiledMap::TiledObject &object)
 {
     _location = Point{object.X, object.Y};
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
-    auto bodyRect = SDL_Rect{object.X, object.Y, object.Width, object.Height};
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     // _debugDrawComponent = new DebugDrawComponent(Point{rect->w, rect->h});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Coin);

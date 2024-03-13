@@ -2,7 +2,6 @@
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonEngine/SdlWindow.h>
 #include <GoonEngine/SdlSurface.h>
-#include <SDL2/SDL_rect.h>
 #include <GoonWorld/core/Game.hpp>
 using namespace GoonWorld;
 

@@ -9,13 +9,9 @@ SDL_Texture *g_BackgroundAtlas = NULL;
 SDL_Rect* g_backgroundDrawRect = NULL;
 extern SDL_Renderer *g_pRenderer;
 
-void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
+void SetBackgroundAtlas(SDL_Texture *background)
 {
     g_BackgroundAtlas = background;
-    // g_backgroundDrawRect.x = rect->x;
-    // g_backgroundDrawRect.y = rect->y;
-    // g_backgroundDrawRect.h = rect->h;
-    // g_backgroundDrawRect.w = rect->w;
 }
 void SetCameraRect(geRectangle *rect)
 {
@@ -106,9 +102,9 @@ SDL_Surface *LoadTextureAtlas(int width, int height)
 
 void BlitSurface(
     SDL_Surface *srcSurface,
-    SDL_Rect *srcRect,
+    geRectangle *srcRect,
     SDL_Surface *dstSurface,
-    SDL_Rect *dstRect)
+    geRectangle *dstRect)
 {
     // int result = SDL_BlitSurface(srcSurface, srcRect, dstSurface, dstRect);
     int result = SDL_BlitSurface(srcSurface, srcRect, dstSurface, dstRect);
@@ -148,7 +144,7 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
 }
 
 // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
-void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip)
+void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip)
 {
 
     SDL_Rect translatedDstRect;
@@ -161,7 +157,7 @@ void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, boo
     // SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
     SDL_RenderCopyEx(g_pRenderer,
                      texture,
-                     srcRect,
+                     (SDL_Rect*)srcRect,
                      &translatedDstRect,
                      0,
                      NULL,

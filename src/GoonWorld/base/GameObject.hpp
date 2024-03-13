@@ -8,7 +8,6 @@
 #include <GoonWorld/common/TimeSpan.hpp>
 #include <GoonEngine/point.h>
 
-typedef struct SDL_Rect SDL_Rect;
 namespace GoonWorld
 {
     class Game;
@@ -19,7 +18,7 @@ namespace GoonWorld
     {
     public:
         GameObject();
-        GameObject(SDL_Rect *rect);
+        GameObject(geRectangle *rect);
         GameObject(TiledMap::TiledObject);
         virtual ~GameObject();
         virtual void Start() const override;

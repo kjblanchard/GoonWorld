@@ -11,7 +11,6 @@
 #pragma once
 
 #include <SDL2/SDL_types.h>
-#include <SDL2/SDL_rect.h>
 #include <GoonEngine/rectangle.h>
 #include <GoonEngine/color.h>
 
@@ -25,24 +24,16 @@ extern "C"
 
     SDL_Surface *LoadSurfaceFromFile(const char *filePath, void **data);
     SDL_Surface *LoadTextureAtlas(int width, int height);
-    // void BlitSurface(SDL_Surface *atlasSurface, SDL_Surface *tileSurface, SDL_Rect *dstRect, SDL_Rect *srcRect);
-    void BlitSurface(SDL_Surface *srcSurface, SDL_Rect *srcRect, SDL_Surface *dstSurface, SDL_Rect *dstRect);
+    void BlitSurface(SDL_Surface *srcSurface, geRectangle *srcRect, SDL_Surface *dstSurface, geRectangle *dstRect);
     SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface);
     void DestroyPixelData(void *data);
     void DestroySurface(SDL_Surface *surface);
     void DestroyTexture(SDL_Texture *texture);
-    void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect);
+    void SetBackgroundAtlas(SDL_Texture *background);
     void SetCameraRect(geRectangle *rect);
     SDL_Texture *CreateTextureFromFile(const char *filename);
-    // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect);
-    void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip);
+    void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip);
     void geDrawDebugRect(geRectangle *rect, geColor *color);
-    // int geDrawTexture( SDL_Texture * texture,
-    //                    const SDL_Rect * srcrect,
-    //                    const SDL_Rect * dstrect,
-    //                    const double angle,
-    //                    const SDL_Point *center,
-    //                    const SDL_RendererFlip flip);
 #ifdef __cplusplus
 }
 #endif
