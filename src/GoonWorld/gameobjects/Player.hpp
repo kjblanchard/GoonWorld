@@ -22,10 +22,33 @@ namespace GoonWorld
         ~Player();
 
     private:
+        struct PlayerFlags
+        {
+            static const int RunningButtonDown = 1 << 0;
+            static const int CanJump = 1 << 1;
+            static const int EnemyJustKilled = 1 << 2;
+            static const int NoDeathVelocity = 1 << 3;
+            static const int IsBig = 1 << 4;
+            static const int IsInvincible = 1 << 5;
+        };
+        inline bool SetFlag(int flag, bool onOff)
+        {
+            if (onOff)
+            {
+                _playerFlags |= flag; // Set the flag
+            }
+            else
+            {
+                _playerFlags &= ~flag; // Unset the flag
+            }
+        }
+        inline bool IsFlagSet(int flag) { return (_playerFlags & flag); }
+        int32_t _playerFlags = 0;
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
 
     private:
-        bool _isJumping = false, _canJump = false, _isTurning = false, _isRunningButtonDown = false, _enemyJustKilled = false, _isDying = false, _isDead = false, _noDeathVelocity = false, _isTurningBig = false, _isBig = false, _isInvincible = false;
+        bool _isJumping = false, _canJump = false, _isTurning = false, _enemyJustKilled = false, _isDying = false, _isDead = false;
+        bool _noDeathVelocity = false, _isTurningBig = false, _isBig = false, _isInvincible = false;
         bool _isWinning = false, _isWinWalking = false;
         int _jumpFrameVelocity = 0, _initialJumpVelocity = 0, _runSpeedBoost = 0, _walkSpeedBoost = 0, _maxRunSpeed = 0, _maxWalkSpeed = 0, _initialMoveVelocity = 0, _currentBigIterations = 0;
         int _coinsCollected = 0;

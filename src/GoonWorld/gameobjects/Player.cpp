@@ -97,7 +97,7 @@ Player::Player(TiledMap::TiledObject &object)
 
 void Player::InitializePlayerConfig()
 {
-    auto& playerConfig = GetGame().GetAppSettings().PlayerConfigs;
+    auto &playerConfig = GetGame().GetAppSettings().PlayerConfigs;
     _jumpFrameVelocity = playerConfig.FrameJumpAcceleration;
     _initialJumpVelocity = playerConfig.InitialJumpVelocity;
     _runSpeedBoost = playerConfig.RunSpeedBoost;
@@ -223,7 +223,7 @@ void Player::AnimationUpdate()
 
 float Player::CalculateFrameMaxVelocity()
 {
-    if (_isRunningButtonDown)
+    if (IsFlagSet(PlayerFlags::RunningButtonDown))
         return _maxRunSpeed;
     if (std::abs(_rigidbodyComponent->Velocity().x) > _maxWalkSpeed)
         return _maxRunSpeed;
@@ -241,7 +241,7 @@ void Player::HandleInput()
             Game::Instance()->TriggerRestartLevel();
         }
     }
-    _isRunningButtonDown = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);
+    SetFlag(PlayerFlags::RunningButtonDown, _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X));
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
@@ -274,7 +274,7 @@ void Player::HandleLeftRightMovement(bool movingRight)
         return;
     }
 
-    else if (_isRunningButtonDown)
+    else if (IsFlagSet(PlayerFlags::RunningButtonDown))
     {
         auto moveSpeed = _runSpeedBoost * moveDirectionMultiplier;
         _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
