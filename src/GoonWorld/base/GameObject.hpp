@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <list>
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonWorld/interfaces/IStart.hpp>
@@ -11,18 +12,19 @@ typedef struct SDL_Rect SDL_Rect;
 namespace GoonWorld
 {
     class Component;
+    class Timer;
     class GameObject : public IUpdate, public IStart, public IEnable
     {
     public:
         GameObject();
-        GameObject(SDL_Rect* rect);
+        GameObject(SDL_Rect *rect);
         GameObject(TiledMap::TiledObject);
         virtual ~GameObject();
         virtual void Start() const override;
         virtual void Update() override;
         inline unsigned int Id() { return _id; }
         inline Point &Location() { return _location; }
-        inline bool IsEnabled() const override {return _enabled;}
+        inline bool IsEnabled() const override { return _enabled; }
         virtual void Enabled(bool isEnabled) override;
         virtual void OnEnabled() override;
         virtual void OnDisabled() override;
@@ -31,16 +33,19 @@ namespace GoonWorld
         Component *GetComponent(unsigned int componentType);
         template <typename T>
         T *GetComponentOfType(unsigned int componentType);
+        static void UpdateTimers();
         static TimeSpan DeltaTime;
         // TODO make this private
         static std::vector<std::shared_ptr<GameObject>> _gameobjects;
 
     protected:
+        void AddTimer(Timer *timer);
         unsigned int _id;
         Point _location;
         std::vector<std::shared_ptr<Component>> _components;
 
     private:
+        static std::list<std::shared_ptr<Timer>> _timers;
         static unsigned int _numGameObjects;
         bool _enabled;
     };

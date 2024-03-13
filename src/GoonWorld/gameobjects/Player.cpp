@@ -20,6 +20,7 @@
 #include <GoonWorld/common/Helpers.hpp>
 #include <SDL2/SDL_rect.h>
 #include <GoonWorld/core/Camera.hpp>
+#include <GoonWorld/core/Timer.hpp>
 using namespace GoonWorld;
 
 static Sfx *jumpSound;
@@ -135,7 +136,7 @@ void Player::Update()
             _animationComponent->Visible(false);
         else if (_currentInvincibleTime > 0.6 && _currentInvincibleTime < 0.8)
             _animationComponent->Visible(true);
-        else if (_currentInvincibleTime > 0.8 && _currentInvincibleTime < 0.9999999999)
+        else if (_currentInvincibleTime > 0.8 && _currentInvincibleTime < 0.9)
             _animationComponent->Visible(false);
         else
             _animationComponent->Visible(true);
@@ -228,7 +229,7 @@ float Player::CalculateFrameMaxVelocity()
 
 void Player::HandleInput()
 {
-    if (_isDying || _isTurningBig ||  _isWinning)
+    if (_isDying || _isTurningBig || _isWinning)
         return;
     if (_isDead || _isWinWalking)
     {
@@ -414,28 +415,23 @@ void Player::Win()
     if (!_isWinning)
     {
         // Stop everything, and whistle
-        _currentWhistleTime = 0;
+        // _currentWhistleTime = 0;
         _isWinning = true;
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
         gsPlaySfxOneShot(whistleSound, 1.0f);
+        auto timer = new Timer(dynamic_cast<GameObject *>(this),
+                               _winningWhistleTimer,
+                               [](GameObject *obj)
+                               {
+                                   auto player = static_cast<Player *>(obj);
+                                   player->SlideFunc();
+                               });
+        AddTimer(timer);
         return;
     }
     // Tick until whistle time is up
-    if (_currentWhistleTime < _winningWhistleTimer)
-    {
-        _currentWhistleTime += DeltaTime.GetTotalSeconds();
-    }
-    else
-    {
-        _rigidbodyComponent->GravityEnabled(true);
-        Game::Instance()->GetSound()->LoadBgm("win");
-        Game::Instance()->GetSound()->PlayBgm("win", 0);
-        _isWinning = false;
-        _isWinWalking = true;
-    }
-    _currentDeadTime = 0;
 }
 
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
@@ -468,6 +464,10 @@ void Player::CoinOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
         return;
     ++_coinsCollected;
     coin->TakeDamage();
+}
+
+void Player::GettingBigUpdate()
+{
 }
 
 // void Player::PowerChange()
@@ -536,6 +536,17 @@ void Player::Powerup(bool isGettingBig)
         }
     }
 }
+
+void Player::SlideFunc()
+{
+    _rigidbodyComponent->GravityEnabled(true);
+    Game::Instance()->GetSound()->LoadBgm("win");
+    Game::Instance()->GetSound()->PlayBgm("win", 0);
+    _isWinning = false;
+    _isWinWalking = true;
+    _currentDeadTime = 0;
+}
+
 void Player::WinWalking()
 {
     _rigidbodyComponent->Velocity().x = 25;

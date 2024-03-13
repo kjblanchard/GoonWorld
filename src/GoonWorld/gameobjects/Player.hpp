@@ -31,7 +31,7 @@ namespace GoonWorld
         int _coinsCollected = 0;
         float _currentJumpTime = 0, _maxJumpTime = 0, _goombaKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
 
-        float _currentWhistleTime = 0;
+        // float _currentWhistleTime = 0;
         const float _winningWhistleTimer = .75;
 
         const float _deadTimer = 0.65;
@@ -40,6 +40,8 @@ namespace GoonWorld
         const float _bigIterationTime = 0.1;
 
     private:
+        void GettingBigUpdate();
+        void SlideFunc();
         void HandleInput();
         void AnimationUpdate();
         bool ShouldMirrorImage();

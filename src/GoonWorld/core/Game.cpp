@@ -34,7 +34,7 @@ Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObjec
                             GameSettings->WindowConfig.Title.c_str());
     InitializePhysics();
     _sound = std::make_unique<Sound>(GameSettings->SoundConfigs);
-    _camera =  std::make_unique<Camera>(SDL_Rect{0,0,GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
+    _camera = std::make_unique<Camera>(SDL_Rect{0, 0, GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
     _gameInstance = this;
 }
 Game::~Game()
@@ -62,6 +62,7 @@ void Game::Update(double timeMs)
             _playerBig->Update();
         return;
     }
+    GameObject::UpdateTimers();
     for (auto object : UpdateObjects)
     {
         object->Update();

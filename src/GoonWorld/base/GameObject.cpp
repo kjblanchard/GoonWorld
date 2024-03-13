@@ -1,7 +1,10 @@
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Timer.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/base/Component.hpp>
 using namespace GoonWorld;
+
+std::list<std::shared_ptr<Timer>> GameObject::_timers;
 
 unsigned int GameObject::_numGameObjects = 0;
 TimeSpan GameObject::DeltaTime = TimeSpan(0);
@@ -84,4 +87,28 @@ void GameObject::OnDisabled()
     {
         component->Enabled(false);
     }
+}
+
+void GameObject ::UpdateTimers()
+{
+    // Iterate through the list and update timers
+    auto it = _timers.begin();
+    while (it != _timers.end())
+    {
+        if ((*it)->Tick(DeltaTime.GetTotalSeconds()))
+        {
+            // Timer is finished, erase it and update the iterator
+            it = _timers.erase(it);
+        }
+        else
+        {
+            // Timer is not finished, move to the next one
+            ++it;
+        }
+    }
+}
+
+void GameObject::AddTimer(Timer *timer)
+{
+    _timers.push_back(std::shared_ptr<Timer>(timer));
 }
