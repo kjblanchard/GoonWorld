@@ -10,7 +10,7 @@ namespace GoonWorld
     class Animator;
     class Animation;
     class AsepriteDocument;
-    class AnimationComponent : public Component, IDraw
+    class AnimationComponent : public Component, public IDraw
     {
     public:
         AnimationComponent(std::string animator);

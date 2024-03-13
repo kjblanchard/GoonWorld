@@ -5,11 +5,11 @@ extern "C"
 {
 #endif
 
-    typedef struct Color
+    typedef struct geColor
     {
         unsigned char R, G, B, A;
 
-    } Color;
+    } geColor;
 #ifdef __cplusplus
 }
 #endif

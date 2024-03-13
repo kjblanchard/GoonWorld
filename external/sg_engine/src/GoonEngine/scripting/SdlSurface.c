@@ -3,6 +3,7 @@
 #include <GoonEngine/debug.h>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/color.h>
+#include <GoonEngine/rectangle.h>
 
 SDL_Texture *g_BackgroundAtlas = NULL;
 SDL_Rect* g_backgroundDrawRect = NULL;
@@ -16,9 +17,9 @@ void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect)
     // g_backgroundDrawRect.h = rect->h;
     // g_backgroundDrawRect.w = rect->w;
 }
-void SetCameraRect(SDL_Rect *rect)
+void SetCameraRect(geRectangle *rect)
 {
-    g_backgroundDrawRect = rect;
+    g_backgroundDrawRect = (SDL_Rect*)rect;
 }
 
 static void flipImageVertically(unsigned char *data, int width, int height, int channels)
@@ -168,7 +169,7 @@ void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, boo
     //  (shouldFlip) ? SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL : SDL_FLIP_NONE | SDL_FLIP_VERTICAL);
 }
 
-void DrawDebugRect(SDL_Rect* dstRect, Color* color)
+void geDrawDebugRect(geRectangle* dstRect, geColor* color)
 {
     SDL_Rect translatedDstRect;
     // translatedDstRect.x = g_backgroundDrawRect->x - dstRect->x;

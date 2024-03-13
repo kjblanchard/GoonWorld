@@ -1,4 +1,5 @@
 #include <GoonWorld/base/Component.hpp>
+#include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 using namespace GoonWorld;
 std::unordered_map<unsigned int, std::unordered_map<unsigned int, Component *>> Component::GameObjectComponentTypeMap;
@@ -17,6 +18,11 @@ Component::~Component()
 {
     GameObjectComponentTypeMap[_parent->Id()].erase(_componentType);
 }
+Game &Component::GetGame()
+{
+    return *Game::Instance();
+}
+
 void Component::OnComponentAdd(GameObject &parent)
 {
     _parent = &parent;

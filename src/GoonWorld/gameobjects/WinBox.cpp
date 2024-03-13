@@ -1,5 +1,6 @@
 #include <GoonWorld/gameobjects/WinBox.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
+#include <SDL2/SDL_rect.h>
 using namespace GoonWorld;
 
 WinBox::WinBox(TiledMap::TiledObject &object)

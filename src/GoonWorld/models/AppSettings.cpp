@@ -10,6 +10,8 @@ AppSettings::AppSettings(const char *filepath)
     WindowConfig.WindowSize.x = data["windowConfig"]["windowSize"]["x"].get<float>();
     WindowConfig.WindowSize.y = data["windowConfig"]["windowSize"]["y"].get<float>();
     WindowConfig.Title = data["windowConfig"]["title"].get<std::string>();
+    auto debugConfig = data["debugConfig"];
+    DebugConfig.SolidDebug = debugConfig["solidObjectDebug"];
     auto soundConfig = data["soundConfig"];
     SoundConfigs.MusicVolume = soundConfig["musicVolume"];
     for (auto &song : soundConfig["musicToLoad"])

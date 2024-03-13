@@ -6,7 +6,7 @@
 
 namespace GoonWorld
 {
-    class DebugDrawComponent : public Component, IDraw
+    class DebugDrawComponent : public Component, public IDraw
     {
     public:
         DebugDrawComponent(Point size);
@@ -14,7 +14,7 @@ namespace GoonWorld
         void OnComponentAdd(GameObject &parent) override;
         inline void Visible(bool isVisible) override { _visible = isVisible; }
         inline bool IsVisible() override { return _visible; }
-        Color DrawColor;
+        geColor DrawColor;
         Point Size;
 
     private:

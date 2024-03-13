@@ -1,3 +1,4 @@
+#include <nlohmann/json.hpp>
 #include <GoonWorld/models/AsepriteDocument.hpp>
 using json = nlohmann::json;
 using namespace GoonWorld;

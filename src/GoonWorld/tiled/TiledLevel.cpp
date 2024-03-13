@@ -5,6 +5,7 @@
 #include <GoonEngine/SdlSurface.h>
 #include <GoonPhysics/scene.h>
 #include <GoonPhysics/body.h>
+#include <nlohmann/json.hpp>
 #include <GoonWorld/shared/Constants.hpp>
 using namespace GoonWorld;
 
@@ -154,5 +155,4 @@ void TiledLevel::LoadGravity()
 void TiledLevel::RestartLevel()
 {
     LoadSolidObjects();
-    // CreateBackgroundAtlas();
 }

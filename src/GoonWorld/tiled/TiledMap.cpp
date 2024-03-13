@@ -1,5 +1,7 @@
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonWorld/shared/Constants.hpp>
+#include <nlohmann/json.hpp>
+#include <SDL2/SDL_rect.h>
 using json = nlohmann::json;
 using namespace GoonWorld;
 

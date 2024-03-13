@@ -91,7 +91,7 @@ void AnimationComponent::Draw()
 void AnimationComponent::OnComponentAdd(GameObject &parent)
 {
     Component::OnComponentAdd(parent);
-    Game::Instance()->DrawObjects.push_back(this);
+    GetGame().AddDrawObject(this);
 }
 
 SDL_Rect AnimationComponent::GetDrawRect()

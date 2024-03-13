@@ -16,7 +16,7 @@ extern "C"
 {
 #endif
 
-    int CreateWindowAndRenderer(unsigned int width, unsigned int height, const char *windowName);
+    int geInitializeRenderingWindow(unsigned int width, unsigned int height, const char *windowName);
 #ifdef __cplusplus
 }
 #endif

@@ -12,7 +12,8 @@
 
 #include <SDL2/SDL_types.h>
 #include <SDL2/SDL_rect.h>
-typedef struct Color Color;
+#include <GoonEngine/rectangle.h>
+#include <GoonEngine/color.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -31,11 +32,11 @@ extern "C"
     void DestroySurface(SDL_Surface *surface);
     void DestroyTexture(SDL_Texture *texture);
     void SetBackgroundAtlas(SDL_Texture *background, SDL_Rect *rect);
-    void SetCameraRect(SDL_Rect *rect);
+    void SetCameraRect(geRectangle *rect);
     SDL_Texture *CreateTextureFromFile(const char *filename);
     // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect);
     void DrawTexture(SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect, bool shouldFlip);
-    void DrawDebugRect(SDL_Rect *rect, Color *color);
+    void geDrawDebugRect(geRectangle *rect, geColor *color);
     // int geDrawTexture( SDL_Texture * texture,
     //                    const SDL_Rect * srcrect,
     //                    const SDL_Rect * dstrect,

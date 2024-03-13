@@ -45,6 +45,10 @@ namespace GoonWorld
             std::string Name;
             bool Looping;
         };
+        struct DebugConfig
+        {
+            bool SolidDebug;
+        };
         struct PlayerConfig
         {
             float InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, WalkSpeedBoost, RunSpeedBoost, MaxWalkSpeed, MaxRunSpeed, MaxJumpTime;
@@ -60,6 +64,7 @@ namespace GoonWorld
         KeyboardConfig KeyboardConfig;
         ControllerConfig ControllerConfig;
         PlayerConfig PlayerConfigs;
+        DebugConfig DebugConfig;
         std::unordered_map<std::string, Animation> AnimationConfig;
 
     private:

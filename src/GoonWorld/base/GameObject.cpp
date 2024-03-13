@@ -2,6 +2,7 @@
 #include <GoonWorld/core/Timer.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/base/Component.hpp>
+#include <SDL2/SDL_rect.h>
 using namespace GoonWorld;
 
 std::list<std::shared_ptr<Timer>> GameObject::_timers;
@@ -13,8 +14,7 @@ std::vector<std::shared_ptr<GameObject>> GameObject::_gameobjects;
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{0, 0})
 {
-    // Game::Instance()->UpdateObjects.push_back(std::shared_ptr<IUpdate>(this));
-    Game::Instance()->UpdateObjects.push_back(this);
+    Game::Instance()->AddUpdateObject(this);
     _gameobjects.push_back(std::shared_ptr<GameObject>(this));
     _enabled = true;
 }
@@ -91,6 +91,11 @@ void GameObject::OnDisabled()
 Sound &GameObject::GetGameSound()
 {
     return *Game::Instance()->GetSound();
+}
+
+Game &GameObject::GetGame()
+{
+    return *Game::Instance();
 }
 
 void GameObject ::UpdateTimers()

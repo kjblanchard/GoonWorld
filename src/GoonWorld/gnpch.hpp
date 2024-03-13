@@ -6,6 +6,4 @@
 #include <algorithm>
 #include <chrono>
 #include <GoonEngine/debug.h>
-#include <nlohmann/json.hpp>
-
-#include <SDL2/SDL_rect.h>
+// #include <nlohmann/json.hpp>

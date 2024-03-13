@@ -237,7 +237,7 @@ void Player::HandleInput()
     {
         if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
         {
-            Game::Instance()->RestartLevel();
+            Game::Instance()->TriggerRestartLevel();
         }
     }
     _isRunningButtonDown = _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X);

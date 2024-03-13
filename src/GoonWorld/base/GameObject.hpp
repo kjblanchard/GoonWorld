@@ -11,6 +11,7 @@
 typedef struct SDL_Rect SDL_Rect;
 namespace GoonWorld
 {
+    class Game;
     class Sound;
     class Component;
     class Timer;
@@ -41,7 +42,7 @@ namespace GoonWorld
 
     protected:
         Sound &GetGameSound();
-
+        Game &GetGame();
         void AddTimer(Timer *timer);
         unsigned int _id;
         Point _location;

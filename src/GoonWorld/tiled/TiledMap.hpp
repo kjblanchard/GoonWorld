@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-struct SDL_Rect;
+typedef struct SDL_Rect SDL_Rect;
 
 namespace GoonWorld
 {

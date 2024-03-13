@@ -1,7 +1,7 @@
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 using namespace GoonWorld;
-Camera::Camera(SDL_Rect cameraBounds) : _cameraBounds(cameraBounds), _followTarget(nullptr), levelSize(Point{0, 0})
+Camera::Camera(geRectangle cameraBounds) : _cameraBounds(cameraBounds), _followTarget(nullptr), levelSize(Point{0, 0})
 {
 }
 

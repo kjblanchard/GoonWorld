@@ -14,16 +14,16 @@ void DebugDrawComponent::Draw()
 {
     if (!_enabled)
         return;
-    SDL_Rect dstRect{
+    geRectangle dstRect{
         _parent->Location().x,
         _parent->Location().y,
         Size.x,
         Size.y};
-    DrawDebugRect(&dstRect, &DrawColor);
+    geDrawDebugRect(&dstRect, &DrawColor);
 }
 void DebugDrawComponent::OnComponentAdd(GameObject &parent)
 {
     Component::OnComponentAdd(parent);
     Enabled(true);
-    Game::Instance()->DrawObjects.push_back(this);
+    GetGame().AddDrawObject(this);
 }

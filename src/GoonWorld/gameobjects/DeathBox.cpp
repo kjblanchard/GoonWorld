@@ -1,5 +1,6 @@
 #include <GoonWorld/gameobjects/DeathBox.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
+#include <SDL2/SDL_rect.h>
 using namespace GoonWorld;
 
 DeathBox::DeathBox(TiledMap::TiledObject &object)

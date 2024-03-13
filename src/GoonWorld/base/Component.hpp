@@ -7,6 +7,7 @@
 
 namespace GoonWorld
 {
+    class Game;
     class GameObject;
     class Component : IUpdate, IStart, IEnable
     {
@@ -24,6 +25,7 @@ namespace GoonWorld
         void OnDisabled() override;
 
     protected:
+        Game& GetGame();
         GameObject *_parent;
         unsigned int _componentType;
         bool _enabled;

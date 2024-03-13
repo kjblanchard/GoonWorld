@@ -1,24 +1,23 @@
 #include <GoonWorld/core/Game.hpp>
-#include <GoonPhysics/GoonPhysics.h>
 #include <GoonWorld/core/Sound.hpp>
-#include <GoonEngine/color.h>
-#include <GoonEngine/SdlWindow.h>
+#include <GoonWorld/core/Content.hpp>
+#include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
-#include <GoonWorld/core/Content.hpp>
+#include <GoonPhysics/GoonPhysics.h>
 #include <GoonEngine/test.h>
-#include <GoonPhysics/scene.h>
-#include <GoonWorld/core/Camera.hpp>
+#include <GoonEngine/color.h>
 #include <GoonEngine/SdlSurface.h>
-#include <GoonWorld/gameobjects/GameObjects.hpp>
+#include <GoonEngine/SdlWindow.h>
+#include <GoonEngine/rectangle.h>
 using namespace GoonWorld;
-Game *Game::_gameInstance = nullptr;
+
 long long Game::_ticks = 0;
-static const bool SOLID_DEBUG = false;
+Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
@@ -30,31 +29,36 @@ Game::Game()
         exit(1);
     }
     GameSettings = new AppSettings("assets/config/appsettings.json");
-    CreateWindowAndRenderer(GameSettings->WindowConfig.WindowSize.x,
+    geInitializeRenderingWindow(GameSettings->WindowConfig.WindowSize.x,
                             GameSettings->WindowConfig.WindowSize.y,
                             GameSettings->WindowConfig.Title.c_str());
-    InitializePhysics();
     _sound = std::make_unique<Sound>(GameSettings->SoundConfigs);
-    _camera = std::make_unique<Camera>(SDL_Rect{0, 0, GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
+    _camera = std::make_unique<Camera>(geRectangle{0, 0, GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
     _gameInstance = this;
 }
+
 Game::~Game()
 {
     GameSpawnMap.clear();
     Content::ClearContent();
 }
+
 void Game::Update(double timeMs)
 {
     ++_ticks;
+    auto totalSeconds = timeMs / 1000;
+    GameObject::DeltaTime = TimeSpan(totalSeconds);
+
     if (_shouldRestart)
         RestartLevel();
+    // If there is not a player getting big, we should update physics.
     if (!_playerBig)
     {
         RigidbodyComponent::PhysicsUpdate();
     }
     _camera->Update();
-    auto totalSeconds = timeMs / 1000;
-    GameObject::DeltaTime = TimeSpan(totalSeconds);
+
+    // If there is a player dying or player getting big, we should only update them.
     if (_playerDying || _playerBig)
     {
         if (_playerDying)
@@ -63,12 +67,14 @@ void Game::Update(double timeMs)
             _playerBig->Update();
         return;
     }
+
     GameObject::UpdateTimers();
     for (auto object : UpdateObjects)
     {
         object->Update();
     }
 }
+
 void Game::Draw()
 {
     for (auto object : DrawObjects)
@@ -77,17 +83,13 @@ void Game::Draw()
             object->Draw();
     }
 
-    if (_loadedLevel)
+    if (GameSettings->DebugConfig.SolidDebug)
     {
-        // Drawing debug rects on solids
-        if (SOLID_DEBUG)
+        for (auto &solid : _loadedLevel->GetAllSolidObjects())
         {
-            for (auto &solid : _loadedLevel->GetAllSolidObjects())
-            {
-                auto box = SDL_Rect{solid.X, solid.Y, solid.Width, solid.Height};
-                auto color = Color{0, 255, 0, 255};
-                DrawDebugRect(&box, &color);
-            }
+            auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
+            auto color = geColor{0, 255, 0, 255};
+            geDrawDebugRect(&box, &color);
         }
     }
 }
@@ -96,6 +98,7 @@ void Game::PlayerDie(Player *player)
 {
     _playerDying = player;
 }
+
 void Game::PlayerBig(Player *player)
 {
     _playerBig = player;
@@ -108,43 +111,22 @@ void Game::PlayerBig(Player *player)
         gpSceneSetEnabled(true);
     }
 }
+
 void Game::RestartLevel()
 {
     if (!_loadedLevel)
         return;
-    if (!_shouldRestart)
-    {
-        _shouldRestart = true;
-        return;
-    }
     _shouldRestart = false;
-    // for (size_t i = 0; i < 1000; i++)
-    // {
-    // Get rid of all update objects and draw objects
-    UpdateObjects.clear();
-    DrawObjects.clear();
-    // Is there any more gameobjects we are forgetting about?
-    // I think we should have a master list of gos
-    GameObject::_gameobjects.clear();
-
     _playerDying = nullptr;
     _playerBig = nullptr;
-    InitializePhysics();
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    GameObject::_gameobjects.clear();
     RigidbodyComponent::ResetRigidBodyVector();
-    // LoadLevel(_loadedLevel->GetName());
-    // Move this to func?
-
-    auto result = _sound->LoadBgm("platforms");
-    gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
-    gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
-    _loadedLevel->SetTextureAtlas();
-    _sound->PlayBgm("platforms");
+    LoadLevel(_loadedLevel->GetName());
     _loadedLevel->RestartLevel();
-    LoadGameObjects();
-    _shouldRestart = false;
-    _camera->Restart();
-    // }
 }
+
 void Game::SetCurrentLevel(TiledLevel *level)
 {
     _loadedLevel = std::unique_ptr<TiledLevel>(level);
@@ -152,15 +134,19 @@ void Game::SetCurrentLevel(TiledLevel *level)
 
 void Game::LoadLevel(std::string level)
 {
-
+    InitializePhysics();
     auto result = _sound->LoadBgm("platforms");
-    _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
+    if (!_loadedLevel)
+    {
+        _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
+    }
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
     _sound->PlayBgm("platforms");
+    _camera->Restart();
     LoadGameObjects();
 }
 void Game::LoadGameObjects()
@@ -180,4 +166,3 @@ void Game::InitializePhysics()
     _scene = gpInitScene();
     geSetCurrentScene(_scene);
 }
-

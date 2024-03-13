@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SDL2/SDL_types.h>
 #include <GoonEngine/point.h>
+#include <GoonEngine/rectangle.h>
 
 namespace GoonWorld
 {
@@ -9,8 +9,8 @@ namespace GoonWorld
     class Camera
     {
     public:
-        Camera(SDL_Rect bounds);
-        inline SDL_Rect *Bounds() { return &_cameraBounds; }
+        Camera(geRectangle bounds);
+        inline geRectangle *Bounds() { return &_cameraBounds; }
         inline void SetLevelSize(Point size) { levelSize = size; }
         inline void Restart()
         {
@@ -21,7 +21,7 @@ namespace GoonWorld
         void Update();
 
     private:
-        SDL_Rect _cameraBounds;
+        geRectangle _cameraBounds;
         Point levelSize;
         GameObject *_followTarget;
     };

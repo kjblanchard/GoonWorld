@@ -4,6 +4,7 @@
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
 #include <GoonWorld/core/Sound.hpp>
+#include <SDL2/SDL_rect.h>
 
 using namespace GoonWorld;
 
