@@ -344,19 +344,16 @@ void Player::Jump()
     // If we can jump, we should jump
     if (_canJump)
     {
-        puts("We can jump!");
         _canJump = false;
         // Initial jump from ground
         // If we are already jumping and killed an enemy, we should reset the jump timer
         if (jumpTimer)
         {
-            puts("Resetting jump timer");
             jumpTimer->Reset();
         }
         // Else we should create a new jump timer.
         else
         {
-            puts("Creating jump timer");
             jumpTimer = new Timer(this,
                                   _maxJumpTime,
                                   [](GameObject *obj, bool finished)
@@ -366,14 +363,12 @@ void Player::Jump()
                                       //   puts("Doing it");
                                       if (finished)
                                       {
-                                          puts("Setting isjumping false");
                                           player->_isJumping = player->_canJump = false;
                                           player->jumpTimer = nullptr;
                                           return true;
                                       }
                                       if (player->_isJumping)
                                       {
-                                          puts("Extending");
                                           player->_rigidbodyComponent->Acceleration().y += (player->_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
                                       }
                                       return false;
