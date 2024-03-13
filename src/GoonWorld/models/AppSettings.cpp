@@ -16,7 +16,6 @@ AppSettings::AppSettings(const char *filepath)
     {
         Music music;
         music.Name = song["name"];
-        music.Title = song["title"];
         music.LoopStart = song["startLoop"];
         music.LoopEnd = song["endLoop"];
         SoundConfigs.Music.push_back(music);

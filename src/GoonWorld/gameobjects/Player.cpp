@@ -15,7 +15,7 @@
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
-#include <GoonEngine/Sound.h>
+#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <SDL2/SDL_rect.h>
@@ -23,9 +23,9 @@
 #include <GoonWorld/core/Timer.hpp>
 using namespace GoonWorld;
 
-static Sfx *jumpSound;
-static Sfx *powerdownSound;
-static Sfx *whistleSound;
+static gsSfx *jumpSound;
+static gsSfx *powerdownSound;
+static gsSfx *whistleSound;
 
 Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false)
@@ -37,9 +37,9 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -36});
-    jumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
-    powerdownSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "powerdown");
-    whistleSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "whistle");
+    jumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
+    powerdownSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerdown");
+    whistleSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "whistle");
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
@@ -367,7 +367,7 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     if (goomba->IsDead())
         return;
-    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown && !_goombaKillTime)
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown )
     {
         _goombaKillTime += DeltaTime.GetTotalSeconds();
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
@@ -400,8 +400,8 @@ void Player::TakeDamage()
 void Player::Die()
 {
     Game::Instance()->PlayerDie(this);
-    Game::Instance()->GetSound()->LoadBgm("dead");
-    Game::Instance()->GetSound()->PlayBgm("dead", 0);
+    Game::Instance()->GetSound()->LoadBgm("playerdie");
+    Game::Instance()->GetSound()->PlayBgm("playerdie", 0);
 
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);

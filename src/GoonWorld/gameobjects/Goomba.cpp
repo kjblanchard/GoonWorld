@@ -5,13 +5,13 @@
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
-#include <GoonEngine/Sound.h>
+#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 using namespace GoonWorld;
 
-static Sfx *dieSound = nullptr;
+static gsSfx *dieSound = nullptr;
 
 Goomba::Goomba(TiledMap::TiledObject &object)
 {
@@ -36,7 +36,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
     gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
     if (!dieSound)
-        dieSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "death");
+        dieSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "death");
     // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
     _debugDrawComponent->Enabled(false);

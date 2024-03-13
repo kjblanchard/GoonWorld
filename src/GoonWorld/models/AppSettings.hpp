@@ -23,7 +23,6 @@ namespace GoonWorld
         };
         struct Music
         {
-            std::string Title;
             std::string Name;
             float LoopStart;
             float LoopEnd;

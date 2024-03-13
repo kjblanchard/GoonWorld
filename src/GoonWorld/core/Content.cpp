@@ -1,7 +1,7 @@
 #include <GoonWorld/gnpch.hpp>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/core/Content.hpp>
-#include <GoonEngine/Sound.h>
+#include <SupergoonSound/include/sound.h>
 
 using namespace GoonWorld;
 
@@ -26,9 +26,12 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     case ContentTypes::Texture:
         loadedContent = CreateTextureFromFile(filename);
         break;
+    case ContentTypes::Bgm:
+        loadedContent = gsLoadBgm((filename));
+        break;
     case ContentTypes::Sfx:
         loadedContent = gsLoadSfxHelper(("assets/audio/" + std::string(filename) + ".ogg").c_str());
-        gsLoadSfx((Sfx *)loadedContent);
+        gsLoadSfx((gsSfx *)loadedContent);
         break;
     default:
         break;
@@ -40,11 +43,6 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     }
     _loadedContent[filename] = {contentType, (void *)loadedContent};
     return loadedContent;
-}
-template <typename T>
-T *Content::GetLoadedContentOfType(const char *filename)
-{
-    return (T *)GetLoadedContent(filename);
 }
 void *Content::GetLoadedContent(const char *filename)
 {
@@ -59,13 +57,16 @@ void Content::ClearContent()
         switch (value.first)
         {
         case ContentTypes::Sfx:
-            gsUnloadSfx((Sfx *)value.second);
+            gsUnloadSfx((gsSfx *)value.second);
             break;
         case ContentTypes::Surface:
             DestroySurface((SDL_Surface *)value.second);
             break;
         case ContentTypes::Texture:
             DestroyTexture((SDL_Texture *)value.second);
+            break;
+        case ContentTypes::Bgm:
+            free((gsBgm *)value.second);
             break;
         default:
             break;

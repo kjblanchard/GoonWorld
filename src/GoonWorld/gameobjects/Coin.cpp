@@ -1,5 +1,6 @@
 #include <GoonWorld/gameobjects/Coin.hpp>
-#include <GoonEngine/Sound.h>
+#include <SupergoonSound/include/sound.h>
+// #include <GoonEngine/Sound.h>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
@@ -8,7 +9,7 @@
 
 using namespace GoonWorld;
 
-static Sfx *coinsound;
+static gsSfx *coinsound;
 
 Coin::Coin(TiledMap::TiledObject &object)
 {
@@ -22,7 +23,7 @@ Coin::Coin(TiledMap::TiledObject &object)
 
     _animationComponent = new AnimationComponent("coin");
     _animationComponent->SizeMultiplier = 2;
-    coinsound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "coin");
+    coinsound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "coin");
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
     _debugDrawComponent->Enabled(false);
 }

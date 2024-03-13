@@ -6,6 +6,7 @@ namespace GoonWorld
         Default,
         Surface,
         Texture,
+        Bgm,
         Sfx,
     };
 
@@ -20,5 +21,12 @@ namespace GoonWorld
 
     private:
     };
+
+    template <typename T>
+    T *Content::GetLoadedContentOfType(const char *filename)
+    {
+        auto content = GetLoadedContent(filename);
+        return (T *)content;
+    }
 
 }

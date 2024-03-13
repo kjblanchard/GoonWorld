@@ -1,5 +1,5 @@
 #include <GoonWorld/gameobjects/Mushroom.hpp>
-#include <GoonEngine/Sound.h>
+#include <SupergoonSound/include/sound.h>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
@@ -8,7 +8,7 @@
 
 using namespace GoonWorld;
 
-static Sfx *mushroomSound;
+static gsSfx *mushroomSound;
 
 Mushroom::Mushroom(SDL_Rect *rect)
     : GameObject(rect), _startedMoving(false)
@@ -26,7 +26,7 @@ Mushroom::Mushroom(SDL_Rect *rect)
     _animationComponent = new AnimationComponent("mushroom");
     _animationComponent->SizeMultiplier = 2;
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
-    mushroomSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "mushroom");
+    mushroomSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "mushroom");
     AddComponent({_rigidbodyComponent, _animationComponent});
 }
 void Mushroom::Update()

@@ -1,5 +1,5 @@
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
-#include <GoonEngine/Sound.h>
+#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
@@ -7,8 +7,8 @@
 
 using namespace GoonWorld;
 
-static Sfx *bumpSound;
-static Sfx *itemSound;
+static gsSfx *bumpSound;
+static gsSfx *itemSound;
 
 ItemBrick::ItemBrick(TiledMap::TiledObject &object)
 {
@@ -23,8 +23,8 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetBodyType(BodyTypes::ItemBrick);
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
-    bumpSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "bump");
-    itemSound = (Sfx *)Content::LoadContent(ContentTypes::Sfx, "powerup");
+    bumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "bump");
+    itemSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerup");
     // AddComponent({_debugDrawComponent, _rigidbodyComponent});
     AddComponent({_rigidbodyComponent});
 }

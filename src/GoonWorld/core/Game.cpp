@@ -13,6 +13,7 @@
 #include <GoonEngine/test.h>
 #include <GoonPhysics/scene.h>
 #include <GoonWorld/core/Camera.hpp>
+#include <SupergoonSound/include/sound.h>
 #include <GoonEngine/SdlSurface.h>
 using namespace GoonWorld;
 Game *Game::_gameInstance = nullptr;
@@ -133,11 +134,11 @@ void Game::RestartLevel()
     // LoadLevel(_loadedLevel->GetName());
     // Move this to func?
 
-    auto result = _sound->LoadBgm("platformer");
+    auto result = _sound->LoadBgm("platforms");
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();
-    _sound->PlayBgm("platformer");
+    _sound->PlayBgm("platforms");
     _loadedLevel->RestartLevel();
     LoadGameObjects();
     _shouldRestart = false;
@@ -152,14 +153,14 @@ void Game::SetCurrentLevel(TiledLevel *level)
 void Game::LoadLevel(std::string level)
 {
 
-    auto result = _sound->LoadBgm("platformer");
+    auto result = _sound->LoadBgm("platforms");
     _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
-    _sound->PlayBgm("platformer");
+    _sound->PlayBgm("platforms");
     LoadGameObjects();
 }
 void Game::LoadGameObjects()

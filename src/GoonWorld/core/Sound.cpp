@@ -1,4 +1,6 @@
 #include <GoonWorld/core/Sound.hpp>
+#include <GoonWorld/core/Content.hpp>
+#include <SupergoonSound/include/sound.h>
 
 namespace GoonWorld
 {
@@ -6,49 +8,44 @@ namespace GoonWorld
         : _soundConfig(&soundConfig)
     {
     }
-        Sound::~Sound()
-        {
-            UnloadBgms();
-        }
 
     bool Sound::LoadBgm(const char *title)
     {
-        if (LoadedMusic.find(title) != LoadedMusic.end())
-            return true;
 
+        auto path("assets/audio/" + std::string(title) + ".ogg");
+        auto bgmPtr = (gsBgm *)Content::LoadContent(ContentTypes::Bgm, path.c_str());
+        if (!bgmPtr)
+            return false;
+        // Try and see if we have loop times for this music.
         for (auto &song : _soundConfig->Music)
         {
-            if (song.Title.find(title) != std::string::npos)
+            if (song.Name.find(title) != std::string::npos)
             {
-                auto bgmPtr = BgmLoad(song.Name.c_str(), song.LoopStart, song.LoopEnd);
-                LoadedMusic[title] = bgmPtr;
+                bgmPtr->loop_begin = song.LoopStart;
+                bgmPtr->loop_end = song.LoopEnd;
                 return true;
             }
         }
-        return false;
-    }
-        void Sound:: UnloadBgms()
-        {
-            for(auto& [key, value]: LoadedMusic)
-            {
-                free(value);
-            }
+        bgmPtr->loop_begin = 0;
+        bgmPtr->loop_end = 0;
 
-        }
+        return true;
+    }
 
     void Sound::PlayBgm(const char *title, int loops)
     {
-        auto bgm_it = LoadedMusic.find(title);
-        if (bgm_it == LoadedMusic.end())
-            return;
-        BgmPlay(bgm_it->second, _soundConfig->MusicVolume);
+        // auto bgm = Content::GetLoadedContentOfType<gsBgm>(title);
+        auto path("assets/audio/" + std::string(title) + ".ogg");
+        auto bgm = Content::GetLoadedContentOfType<gsBgm>(path.c_str());
+        gsPreLoadBgm(bgm);
+        gsPlayBgm(_soundConfig->MusicVolume);
         if (loops == -1)
         {
-            geSetPlayerLoops(255);
+            gsSetPlayerLoops(255);
         }
         else
         {
-            geSetPlayerLoops(loops);
+            gsSetPlayerLoops(loops);
         }
     }
 }
