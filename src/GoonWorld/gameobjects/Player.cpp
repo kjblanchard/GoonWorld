@@ -19,6 +19,8 @@
 #include <GoonWorld/common/Helpers.hpp>
 #include <SDL2/SDL_rect.h>
 #include <GoonWorld/core/Camera.hpp>
+#include <GoonWorld/events/Event.hpp>
+#include <GoonWorld/events/EventTypes.hpp>
 #include <GoonWorld/core/Timer.hpp>
 using namespace GoonWorld;
 
@@ -392,7 +394,7 @@ void Player::TakeDamage()
     if (_isBig)
     {
         // gsPlaySfxOneShot("powerdown", 0.5);
-        Game::Instance()->GetSound()->PlayBgm(powerDownSound, 0);
+        Game::Instance()->GetSound()->PlaySfx(powerDownSound, 1.0);
         Powerup(false);
         _currentInvincibleTime = 0;
         _isInvincible = true;
@@ -403,7 +405,8 @@ void Player::TakeDamage()
 }
 void Player::Die()
 {
-    Game::Instance()->PlayerDie(this);
+    auto bigEvent = Event{this, this, (int)EventTypes::PlayerDie};
+    GetGame().PushEvent(bigEvent);
     GetGameSound().LoadBgm("playerdie");
     GetGameSound().PlayBgm("playerdie", 0);
 
@@ -479,7 +482,9 @@ void Player::Powerup(bool isGettingBig)
         _isTurningBig = true;
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
-        Game::Instance()->PlayerBig(this);
+        auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
+        GetGame().PushEvent(bigEvent);
+        // Game::Instance()->PlayerBig(this);
         // Should probably end and process nothing else this frame after this
     }
 
@@ -487,7 +492,9 @@ void Player::Powerup(bool isGettingBig)
     if (_currentBigIterations > _bigIterations)
     {
         _isTurningBig = false;
-        Game::Instance()->PlayerBig(nullptr);
+        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerBig};
+        GetGame().PushEvent(bigEvent);
+        // Game::Instance()->PlayerBig(nullptr);
         if (_isBig)
         {
             // _rigidbodyComponent->_body->boundingBox.y -= 26;

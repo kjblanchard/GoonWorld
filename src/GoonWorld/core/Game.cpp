@@ -14,6 +14,8 @@
 #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/SdlWindow.h>
 #include <GoonEngine/rectangle.h>
+#include <GoonWorld/events/Observer.hpp>
+#include <GoonWorld/events/EventTypes.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -30,17 +32,53 @@ Game::Game()
     }
     GameSettings = new AppSettings("assets/config/appsettings.json");
     geInitializeRenderingWindow(GameSettings->WindowConfig.WindowSize.x,
-                            GameSettings->WindowConfig.WindowSize.y,
-                            GameSettings->WindowConfig.Title.c_str());
+                                GameSettings->WindowConfig.WindowSize.y,
+                                GameSettings->WindowConfig.Title.c_str());
+    _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
+                                                    { this->PlayerBigEvent(event); });
+    _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
+                                                    { this->PlayerDieEvent(event); });
+    AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
+    AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
     _sound = std::make_unique<Sound>(GameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, GameSettings->WindowConfig.WindowSize.x, GameSettings->WindowConfig.WindowSize.y});
     _gameInstance = this;
 }
+void Game::PlayerBigEvent(Event &event)
+{
+    auto player = static_cast<Player *>(event.eventArgs);
+    PlayerBig(player);
+}
+void Game::PlayerDieEvent(Event &event)
+{
+    auto player = static_cast<Player *>(event.eventArgs);
+    PlayerDie(player);
+}
 
 Game::~Game()
 {
+    for (auto [key, value] : _observers)
+    {
+        for (auto observer : value)
+        {
+            if (observer)
+                RemoveObserver(observer);
+        }
+    }
     GameSpawnMap.clear();
     Content::ClearContent();
+}
+
+void Game::RemoveObserver(Observer *observer)
+{
+    auto &vec = _observers[observer->EventType];
+    for (size_t i = 0; i < vec.size(); i++)
+    {
+        if (vec[i] == observer)
+        {
+            vec[i] = nullptr;
+        }
+    }
 }
 
 void Game::Update(double timeMs)
@@ -75,6 +113,18 @@ void Game::Update(double timeMs)
     }
 }
 
+void Game::PushEvent(Event event)
+{
+    auto observersVector = _observers[event.eventType];
+    for (auto observer : observersVector)
+    {
+        // TODO should clean the nullptrs out of this list one day
+        if (!observer)
+            continue;
+        observer->Function(event);
+    }
+}
+
 void Game::Draw()
 {
     for (auto object : DrawObjects)
@@ -92,11 +142,6 @@ void Game::Draw()
             geDrawDebugRect(&box, &color);
         }
     }
-}
-
-void Game::PlayerDie(Player *player)
-{
-    _playerDying = player;
 }
 
 void Game::PlayerBig(Player *player)
