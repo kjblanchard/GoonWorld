@@ -31,6 +31,8 @@ namespace GoonWorld
         int _coinsCollected = 0;
         float _currentJumpTime = 0, _maxJumpTime = 0, _goombaKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
 
+        bool _enemyKilledFlag = false;
+
         // float _currentWhistleTime = 0;
         const float _winningWhistleTimer = .75;
 
@@ -58,6 +60,8 @@ namespace GoonWorld
         PlayerInputComponent *_playerInputComponent = nullptr;
         RigidbodyComponent *_rigidbodyComponent = nullptr;
         AnimationComponent *_animationComponent = nullptr;
+
+        Timer* jumpTimer = nullptr;
 
     private:
         void GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);

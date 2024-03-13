@@ -98,6 +98,7 @@ void GameObject ::UpdateTimers()
         if ((*it)->Tick(DeltaTime.GetTotalSeconds()))
         {
             // Timer is finished, erase it and update the iterator
+            puts("Erasing thing");
             it = _timers.erase(it);
         }
         else
@@ -111,4 +112,5 @@ void GameObject ::UpdateTimers()
 void GameObject::AddTimer(Timer *timer)
 {
     _timers.push_back(std::shared_ptr<Timer>(timer));
+    LogInfo("Current number of timers is %d", _timers.size());
 }

@@ -156,8 +156,8 @@ void Player::Update()
             _isDead = true;
         }
     }
-    _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
-    _canJump = _rigidbodyComponent->IsOnGround();
+    // _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
+    _canJump = _rigidbodyComponent->IsOnGround() ? true : _canJump;
     HandleInput();
     // _isTurning = CheckIsTurning();
     TurnPhysics();
@@ -165,6 +165,7 @@ void Player::Update()
     AnimationUpdate();
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+    // LogInfo("Currently jumping : %d", _isJumping);
     GameObject::Update();
 }
 void Player::EnemyKilledTick()
@@ -334,30 +335,53 @@ void Player::CreateAnimationTransitions()
 
 void Player::Jump()
 {
-    static float jumpTimer;
-    if (_isJumping)
+    // If we aren't currently jumping and we can jump, we should set the stage for jumping.
+    if (!_isJumping && _canJump)
     {
-        if (_currentJumpTime < _maxJumpTime)
-        {
-            jumpTimer += (_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
-            _rigidbodyComponent->Acceleration().y += (_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
-            _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
-        }
-        else
-        {
-            LogInfo("Full jump velocity is %f", jumpTimer);
-            _isJumping = _canJump = false;
-        }
-    }
-    else if (_canJump)
-    {
-        jumpTimer += _initialJumpVelocity;
-        jumpTimer = 0;
-        _currentJumpTime = 0;
+        puts("Currently not jumping and can jump, set the stage");
         _isJumping = true;
-        _canJump = false;
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
         gsPlaySfxOneShot(jumpSound, 1.0f);
+    }
+    // If we can jump, we should jump
+    if (_canJump)
+    {
+        puts("We can jump!");
+        _canJump = false;
+        // Initial jump from ground
+        // If we are already jumping and killed an enemy, we should reset the jump timer
+        if (jumpTimer)
+        {
+            puts("Resetting jump timer");
+            jumpTimer->Reset();
+        }
+        // Else we should create a new jump timer.
+        else
+        {
+            puts("Creating jump timer");
+            jumpTimer = new Timer(this,
+                                  _maxJumpTime,
+                                  [](GameObject *obj, bool finished)
+                                  {
+                                      auto player = static_cast<Player *>(obj);
+                                      //   If the player is jumping and the timer isn't expired
+                                      //   puts("Doing it");
+                                      if (finished)
+                                      {
+                                          puts("Setting isjumping false");
+                                          player->_isJumping = player->_canJump = false;
+                                          player->jumpTimer = nullptr;
+                                          return true;
+                                      }
+                                      if (player->_isJumping)
+                                      {
+                                          puts("Extending");
+                                          player->_rigidbodyComponent->Acceleration().y += (player->_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
+                                      }
+                                      return false;
+                                  });
+            AddTimer(jumpTimer);
+        }
     }
 }
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
@@ -371,9 +395,10 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     {
         _goombaKillTime += DeltaTime.GetTotalSeconds();
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
-        _currentJumpTime = 0;
+        _canJump = true;
         _isJumping = true;
         _enemyJustKilled = true;
+        _enemyKilledFlag = true;
         _noDeathVelocity = false;
         goomba->TakeDamage();
         return;
@@ -414,8 +439,6 @@ void Player::Win()
 {
     if (!_isWinning)
     {
-        // Stop everything, and whistle
-        // _currentWhistleTime = 0;
         _isWinning = true;
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
@@ -423,15 +446,17 @@ void Player::Win()
         gsPlaySfxOneShot(whistleSound, 1.0f);
         auto timer = new Timer(dynamic_cast<GameObject *>(this),
                                _winningWhistleTimer,
-                               [](GameObject *obj)
+                               [](GameObject *obj, bool isComplete)
                                {
+                                   if (!isComplete)
+                                       return false;
                                    auto player = static_cast<Player *>(obj);
                                    player->SlideFunc();
+                                   return true;
                                });
         AddTimer(timer);
         return;
     }
-    // Tick until whistle time is up
 }
 
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)

@@ -2,7 +2,7 @@
 #include <GoonWorld/base/GameObject.hpp>
 using namespace GoonWorld;
 
-Timer::Timer(GameObject *owner, float waitTime, std::function<void(GameObject *)> callback)
+Timer::Timer(GameObject *owner, float waitTime, std::function<bool(GameObject *, bool)> callback)
     : _waitTime(waitTime), _owner(owner), _callback(callback)
 {
 }
@@ -10,10 +10,7 @@ Timer::Timer(GameObject *owner, float waitTime, std::function<void(GameObject *)
 bool Timer::Tick(float deltaTime)
 {
     _currentWaitTime += deltaTime;
-    if (_currentWaitTime >= _waitTime)
-    {
-        _callback(_owner);
-        return true;
-    }
-    return false;
+    auto isComplete = _currentWaitTime >= _waitTime;
+    auto callbackResponse = _callback(_owner, isComplete);
+    return isComplete && callbackResponse;
 }
