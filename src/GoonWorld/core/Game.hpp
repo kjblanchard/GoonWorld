@@ -31,7 +31,7 @@ namespace GoonWorld
         void RestartLevel();
         void LoadLevel(std::string levelName);
 
-        Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> spawnMap);
+        Game();
         ~Game();
         void Update(double time);
         void Draw();
@@ -49,6 +49,5 @@ namespace GoonWorld
         std::unique_ptr<TiledLevel> _loadedLevel;
         std::unique_ptr<Sound> _sound;
         std::unique_ptr<Camera> _camera;
-        std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> _spawnMap;
     };
 }

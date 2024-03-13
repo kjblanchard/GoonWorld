@@ -38,7 +38,7 @@ void Coin::TakeDamage()
 {
     if (!IsEnabled())
         return;
-        GetGameSound().PlaySfx(coinSound);
+        GetGameSound().PlaySfx(coinSound, 0.25);
     // gsPlaySfxOneShot(coinsound, 0.25f);
     Enabled(false);
 }

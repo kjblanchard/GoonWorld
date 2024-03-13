@@ -14,13 +14,15 @@
 #include <GoonPhysics/scene.h>
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonEngine/SdlSurface.h>
+#include <GoonWorld/gameobjects/GameObjects.hpp>
 using namespace GoonWorld;
 Game *Game::_gameInstance = nullptr;
 long long Game::_ticks = 0;
 static const bool SOLID_DEBUG = false;
+extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
-Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> spawnMap)
-    : _spawnMap(spawnMap), _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr)
+Game::Game()
+    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr)
 {
     if (_gameInstance)
     {
@@ -38,7 +40,7 @@ Game::Game(std::map<std::string, std::function<GameObject *(TiledMap::TiledObjec
 }
 Game::~Game()
 {
-    _spawnMap.clear();
+    GameSpawnMap.clear();
     Content::ClearContent();
 }
 void Game::Update(double timeMs)
@@ -165,8 +167,8 @@ void Game::LoadGameObjects()
 {
     for (auto &object : _loadedLevel->GetAllObjects())
     {
-        auto iter = _spawnMap.find(object.ObjectType);
-        if (iter == _spawnMap.end())
+        auto iter = GameSpawnMap.find(object.ObjectType);
+        if (iter == GameSpawnMap.end())
             continue;
         (*iter).second(object);
     }
@@ -178,3 +180,4 @@ void Game::InitializePhysics()
     _scene = gpInitScene();
     geSetCurrentScene(_scene);
 }
+

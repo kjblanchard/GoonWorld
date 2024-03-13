@@ -141,7 +141,7 @@ static void LoopWrap()
     loop_func();
 }
 
-int Play()
+int gePlayLoop()
 {
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(LoopWrap, g_refreshRate, 1);
@@ -153,7 +153,7 @@ int Play()
     return true;
 #endif
 }
-int GnInitializeEngine()
+int geInitializeEngine()
 {
     InitializeDebugLogFile();
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) != 0)

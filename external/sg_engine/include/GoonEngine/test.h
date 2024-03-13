@@ -5,9 +5,9 @@ struct InputEvent;
 extern "C"
 {
 #endif
-    int Play();
+    int gePlayLoop();
     int ExitEngine();
-    int GnInitializeEngine();
+    int geInitializeEngine();
     void geSetCurrentScene(void *scene);
     void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime));
     void geGameSetDrawFunc(void (*drawFunc)());
