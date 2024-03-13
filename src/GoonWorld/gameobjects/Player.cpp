@@ -121,8 +121,6 @@ void Player::Update()
     {
         WinWalking();
     }
-    if (_enemyJustKilled)
-        EnemyKilledTick();
     // Invincible timer and display
     if (_isInvincible)
     {
@@ -170,12 +168,12 @@ void Player::Update()
 }
 void Player::EnemyKilledTick()
 {
-    _goombaKillTime += DeltaTime.GetTotalSeconds();
-    if (_goombaKillTime > 0.3)
-    {
-        _enemyJustKilled = false;
-        _goombaKillTime = 0;
-    }
+    AddTimer(new Timer(this, 0.3, [](GameObject *obj, bool finished)
+                       {
+    if (!finished)
+        return false;
+    auto player = static_cast<Player *>(obj);
+    player->_enemyKilledFlag = false; }));
 }
 
 void Player::TurnPhysics()
@@ -391,13 +389,13 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     if (goomba->IsDead())
         return;
-    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown && !_goombaKillTime)
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
     {
         _goombaKillTime += DeltaTime.GetTotalSeconds();
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
         _canJump = true;
         _isJumping = true;
-        _enemyJustKilled = true;
+        EnemyKilledTick();
         _enemyKilledFlag = true;
         _noDeathVelocity = false;
         goomba->TakeDamage();
@@ -505,7 +503,6 @@ void Player::Powerup(bool isGettingBig)
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
         Game::Instance()->PlayerBig(this);
-        // Should probably end and process nothing else this frame after this
     }
 
     // End
@@ -515,7 +512,6 @@ void Player::Powerup(bool isGettingBig)
         Game::Instance()->PlayerBig(nullptr);
         if (_isBig)
         {
-            // _rigidbodyComponent->_body->boundingBox.y -= 26;
             auto newSize = Point{32, 64};
             _location.y -= 32;
             _rigidbodyComponent->_body->boundingBox.y -= 32;
@@ -526,7 +522,6 @@ void Player::Powerup(bool isGettingBig)
         }
         else
         {
-            // _rigidbodyComponent->_body->boundingBox.y -= 26;
             auto newSize = Point{32, 32};
             _location.y += 32;
             _rigidbodyComponent->_body->boundingBox.y += 32;
