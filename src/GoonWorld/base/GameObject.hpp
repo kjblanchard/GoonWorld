@@ -11,6 +11,7 @@
 typedef struct SDL_Rect SDL_Rect;
 namespace GoonWorld
 {
+    class Sound;
     class Component;
     class Timer;
     class GameObject : public IUpdate, public IStart, public IEnable
@@ -39,6 +40,8 @@ namespace GoonWorld
         static std::vector<std::shared_ptr<GameObject>> _gameobjects;
 
     protected:
+        Sound &GetGameSound();
+
         void AddTimer(Timer *timer);
         unsigned int _id;
         Point _location;

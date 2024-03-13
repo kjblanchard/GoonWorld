@@ -1,14 +1,14 @@
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
-#include <SupergoonSound/include/sound.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
+#include <GoonWorld/core/Sound.hpp>
 
 using namespace GoonWorld;
 
-static gsSfx *bumpSound;
-static gsSfx *itemSound;
+const char* bumpSound = "bump";
+const char* powerupSpawnSound = "powerup";
 
 ItemBrick::ItemBrick(TiledMap::TiledObject &object)
 {
@@ -23,8 +23,10 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetBodyType(BodyTypes::ItemBrick);
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
-    bumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "bump");
-    itemSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerup");
+    GetGameSound().LoadSfx(bumpSound);
+    GetGameSound().LoadSfx(powerupSpawnSound);
+    // bumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "bump");
+    // itemSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerup");
     // AddComponent({_debugDrawComponent, _rigidbodyComponent});
     AddComponent({_rigidbodyComponent});
 }
@@ -36,7 +38,7 @@ void ItemBrick::TakeDamage()
     switch (_contents)
     {
     case (int)ItemBrickContents::Empty:
-        gsPlaySfxOneShot(bumpSound, 1.0f);
+        GetGameSound().PlaySfx(bumpSound);
         /* code */
         break;
     case (int)ItemBrickContents::Mushroom:
@@ -45,7 +47,7 @@ void ItemBrick::TakeDamage()
         auto shroom = new Mushroom(&loc);
         shroom->Push(true);
         _contents = 0;
-        gsPlaySfxOneShot(itemSound, 1.0f);
+        GetGameSound().PlaySfx(powerupSpawnSound);
         break;
     }
 

@@ -32,13 +32,13 @@ namespace GoonWorld
         return true;
     }
 
-    void Sound::PlayBgm(const char *title, int loops)
+    void Sound::PlayBgm(const char *title, int loops, float volume)
     {
         // auto bgm = Content::GetLoadedContentOfType<gsBgm>(title);
         auto path("assets/audio/" + std::string(title) + ".ogg");
         auto bgm = Content::GetLoadedContentOfType<gsBgm>(path.c_str());
         gsPreLoadBgm(bgm);
-        gsPlayBgm(_soundConfig->MusicVolume);
+        gsPlayBgm(_soundConfig->MusicVolume * volume);
         if (loops == -1)
         {
             gsSetPlayerLoops(255);
@@ -47,5 +47,18 @@ namespace GoonWorld
         {
             gsSetPlayerLoops(loops);
         }
+    }
+    bool Sound::LoadSfx(const char *title)
+    {
+        auto path("assets/audio/" + std::string(title) + ".ogg");
+        auto sfx = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, path.c_str());
+    }
+    void Sound::PlaySfx(const char *title, float volume)
+    {
+        auto path("assets/audio/" + std::string(title) + ".ogg");
+        auto sfx = Content::GetLoadedContentOfType<gsSfx>(path.c_str());
+        if (!sfx)
+            return;
+        gsPlaySfxOneShot(sfx, volume);
     }
 }

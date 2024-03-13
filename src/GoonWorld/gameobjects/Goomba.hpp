@@ -26,7 +26,7 @@ namespace GoonWorld
         const float _deadTimer = 0.5f;
         float _currentDeadTime = 0.0f;
         void GoombaStaticBodyOverlap(gpOverlap *overlap);
-        void GoombaMarioOverlap(gpOverlap *overlap);
+        // void GoombaMarioOverlap(gpOverlap *overlap);
         bool _shouldWalkAnim = false;
     };
 }

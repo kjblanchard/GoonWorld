@@ -23,9 +23,9 @@
 #include <GoonWorld/core/Timer.hpp>
 using namespace GoonWorld;
 
-static gsSfx *jumpSound;
-static gsSfx *powerdownSound;
-static gsSfx *whistleSound;
+const char *jumpSound = "jump";
+const char *powerDownSound = "powerdown";
+const char *whistleSound = "whistle";
 
 Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false)
@@ -37,9 +37,12 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -36});
-    jumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
-    powerdownSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerdown");
-    whistleSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "whistle");
+    // jumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "jump");
+    GetGameSound().LoadSfx(jumpSound);
+    GetGameSound().LoadSfx(powerDownSound);
+    GetGameSound().LoadSfx(whistleSound);
+    // powerdownSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerdown");
+    // whistleSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "whistle");
 
     _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
@@ -357,7 +360,8 @@ void Player::Jump()
         _isJumping = true;
         _canJump = false;
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
-        gsPlaySfxOneShot(jumpSound, 1.0f);
+        GetGameSound().PlaySfx("jump", 1.0f);
+        // gsPlaySfxOneShot(jumpSound, 1.0f);
     }
 }
 void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
@@ -367,7 +371,7 @@ void Player::GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     if (goomba->IsDead())
         return;
-    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown )
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
     {
         _goombaKillTime += DeltaTime.GetTotalSeconds();
         _rigidbodyComponent->Velocity().y = _initialJumpVelocity;
@@ -388,7 +392,8 @@ void Player::TakeDamage()
     // If big, then power down
     if (_isBig)
     {
-        gsPlaySfxOneShot(powerdownSound, 0.5);
+        // gsPlaySfxOneShot("powerdown", 0.5);
+        Game::Instance()->GetSound()->PlayBgm(powerDownSound, 0);
         Powerup(false);
         _currentInvincibleTime = 0;
         _isInvincible = true;
@@ -400,8 +405,8 @@ void Player::TakeDamage()
 void Player::Die()
 {
     Game::Instance()->PlayerDie(this);
-    Game::Instance()->GetSound()->LoadBgm("playerdie");
-    Game::Instance()->GetSound()->PlayBgm("playerdie", 0);
+    GetGameSound().LoadBgm("playerdie");
+    GetGameSound().PlayBgm("playerdie", 0);
 
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);
@@ -414,13 +419,11 @@ void Player::Win()
 {
     if (!_isWinning)
     {
-        // Stop everything, and whistle
-        // _currentWhistleTime = 0;
         _isWinning = true;
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
-        gsPlaySfxOneShot(whistleSound, 1.0f);
+        Game::Instance()->GetSound()->PlaySfx(whistleSound);
         auto timer = new Timer(dynamic_cast<GameObject *>(this),
                                _winningWhistleTimer,
                                [](GameObject *obj)
@@ -431,7 +434,6 @@ void Player::Win()
         AddTimer(timer);
         return;
     }
-    // Tick until whistle time is up
 }
 
 void Player::ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap)
@@ -470,7 +472,6 @@ void Player::GettingBigUpdate()
 {
 }
 
-// void Player::PowerChange()
 void Player::Powerup(bool isGettingBig)
 {
     _isBig = isGettingBig;

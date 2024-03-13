@@ -88,6 +88,10 @@ void GameObject::OnDisabled()
         component->Enabled(false);
     }
 }
+Sound &GameObject::GetGameSound()
+{
+    return *Game::Instance()->GetSound();
+}
 
 void GameObject ::UpdateTimers()
 {
