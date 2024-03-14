@@ -4,7 +4,6 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/core/Camera.hpp>
-#include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/PlayerInputComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
@@ -26,7 +25,7 @@ const char *powerDownSound = "powerdown";
 const char *whistleSound = "whistle";
 
 Player::Player(TiledMap::TiledObject &object)
-    : _isDead(false), _isDying(false)
+    : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
 {
     _location = Point{object.X, object.Y};
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
@@ -56,15 +55,6 @@ void Player::BindOverlapFunctions()
 
 void Player::InitializePlayerConfig()
 {
-    auto &playerConfig = GetGame().GetAppSettings().PlayerConfigs;
-    _jumpFrameVelocity = &playerConfig.FrameJumpAcceleration;
-    _initialJumpVelocity = &playerConfig.InitialJumpVelocity;
-    _runSpeedBoost = &playerConfig.RunSpeedBoost;
-    _walkSpeedBoost = &playerConfig.WalkSpeedBoost;
-    _maxWalkSpeed = &playerConfig.MaxWalkSpeed;
-    _maxRunSpeed = &playerConfig.MaxRunSpeed;
-    _maxJumpTime = &playerConfig.MaxJumpTime;
-    _initialMoveVelocity = &playerConfig.InitialMoveVelocity;
 }
 
 void Player::Update()
@@ -115,30 +105,24 @@ void Player::Update()
 void Player::InvincibleTick()
 {
     _currentInvincibleTime += DeltaTime.GetTotalSeconds();
-    if (_currentInvincibleTime < 0.2)
-        _animationComponent->Visible(false);
-    else if (_currentInvincibleTime > 0.2 && _currentInvincibleTime < 0.4)
-        _animationComponent->Visible(true);
-    else if (_currentInvincibleTime > 0.4 && _currentInvincibleTime < 0.6)
-        _animationComponent->Visible(false);
-    else if (_currentInvincibleTime > 0.6 && _currentInvincibleTime < 0.8)
-        _animationComponent->Visible(true);
-    else if (_currentInvincibleTime > 0.8 && _currentInvincibleTime < 0.9)
-        _animationComponent->Visible(false);
-    else
+    int interval = static_cast<int>(_currentInvincibleTime / 0.1);
+    bool isVisible = interval % 2 == 0;
+    if (_currentInvincibleTime >= 0.9)
     {
-        _animationComponent->Visible(true);
+        isVisible = true;
         SetFlag(_playerFlags, PlayerFlags::IsInvincible, false);
         _currentInvincibleTime = 0;
     }
+    _animationComponent->Visible(isVisible);
 }
+
 void Player::EnemyKilledTick()
 {
-    _enemyKillTime += DeltaTime.GetTotalSeconds();
-    if (_enemyKillTime > 0.3)
+    _currentEnemyKillTime += DeltaTime.GetTotalSeconds();
+    if (_currentEnemyKillTime > 0.3)
     {
         SetFlag(_playerFlags, PlayerFlags::EnemyJustKilled, false);
-        _enemyKillTime = 0;
+        _currentEnemyKillTime = 0;
     }
 }
 
@@ -186,10 +170,12 @@ void Player::AnimationUpdate()
 float Player::CalculateFrameMaxVelocity()
 {
     if (IsFlagSet(_playerFlags, PlayerFlags::RunningButtonDown))
-        return *_maxRunSpeed;
-    if (std::abs(_rigidbodyComponent->Velocity().x) > *_maxWalkSpeed)
-        return *_maxRunSpeed;
-    return *_maxWalkSpeed;
+        // return *_maxRunSpeed;
+        return _playerConfig->MaxRunSpeed;
+    if (std::abs(_rigidbodyComponent->Velocity().x) > _playerConfig->MaxWalkSpeed)
+        return _playerConfig->MaxRunSpeed;
+    // return *_maxWalkSpeed;
+    return _playerConfig->MaxWalkSpeed;
 }
 
 void Player::HandleInput()
@@ -233,22 +219,24 @@ void Player::HandleLeftRightMovement(bool movingRight)
     // If we are not moving set initial velocity.
     if (_rigidbodyComponent->Velocity().x == 0)
     {
-        _rigidbodyComponent->Velocity().x += *_initialMoveVelocity * moveDirectionMultiplier;
+        // _rigidbodyComponent->Velocity().x += *_initialMoveVelocity * moveDirectionMultiplier;
+        _rigidbodyComponent->Velocity().x += _playerConfig->InitialMoveVelocity * moveDirectionMultiplier;
         return;
     }
 
     else if (IsFlagSet(_playerFlags, PlayerFlags::RunningButtonDown))
     {
-        auto moveSpeed = *_runSpeedBoost * moveDirectionMultiplier;
+        // auto moveSpeed = *_runSpeedBoost * moveDirectionMultiplier;
+        auto moveSpeed = _playerConfig->RunSpeedBoost * moveDirectionMultiplier;
         _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
     }
 
     else
     {
-        auto moveSpeed = *_walkSpeedBoost * moveDirectionMultiplier;
+        auto moveSpeed = _playerConfig->WalkSpeedBoost * moveDirectionMultiplier;
         // You are walking but moving faster than your max walk speed, so you gain NOTHING
-        if ((movingRight && _rigidbodyComponent->Velocity().x > *_maxWalkSpeed) ||
-            (!movingRight && _rigidbodyComponent->Velocity().x < -*_maxWalkSpeed))
+        if ((movingRight && _rigidbodyComponent->Velocity().x > _playerConfig->MaxWalkSpeed) ||
+            (!movingRight && _rigidbodyComponent->Velocity().x < -_playerConfig->MaxWalkSpeed))
         {
             moveSpeed = 0;
         }
@@ -302,9 +290,11 @@ void Player::Jump()
 {
     if (_isJumping)
     {
-        if (_currentJumpTime < *_maxJumpTime)
+        // if (_currentJumpTime < *_maxJumpTime)
+        if (_currentJumpTime < _playerConfig->MaxJumpTime)
         {
-            _rigidbodyComponent->Acceleration().y += (*_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
+            // _rigidbodyComponent->Acceleration().y += (*_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
+            _rigidbodyComponent->Acceleration().y += (_playerConfig->FrameJumpAcceleration * DeltaTime.GetTotalSeconds());
             _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
         }
         else
@@ -313,12 +303,14 @@ void Player::Jump()
             SetFlag(_playerFlags, PlayerFlags::CanJump, false);
         }
     }
+
     else if (IsFlagSet(_playerFlags, PlayerFlags::CanJump))
     {
         _currentJumpTime = 0;
         _isJumping = true;
         SetFlag(_playerFlags, PlayerFlags::CanJump, false);
-        _rigidbodyComponent->Velocity().y = *_initialJumpVelocity;
+        // _rigidbodyComponent->Velocity().y = *_initialJumpVelocity;
+        _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
         GetGameSound().PlaySfx("jump", 1.0f);
     }
 }
@@ -326,15 +318,16 @@ void Player::Jump()
 void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
-    if (player->_isDead || player->_isDying)
+    if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
     {
-        player->_enemyKillTime += DeltaTime.GetTotalSeconds();
-        player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
+        player->_currentEnemyKillTime = 0;
+        // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
+        player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
         player->_currentJumpTime = 0;
         player->_isJumping = true;
         player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
@@ -464,7 +457,7 @@ void Player::Powerup(bool isGettingBig)
         {
             auto newSize = Point{32, 64};
             _location.y -= 32;
-            _rigidbodyComponent->_body->boundingBox.y -= 32;
+            _rigidbodyComponent->BoundingBox().y -= 32;
             _rigidbodyComponent->SizeChange(newSize);
             _animationComponent->Offset(Point{0, -4});
             _debugDrawComponent->Size = newSize;
@@ -473,7 +466,7 @@ void Player::Powerup(bool isGettingBig)
         {
             auto newSize = Point{32, 32};
             _location.y += 32;
-            _rigidbodyComponent->_body->boundingBox.y += 32;
+            _rigidbodyComponent->BoundingBox().y += 32;
             _rigidbodyComponent->SizeChange(newSize);
             _animationComponent->Offset(Point{0, -36});
             _debugDrawComponent->Size = newSize;

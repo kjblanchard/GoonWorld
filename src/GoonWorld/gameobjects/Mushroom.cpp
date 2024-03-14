@@ -8,21 +8,14 @@
 
 using namespace GoonWorld;
 
-const char* mushroomSound = "mushroom";
+const char *mushroomSound = "mushroom";
 
 Mushroom::Mushroom(geRectangle *rect)
     : GameObject(rect), _startedMoving(false)
 {
-    // _debugDrawComponent = new DebugDrawComponent(Point{rect->w, rect->h});
     _rigidbodyComponent = new RigidbodyComponent(rect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Mushroom);
-    auto staticOverlapArgs = bodyOverlapArgs{(int)BodyTypes::Mushroom, (int)BodyTypes::Static, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                                             {
-                                                 Mushroom *mushroom = static_cast<Mushroom *>(args);
-                                                 mushroom->MushroomStaticBodyOverlap(overlap);
-                                             }};
-
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     _animationComponent = new AnimationComponent("mushroom");
     _animationComponent->SizeMultiplier = 2;
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
@@ -49,18 +42,19 @@ void Mushroom::Push(bool right)
     _rigidbodyComponent->Velocity().x = _movingRight ? _moveSpeed : -_moveSpeed;
 }
 
-void Mushroom::MushroomStaticBodyOverlap(gpOverlap *overlap)
+void Mushroom::StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
+    auto mushroom = static_cast<Mushroom *>(instance);
     switch (overlap->overlapDirection)
     {
     case gpOverlapDown:
     case gpOverlapUp:
         break;
     case gpOverlapLeft:
-        _movingRight = true;
+        mushroom->_movingRight = true;
         break;
     case gpOverlapRight:
-        _movingRight = false;
+        mushroom->_movingRight = false;
         break;
     }
 }

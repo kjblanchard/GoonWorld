@@ -30,7 +30,7 @@ Game::Game()
         fprintf(stderr, "Can only create one game instance");
         exit(1);
     }
-    _gameSettings = std::make_unique< AppSettings>("assets/config/appsettings.json");
+    _gameSettings = std::make_unique<AppSettings>("assets/config/appsettings.json");
     geInitializeRenderingWindow(_gameSettings->WindowConfig.WindowSize.x,
                                 _gameSettings->WindowConfig.WindowSize.y,
                                 _gameSettings->WindowConfig.Title.c_str());
@@ -137,7 +137,6 @@ void Game::PushEvent(Event event)
     }
 }
 
-
 void Game::PlayerBig(Player *player)
 {
     _playerBig = player;
@@ -160,12 +159,11 @@ void Game::RestartLevel()
     _playerBig = nullptr;
     UpdateObjects.clear();
     DrawObjects.clear();
-    GameObject::_gameobjects.clear();
+    GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     LoadLevel(_loadedLevel->GetName());
     _loadedLevel->RestartLevel();
 }
-
 
 void Game::LoadLevel(std::string level)
 {
@@ -201,7 +199,6 @@ void Game::InitializePhysics()
     _scene = gpInitScene();
     geSetCurrentScene(_scene);
 }
-
 
 void Game::PlayerBigEvent(Event &event)
 {

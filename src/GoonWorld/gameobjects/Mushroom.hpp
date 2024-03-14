@@ -4,6 +4,7 @@ typedef struct gpOverlap gpOverlap;
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/ITakeDamage.hpp>
 
+typedef struct gpBody gpBody;
 
 namespace GoonWorld
 {
@@ -23,7 +24,7 @@ namespace GoonWorld
         DebugDrawComponent *_debugDrawComponent;
         RigidbodyComponent *_rigidbodyComponent;
         AnimationComponent *_animationComponent;
-        void MushroomStaticBodyOverlap(gpOverlap *overlap);
+        static void StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         const int _moveSpeed = 25;
         bool _movingRight, _startedMoving;
 

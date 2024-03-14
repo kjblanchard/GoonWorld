@@ -1,6 +1,7 @@
 #pragma once
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/ITakeDamage.hpp>
+#include <GoonWorld/models/AppSettings.hpp>
 
 typedef struct gpBody gpBody;
 typedef struct gpOverlap gpOverlap;
@@ -12,7 +13,8 @@ namespace GoonWorld
     class RigidbodyComponent;
     class AnimationComponent;
 
-    class Player : public GameObject, public ITakeDamage
+    class Player : public GameObject,
+                   public ITakeDamage
     {
     public:
         Player(TiledMap::TiledObject &object);
@@ -31,26 +33,19 @@ namespace GoonWorld
             static const int IsInvincible = 1 << 5;
         };
         int32_t _playerFlags = 0;
-
+        AppSettings::PlayerConfig *_playerConfig;
+        int _currentBigIterations = 0;
+        int _coinsCollected = 0;
         // Animations
     private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
-
+        // State
     private:
         bool _isJumping = false, _isTurning = false, _isDying = false, _isDead = false;
         bool _isTurningBig = false, _isWinning = false, _isWinWalking = false;
-        int _currentBigIterations = 0;
-        int _coinsCollected = 0;
-
-        // Config
-    private:
-        int *_jumpFrameVelocity, *_initialJumpVelocity, *_runSpeedBoost, *_walkSpeedBoost, *_maxRunSpeed, *_maxWalkSpeed, *_initialMoveVelocity;
-        float *_maxJumpTime;
-
         // Timers
     private:
-        float _currentJumpTime = 0, _enemyKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
-
+        float _currentJumpTime = 0, _currentEnemyKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
         // Constants
     private:
         const float _winningWhistleTimer = .75;
@@ -58,7 +53,6 @@ namespace GoonWorld
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
         const float _bigIterationTime = 0.1;
-
         // Components
     private:
         DebugDrawComponent *_debugDrawComponent = nullptr;

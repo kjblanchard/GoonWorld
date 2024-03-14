@@ -11,7 +11,6 @@
 #include <GoonWorld/core/Sound.hpp>
 using namespace GoonWorld;
 
-// static gsSfx *dieSound = nullptr;
 const char *deadSound = "death";
 
 Goomba::Goomba(TiledMap::TiledObject &object)
@@ -24,22 +23,8 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");
     _animationComponent->SizeMultiplier = 2;
-    auto staticOverlapArgs = bodyOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Static, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-                                             {
-                                                 Goomba *goombaInstance = static_cast<Goomba *>(args);
-                                                 goombaInstance->GoombaStaticBodyOverlap(overlap);
-                                             }};
-    // auto marioOverlapArgs = bodyOverlapArgs{(int)BodyTypes::Goomba, (int)BodyTypes::Player, [](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-    //                                         {
-    //                                             Goomba *goombaInstance = static_cast<Goomba *>(args);
-    //                                             goombaInstance->GoombaMarioOverlap(overlap);
-    //                                         }};
-    gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, staticOverlapArgs);
-    // gpBodyAddOverlapBeginFunc(_rigidbodyComponent->_body, marioOverlapArgs);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     GetGameSound().LoadSfx(deadSound);
-    // if (!dieSound)
-    //     dieSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "death");
-    // AddComponent({_debugDrawComponent, _rigidbodyComponent, _animationComponent});
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
     _debugDrawComponent->Enabled(false);
 
@@ -50,29 +35,9 @@ void Goomba::TakeDamage()
     if (_isDead)
         return;
     GetGameSound().PlaySfx(deadSound);
-    // gsPlaySfxOneShot(dieSound, 1.0f);
     _isDead = true;
     _rigidbodyComponent->GravityEnabled(false);
 }
-// void Goomba::GoombaMarioOverlap(gpOverlap *overlap)
-// {
-//     Player *player = (Player *)overlap->overlapBody->funcArgs;
-//     if (player->CanDamage())
-//         return;
-//     switch (overlap->overlapDirection)
-//     {
-//     case gpOverlapDirections::gpOverlapUp:
-//         if (_isDead)
-//             return;
-//         // LogInfo("I should die");
-//         // gsPlaySfxOneShot(dieSound, 1.0f);
-//         _isDead = true;
-//         _rigidbodyComponent->GravityEnabled(false);
-//         break;
-//     default:
-//         break;
-//     }
-// }
 
 void Goomba::Update()
 {
@@ -86,7 +51,6 @@ void Goomba::Update()
         else
         {
             Enabled(false);
-            // _animationComponent->Enabled(false);
             return;
         }
     }
@@ -94,20 +58,21 @@ void Goomba::Update()
     _rigidbodyComponent->Velocity().x = _isDead ? 0 : speed;
     GameObject::Update();
 }
-void Goomba::GoombaStaticBodyOverlap(gpOverlap *overlap)
+void Goomba::StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
+    auto goomba = static_cast<Goomba *>(instance);
     switch (overlap->overlapDirection)
     {
     case gpOverlapDown:
     case gpOverlapUp:
         break;
     case gpOverlapLeft:
-        _animationComponent->Mirror = false;
-        _movingRight = true;
+        goomba->_animationComponent->Mirror = false;
+        goomba->_movingRight = true;
         break;
     case gpOverlapRight:
-        _animationComponent->Mirror = true;
-        _movingRight = false;
+        goomba->_animationComponent->Mirror = true;
+        goomba->_movingRight = false;
         break;
     }
 }

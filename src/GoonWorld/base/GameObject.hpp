@@ -25,6 +25,7 @@ namespace GoonWorld
         virtual void Update() override;
         inline unsigned int Id() { return _id; }
         inline Point &Location() { return _location; }
+        static inline void ClearGameObjects() { _gameobjects.clear(); }
         inline bool IsEnabled() const override { return _enabled; }
         virtual void Enabled(bool isEnabled) override;
         virtual void OnEnabled() override;
@@ -36,8 +37,6 @@ namespace GoonWorld
         T *GetComponentOfType(unsigned int componentType);
         static void UpdateTimers();
         static TimeSpan DeltaTime;
-        // TODO make this private
-        static std::vector<std::shared_ptr<GameObject>> _gameobjects;
 
     protected:
         Sound &GetGameSound();
@@ -55,6 +54,7 @@ namespace GoonWorld
             }
         }
         inline bool IsFlagSet(int &flags, int flag) { return (flags & flag); }
+        static std::vector<std::shared_ptr<GameObject>> _gameobjects;
         unsigned int _id;
         Point _location;
         std::vector<std::shared_ptr<Component>> _components;

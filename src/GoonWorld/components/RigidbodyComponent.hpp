@@ -31,12 +31,12 @@ namespace GoonWorld
         inline void SetCollidesWithStaticBody(bool doesCollide) { _body->staticCollisionEnabled = doesCollide; }
         inline void SetBodyType(BodyTypes bodyType) { _body->bodyType = (int)bodyType; }
         inline void SetBodyType(int bodyType) { _body->bodyType = bodyType; }
+        inline gpBB &BoundingBox() { return _body->boundingBox; }
         static inline void ResetRigidBodyVector() { _currentRigidbodies.clear(); }
-        // TODO move this
-        gpBody *_body;
 
     private:
         void OnComponentAdd(GameObject &parent) override;
+        gpBody *_body;
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;
         long long _isOnGroundCached;

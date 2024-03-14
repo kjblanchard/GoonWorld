@@ -385,6 +385,24 @@
                  "width":32,
                  "x":848,
                  "y":128
+                }, 
+                {
+                 "height":32,
+                 "id":540,
+                 "name":"BrickTest",
+                 "properties":[
+                        {
+                         "name":"contents",
+                         "propertytype":"BoxContents",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"Brick",
+                 "visible":true,
+                 "width":32,
+                 "x":496,
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -536,6 +554,34 @@
                  "width":0,
                  "x":0,
                  "y":-16
+                }, 
+                {
+                 "height":0,
+                 "id":542,
+                 "name":"",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":48
+                        }, 
+                        {
+                         "x":880,
+                         "y":48
+                        }, 
+                        {
+                         "x":880,
+                         "y":0
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":-176,
+                 "y":192
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -602,7 +648,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":540,
+ "nextobjectid":543,
  "orientation":"orthogonal",
  "properties":[
         {
