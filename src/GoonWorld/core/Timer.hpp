@@ -5,13 +5,14 @@ namespace GoonWorld
     class Timer
     {
     public:
-        Timer(GameObject *owner, float waitTime, std::function<void(GameObject *)> callback);
+        Timer(GameObject *owner, float waitTime, std::function<bool(GameObject *obj, bool isFinished)> callback);
+        inline void Reset() { _currentWaitTime = 0; }
         bool Tick(float deltaTime);
 
     private:
         float _waitTime;
         float _currentWaitTime;
         GameObject *_owner;
-        std::function<void(GameObject *)> _callback;
+        std::function<bool(GameObject *, bool)> _callback;
     };
 }

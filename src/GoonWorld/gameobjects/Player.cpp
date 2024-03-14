@@ -100,6 +100,7 @@ void Player::Update()
     AnimationUpdate();
     _animationComponent->Mirror = ShouldMirrorImage();
     _rigidbodyComponent->MaxVelocity().x = CalculateFrameMaxVelocity();
+    // LogInfo("Currently jumping : %d", _isJumping);
     GameObject::Update();
 }
 void Player::InvincibleTick()
@@ -297,6 +298,7 @@ void Player::Jump()
             _rigidbodyComponent->Acceleration().y += (_playerConfig->FrameJumpAcceleration * DeltaTime.GetTotalSeconds());
             _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
         }
+        // Else we should create a new jump timer.
         else
         {
             _isJumping = false;
@@ -323,6 +325,7 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     Goomba *goomba = (Goomba *)overlapBody->funcArgs;
     if (goomba->IsDead())
         return;
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
     {
         player->_currentEnemyKillTime = 0;
@@ -389,10 +392,13 @@ void Player::Win()
         GetGameSound().PlaySfx(whistleSound);
         auto timer = new Timer(this,
                                _winningWhistleTimer,
-                               [](GameObject *obj)
+                               [](GameObject *obj, bool isComplete)
                                {
+                                   if (!isComplete)
+                                       return false;
                                    auto player = static_cast<Player *>(obj);
                                    player->SlideFunc();
+                                   return true;
                                });
         AddTimer(timer);
         return;
