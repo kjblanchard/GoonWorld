@@ -358,6 +358,8 @@ void Player::TakeDamage()
 void Player::DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
+    if (player->_isDead || player->_isDying)
+        return;
     player->Die();
 }
 

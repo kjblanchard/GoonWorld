@@ -54,6 +54,7 @@ namespace GoonWorld
     {
         auto path("assets/audio/" + std::string(title) + ".ogg");
         auto sfx = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, path.c_str());
+        return sfx ? true : false;
     }
 
     void Sound::LoadSfx(std::initializer_list<const char *> sfxList)

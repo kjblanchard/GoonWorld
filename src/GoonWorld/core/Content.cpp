@@ -30,8 +30,9 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
         loadedContent = gsLoadBgm((filename));
         break;
     case ContentTypes::Sfx:
+
         loadedContent = gsLoadSfxHelper(filename);
-        gsLoadSfx((gsSfx *)loadedContent);
+        gsLoadSfx((gsSfx*)loadedContent);
         break;
     default:
         break;
