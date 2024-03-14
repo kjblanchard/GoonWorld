@@ -253,7 +253,7 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
 void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip)
 {
     SDL_Rect translatedDstRect;
-    translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x) * 1;
+    translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x);
     translatedDstRect.y = dstRect->y * 1;
     translatedDstRect.w = dstRect->w * 1;
     translatedDstRect.h = dstRect->h * 1;
@@ -269,7 +269,7 @@ void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRec
 void geDrawDebugRect(geRectangle *dstRect, geColor *color)
 {
     SDL_Rect translatedDstRect;
-    translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x) * 1;
+    translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x);
     translatedDstRect.y = dstRect->y * 1;
     translatedDstRect.w = dstRect->w * 1;
     translatedDstRect.h = dstRect->h * 1;

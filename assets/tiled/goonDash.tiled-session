@@ -126,7 +126,7 @@
         "background.tsj"
     ],
     "project": "goonDash.tiled-project",
-    "property.type": "int",
+    "property.type": "BoxContents",
     "recentFiles": [
         "terrain.tsj",
         "background.tsj",

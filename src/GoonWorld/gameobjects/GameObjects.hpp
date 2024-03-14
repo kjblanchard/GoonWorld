@@ -4,3 +4,4 @@
 #include <GoonWorld/gameobjects/Coin.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
+#include <GoonWorld/gameobjects/ItemBox.hpp>

@@ -19,6 +19,8 @@ gpBody *gpBodyNew(gpBB boundingBox)
     body->bodyType = 1;
     body->gravityEnabled = 1;
     body->staticCollisionEnabled = 1;
+    body->xGravityEnabled = 1;
+    body->yGravityEnabled = 1;
     body->numOverlappingBodies = 0;
     body->numOverlapFunctions = 0;
     body->overlapFunctions = calloc(1, sizeof(bodyOverlapArgs));
@@ -90,21 +92,31 @@ void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction)
 
 int gpBodyIsOnGround(gpBody *body)
 {
+    return body->thisFrameOnGround;
 
-    for (size_t i = 0; i < body->numOverlappingBodies; i++)
-    {
-        gpBody *overlap = body->overlaps[i].overlapBody;
-        // If we are not a static body (type0), then continue
-        if (!overlap->staticBody)
-        {
-            continue;
-        }
-        if (overlap->boundingBox.y >= body->boundingBox.y + body->boundingBox.h)
-        {
-            return 1;
-        }
-    }
-    return 0;
+    // for (size_t i = 0; i < body->numOverlappingBodies; i++)
+    // {
+    //     gpBody *overlap = body->overlaps[i].overlapBody;
+    //     // If we are not a static body (type0), then continue
+    //     if (!overlap->staticBody)
+    //     {
+    //         continue;
+    //     }
+    //     if (overlap->boundingBox.y >= body->boundingBox.y + body->boundingBox.h)
+    //     {
+    //         return 1;
+    //     }
+    // }
+    // return 0;
+}
+int gpBodyJustNotOnGround(gpBody *body)
+{
+    return !body->thisFrameOnGround && body->lastFrameOnGround;
+}
+
+int gpBodyJustGotOnGround(gpBody *body)
+{
+    return !body->lastFrameOnGround && body->thisFrameOnGround;
 }
 
 void gpBodyFree(gpBody *body)

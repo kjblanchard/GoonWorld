@@ -42,6 +42,10 @@ extern "C"
         int numOverlappingBodies;
         int lastFrameNumOverlappingBodies;
         int gravityEnabled;
+        int xGravityEnabled;
+        int yGravityEnabled;
+        int lastFrameOnGround;
+        int thisFrameOnGround;
         bodyOverlapArgs *overlapFunctions;
         int numOverlapFunctions;
         void *funcArgs;
@@ -52,12 +56,14 @@ extern "C"
 
     gpBody *gpBodyNew(gpBB boundingBox);
     gpBody *gpBodyNewStatic(gpBB boundingBox);
-    void gpBodyFree(gpBody* body);
+    void gpBodyFree(gpBody *body);
     void gpBodySetPosition(gpBody *body, gpVec pos);
     void gpBodySetVelocity(gpBody *body, gpVec vel);
     void gpBodySetMaxVelocityX(gpBody *body, float maxVel);
     void gpBodyAddOverlap(gpBody *body, gpBody *overlapBody, int direction);
     int gpBodyIsOnGround(gpBody *body);
+    int gpBodyJustGotOnGround(gpBody *body);
+    int gpBodyJustNotOnGround(gpBody *body);
 
     // Overlap functions
     void gpBodyAddOverlapBeginFunc(gpBody *body, bodyOverlapArgs args);

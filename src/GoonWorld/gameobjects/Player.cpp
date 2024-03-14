@@ -14,6 +14,7 @@
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
+#include <GoonWorld/gameobjects/ItemBox.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
@@ -28,9 +29,9 @@ Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
 {
     _location = Point{object.X, object.Y};
-    _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _playerInputComponent = new PlayerInputComponent(0);
-    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width - 3, object.Height};
+    _debugDrawComponent = new DebugDrawComponent(Point{bodyRect.w, bodyRect.h});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
@@ -46,6 +47,7 @@ void Player::BindOverlapFunctions()
 {
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
@@ -58,6 +60,10 @@ void Player::InitializePlayerConfig()
 
 void Player::Update()
 {
+    // if (_rigidbodyComponent->IsOnGround())
+    //     _rigidbodyComponent->YGravityEnabled(false);
+    // else
+    //     _rigidbodyComponent->YGravityEnabled(true);
     if (_isTurningBig)
     {
         Powerup(IsFlagSet(_playerFlags, PlayerFlags::IsBig));
@@ -91,8 +97,16 @@ void Player::Update()
             _isDead = true;
         }
     }
-    _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
-    SetFlag(_playerFlags, PlayerFlags::CanJump, _rigidbodyComponent->IsOnGround());
+    if (_rigidbodyComponent->JustGotOnGround())
+    {
+        _isOnGround = true;
+        _isJumping = false;
+    }
+    if (_rigidbodyComponent->JustLeftGround())
+        _isOnGround = false;
+
+    // _isJumping = _rigidbodyComponent->IsOnGround() ? false : _isJumping;
+    SetFlag(_playerFlags, PlayerFlags::CanJump, _isOnGround);
     HandleInput();
     TurnPhysics();
     AirPhysics();
@@ -134,7 +148,7 @@ void Player::TurnPhysics()
 
 void Player::AirPhysics()
 {
-    if (!_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Acceleration().x != 0)
+    if (!_isOnGround && _rigidbodyComponent->Acceleration().x != 0)
     {
         if ((_rigidbodyComponent->Velocity().x > 0 && _rigidbodyComponent->Acceleration().x < 0) ||
             (_rigidbodyComponent->Velocity().x < 0 && _rigidbodyComponent->Acceleration().x > 0))
@@ -146,7 +160,7 @@ void Player::AirPhysics()
 
 bool Player::ShouldMirrorImage()
 {
-    if (_rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0)
+    if (_isOnGround && _rigidbodyComponent->Velocity().x != 0)
     {
         if (_shouldTurnAnim)
             return !(_rigidbodyComponent->Velocity().x < 0);
@@ -157,13 +171,13 @@ bool Player::ShouldMirrorImage()
 
 void Player::AnimationUpdate()
 {
-    if (_rigidbodyComponent->Velocity().x != 0 && _rigidbodyComponent->IsOnGround())
+    if (_rigidbodyComponent->Velocity().x != 0 && _isOnGround)
     {
         _animationComponent->AnimationSpeed = std::abs(_rigidbodyComponent->Velocity().x) / 100.0f;
     }
-    _shouldFallAnim = _isJumping || !_rigidbodyComponent->IsOnGround();
-    _shouldIdleAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x == 0;
-    _shouldRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
+    _shouldFallAnim = _isJumping || !_isOnGround;
+    _shouldIdleAnim = _isOnGround && _rigidbodyComponent->Velocity().x == 0;
+    _shouldRunAnim = _isOnGround && _rigidbodyComponent->Velocity().x != 0;
     _shouldTurnAnim = _isTurning;
 }
 
@@ -243,7 +257,7 @@ void Player::HandleLeftRightMovement(bool movingRight)
         _rigidbodyComponent->Acceleration().x += moveSpeed * DeltaTime.GetTotalSeconds();
     }
 
-    if (!_rigidbodyComponent->IsOnGround() || _rigidbodyComponent->Velocity().x == 0)
+    if (!_isOnGround || _rigidbodyComponent->Velocity().x == 0)
         _isTurning = false;
     else
     {
@@ -325,18 +339,18 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
-    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
-    {
-        player->_currentEnemyKillTime = 0;
-        // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
-        player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
-        player->_currentJumpTime = 0;
-        player->_isJumping = true;
-        player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
-        player->SetFlag(player->_playerFlags, PlayerFlags::NoDeathVelocity, false);
-        goomba->TakeDamage();
-        return;
-    }
+        if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
+        {
+            player->_currentEnemyKillTime = 0;
+            // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
+            player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
+            player->_currentJumpTime = 0;
+            player->_isJumping = true;
+            player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
+            player->SetFlag(player->_playerFlags, PlayerFlags::NoDeathVelocity, false);
+            goomba->TakeDamage();
+            return;
+        }
     player->TakeDamage();
 }
 void Player::TakeDamage()
@@ -406,12 +420,24 @@ void Player::Win()
     }
 }
 
-void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
+    {
+        itemBox->TakeDamage();
+    }
+}
+
+void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    Player *player = static_cast<Player *>(instance);
+    if (player->_isDead || player->_isDying)
+        return;
+    ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
@@ -426,7 +452,8 @@ void Player::MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBo
     Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
     if (!mushroom->IsEnabled())
         return;
-    player->Powerup(true);
+    if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
+        player->Powerup(true);
     mushroom->TakeDamage();
 }
 

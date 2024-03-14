@@ -17,7 +17,11 @@ namespace GoonWorld
         static void PhysicsUpdate();
         bool IsOnGround();
         void AddOverlapFunction(int overlapType, OverlapFunc func);
+        inline bool JustGotOnGround(void) { return gpBodyJustGotOnGround(_body); }
+        inline bool JustLeftGround(void) { return gpBodyJustNotOnGround(_body); }
         inline void GravityEnabled(bool isEnabled) { _body->gravityEnabled = isEnabled; }
+        inline void XGravityEnabled(bool isEnabled) { _body->xGravityEnabled = isEnabled; }
+        inline void YGravityEnabled(bool isEnabled) { _body->yGravityEnabled = isEnabled; }
         inline void SizeChange(Point newSize)
         {
             _body->boundingBox.w = newSize.x;

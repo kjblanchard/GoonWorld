@@ -7,6 +7,7 @@ namespace GoonWorld
         Player,
         Goomba,
         ItemBrick,
+        ItemBox,
         Mushroom,
         DeathBox,
         WinBox,

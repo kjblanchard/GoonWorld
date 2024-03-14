@@ -89,6 +89,10 @@ static void CheckForNonStaticOverlaps(gpBody *body)
 
 static void ApplyYVelocity(gpBody *body, float gameTime)
 {
+    if (!body->yGravityEnabled)
+        return;
+    body->lastFrameOnGround = body->thisFrameOnGround;
+    body->thisFrameOnGround = 0;
     double initialYStep = body->velocity.y * gameTime;
     double iterYStep = initialYStep;
     double stepSize = (int)initialYStep != 0 ? initialYStep > 0 ? 1 : -1 : initialYStep;
@@ -112,6 +116,8 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
                 {
                     gpResolveOverlapY(&body->boundingBox, &staticBody->boundingBox);
                     shouldStep = 0;
+                    if (direction == gpOverlapDown)
+                        body->thisFrameOnGround = 1;
                 }
                 gpBodyAddOverlap(body, staticBody, direction);
             }
@@ -144,6 +150,8 @@ static void ApplyYVelocity(gpBody *body, float gameTime)
 
 static void ApplyXVelocity(gpBody *body, float gameTime)
 {
+    if (!body->xGravityEnabled)
+        return;
     double initialXStep = body->velocity.x * gameTime;
     double iterXStep = initialXStep;
     double stepSize = (int)initialXStep != 0 ? initialXStep > 0 ? 1 : -1 : initialXStep;
@@ -275,14 +283,14 @@ void gpSceneFree(gpScene *scene)
 {
     for (size_t i = 0; i < _currentNumBodies; i++)
     {
-        if(_currentBodies[i])
+        if (_currentBodies[i])
         {
             gpBodyFree(_currentBodies[i]);
         }
     }
     for (size_t i = 0; i < _currentNumStaticBodies; i++)
     {
-        if(_currentStaticBodies[i])
+        if (_currentStaticBodies[i])
         {
             gpBodyFree(_currentStaticBodies[i]);
         }

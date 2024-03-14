@@ -42,7 +42,7 @@ namespace GoonWorld
         // State
     private:
         bool _isJumping = false, _isTurning = false, _isDying = false, _isDead = false;
-        bool _isTurningBig = false, _isWinning = false, _isWinWalking = false;
+        bool _isTurningBig = false, _isWinning = false, _isWinWalking = false, _isOnGround = false;
         // Timers
     private:
         float _currentJumpTime = 0, _currentEnemyKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
@@ -83,6 +83,7 @@ namespace GoonWorld
 
         // Overlap Functions
     private:
+        static void BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
