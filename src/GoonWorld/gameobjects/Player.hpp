@@ -11,15 +11,14 @@ namespace GoonWorld
     class PlayerInputComponent;
     class RigidbodyComponent;
     class AnimationComponent;
+
     class Player : public GameObject, public ITakeDamage
     {
     public:
         Player(TiledMap::TiledObject &object);
-        inline bool CanDamage() { return _enemyJustKilled == false; }
+        ~Player() = default;
         void TakeDamage() override;
         void Update() override;
-
-        ~Player();
 
     private:
         struct PlayerFlags
@@ -31,38 +30,45 @@ namespace GoonWorld
             static const int IsBig = 1 << 4;
             static const int IsInvincible = 1 << 5;
         };
-        inline bool SetFlag(int flag, bool onOff)
-        {
-            if (onOff)
-            {
-                _playerFlags |= flag; // Set the flag
-            }
-            else
-            {
-                _playerFlags &= ~flag; // Unset the flag
-            }
-        }
-        inline bool IsFlagSet(int flag) { return (_playerFlags & flag); }
         int32_t _playerFlags = 0;
+
+        // Animations
+    private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
 
     private:
-        bool _isJumping = false, _canJump = false, _isTurning = false, _enemyJustKilled = false, _isDying = false, _isDead = false;
-        bool _noDeathVelocity = false, _isTurningBig = false, _isBig = false, _isInvincible = false;
-        bool _isWinning = false, _isWinWalking = false;
-        int _jumpFrameVelocity = 0, _initialJumpVelocity = 0, _runSpeedBoost = 0, _walkSpeedBoost = 0, _maxRunSpeed = 0, _maxWalkSpeed = 0, _initialMoveVelocity = 0, _currentBigIterations = 0;
+        bool _isJumping = false, _isTurning = false, _isDying = false, _isDead = false;
+        bool _isTurningBig = false, _isWinning = false, _isWinWalking = false;
+        int _currentBigIterations = 0;
         int _coinsCollected = 0;
-        float _currentJumpTime = 0, _maxJumpTime = 0, _goombaKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
 
-        // float _currentWhistleTime = 0;
+        // Config
+    private:
+        int *_jumpFrameVelocity, *_initialJumpVelocity, *_runSpeedBoost, *_walkSpeedBoost, *_maxRunSpeed, *_maxWalkSpeed, *_initialMoveVelocity;
+        float *_maxJumpTime;
+
+        // Timers
+    private:
+        float _currentJumpTime = 0, _enemyKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
+
+        // Constants
+    private:
         const float _winningWhistleTimer = .75;
-
         const float _deadTimer = 0.65;
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
         const float _bigIterationTime = 0.1;
 
+        // Components
     private:
+        DebugDrawComponent *_debugDrawComponent = nullptr;
+        PlayerInputComponent *_playerInputComponent = nullptr;
+        RigidbodyComponent *_rigidbodyComponent = nullptr;
+        AnimationComponent *_animationComponent = nullptr;
+
+    private:
+        void BindOverlapFunctions();
+        void InvincibleTick();
         void GettingBigUpdate();
         void SlideFunc();
         void HandleInput();
@@ -76,21 +82,18 @@ namespace GoonWorld
         void HandleLeftRightMovement(bool movingRight);
         void Jump();
         float CalculateFrameMaxVelocity();
-
-        DebugDrawComponent *_debugDrawComponent = nullptr;
-        PlayerInputComponent *_playerInputComponent = nullptr;
-        RigidbodyComponent *_rigidbodyComponent = nullptr;
-        AnimationComponent *_animationComponent = nullptr;
-
-    private:
-        void GoombaOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
-        void ItemBoxOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
-        void MushroomOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
-        void CoinOverlapFunc(gpBody *overlapBody, gpOverlap *overlap);
         void Powerup(bool isGettingBig);
         void Die();
         void Win();
         void WinWalking();
-        // friend void GoombaOverlapFuncCallback(void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+
+        // Overlap Functions
+    private:
+        static void ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

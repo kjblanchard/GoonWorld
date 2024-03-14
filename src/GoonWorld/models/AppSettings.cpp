@@ -14,6 +14,8 @@ AppSettings::AppSettings(const char *filepath)
     DebugConfig.SolidDebug = debugConfig["solidObjectDebug"];
     auto soundConfig = data["soundConfig"];
     SoundConfigs.MusicVolume = soundConfig["musicVolume"];
+    SoundConfigs.Muted = soundConfig["mute"];
+    SoundConfigs.SfxVolume = soundConfig["sfxVolume"];
     for (auto &song : soundConfig["musicToLoad"])
     {
         Music music;

@@ -4,8 +4,9 @@
 #include <GoonPhysics/body.h>
 #include <GoonWorld/BodyTypes.hpp>
 #include <GoonEngine/rectangle.h>
+#include <GoonPhysics/body.h>
+#include <GoonPhysics/overlap.h>
 
-struct gpBody;
 namespace GoonWorld
 {
     class RigidbodyComponent : public Component
@@ -15,6 +16,7 @@ namespace GoonWorld
         ~RigidbodyComponent();
         static void PhysicsUpdate();
         bool IsOnGround();
+        void AddOverlapFunction(int overlapType, OverlapFunc func);
         inline void GravityEnabled(bool isEnabled) { _body->gravityEnabled = isEnabled; }
         inline void SizeChange(Point newSize)
         {
@@ -40,4 +42,17 @@ namespace GoonWorld
         long long _isOnGroundCached;
         bool _isOnGround, _static;
     };
+    // template <typename T>
+    // void RigidbodyComponent::AddOverlapFunction(int overlapType, std::function<void(void* args, gpBody *body, gpBody* overlapBody, gpOverlap *overlap)> func)
+    // {
+    // auto instance = dynamic_cast<T *>(_parent);
+    // bodyOverlapArgs args;
+    // args.bodyType = _body->bodyType;
+    // args.overlapBodyType = overlapType;
+    // args.overlapFunc = [func](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+    // {
+    //     func(instance, overlapBody, overlap);
+    // };
+    // gpBodyAddOverlapBeginFunc(_body, func);
+    // }
 }

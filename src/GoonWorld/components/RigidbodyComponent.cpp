@@ -21,6 +21,12 @@ RigidbodyComponent::~RigidbodyComponent()
     // gpBodyFree(_body);
 }
 
+void RigidbodyComponent::AddOverlapFunction(int overlapType, OverlapFunc func)
+{
+    auto args = bodyOverlapArgs{_body->bodyType, overlapType, func};
+    gpBodyAddOverlapBeginFunc(_body, args);
+}
+
 bool RigidbodyComponent::IsOnGround()
 {
     if (Game::GetTicks() == _isOnGroundCached)

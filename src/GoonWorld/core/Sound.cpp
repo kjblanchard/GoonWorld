@@ -39,7 +39,8 @@ namespace GoonWorld
         auto path("assets/audio/" + std::string(title) + ".ogg");
         auto bgm = Content::GetLoadedContentOfType<gsBgm>(path.c_str());
         gsPreLoadBgm(bgm);
-        gsPlayBgm(_soundConfig->MusicVolume * volume);
+        auto muteMultiplier = _soundConfig->Muted ? 0 : 1;
+        gsPlayBgm(_soundConfig->MusicVolume * volume * muteMultiplier);
         if (loops == -1)
         {
             gsSetPlayerLoops(255);
@@ -54,12 +55,21 @@ namespace GoonWorld
         auto path("assets/audio/" + std::string(title) + ".ogg");
         auto sfx = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, path.c_str());
     }
+
+    void Sound::LoadSfx(std::initializer_list<const char *> sfxList)
+    {
+        for (auto sfx : sfxList)
+        {
+            LoadSfx(sfx);
+        }
+    }
     void Sound::PlaySfx(const char *title, float volume)
     {
         auto path("assets/audio/" + std::string(title) + ".ogg");
         auto sfx = Content::GetLoadedContentOfType<gsSfx>(path.c_str());
+        auto muteMultiplier = _soundConfig->Muted ? 0 : 1;
         if (!sfx)
             return;
-        gsPlaySfxOneShot(sfx, volume);
+        gsPlaySfxOneShot(sfx, volume * _soundConfig->SfxVolume * muteMultiplier);
     }
 }

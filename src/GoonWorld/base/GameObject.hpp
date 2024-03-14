@@ -43,6 +43,18 @@ namespace GoonWorld
         Sound &GetGameSound();
         Game &GetGame();
         void AddTimer(Timer *timer);
+        inline void SetFlag(int &flags, int flag, bool onOff)
+        {
+            if (onOff)
+            {
+                flags |= flag;
+            }
+            else
+            {
+                flags &= ~flag;
+            }
+        }
+        inline bool IsFlagSet(int &flags, int flag) { return (flags & flag); }
         unsigned int _id;
         Point _location;
         std::vector<std::shared_ptr<Component>> _components;

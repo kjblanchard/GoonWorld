@@ -29,7 +29,9 @@ namespace GoonWorld
         };
         struct SoundConfig
         {
+            bool Muted;
             float MusicVolume;
+            float SfxVolume;
             std::vector<struct Music> Music;
         };
         struct KeyboardConfig
@@ -51,7 +53,8 @@ namespace GoonWorld
         };
         struct PlayerConfig
         {
-            float InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, WalkSpeedBoost, RunSpeedBoost, MaxWalkSpeed, MaxRunSpeed, MaxJumpTime;
+            int InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, WalkSpeedBoost, RunSpeedBoost, MaxWalkSpeed, MaxRunSpeed;
+            float MaxJumpTime;
         };
         struct Animation
         {
