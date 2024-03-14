@@ -33,11 +33,10 @@ Player::Player(TiledMap::TiledObject &object)
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
-    _animationComponent = new AnimationComponent("mario", Point{0, -36});
+    _animationComponent = new AnimationComponent("mario", Point{0, -20});
     GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
-    _animationComponent->SizeMultiplier = 2;
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    _debugDrawComponent->Enabled(false);
+    // _debugDrawComponent->Enabled(false);
     BindOverlapFunctions();
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -463,20 +462,20 @@ void Player::Powerup(bool isGettingBig)
         GetGame().PushEvent(bigEvent);
         if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
         {
-            auto newSize = Point{32, 64};
-            _location.y -= 32;
-            _rigidbodyComponent->BoundingBox().y -= 32;
+            auto newSize = Point{16, 32};
+            _location.y -= 16;
+            _rigidbodyComponent->BoundingBox().y -= 16;
             _rigidbodyComponent->SizeChange(newSize);
             _animationComponent->Offset(Point{0, -4});
             _debugDrawComponent->Size = newSize;
         }
         else
         {
-            auto newSize = Point{32, 32};
-            _location.y += 32;
-            _rigidbodyComponent->BoundingBox().y += 32;
+            auto newSize = Point{16, 16};
+            _location.y += 16;
+            _rigidbodyComponent->BoundingBox().y += 16;
             _rigidbodyComponent->SizeChange(newSize);
-            _animationComponent->Offset(Point{0, -36});
+            _animationComponent->Offset(Point{0, -20});
             _debugDrawComponent->Size = newSize;
         }
     }
@@ -495,11 +494,13 @@ void Player::Powerup(bool isGettingBig)
             if (isBig)
             {
                 newName.erase(newName.size() - 1);
+                // _animationComponent->Offset(Point{0, -36});
                 _animationComponent->Offset(Point{0, -36});
             }
             else
             {
                 newName = newName + "b";
+                // _animationComponent->Offset(Point{0, -40});
                 _animationComponent->Offset(Point{0, -40});
             }
             _animationComponent->ChangeAnimation(newName);

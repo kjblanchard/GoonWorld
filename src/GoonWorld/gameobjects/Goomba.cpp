@@ -22,7 +22,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");
-    _animationComponent->SizeMultiplier = 2;
+    _animationComponent->SizeMultiplier = 1;
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     GetGameSound().LoadSfx(deadSound);
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});

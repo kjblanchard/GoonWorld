@@ -71,6 +71,9 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "blocks.tsj": {
+            "dynamicWrapping": false
+        },
         "level1.tmj": {
             "expandedGroupLayers": [
                 12
@@ -107,7 +110,7 @@
     "last.executablePath": "/Applications/Tiled.app",
     "last.exportedFilePath": "/Users/kevin/git/c/goonDash/assets/tiled",
     "last.externalTilesetPath": "/Users/kevin/git/cpp/goonEngine/assets/tiled",
-    "last.imagePath": "/Users/kevin/git/c/goonDash/assets/img",
+    "last.imagePath": "/Users/kevin/git/cpp/GoonWorld/assets/img",
     "last.objectTemplatePath": "/Users/kevin/git/c/goonDash/assets/tiled/templates",
     "lastUsedTilesetExportFilter": "Lua files (*.lua)",
     "map.height": 18,
@@ -125,8 +128,8 @@
     "project": "goonDash.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "background.tsj",
         "terrain.tsj",
+        "background.tsj",
         "level1.tmj",
         "background.tsx",
         "terrain.tsx",
@@ -145,5 +148,5 @@
         "height": 16,
         "width": 16
     },
-    "tileset.type": 1
+    "tileset.type": 0
 }

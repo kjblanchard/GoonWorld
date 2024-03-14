@@ -23,7 +23,7 @@ Coin::Coin(TiledMap::TiledObject &object)
     _rigidbodyComponent->GravityEnabled(false);
 
     _animationComponent = new AnimationComponent("coin");
-    _animationComponent->SizeMultiplier = 2;
+    _animationComponent->SizeMultiplier = 1;
     // coinsound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "coin");
     GetGameSound().LoadSfx(coinSound);
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});

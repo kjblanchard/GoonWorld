@@ -1,3 +1,4 @@
+#include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonEngine/point.h>
 #include <GoonWorld/shared/Constants.hpp>
@@ -51,9 +52,10 @@ geRectangle TiledMap::GetSourceRectForGidWithTileset(int gid, const TiledMap::Ti
     else
     {
         // Subtract 1 from gid, since 0 is counted as nothing in tiled.
-        --gid;
-        int x = (gid % tileset->Columns) * tileset->TileWidth;
-        int y = (gid / tileset->Columns) * tileset->TileHeight;
+        // --gid;
+        auto tilemapGid = gid - tileset->FirstGid;
+        int x = (tilemapGid % tileset->Columns) * tileset->TileWidth;
+        int y = (tilemapGid / tileset->Columns) * tileset->TileHeight;
         return geRectangle{x, y, tileset->TileWidth, tileset->TileHeight};
     }
     return geRectangle{0, 0, 0, 0};

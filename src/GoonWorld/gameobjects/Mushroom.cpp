@@ -17,7 +17,7 @@ Mushroom::Mushroom(geRectangle *rect)
     _rigidbodyComponent->SetBodyType(BodyTypes::Mushroom);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     _animationComponent = new AnimationComponent("mushroom");
-    _animationComponent->SizeMultiplier = 2;
+    _animationComponent->SizeMultiplier = 1;
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
     GetGameSound().LoadSfx(mushroomSound);
     AddComponent({_rigidbodyComponent, _animationComponent});
