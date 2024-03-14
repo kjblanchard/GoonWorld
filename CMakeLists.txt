@@ -74,12 +74,13 @@ add_executable(${EXECUTABLE_TARGET_NAME}
 set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
 find_package(PkgConfig REQUIRED)
+find_package(ZLIB)
 include(CTest)
 
 # #########################################
 # Options
 # #########################################
-option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" OFF)
+option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" ON)
 option(GOON_BUILD_PCH "Uses a PCH file to try and speed up compilation" ON)
 option(GOON_DEBUG_SOUND "Builds sound from subdirectory instead of using a made package so we can debug" ON)
 option(GOON_MULTITHREADED_SOUND "Adds multithreaded support for sound updates, experimental and has a memory leak somehow" OFF)
@@ -124,6 +125,12 @@ if(GOON_DEBUG_SOUND)
 else()
     find_package(supergoonSound REQUIRED)
 endif(GOON_DEBUG_SOUND)
+
+find_library(LIB_PNG
+    REQUIRED
+    PATH_SUFFIXES .a
+    NAMES libpng png.a png.dll libpng.a
+    HINTS /usr/local/lib /c/cmake/lib)
 
 # #########################################
 # Platform Specific Build settings
@@ -194,6 +201,8 @@ set(LIBRARIES_TO_LINK
     supergoonSound::supergoonSound
     supergoonSound
     SDL2::SDL2main
+    ZLIB::ZLIB
+    ${LIB_PNG}
 )
 
 foreach(LIBRARY ${LIBRARIES_TO_LINK})
@@ -206,9 +215,7 @@ endforeach()
 target_link_libraries(${LIBRARY_TARGET_NAME}
     PUBLIC
     PRIVATE
-    ${LUA_LIBRARIES}
-    ${GOONSOUND_LIBRARIES}
-    ${LIB_SOCKET}
+    ${LIB_PNG}
 )
 target_link_directories(${LIBRARY_TARGET_NAME}
     PRIVATE
