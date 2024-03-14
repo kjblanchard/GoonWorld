@@ -6,9 +6,11 @@ AppSettings::AppSettings(const char *filepath)
 {
     std::ifstream f("assets/config/appsettings.json");
     json data = json::parse(f);
-    auto width = data["windowConfig"]["windowSize"]["x"].get<float>();
+    // auto width = data["windowConfig"]["windowSize"]["x"].get<float>();
     WindowConfig.WindowSize.x = data["windowConfig"]["windowSize"]["x"].get<float>();
     WindowConfig.WindowSize.y = data["windowConfig"]["windowSize"]["y"].get<float>();
+    WindowConfig.WorldSize.x = data["windowConfig"]["worldSize"]["x"].get<float>();
+    WindowConfig.WorldSize.y = data["windowConfig"]["worldSize"]["y"].get<float>();
     WindowConfig.Title = data["windowConfig"]["title"].get<std::string>();
     auto debugConfig = data["debugConfig"];
     DebugConfig.SolidDebug = debugConfig["solidObjectDebug"];

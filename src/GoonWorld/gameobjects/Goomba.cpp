@@ -26,7 +26,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     GetGameSound().LoadSfx(deadSound);
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
-    _debugDrawComponent->Enabled(false);
+    // _debugDrawComponent->Enabled(false);
 
     _animationComponent->AddTransition("walk", "dead", true, &_isDead);
 }

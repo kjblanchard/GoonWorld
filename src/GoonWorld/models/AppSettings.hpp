@@ -14,6 +14,7 @@ namespace GoonWorld
         struct WindowConfig
         {
             Point WindowSize;
+            Point WorldSize;
             std::string Title;
         };
         struct GraphicsConfig

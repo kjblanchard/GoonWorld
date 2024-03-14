@@ -252,15 +252,11 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
 // void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
 void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip)
 {
-
     SDL_Rect translatedDstRect;
-    // translatedDstRect.x = g_backgroundDrawRect->x - dstRect->x;
-    translatedDstRect.x = dstRect->x - g_backgroundDrawRect->x;
-    // translatedDstRect.y = g_backgroundDrawRect->y - dstRect->y;
-    translatedDstRect.y = dstRect->y;
-    translatedDstRect.w = dstRect->w;
-    translatedDstRect.h = dstRect->h;
-    // SDL_RenderCopy(g_pRenderer, texture, srcRect, dstRect);
+    translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x) * 1;
+    translatedDstRect.y = dstRect->y * 1;
+    translatedDstRect.w = dstRect->w * 1;
+    translatedDstRect.h = dstRect->h * 1;
     SDL_RenderCopyEx(g_pRenderer,
                      texture,
                      (SDL_Rect *)srcRect,
@@ -268,18 +264,15 @@ void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRec
                      0,
                      NULL,
                      (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
-    //  (shouldFlip) ? SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL : SDL_FLIP_NONE | SDL_FLIP_VERTICAL);
 }
 
 void geDrawDebugRect(geRectangle *dstRect, geColor *color)
 {
     SDL_Rect translatedDstRect;
-    // translatedDstRect.x = g_backgroundDrawRect->x - dstRect->x;
-    translatedDstRect.x = dstRect->x - g_backgroundDrawRect->x;
-    // translatedDstRect.y = g_backgroundDrawRect->y - dstRect->y;
-    translatedDstRect.y = dstRect->y;
-    translatedDstRect.w = dstRect->w;
-    translatedDstRect.h = dstRect->h;
+    translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x) * 1;
+    translatedDstRect.y = dstRect->y * 1;
+    translatedDstRect.w = dstRect->w * 1;
+    translatedDstRect.h = dstRect->h * 1;
     SDL_SetRenderDrawColor(g_pRenderer, color->R, color->G, color->B, color->A);
     SDL_RenderDrawRect(g_pRenderer, &translatedDstRect);
     SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);

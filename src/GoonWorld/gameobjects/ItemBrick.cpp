@@ -19,13 +19,14 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     }
     _location = Point{object.X, object.Y};
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
+    _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::ItemBrick);
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
     GetGameSound().LoadSfx(bumpSound);
     GetGameSound().LoadSfx(powerupSpawnSound);
-    AddComponent({_rigidbodyComponent});
+    AddComponent({_rigidbodyComponent, _debugDrawComponent});
 }
 void ItemBrick::Update()
 {

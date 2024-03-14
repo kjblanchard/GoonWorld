@@ -33,6 +33,8 @@ Game::Game()
     _gameSettings = std::make_unique<AppSettings>("assets/config/appsettings.json");
     geInitializeRenderingWindow(_gameSettings->WindowConfig.WindowSize.x,
                                 _gameSettings->WindowConfig.WindowSize.y,
+                                _gameSettings->WindowConfig.WorldSize.x,
+                                _gameSettings->WindowConfig.WorldSize.y,
                                 _gameSettings->WindowConfig.Title.c_str());
     _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
                                                     { this->PlayerBigEvent(event); });
@@ -41,7 +43,7 @@ Game::Game()
     AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
     AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
-    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WindowSize.x, _gameSettings->WindowConfig.WindowSize.y});
+    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
 }
 
