@@ -135,9 +135,32 @@ static SDL_Surface *loadPNG(const char *filename)
     // Read the image data
     png_read_image(png_ptr, row_pointers);
 
+    // Determine Pixel format
+    Uint32 sdl_pixel_format;
+    switch (color_type)
+    {
+    case PNG_COLOR_TYPE_GRAY:
+        sdl_pixel_format = (bit_depth == 16) ? SDL_PIXELFORMAT_RGB565 : SDL_PIXELFORMAT_RGB888;
+        break;
+    case PNG_COLOR_TYPE_PALETTE:
+        sdl_pixel_format = SDL_PIXELFORMAT_RGBA8888; // You may need to handle palette conversion
+        break;
+    case PNG_COLOR_TYPE_RGB:
+        sdl_pixel_format = SDL_PIXELFORMAT_RGB888;
+        break;
+    case PNG_COLOR_TYPE_RGBA:
+        sdl_pixel_format = SDL_PIXELFORMAT_RGBA8888;
+        break;
+    default:
+        fclose(file);
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        fprintf(stderr, "Error: Unsupported PNG color type\n");
+        return NULL;
+    }
+
     // Create an SDL surface
-    SDL_Surface *surface = SDL_CreateRGBSurface(0, width, height, 32,
-                                                0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    // SDL_Surface *surface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, sdl_pixel_format);
 
     // Copy pixel data from PNG to SDL surface
     for (int y = 0; y < height; y++)
@@ -165,59 +188,11 @@ static SDL_Surface *loadPNG(const char *filename)
     return surface;
 }
 
-SDL_Surface *LoadSurfaceFromFile(const char *filePath, void **data)
+// SDL_Surface *LoadSurfaceFromFile(const char *filePath, void **data)
+SDL_Surface *LoadSurfaceFromFile(const char *filePath)
 {
     SDL_Surface *surf = loadPNG(filePath);
     return surf;
-
-    //     int req_format = STBI_rgb_alpha;
-    //     int width, height, orig_format;
-    //     *data = stbi_load(filePath, &width, &height, &orig_format, req_format);
-    // #ifdef __EMSCRIPTEN__
-    //     flipImageVertically((char *)(*data), width, height, orig_format);
-    // #endif
-    //     if (*data == NULL)
-    //     {
-    //         SDL_Log("Loading image failed: %s", stbi_failure_reason());
-    //         exit(1);
-    //     }
-
-    //     int depth, pitch;
-    //     Uint32 pixel_format;
-    //     if (req_format == STBI_rgb)
-    //     {
-    //         depth = 24;
-    //         pitch = 3 * width; // 3 bytes per pixel * pixels per row
-    //         pixel_format = SDL_PIXELFORMAT_RGB24;
-    //     }
-    //     else
-    //     { // STBI_rgb_alpha (RGBA)
-    //         depth = 32;
-    //         pitch = 4 * width;
-    //         pixel_format = SDL_PIXELFORMAT_RGBA32;
-    //     }
-
-    //     SDL_Surface *surf = SDL_CreateRGBSurfaceWithFormatFrom((void *)*data, width, height,
-    //                                                            depth, pitch, pixel_format);
-
-    //     if (surf == NULL)
-    //     {
-    //         SDL_Log("Creating surface failed: %s", SDL_GetError());
-    //         stbi_image_free(*data);
-    //         exit(1);
-    //     }
-
-    //     if (!surf)
-    //     {
-    //         LogError("Could not create surface from data %s, Error:\n%s", filePath, SDL_GetError());
-    //         return NULL;
-    //     }
-    //     // stbi_image_free(data);
-    //     return surf;
-}
-void DestroyPixelData(void *data)
-{
-    // stbi_image_free(data);
 }
 
 SDL_Surface *LoadTextureAtlas(int width, int height)
@@ -247,8 +222,7 @@ void BlitSurface(
 }
 SDL_Texture *CreateTextureFromFile(const char *filename)
 {
-    void *data = NULL;
-    SDL_Surface *surface = LoadSurfaceFromFile(filename, &data);
+    SDL_Surface *surface = LoadSurfaceFromFile(filename);
     SDL_Texture *texture = CreateTextureFromSurface(surface);
     // stbi_image_free(data);
     return texture;

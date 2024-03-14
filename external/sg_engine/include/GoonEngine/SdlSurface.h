@@ -22,7 +22,8 @@ extern "C"
     typedef struct SDL_Texture SDL_Texture;
     typedef struct SDL_Surface SDL_Surface;
 
-    SDL_Surface *LoadSurfaceFromFile(const char *filePath, void **data);
+    // SDL_Surface *LoadSurfaceFromFile(const char *filePath, void **data);
+    SDL_Surface *LoadSurfaceFromFile(const char *filePath);
     SDL_Surface *LoadTextureAtlas(int width, int height);
     void BlitSurface(SDL_Surface *srcSurface, geRectangle *srcRect, SDL_Surface *dstSurface, geRectangle *dstRect);
     SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface);
