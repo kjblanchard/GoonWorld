@@ -19,16 +19,12 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     }
     _location = Point{object.X, object.Y};
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
-    // _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::ItemBrick);
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
     GetGameSound().LoadSfx(bumpSound);
     GetGameSound().LoadSfx(powerupSpawnSound);
-    // bumpSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "bump");
-    // itemSound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "powerup");
-    // AddComponent({_debugDrawComponent, _rigidbodyComponent});
     AddComponent({_rigidbodyComponent});
 }
 void ItemBrick::Update()
@@ -44,7 +40,7 @@ void ItemBrick::TakeDamage()
         break;
     case (int)ItemBrickContents::Mushroom:
     {
-        auto loc = geRectangle{_location.x, _location.y - 32, 32, 32};
+        auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
         auto shroom = new Mushroom(&loc);
         shroom->Push(true);
         _contents = 0;
