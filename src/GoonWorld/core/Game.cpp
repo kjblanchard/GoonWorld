@@ -87,6 +87,9 @@ void Game::Update(double timeMs)
     GameObject::UpdateTimers();
     for (auto object : UpdateObjects)
     {
+        auto updateEnable = dynamic_cast<IEnable *>(object);
+        if (updateEnable && !updateEnable->IsEnabled())
+            continue;
         object->Update();
     }
 }

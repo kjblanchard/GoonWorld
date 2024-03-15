@@ -31,6 +31,7 @@
 - [Mushroom](https://freesound.org/people/timgormly/sounds/170155/) - Attribution
 - [Powerup](https://freesound.org/people/ProjectsU012/sounds/341629/) - Attribution
 - [Castle](https://freesound.org/people/Sirkoto51/sounds/416632/) - Attribution
+- [Fireball](https://freesound.org/people/adh.dreaming/sounds/615576/) - Creative Commons
 
 ## Libraries
 - [Supergoon Sound](https://github.com/icculus/mojoAL/blob/main/LICENSE.txt) - ZLIB | OpenAL implementation - Mojoal wrapper

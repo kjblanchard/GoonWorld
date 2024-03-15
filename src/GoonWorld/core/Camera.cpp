@@ -15,3 +15,12 @@ void Camera::Update()
         // Cap the camera at the end of the level, else set it halfway
         _cameraBounds.x = std::min(maxCameraX, _followTarget->Location().x - halfwayPointX);
 }
+bool Camera::IsPointOnCamera(Point point)
+{
+    auto cameraViewX = _cameraBounds.x + _cameraBounds.w;
+    auto cameraViewY = _cameraBounds.y + _cameraBounds.h;
+
+    if (point.x >= _cameraBounds.x && point.x <= cameraViewX)
+        return true;
+    return false;
+}

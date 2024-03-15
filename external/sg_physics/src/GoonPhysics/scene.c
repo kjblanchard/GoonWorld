@@ -45,6 +45,10 @@ void gpSceneUpdate(gpScene *scene, float gameTime)
         gpBody *body = _currentBodies[i];
         if (!body || !body->gravityEnabled)
             continue;
+        if (body->velocity.y == 3000)
+        {
+            puts("Its 3k!!");
+        }
         memcpy(body->lastFrameOverlaps, body->overlaps, sizeof(gpOverlap) * body->numOverlappingBodies);
         body->lastFrameNumOverlappingBodies = body->numOverlappingBodies;
         gpGravityBodyStep(body, &sceneGravity, gameTime);

@@ -10,6 +10,7 @@ namespace GoonWorld
         ItemBox,
         Mushroom,
         Fireflower,
+        Fireball,
         DeathBox,
         WinBox,
         Coin,

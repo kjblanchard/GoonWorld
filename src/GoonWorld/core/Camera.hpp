@@ -12,6 +12,7 @@ namespace GoonWorld
         Camera(geRectangle bounds);
         inline geRectangle *Bounds() { return &_cameraBounds; }
         inline void SetLevelSize(Point size) { levelSize = size; }
+        bool IsPointOnCamera(Point point);
         inline void Restart()
         {
             _cameraBounds.x = 0;

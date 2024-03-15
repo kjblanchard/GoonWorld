@@ -1,4 +1,5 @@
 #pragma once
+#include <queue>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/ITakeDamage.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
@@ -8,6 +9,7 @@ typedef struct gpOverlap gpOverlap;
 
 namespace GoonWorld
 {
+    class Fireball;
     class DebugDrawComponent;
     class PlayerInputComponent;
     class RigidbodyComponent;
@@ -31,11 +33,13 @@ namespace GoonWorld
             static const int NoDeathVelocity = 1 << 3;
             static const int IsBig = 1 << 4;
             static const int IsInvincible = 1 << 5;
+            static const int IsSuper = 1 << 6;
         };
         int32_t _playerFlags = 0;
         AppSettings::PlayerConfig *_playerConfig;
         int _currentBigIterations = 0;
         int _coinsCollected = 0;
+        std::queue<Fireball*> _fireballs;
         // Animations
     private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
@@ -62,6 +66,7 @@ namespace GoonWorld
 
     private:
         void BindOverlapFunctions();
+        void ShootFireball();
         void InvincibleTick();
         void GettingBigUpdate();
         void SlideFunc();
@@ -77,6 +82,7 @@ namespace GoonWorld
         void Jump();
         float CalculateFrameMaxVelocity();
         void Powerup(bool isGettingBig);
+        void FirePowerup(bool isGettingBig);
         void Die();
         void Win();
         void WinWalking();

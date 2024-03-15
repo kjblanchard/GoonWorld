@@ -16,6 +16,7 @@
 #include <GoonWorld/gameobjects/Fireflower.hpp>
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/gameobjects/ItemBox.hpp>
+#include <GoonWorld/gameobjects/Fireball.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
@@ -43,6 +44,14 @@ Player::Player(TiledMap::TiledObject &object)
     CreateAnimationTransitions();
     InitializePlayerConfig();
     GetGame().GetCamera()->SetFollowTarget(this);
+    static int xLoc = 0;
+    for (size_t i = 0; i < 4; i++)
+    {
+        auto rect = geRectangle{xLoc, 0, 16, 16};
+        auto fireball = new Fireball(&rect, &_fireballs);
+        _fireballs.push(fireball);
+        xLoc += 32;
+    }
 }
 void Player::BindOverlapFunctions()
 {
@@ -59,16 +68,30 @@ void Player::BindOverlapFunctions()
 void Player::InitializePlayerConfig()
 {
 }
+void Player::ShootFireball()
+{
+    if (!IsFlagSet(_playerFlags, PlayerFlags::IsSuper) || _fireballs.empty())
+        return;
+    auto location = _location;
+    auto ballRight = !_animationComponent->Mirror;
+    location.x += ballRight ? 8 : -8;
+    _fireballs.front()->Push(location, ballRight );
+    _fireballs.pop();
+}
 
 void Player::Update()
 {
-    // if (_rigidbodyComponent->IsOnGround())
-    //     _rigidbodyComponent->YGravityEnabled(false);
-    // else
-    //     _rigidbodyComponent->YGravityEnabled(true);
     if (_isTurningBig)
     {
-        Powerup(IsFlagSet(_playerFlags, PlayerFlags::IsBig));
+        // Need to handle which
+        if (IsFlagSet(_playerFlags, PlayerFlags::IsSuper))
+        {
+            FirePowerup(true);
+        }
+        else
+        {
+            Powerup(IsFlagSet(_playerFlags, PlayerFlags::IsBig));
+        }
         return;
     }
     if (_isWinning)
@@ -207,6 +230,10 @@ void Player::HandleInput()
         return;
     }
     SetFlag(_playerFlags, PlayerFlags::RunningButtonDown, _playerInputComponent->IsButtonDownOrHeld(GameControllerButton::X));
+    if (_playerInputComponent->IsButtonPressed(GameControllerButton::X))
+    {
+        ShootFireball();
+    }
 
     if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::DPAD_LEFT))
     {
@@ -300,6 +327,21 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("idleb", "dead", true, &_isDying);
     _animationComponent->AddTransition("turnb", "dead", true, &_isDying);
     _animationComponent->AddTransition("jumpb", "dead", true, &_isDying);
+    // Super
+    _animationComponent->AddTransition("turnf", "idlef", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("turnf", "walkf", false, &_shouldTurnAnim);
+    _animationComponent->AddTransition("turnf", "jumpf", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("walkf", "turnf", true, &_shouldTurnAnim);
+    _animationComponent->AddTransition("idlef", "jumpf", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("walkf", "jumpf", true, &_shouldFallAnim);
+    _animationComponent->AddTransition("jumpf", "idlef", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("jumpf", "walkf", true, &_shouldRunAnim);
+    _animationComponent->AddTransition("idlef", "walkf", true, &_shouldRunAnim);
+    _animationComponent->AddTransition("walkf", "idlef", true, &_shouldIdleAnim);
+    _animationComponent->AddTransition("walkf", "dead", true, &_isDying);
+    _animationComponent->AddTransition("idlef", "dead", true, &_isDying);
+    _animationComponent->AddTransition("turnf", "dead", true, &_isDying);
+    _animationComponent->AddTransition("jumpf", "dead", true, &_isDying);
 }
 
 void Player::Jump()
@@ -360,6 +402,7 @@ void Player::TakeDamage()
     if (IsFlagSet(_playerFlags, PlayerFlags::IsInvincible))
         return;
     // If big, then power down
+    SetFlag(_playerFlags, PlayerFlags::IsSuper, false);
     if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
     {
         Game::Instance()->GetSound()->PlaySfx(powerDownSound, 1.0);
@@ -467,11 +510,15 @@ void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlap
     if (!flower->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
+    {
+        puts("small, get big");
         player->Powerup(true);
+    }
     else
     {
-        // Get flower
-
+        puts("big, get super");
+        player->SetFlag(player->_playerFlags, Player::PlayerFlags::IsSuper, true);
+        player->FirePowerup(true);
     }
     flower->TakeDamage();
 }
@@ -536,18 +583,61 @@ void Player::Powerup(bool isGettingBig)
 
             auto currentAnim = _animationComponent->GetCurrentAnimation();
             auto newName = currentAnim.second->Name;
-            auto isBig = endsWith(newName, "b");
+            auto isBig = endsWith(newName, "b") || endsWith(newName, "f");
             if (isBig)
             {
                 newName.erase(newName.size() - 1);
-                // _animationComponent->Offset(Point{0, -36});
                 _animationComponent->Offset(Point{0, -36});
             }
             else
             {
                 newName = newName + "b";
-                // _animationComponent->Offset(Point{0, -40});
                 _animationComponent->Offset(Point{0, -40});
+            }
+            LogInfo("New animation name is %s", newName.c_str());
+            _animationComponent->ChangeAnimation(newName);
+        }
+    }
+}
+void Player::FirePowerup(bool isGettingBig)
+{
+    if (!_isTurningBig)
+    {
+        _isTurningBig = true;
+        _currentBigIterations = 0;
+        _currentBigIterationTime = 0;
+        auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
+        GetGame().PushEvent(bigEvent);
+    }
+
+    // End
+    if (_currentBigIterations > _bigIterations)
+    {
+        _isTurningBig = false;
+        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerBig};
+        GetGame().PushEvent(bigEvent);
+    }
+    // Regular loop
+    else
+    {
+        _currentBigIterationTime += DeltaTime.GetTotalSeconds();
+        if (_currentBigIterationTime > _bigIterationTime)
+        {
+            _currentBigIterationTime -= _bigIterationTime;
+            ++_currentBigIterations;
+
+            auto currentAnim = _animationComponent->GetCurrentAnimation();
+            auto newName = currentAnim.second->Name;
+            auto isBig = endsWith(newName, "b");
+            if (isBig)
+            {
+                newName.erase(newName.size() - 1);
+                newName = newName + "f";
+            }
+            else
+            {
+                newName.erase(newName.size() - 1);
+                newName = newName + "b";
             }
             _animationComponent->ChangeAnimation(newName);
         }

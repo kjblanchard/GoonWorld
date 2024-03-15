@@ -50,6 +50,18 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
         _bodyNum = gpSceneAddBody(_body);
     }
 }
+
+void RigidbodyComponent::OnEnabled()
+{
+    _body->gravityEnabled = _isGravityEnabled;
+    Component::OnEnabled();
+}
+
+void RigidbodyComponent::OnDisabled()
+{
+    _body->gravityEnabled = false;
+    Component::OnDisabled();
+}
 void RigidbodyComponent::PhysicsUpdate()
 {
     for (auto rigidbody : _currentRigidbodies)

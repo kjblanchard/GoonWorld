@@ -19,9 +19,20 @@ namespace GoonWorld
         void AddOverlapFunction(int overlapType, OverlapFunc func);
         inline bool JustGotOnGround(void) { return gpBodyJustGotOnGround(_body); }
         inline bool JustLeftGround(void) { return gpBodyJustNotOnGround(_body); }
-        inline void GravityEnabled(bool isEnabled) { _body->gravityEnabled = isEnabled; }
+        inline void GravityEnabled(bool isEnabled)
+        {
+            _isGravityEnabled = false;
+            _body->gravityEnabled = isEnabled;
+        }
         inline void XGravityEnabled(bool isEnabled) { _body->xGravityEnabled = isEnabled; }
         inline void YGravityEnabled(bool isEnabled) { _body->yGravityEnabled = isEnabled; }
+        void OnEnabled() override;
+        void OnDisabled() override;
+        inline void SetLocation(Point location)
+        {
+            _body->boundingBox.x = location.x;
+            _body->boundingBox.y = location.y;
+        }
         inline void SizeChange(Point newSize)
         {
             _body->boundingBox.w = newSize.x;
@@ -44,7 +55,7 @@ namespace GoonWorld
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;
         long long _isOnGroundCached;
-        bool _isOnGround, _static;
+        bool _isOnGround, _static, _isGravityEnabled = true;
     };
     // template <typename T>
     // void RigidbodyComponent::AddOverlapFunction(int overlapType, std::function<void(void* args, gpBody *body, gpBody* overlapBody, gpOverlap *overlap)> func)

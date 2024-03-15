@@ -8,6 +8,8 @@
 
 using namespace GoonWorld;
 
+extern const char *mushroomSound;
+
 Fireflower::Fireflower(geRectangle *rect)
 {
     _rigidbodyComponent = new RigidbodyComponent(rect);
@@ -20,5 +22,6 @@ void Fireflower::TakeDamage()
 {
     if (!IsEnabled())
         return;
+    GetGameSound().PlaySfx(mushroomSound);
     Enabled(false);
 }
