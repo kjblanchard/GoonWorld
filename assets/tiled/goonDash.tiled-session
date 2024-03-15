@@ -80,11 +80,15 @@
             "expandedGroupLayers": [
                 12
             ],
-            "scale": 2,
+            "expandedObjectLayers": [
+                13,
+                5
+            ],
+            "scale": 3,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 258,
-                "y": 183
+                "x": 59.499999999999986,
+                "y": 84.66666666666667
             }
         },
         "level1.tmx": {
@@ -96,6 +100,21 @@
             "viewCenter": {
                 "x": -52,
                 "y": 64.66666666666666
+            }
+        },
+        "level2.tmj": {
+            "expandedGroupLayers": [
+                2
+            ],
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.5902,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 444.764486614707,
+                "y": 374.4493392070485
             }
         },
         "scenery.tsj": {
@@ -133,8 +152,9 @@
         "scenery.tsj"
     ],
     "project": "goonDash.tiled-project",
-    "property.type": "BoxContents",
+    "property.type": "string",
     "recentFiles": [
+        "level2.tmj",
         "level1.tmj",
         "scenery.tsj",
         "blocks.tsj",
@@ -145,8 +165,7 @@
         "level1.tmx",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets/backgrounds.tsx",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets/terrain.tsx",
-        "/Users/kevin/Documents/tiled/sdl_dash/tilesets/actors.tsx",
-        "/Users/kevin/Documents/tiled/sdl_dash/level_1.tmx"
+        "/Users/kevin/Documents/tiled/sdl_dash/tilesets/actors.tsx"
     ],
     "resizeMap.removeObjects": true,
     "tileset.embedInMap": false,

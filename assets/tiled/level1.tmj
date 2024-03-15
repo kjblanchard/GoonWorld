@@ -599,6 +599,11 @@
              "x":145,
              "y":500
             }
+        }, 
+        {
+         "name":"nextLevel",
+         "type":"string",
+         "value":"level2"
         }],
  "renderorder":"right-down",
  "tiledversion":"1.8.6",

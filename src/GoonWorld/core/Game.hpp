@@ -27,6 +27,7 @@ namespace GoonWorld
         void Update(double time);
         void Draw();
         inline void TriggerRestartLevel() { _shouldRestart = true; }
+        inline void TriggerNextLevel() { _shouldChangeLevel = true; }
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
         inline Sound *GetSound() const { return _sound.get(); }
         inline Camera *GetCamera() { return _camera.get(); }
@@ -49,9 +50,11 @@ namespace GoonWorld
         void LoadGameObjects();
         void InitializePhysics();
         void RestartLevel();
+        void ChangeLevel();
         Player *_playerDying;
         Player *_playerBig;
         bool _shouldRestart = false;
+        bool _shouldChangeLevel = false;
         gpScene *_scene;
         static Game *_gameInstance;
         static long long _ticks;

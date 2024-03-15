@@ -71,6 +71,7 @@ namespace GoonWorld
 
     public:
         int Width, Height, TileWidth, TileHeight;
+        // std::string NextLevel;
         std::vector<TiledMapTileset> TiledmapTilesets;
         std::vector<Tileset> Tilesets;
         std::vector<LayerGroup> Groups;

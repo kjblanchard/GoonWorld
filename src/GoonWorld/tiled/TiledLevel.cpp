@@ -152,6 +152,17 @@ void TiledLevel::LoadGravity()
     }
 }
 
+std::string TiledLevel::GetNextLevel()
+{
+    for (auto &property : _mapData->Properties)
+    {
+        if (property.Name != "nextLevel")
+            continue;
+        return property.ValueJsonString;
+    }
+    return "";
+}
+
 void TiledLevel::RestartLevel()
 {
     LoadSolidObjects();

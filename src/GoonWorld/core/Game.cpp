@@ -69,6 +69,8 @@ void Game::Update(double timeMs)
 
     if (_shouldRestart)
         RestartLevel();
+    if (_shouldChangeLevel)
+        ChangeLevel();
     // If there is not a player getting big, we should update physics.
     if (!_playerBig)
     {
@@ -159,6 +161,7 @@ void Game::RestartLevel()
 {
     if (!_loadedLevel)
         return;
+    _shouldChangeLevel = false;
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
@@ -174,7 +177,7 @@ void Game::LoadLevel(std::string level)
 {
     InitializePhysics();
     auto result = _sound->LoadBgm("platforms");
-    if (!_loadedLevel)
+    if (!_loadedLevel || _shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
     }
@@ -215,4 +218,19 @@ void Game::PlayerDieEvent(Event &event)
 {
     auto player = static_cast<Player *>(event.eventArgs);
     PlayerDie(player);
+}
+void Game::ChangeLevel()
+{
+    _shouldRestart = false;
+    _playerDying = nullptr;
+    _playerBig = nullptr;
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    GameObject::ClearGameObjects();
+    RigidbodyComponent::ResetRigidBodyVector();
+    auto nextLevel = _loadedLevel->GetNextLevel();
+    // _loadedLevel = std::make_unique<TiledLevel>("level2");
+    LoadLevel(nextLevel);
+    _shouldChangeLevel = false;
+    // _loadedLevel->RestartLevel();
 }

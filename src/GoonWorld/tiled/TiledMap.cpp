@@ -182,33 +182,41 @@ TiledMap::TiledMap(std::string filename)
                     object.Id = objectJson["id"];
                     object.X = objectJson["x"];
                     object.Y = objectJson["y"];
-                    // int pointsLength = objectJson["polygon"].size() / 2;
-                    std::vector<Point> points;
-                    // for (auto i = 0; i < pointsLength; ++i)
-                    for (auto &point : objectJson["polygon"])
+                    // If it's a polygon, try and convert it to a rectangle
+                    if (objectJson.contains("polygon"))
                     {
-                        // points.push_back(SDL_Point{objectJson["polygon"][i * 2], objectJson["polygon"][i * 2 + 1]});
-                        points.push_back(Point{point["x"], point["y"]});
+                        std::vector<Point> points;
+                        // for (auto i = 0; i < pointsLength; ++i)
+                        for (auto &point : objectJson["polygon"])
+                        {
+                            // points.push_back(SDL_Point{objectJson["polygon"][i * 2], objectJson["polygon"][i * 2 + 1]});
+                            points.push_back(Point{point["x"], point["y"]});
+                        }
+                        int minX = object.X + (*std::min_element(points.begin(), points.end(), [](const Point &a, const Point &b)
+                                                                 { return a.x < b.x; }))
+                                                  .x;
+
+                        int minY = object.Y + (*std::min_element(points.begin(), points.end(), [](const Point &a, const Point &b)
+                                                                 { return a.y < b.y; }))
+                                                  .y;
+
+                        int maxX = object.X + (*std::max_element(points.begin(), points.end(), [](const Point &a, const Point &b)
+                                                                 { return a.x < b.x; }))
+                                                  .x;
+
+                        int maxY = object.Y + (*std::max_element(points.begin(), points.end(), [](const Point &a, const Point &b)
+                                                                 { return a.y < b.y; }))
+                                                  .y;
+                        object.X = minX;
+                        object.Y = minY;
+                        object.Width = maxX - minX;
+                        object.Height = maxY - minY;
                     }
-                    int minX = object.X + (*std::min_element(points.begin(), points.end(), [](const Point &a, const Point &b)
-                                                             { return a.x < b.x; }))
-                                              .x;
-
-                    int minY = object.Y + (*std::min_element(points.begin(), points.end(), [](const Point &a, const Point &b)
-                                                             { return a.y < b.y; }))
-                                              .y;
-
-                    int maxX = object.X + (*std::max_element(points.begin(), points.end(), [](const Point &a, const Point &b)
-                                                             { return a.x < b.x; }))
-                                              .x;
-
-                    int maxY = object.Y + (*std::max_element(points.begin(), points.end(), [](const Point &a, const Point &b)
-                                                             { return a.y < b.y; }))
-                                              .y;
-                    object.X = minX;
-                    object.Y = minY;
-                    object.Width = maxX - minX;
-                    object.Height = maxY - minY;
+                    else
+                    {
+                        object.Width = objectJson["width"];
+                        object.Height = objectJson["height"];
+                    }
                     SolidObjects.push_back(object);
                 }
             }
@@ -218,8 +226,16 @@ TiledMap::TiledMap(std::string filename)
     {
         TiledProperty property;
         property.Name = propertyJson["name"];
-        property.PropertyType = propertyJson["propertytype"];
-        property.ValueJsonString = propertyJson["value"].dump();
+        if (propertyJson.contains("propertytype"))
+        {
+            property.PropertyType = propertyJson["propertytype"];
+            property.ValueJsonString = propertyJson["value"].dump();
+        }
+        else
+        {
+            property.PropertyType = propertyJson["type"];
+            property.ValueJsonString = propertyJson["value"];
+        }
         Properties.push_back(property);
     }
 }

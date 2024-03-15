@@ -30,6 +30,7 @@ namespace GoonWorld
         void SetTextureAtlas();
 
         inline Point GetGravity() { return _gravity; }
+        std::string GetNextLevel();
 
     private:
         /**
