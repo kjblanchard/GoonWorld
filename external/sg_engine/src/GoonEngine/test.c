@@ -142,12 +142,12 @@ static int loop_func()
     Uint64 endTime = currentTime + deltaTimeMs;
 
     // // If there's time remaining until the next frame, delay the execution
-    if (endTime > currentTime)
-    {
-        puts("Delaying!");
-        Uint32 delayTime = (Uint32)(endTime - currentTime);
-        SDL_Delay(delayTime);
-    }
+    // if (endTime > currentTime)
+    // {
+    //     puts("Delaying!");
+    //     Uint32 delayTime = (Uint32)(endTime - currentTime);
+    //     SDL_Delay(delayTime);
+    // }
     return true;
 }
 
