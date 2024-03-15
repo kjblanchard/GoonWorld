@@ -137,8 +137,9 @@ static int loop_func()
     SDL_RenderPresent(g_pRenderer);
     // deltaBuffer = oldDelta - delta;
     // Handle waiting if Vsync is off
-    Uint64 endTime = beginFrame + deltaTimeMs;
+    // Uint64 endTime = beginFrame + deltaTimeMs;
     Uint64 currentTime = SDL_GetTicks64();
+    Uint64 endTime = currentTime + deltaTimeMs;
 
     // // If there's time remaining until the next frame, delay the execution
     if (endTime > currentTime)
