@@ -13,6 +13,7 @@
 #include <GoonWorld/gameobjects/Coin.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
+#include <GoonWorld/gameobjects/Fireflower.hpp>
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/gameobjects/ItemBox.hpp>
 #include <GoonWorld/common/Helpers.hpp>
@@ -51,6 +52,7 @@ void Player::BindOverlapFunctions()
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
 }
 
@@ -455,6 +457,23 @@ void Player::MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBo
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
         player->Powerup(true);
     mushroom->TakeDamage();
+}
+void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    Player *player = static_cast<Player *>(instance);
+    if (player->_isDead || player->_isDying)
+        return;
+    Fireflower *flower = (Fireflower *)overlapBody->funcArgs;
+    if (!flower->IsEnabled())
+        return;
+    if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
+        player->Powerup(true);
+    else
+    {
+        // Get flower
+
+    }
+    flower->TakeDamage();
 }
 
 void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)

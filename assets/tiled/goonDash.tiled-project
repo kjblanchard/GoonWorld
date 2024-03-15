@@ -37,7 +37,8 @@
             "type": "enum",
             "values": [
                 "Empty",
-                "Mushroom"
+                "Mushroom",
+                "Fireflower"
             ],
             "valuesAsFlags": false
         },

@@ -4,6 +4,7 @@
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
+#include <GoonWorld/gameobjects/Fireflower.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonEngine/rectangle.h>
 
@@ -45,6 +46,16 @@ void ItemBox::TakeDamage()
         auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
         auto shroom = new Mushroom(&loc);
         shroom->Push(true);
+        _contents = 0;
+        _isOpened = true;
+
+        GetGameSound().PlaySfx(powerupSpawnSound);
+        break;
+    }
+    case (int)ItemBrickContents::Fireflower:
+    {
+        auto loc = geRectangle{_location.x, _location.y - 16, 18, 18};
+        auto shroom = new Fireflower(&loc);
         _contents = 0;
         _isOpened = true;
 

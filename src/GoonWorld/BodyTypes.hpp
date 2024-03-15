@@ -9,6 +9,7 @@ namespace GoonWorld
         ItemBrick,
         ItemBox,
         Mushroom,
+        Fireflower,
         DeathBox,
         WinBox,
         Coin,

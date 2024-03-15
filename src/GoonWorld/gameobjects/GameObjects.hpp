@@ -5,3 +5,4 @@
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/gameobjects/ItemBox.hpp>
+#include <GoonWorld/gameobjects/Fireflower.hpp>

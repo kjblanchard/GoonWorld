@@ -1,5 +1,4 @@
 #pragma once
-typedef struct gpOverlap gpOverlap;
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/ITakeDamage.hpp>
 
@@ -8,25 +7,20 @@ namespace GoonWorld
     class DebugDrawComponent;
     class RigidbodyComponent;
     class AnimationComponent;
-    class ItemBox : public GameObject, ITakeDamage
+    class TiledObject;
+    class Player;
+    class Fireflower : public GameObject, public ITakeDamage
     {
     public:
-        ItemBox(TiledMap::TiledObject &object);
+        Fireflower(TiledMap::TiledObject &object);
+        Fireflower(geRectangle *rect);
+        // void Update() override;
         void TakeDamage() override;
 
     private:
         DebugDrawComponent *_debugDrawComponent;
         RigidbodyComponent *_rigidbodyComponent;
-        AnimationComponent *_animationComponent = nullptr;
-        bool _isOpened = false;
-        int _contents = 0;
-
-        enum class ItemBrickContents
-        {
-            Empty,
-            Mushroom,
-            Fireflower,
-        };
+        AnimationComponent *_animationComponent;
     };
 
 }
