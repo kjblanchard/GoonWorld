@@ -5,9 +5,9 @@
     },
     "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        "templates",
-        ".",
         "/Users/kevin/Documents/tiled",
+        ".",
+        "templates",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -80,11 +80,11 @@
             "expandedGroupLayers": [
                 12
             ],
-            "scale": 8,
+            "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 285.6875,
-                "y": 169.5
+                "x": 258,
+                "y": 183
             }
         },
         "level1.tmx": {
@@ -114,10 +114,10 @@
         }
     },
     "last.executablePath": "/Applications/Tiled.app",
-    "last.exportedFilePath": "/Users/kevin/git/c/goonDash/assets/tiled",
+    "last.exportedFilePath": "/Users/kevin/git/cpp/GoonWorld/assets/tiled",
     "last.externalTilesetPath": "/Users/kevin/git/cpp/goonEngine/assets/tiled",
     "last.imagePath": "/Users/kevin/git/cpp/GoonWorld/assets/img",
-    "last.objectTemplatePath": "/Users/kevin/git/c/goonDash/assets/tiled/templates",
+    "last.objectTemplatePath": "/Users/kevin/git/cpp/GoonWorld/assets/tiled/templates",
     "lastUsedTilesetExportFilter": "Lua files (*.lua)",
     "map.height": 18,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
@@ -129,15 +129,16 @@
     "openFiles": [
         "level1.tmj",
         "background.tsj",
-        "blocks.tsj"
+        "blocks.tsj",
+        "scenery.tsj"
     ],
     "project": "goonDash.tiled-project",
     "property.type": "BoxContents",
     "recentFiles": [
+        "level1.tmj",
         "scenery.tsj",
         "blocks.tsj",
         "background.tsj",
-        "level1.tmj",
         "terrain.tsj",
         "background.tsx",
         "terrain.tsx",

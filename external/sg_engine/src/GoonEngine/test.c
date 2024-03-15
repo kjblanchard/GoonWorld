@@ -84,18 +84,18 @@ static int loop_func()
     // Initialize time this frame
     double deltaTimeSeconds = 1 / (double)g_refreshRate;
     double deltaTimeMs = 1000 / (double)g_refreshRate;
-    // static double deltaTimeSeconds = 1 / (double)60;
-    // static double deltaTimeMs = 1000 / (double)60;
     if (msBuildup < deltaTimeMs)
     {
-        puts("Not ready for update");
+        SDL_Delay(1);
         return true;
     }
 
     int iters = 0;
 
+#ifndef __EMSCRIPTEN__
     while (msBuildup >= deltaTimeMs)
     {
+#endif
         ++iters;
         geUpdateKeyboard();
         geUpdateControllers();
@@ -110,9 +110,10 @@ static int loop_func()
             GameUpdateFunc(deltaTimeMs);
         }
         msBuildup -= deltaTimeMs;
+#ifndef __EMSCRIPTEN__
     }
-
-    SDL_SetRenderDrawColor(g_pRenderer, 100, 100, 100, 255);
+#endif
+    SDL_SetRenderDrawColor(g_pRenderer, 0, 0, 0, 255);
     SDL_RenderClear(g_pRenderer);
     if (g_BackgroundAtlas)
     {
@@ -133,7 +134,7 @@ static int loop_func()
         DrawUpdateFunc();
     }
 
-    LogInfo("Num iters this frame %d", iters);
+    // LogInfo("Num iters this frame %d", iters);
     SDL_RenderPresent(g_pRenderer);
     // deltaBuffer = oldDelta - delta;
     // Handle waiting if Vsync is off
@@ -142,12 +143,13 @@ static int loop_func()
     Uint64 endTime = currentTime + deltaTimeMs;
 
     // // If there's time remaining until the next frame, delay the execution
-    // if (endTime > currentTime)
-    // {
-    //     puts("Delaying!");
-    //     Uint32 delayTime = (Uint32)(endTime - currentTime);
-    //     SDL_Delay(delayTime);
-    // }
+#ifndef __EMSCRIPTEN__
+    if (endTime > currentTime)
+    {
+        Uint32 delayTime = (Uint32)(endTime - currentTime);
+        SDL_Delay(delayTime);
+    }
+#endif
     return true;
 }
 

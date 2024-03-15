@@ -547,5 +547,5 @@ void Player::SlideFunc()
 
 void Player::WinWalking()
 {
-    _rigidbodyComponent->Velocity().x = 25;
+    _rigidbodyComponent->Velocity().x = 45;
 }
