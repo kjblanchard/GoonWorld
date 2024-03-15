@@ -27,7 +27,7 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     GetGameSound().LoadSfx(bumpSound);
     GetGameSound().LoadSfx(powerupSpawnSound);
     AddComponent({_rigidbodyComponent, _debugDrawComponent});
-    // _debugDrawComponent->Enabled(false);
+    _debugDrawComponent->Enabled(false);
 }
 void ItemBrick::Update()
 {

@@ -29,7 +29,7 @@ ItemBox::ItemBox(TiledMap::TiledObject &object)
     GetGameSound().LoadSfx(bumpSound);
     GetGameSound().LoadSfx(powerupSpawnSound);
     AddComponent({_rigidbodyComponent, _debugDrawComponent, _animationComponent});
-    // _debugDrawComponent->Enabled(false);
+    _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("idle", "empty", true, &_isOpened);
 }
 void ItemBox::TakeDamage()

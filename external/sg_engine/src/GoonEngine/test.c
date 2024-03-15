@@ -70,8 +70,11 @@ static bool sdlEventLoop()
 
 static int loop_func()
 {
+    // static float deltaBuffer = 0;
     Uint64 beginFrame = SDL_GetTicks64();
     Uint64 delta = beginFrame - lastFrameMilliseconds;
+    // delta += deltaBuffer;
+    // const float oldDelta = delta;
     msBuildup += delta;
     lastFrameMilliseconds = beginFrame;
     shouldQuit = sdlEventLoop();
@@ -81,11 +84,19 @@ static int loop_func()
     // Initialize time this frame
     double deltaTimeSeconds = 1 / (double)g_refreshRate;
     double deltaTimeMs = 1000 / (double)g_refreshRate;
+    // static double deltaTimeSeconds = 1 / (double)60;
+    // static double deltaTimeMs = 1000 / (double)60;
     if (msBuildup < deltaTimeMs)
+    {
+        puts("Not ready for update");
         return true;
+    }
+
+    int iters = 0;
 
     while (msBuildup >= deltaTimeMs)
     {
+        ++iters;
         geUpdateKeyboard();
         geUpdateControllers();
         gsUpdateSound();
@@ -122,14 +133,17 @@ static int loop_func()
         DrawUpdateFunc();
     }
 
+    LogInfo("Num iters this frame %d", iters);
     SDL_RenderPresent(g_pRenderer);
+    // deltaBuffer = oldDelta - delta;
     // Handle waiting if Vsync is off
     Uint64 endTime = beginFrame + deltaTimeMs;
     Uint64 currentTime = SDL_GetTicks64();
 
-    // If there's time remaining until the next frame, delay the execution
+    // // If there's time remaining until the next frame, delay the execution
     if (endTime > currentTime)
     {
+        puts("Delaying!");
         Uint32 delayTime = (Uint32)(endTime - currentTime);
         SDL_Delay(delayTime);
     }

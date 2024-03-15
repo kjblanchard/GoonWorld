@@ -6,9 +6,9 @@
     "activeFile": "level1.tmj",
     "expandedProjectPaths": [
         "templates",
+        ".",
         "/Users/kevin/Documents/tiled",
-        "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
-        "."
+        "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -72,17 +72,19 @@
             "scaleInEditor": 1
         },
         "blocks.tsj": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 1.5,
+            "scaleInEditor": 3
         },
         "level1.tmj": {
             "expandedGroupLayers": [
                 12
             ],
-            "scale": 2,
+            "scale": 8,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 527.75,
-                "y": 120
+                "x": 285.6875,
+                "y": 169.5
             }
         },
         "level1.tmx": {
@@ -95,6 +97,10 @@
                 "x": -52,
                 "y": 64.66666666666666
             }
+        },
+        "scenery.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "terrain.tsj": {
             "dynamicWrapping": false,
@@ -122,24 +128,24 @@
     "map.width": 55,
     "openFiles": [
         "level1.tmj",
-        "terrain.tsj",
-        "background.tsj"
+        "background.tsj",
+        "blocks.tsj"
     ],
     "project": "goonDash.tiled-project",
     "property.type": "BoxContents",
     "recentFiles": [
-        "terrain.tsj",
+        "scenery.tsj",
+        "blocks.tsj",
         "background.tsj",
         "level1.tmj",
+        "terrain.tsj",
         "background.tsx",
         "terrain.tsx",
         "level1.tmx",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets/backgrounds.tsx",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets/terrain.tsx",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets/actors.tsx",
-        "/Users/kevin/Documents/tiled/sdl_dash/level_1.tmx",
-        "/Users/kevin/Downloads/Free/Terrain/Terrain (16x16)-sheet.tsx",
-        "/Users/kevin/Documents/tiled/sdl_dash/Terrain.tsx"
+        "/Users/kevin/Documents/tiled/sdl_dash/level_1.tmx"
     ],
     "resizeMap.removeObjects": true,
     "tileset.embedInMap": false,

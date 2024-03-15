@@ -37,7 +37,7 @@ Player::Player(TiledMap::TiledObject &object)
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
     GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    // _debugDrawComponent->Enabled(false);
+    _debugDrawComponent->Enabled(false);
     BindOverlapFunctions();
     CreateAnimationTransitions();
     InitializePlayerConfig();
