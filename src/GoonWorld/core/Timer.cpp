@@ -3,7 +3,7 @@
 using namespace GoonWorld;
 
 Timer::Timer(GameObject *owner, float waitTime, std::function<bool(GameObject *, bool)> callback)
-    : _waitTime(waitTime), _owner(owner), _callback(callback)
+    : _waitTime(waitTime), _owner(owner), _callback(callback), _currentWaitTime(0)
 {
 }
 

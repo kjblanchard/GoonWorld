@@ -31,8 +31,7 @@ static double msBuildup;
 extern SDL_Renderer *g_pRenderer;
 extern int g_refreshRate;
 
-void (*DrawUpdateFunc)() = NULL;
-void (*GameUpdateFunc)(double deltaTime) = NULL;
+void (*DrawUpdateFunc)() = NULL; void (*GameUpdateFunc)(double deltaTime) = NULL;
 
 void *MusicUpdateWrapper(void *arg)
 {
@@ -144,11 +143,11 @@ static int loop_func()
 
     // // If there's time remaining until the next frame, delay the execution
 #ifndef __EMSCRIPTEN__
-    if (endTime > currentTime)
-    {
-        Uint32 delayTime = (Uint32)(endTime - currentTime);
-        SDL_Delay(delayTime);
-    }
+    // if (endTime > currentTime)
+    // {
+    //     Uint32 delayTime = (Uint32)(endTime - currentTime);
+    //     SDL_Delay(delayTime);
+    // }
 #endif
     return true;
 }
