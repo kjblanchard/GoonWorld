@@ -8,6 +8,9 @@ FT_Face _loadedFace;
 
 SDL_Surface *geCreateSurfaceForCharacter(FT_Face face, char letter, int r, int g, int b)
 {
+    // Check if this is a space, return null if so
+    if (face->glyph->bitmap.width == 0 && face->glyph->bitmap.rows == 0)
+        return NULL;
     SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(
         face->glyph->bitmap.buffer,
         face->glyph->bitmap.width,
@@ -79,6 +82,13 @@ SDL_Texture *geCreateTextureForString(const char *word, Point *textureDimensions
         }
         int y = baseline - (_loadedFace->glyph->metrics.horiBearingY >> 6);
         SDL_Surface *letterSurface = geCreateSurfaceForCharacter(_loadedFace, letter, color.R, color.G, color.B);
+        // Don't blit if this was a space, but still advance.
+        if (!letterSurface)
+        {
+            x += (_loadedFace->glyph->advance.x >> 6);
+            SDL_FreeSurface(letterSurface);
+            continue;
+        }
         SDL_Rect dst = {x, y, letterSurface->w, letterSurface->h};
         SDL_BlitSurface(letterSurface, NULL, paper, &dst);
         x += (_loadedFace->glyph->advance.x >> 6);
