@@ -132,6 +132,12 @@ find_library(LIB_PNG
     NAMES libpng png.a png.dll libpng.a
     HINTS /usr/local/lib /c/cmake/lib)
 
+find_library(LIB_FREETYPE
+    REQUIRED
+    PATH_SUFFIXES .a
+    NAMES libfreetype.a libfreetype.dll freetype.a freetype.dll freetype libfreetype
+    HINTS /usr/local/lib /c/cmake/lib)
+
 # #########################################
 # Platform Specific Build settings
 # #########################################
@@ -216,6 +222,7 @@ target_link_libraries(${LIBRARY_TARGET_NAME}
     PUBLIC
     PRIVATE
     ${LIB_PNG}
+    ${LIB_FREETYPE}
 )
 target_link_directories(${LIBRARY_TARGET_NAME}
     PRIVATE
@@ -229,7 +236,9 @@ target_include_directories(${LIBRARY_TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/external/sg_physics/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/external/nlohmann/include/
     /usr/local/include
-)
+
+    # Freetype cause yeah
+    /usr/local/include/freetype2) # Add the freetype2 specific include directory
 
 # Tests
 target_link_libraries(${EXECUTABLE_TARGET_NAME}

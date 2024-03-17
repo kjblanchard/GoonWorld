@@ -5,6 +5,7 @@
 #include <GoonEngine/keyboard.h>
 #include <GoonEngine/joystick.h>
 #include <GoonEngine/debug.h>
+#include <GoonEngine/text.h>
 #include <SupergoonSound/include/sound.h>
 #include <GoonPhysics/scene.h>
 
@@ -15,6 +16,8 @@
 static gpScene *g_pScene;
 extern SDL_Texture *g_BackgroundAtlas;
 extern SDL_Rect *g_backgroundDrawRect;
+static SDL_Texture *nerdText;
+static SDL_Texture *cuteText;
 
 #define MAX_STARTUP_FRAMES 1000
 
@@ -133,6 +136,28 @@ static int loop_func()
     {
         DrawUpdateFunc();
     }
+    if (nerdText)
+    {
+        SDL_Rect dst;
+        dst.x = 175;
+        dst.y = 0;
+        dst.w = 100;
+        dst.h = 100;
+        int drawResult = SDL_RenderCopy(g_pRenderer, nerdText, NULL, &dst);
+        if (drawResult != 0)
+        {
+            LogError("Did not draw properly, Error %s\n", SDL_GetError());
+        }
+        dst.x = 175;
+        dst.y = 20;
+        dst.w = 100;
+        dst.h = 100;
+        drawResult = SDL_RenderCopy(g_pRenderer, cuteText, NULL, &dst);
+        if (drawResult != 0)
+        {
+            LogError("Did not draw properly, Error %s\n", SDL_GetError());
+        }
+    }
 
     // LogInfo("Num iters this frame %d", iters);
     SDL_RenderPresent(g_pRenderer);
@@ -163,6 +188,12 @@ int gePlayLoop()
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(LoopWrap, g_refreshRate, 1);
 #else
+    SDL_Color nerdColor = {0, 255, 255, 255};
+    SDL_Color cuteColor = {255, 100, 0, 255};
+
+    nerdText = geCreateTextureForString("Kevin is a nerd", nerdColor);
+    cuteText = geCreateTextureForString("Misha is a cute", cuteColor);
+
     while (!shouldQuit)
     {
         loop_func();
@@ -181,6 +212,8 @@ int geInitializeEngine()
 
     geInitializeKeyboard();
     geInitializeJoysticks();
+    // geInitializeTextSubsystem("assets/fonts/main.ttf", 36);
+    geInitializeTextSubsystem("assets/fonts/himalaya.ttf", 24);
     // Pump out initial events, to prevent music problems.
     shouldQuit = sdlEventLoop();
     return true;
