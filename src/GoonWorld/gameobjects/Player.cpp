@@ -512,12 +512,10 @@ void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlap
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
     {
-        puts("small, get big");
         player->Powerup(true);
     }
     else
     {
-        puts("big, get super");
         player->SetFlag(player->_playerFlags, Player::PlayerFlags::IsSuper, true);
         player->FirePowerup(true);
     }
@@ -595,7 +593,6 @@ void Player::Powerup(bool isGettingBig)
                 newName = newName + "b";
                 _animationComponent->Offset(Point{0, -40});
             }
-            LogInfo("New animation name is %s", newName.c_str());
             _animationComponent->ChangeAnimation(newName);
         }
     }
