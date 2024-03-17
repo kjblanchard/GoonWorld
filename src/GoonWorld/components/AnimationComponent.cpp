@@ -85,7 +85,7 @@ void AnimationComponent::Draw()
     if (!IsEnabled() || _currentAnimation == nullptr)
         return;
     auto rect = GetDrawRect();
-    DrawTexture(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
+    geDrawTextureWithCameraOffset(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
 }
 
 void AnimationComponent::OnComponentAdd(GameObject &parent)

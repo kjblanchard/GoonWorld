@@ -16,6 +16,8 @@
 #include <GoonEngine/rectangle.h>
 #include <GoonWorld/events/Observer.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
+
+#include <GoonWorld/content/Text.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -45,6 +47,9 @@ Game::Game()
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
+    // Testing Text
+    auto text = new Text("Kevin is a nerd!", Point{150, 20});
+    text->Load();
 }
 
 Game::~Game()
@@ -112,6 +117,12 @@ void Game::Draw()
             auto color = geColor{0, 255, 0, 255};
             geDrawDebugRect(&box, &color);
         }
+    }
+
+    for (auto object : UIDrawObjects)
+    {
+        if (object->IsVisible())
+            object->Draw();
     }
 }
 

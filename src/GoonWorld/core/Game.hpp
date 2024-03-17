@@ -34,6 +34,7 @@ namespace GoonWorld
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
         inline void AddUpdateObject(IUpdate *update) { UpdateObjects.push_back(update); }
         inline void AddDrawObject(IDraw *draw) { DrawObjects.push_back(draw); }
+        inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         void SetCurrentLevel(TiledLevel *level);
         void RemoveObserver(Observer *observer);
@@ -45,6 +46,7 @@ namespace GoonWorld
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
         std::vector<IDraw *> DrawObjects;
+        std::vector<IDraw*> UIDrawObjects;
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);
         void LoadGameObjects();

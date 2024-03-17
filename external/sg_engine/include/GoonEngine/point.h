@@ -8,6 +8,12 @@ extern "C"
     {
         int x, y;
     } Point;
+
+    inline Point gePointZero()
+    {
+        Point point = {0, 0};
+        return point;
+    };
 #ifdef _cplusplus
 }
 #endif

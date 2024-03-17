@@ -5,7 +5,7 @@ namespace GoonWorld
     {
     public:
         virtual void Load() = 0;
-        virtual void Unload(bool isVisible) = 0;
+        virtual void Unload() = 0;
         virtual ~ILoadContent() {}
     };
 

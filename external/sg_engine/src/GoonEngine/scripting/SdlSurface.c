@@ -248,15 +248,24 @@ SDL_Texture *CreateTextureFromSurface(SDL_Surface *surface)
     SDL_FreeSurface(surface); // We no longer need the surface after creating the texture
     return texture;
 }
+void geDrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip)
+{
+    SDL_RenderCopyEx(g_pRenderer,
+                     texture,
+                     (SDL_Rect *)srcRect,
+                     dstRect,
+                     0,
+                     NULL,
+                     (shouldFlip) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+}
 
-// void DrawTexture( SDL_Texture *texture, SDL_Rect *srcRect, SDL_Rect *dstRect)
-void DrawTexture(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip)
+void geDrawTextureWithCameraOffset(SDL_Texture *texture, geRectangle *srcRect, geRectangle *dstRect, bool shouldFlip)
 {
     SDL_Rect translatedDstRect;
     translatedDstRect.x = (dstRect->x - g_backgroundDrawRect->x);
-    translatedDstRect.y = dstRect->y * 1;
-    translatedDstRect.w = dstRect->w * 1;
-    translatedDstRect.h = dstRect->h * 1;
+    translatedDstRect.y = dstRect->y;
+    translatedDstRect.w = dstRect->w;
+    translatedDstRect.h = dstRect->h;
     SDL_RenderCopyEx(g_pRenderer,
                      texture,
                      (SDL_Rect *)srcRect,

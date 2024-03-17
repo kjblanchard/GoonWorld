@@ -43,10 +43,24 @@ SDL_Surface *createEmptySurface(int width, int height)
     return surface;
 }
 
-// SDL_Texture *geCreateTextureForString(const char *word, SDL_Color color)
-SDL_Texture *geCreateTextureForString(const char *word, geColor color)
+SDL_Texture *geCreateTextureForString(const char *word, Point *textureDimensions, geColor color)
 {
-    SDL_Surface *paper = createEmptySurface(200, 200);
+    int totalWidth = 0;
+    int maxHeight = 0;
+    for (size_t i = 0; i < strlen(word); i++)
+    {
+        char letter = word[i];
+        int result = FT_Load_Char(_loadedFace, letter, FT_LOAD_RENDER);
+        if (result)
+        {
+            printf("Failed to load character %c with error code %d \n", letter, result);
+            continue;
+        }
+        totalWidth += (_loadedFace->glyph->advance.x >> 6);
+        int letterHeight = (_loadedFace->ascender - _loadedFace->descender) >> 6;
+        maxHeight = maxHeight > letterHeight ? maxHeight : letterHeight;
+    }
+    SDL_Surface *paper = createEmptySurface(totalWidth * 2, maxHeight * 2);
     int x = 0;
     int baseline = 0;
     for (size_t i = 0; i < strlen(word); i++)
@@ -70,6 +84,8 @@ SDL_Texture *geCreateTextureForString(const char *word, geColor color)
         x += (_loadedFace->glyph->advance.x >> 6);
         SDL_FreeSurface(letterSurface);
     }
+    textureDimensions->x = totalWidth;
+    textureDimensions->y = maxHeight;
     SDL_Texture *charTexture = SDL_CreateTextureFromSurface(g_pRenderer, paper);
     SDL_FreeSurface(paper);
     return charTexture;

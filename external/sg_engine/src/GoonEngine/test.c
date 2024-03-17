@@ -133,28 +133,6 @@ static int loop_func()
     {
         DrawUpdateFunc();
     }
-    if (nerdText)
-    {
-        SDL_Rect dst;
-        dst.x = 175;
-        dst.y = 0;
-        dst.w = 100;
-        dst.h = 100;
-        int drawResult = SDL_RenderCopy(g_pRenderer, nerdText, NULL, &dst);
-        if (drawResult != 0)
-        {
-            LogError("Did not draw properly, Error %s\n", SDL_GetError());
-        }
-        dst.x = 175;
-        dst.y = 20;
-        dst.w = 100;
-        dst.h = 100;
-        drawResult = SDL_RenderCopy(g_pRenderer, cuteText, NULL, &dst);
-        if (drawResult != 0)
-        {
-            LogError("Did not draw properly, Error %s\n", SDL_GetError());
-        }
-    }
 
     // LogInfo("Num iters this frame %d", iters);
     SDL_RenderPresent(g_pRenderer);
@@ -185,11 +163,11 @@ int gePlayLoop()
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(LoopWrap, g_refreshRate, 1);
 #else
-    geColor nerdColor = {0, 255, 255, 255};
-    geColor cuteColor = {255, 100, 0, 255};
+    // geColor nerdColor = {0, 255, 255, 255};
+    // geColor cuteColor = {255, 100, 0, 255};
 
-    nerdText = geCreateTextureForString("Kevin is a nerd", nerdColor);
-    cuteText = geCreateTextureForString("Misha is a cute", cuteColor);
+    // nerdText = geCreateTextureForString("Kevin is a nerd", nerdColor);
+    // cuteText = geCreateTextureForString("Misha is a cute", cuteColor);
 
     while (!shouldQuit)
     {
@@ -210,7 +188,7 @@ int geInitializeEngine()
     geInitializeKeyboard();
     geInitializeJoysticks();
     // geInitializeTextSubsystem("assets/fonts/main.ttf", 36);
-    geInitializeTextSubsystem("assets/fonts/himalaya.ttf", 24);
+    geInitializeTextSubsystem("assets/fonts/himalaya.ttf", 72);
     // Pump out initial events, to prevent music problems.
     shouldQuit = sdlEventLoop();
     return true;
