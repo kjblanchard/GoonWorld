@@ -93,13 +93,10 @@ static int loop_func()
         return true;
     }
 
-    int iters = 0;
-
 #ifndef __EMSCRIPTEN__
     while (msBuildup >= deltaTimeMs)
     {
 #endif
-        ++iters;
         geUpdateKeyboard();
         geUpdateControllers();
         gsUpdateSound();
@@ -188,8 +185,8 @@ int gePlayLoop()
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(LoopWrap, g_refreshRate, 1);
 #else
-    SDL_Color nerdColor = {0, 255, 255, 255};
-    SDL_Color cuteColor = {255, 100, 0, 255};
+    geColor nerdColor = {0, 255, 255, 255};
+    geColor cuteColor = {255, 100, 0, 255};
 
     nerdText = geCreateTextureForString("Kevin is a nerd", nerdColor);
     cuteText = geCreateTextureForString("Misha is a cute", cuteColor);
@@ -234,4 +231,5 @@ void geGameSetUpdateFunc(void (*updateFunc)(double deltaTime))
 }
 int ExitEngine()
 {
+    return true;
 }

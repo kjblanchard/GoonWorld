@@ -43,7 +43,8 @@ SDL_Surface *createEmptySurface(int width, int height)
     return surface;
 }
 
-SDL_Texture *geCreateTextureForString(const char *word, SDL_Color color)
+// SDL_Texture *geCreateTextureForString(const char *word, SDL_Color color)
+SDL_Texture *geCreateTextureForString(const char *word, geColor color)
 {
     SDL_Surface *paper = createEmptySurface(200, 200);
     int x = 0;
@@ -63,7 +64,7 @@ SDL_Texture *geCreateTextureForString(const char *word, SDL_Color color)
             baseline = (_loadedFace->ascender - _loadedFace->descender) >> 6;
         }
         int y = baseline - (_loadedFace->glyph->metrics.horiBearingY >> 6);
-        SDL_Surface *letterSurface = geCreateSurfaceForCharacter(_loadedFace, letter, color.r, color.g, color.b);
+        SDL_Surface *letterSurface = geCreateSurfaceForCharacter(_loadedFace, letter, color.R, color.G, color.B);
         SDL_Rect dst = {x, y, letterSurface->w, letterSurface->h};
         SDL_BlitSurface(letterSurface, NULL, paper, &dst);
         x += (_loadedFace->glyph->advance.x >> 6);

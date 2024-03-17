@@ -7,7 +7,7 @@ extern "C"
 
     typedef struct geColor
     {
-        unsigned char R, G, B, A;
+        uint8_t R, G, B, A;
 
     } geColor;
 #ifdef __cplusplus

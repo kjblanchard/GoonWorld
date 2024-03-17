@@ -1,7 +1,11 @@
 #pragma once
+// #include <SDL2/SDL_types.h>
 #include <freetype2/ft2build.h>
+#include <GoonEngine/color.h>
 #include FT_FREETYPE_H
-typedef SDL_Surface SDL_Surface;
+typedef struct SDL_Texture SDL_Texture;
+typedef struct SDL_Surface SDL_Surface;
+typedef struct SDL_Color SDL_Color;
 
 int geInitializeTextSubsystem(const char *fontPath, int fontSize);
 /**
@@ -29,7 +33,7 @@ SDL_Surface *createEmptySurface(int width, int height);
  * @param word The word that should be written
  * @return SDL_Texture* Texture with surfaces blitted to it.
  */
-SDL_Texture *geCreateTextureForString(const char *word, SDL_Color color);
+SDL_Texture *geCreateTextureForString(const char *word, geColor color);
 /**
  * @brief Cleans up the text system
  *
