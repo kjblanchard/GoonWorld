@@ -81,7 +81,7 @@ void HandleJoystickEvent(const SDL_Event *event)
 static void CountPluggedInControllers()
 {
     int nJoysticks = SDL_NumJoysticks();
-    LogInfo("There is a total of %d controllers initializing", nJoysticks);
+    LogDebug("There is a total of %d controllers initializing", nJoysticks);
     _numGamePads = 0;
     for (int i = 0; i < nJoysticks; i++)
         if (SDL_IsGameController(i))

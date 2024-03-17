@@ -22,13 +22,12 @@ static void Log(LogLevel level, const char *data_to_write);
 /**
  * @brief The log level to log at, this should be sent in via settings.
  */
-// static LogLevel logLevel = Log_LInfo;
-static LogLevel logLevel = Log_LDebug;
+static LogLevel logLevel = Log_LInfo;
 static const char *logFileName = "errors.log";
 
 int InitializeDebugLogFile()
 {
-    fprintf(stdout, "Opening log file\n");
+    LogDebug("Opening log file at %s", logFileName);
     open_debug_file = fopen(logFileName, "a");
     if (open_debug_file)
         return 1;

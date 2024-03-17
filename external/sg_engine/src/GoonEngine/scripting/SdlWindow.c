@@ -34,7 +34,7 @@ int geInitializeRenderingWindow(unsigned int windowWidth, unsigned int windowHei
     {
         fprintf(stderr, "Renderer could not be created, Error: %s", SDL_GetError());
     }
-    fprintf(stdout, "Created window\nWidth: %d, Height: %d", windowWidth, windowHeight);
+    LogDebug("Created window\nWidth: %d, Height: %d", windowWidth, windowHeight);
     SDL_DisplayMode mode;
     SDL_GetWindowDisplayMode(g_pWindow, &mode);
     // g_refreshRate = 30;
