@@ -128,33 +128,20 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # Have both of these already built, and then we find them.
 find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 
-if(GOON_DEBUG_SOUND)
-    add_subdirectory(./external/sg_sound)
-    target_include_directories(${EXECUTABLE_TARGET_NAME} PUBLIC external/sg_sound/src/)
-else()
-    find_package(supergoonSound REQUIRED)
-endif(GOON_DEBUG_SOUND)
+# if(GOON_DEBUG_SOUND)
+#     add_subdirectory(./external/sg_sound)
+#     target_include_directories(${EXECUTABLE_TARGET_NAME} PUBLIC external/sg_sound/src/)
+# else()
+#     find_package(supergoonSound REQUIRED)
+# endif(GOON_DEBUG_SOUND)
 
-message("Going to do the thing.. macos is ${MACOS} and GOON_FULL_MACOS_BUILD is ${GOON_FULL_MACOS_BUILD}")
+# message("Going to do the thing.. macos is ${MACOS} and GOON_FULL_MACOS_BUILD is ${GOON_FULL_MACOS_BUILD}")
 
-if(MACOS AND NOT GOON_FULL_MACOS_BUILD)
+# if(MACOS AND NOT GOON_FULL_MACOS_BUILD)
     add_subdirectory(./external/sg_engine)
-else()
-    find_package(Git REQUIRED QUIET)
-    message(STATUS "Cloning and updating submodules")
-
-    if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            RESULT_VARIABLE GIT_SUBMOD_RESULT)
-
-        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif()
-
-        add_subdirectory(./external/sg_engine)
-    endif()
-endif(MACOS AND NOT GOON_FULL_MACOS_BUILD)
+# else()
+    # add_subdirectory(./external/sg_engine)
+# endif(MACOS AND NOT GOON_FULL_MACOS_BUILD)
 
 # #########################################
 # Platform Specific Build settings
@@ -223,8 +210,8 @@ target_compile_options(${EXECUTABLE_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS}
 # Linking Options
 # #########################################
 set(LIBRARIES_TO_LINK
-    supergoonSound::supergoonSound
-    supergoonSound
+    # supergoonSound::supergoonSound
+    # supergoonSound
     SDL2::SDL2main
     ZLIB::ZLIB
     ${LIB_PNG}
@@ -237,12 +224,12 @@ foreach(LIBRARY ${LIBRARIES_TO_LINK})
     endif()
 endforeach()
 
-target_link_libraries(${EXECUTABLE_TARGET_NAME}
-    PUBLIC
-    PRIVATE
-    ${LIB_PNG}
-    ${LIB_FREETYPE}
-)
+# target_link_libraries(${EXECUTABLE_TARGET_NAME}
+#     PUBLIC
+#     PRIVATE
+#     ${LIB_PNG}
+#     ${LIB_FREETYPE}
+# )
 target_link_directories(${EXECUTABLE_TARGET_NAME}
     PRIVATE
     /usr/local/lib
