@@ -96,10 +96,10 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 # Don't build the png tests
 if(WIN32)
     # set(FT_REQUIRE_ZLIB OFF CACHE BOOL "Skip zlip on windows")
-    set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows")
 endif(WIN32)
 
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION")
+set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows")
 set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests")
 set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests")
 set(GOON_FULL_MACOS_BUILD ${GOON_FULL_MACOS_BUILD} CACHE BOOL "Build the libpng tests" FORCE)
