@@ -36,37 +36,37 @@ jobs:
           name: ${{ matrix.os }}-artifacts
           path: build/SupergoonDash.${{ matrix.suffix }}
   # Use container as for some reason has permissions issues on a regular runner when I install emscripten.
-  # Build-Emscripten:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: emscripten/emsdk:latest
-  #     env:
-  #       thing: thing
-  #     credentials:
-  #       username: ${{ vars.DOCKER_USERNAME }}
-  #       password: ${{ secrets.DOCKER_PASSWORD }}
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         path: repo
-  #         submodules: recursive
-  #     - name: Install CMake
-  #       run: |
-  #         apt update -y && apt upgrade -y
-  #         # This is needed as system freetype doesn't have proper files for find package.
-  #         embuilder build freetype
-  #         # apt install cmake pkg-config libfreetype-dev -y
-  #         apt install cmake pkg-config  -y
-  #         # cp /usr/lib/x86_64-linux-gnu/pkgconfig/freetype2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/freetype.pc
-  #         # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
-  #     - name: Actual build
-  #       run: cd repo && make CMAKE_BUILD_TYPE=Release erebuild
-  #     - uses: actions/upload-artifact@v3
-  #       name: Upload to S3
-  #       with:
-  #         name: s3Artifact
-  #         path: repo/build/bin
+  Build-Emscripten:
+    runs-on: ubuntu-latest
+    container:
+      image: emscripten/emsdk:latest
+      env:
+        thing: thing
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          submodules: recursive
+      - name: Install CMake
+        run: |
+          apt update -y && apt upgrade -y
+          # This is needed as system freetype doesn't have proper files for find package.
+          embuilder build freetype
+          # apt install cmake pkg-config libfreetype-dev -y
+          apt install cmake pkg-config  -y
+          # cp /usr/lib/x86_64-linux-gnu/pkgconfig/freetype2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/freetype.pc
+          # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
+      - name: Actual build
+        run: cd repo && make CMAKE_BUILD_TYPE=Release erebuild
+      - uses: actions/upload-artifact@v3
+        name: Upload to S3
+        with:
+          name: s3Artifact
+          path: repo/build/bin
   # Push-Files-To-S3:
   #   uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
   #   needs: Build-Emscripten
