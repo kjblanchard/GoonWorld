@@ -33,43 +33,6 @@ jobs:
         with:
           name: ${{ matrix.os }}-artifacts
           path: build/SupergoonDash.${{ matrix.suffix }}
-  # Build-Ubuntu:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - run: pip install --upgrade cppclean
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v3
-  #     - name: Configure CMake
-  #       run: make brebuild
-  #     - name: Save packaged artifacts
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: linux-artifacts
-  #         path: build/SupergoonDash.tgz
-  # Build-Macos:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v3
-  #     - name: Configure CMake
-  #       run: make xrebuild
-  #     - name: Save packaged artifacts
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: mac-artifacts
-  #         path: build/SupergoonDash.tgz
-  # Build-Windows:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v3
-  #     - name: Configure CMake
-  #       run: make wrebuild
-  #     - name: Save packaged artifacts
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: windows-artifacts
-  #         path: build/SupergoonDash.zip
   # Use container as for some reason has permissions issues on a regular runner when I install emscripten.
   Build-Emscripten:
     runs-on: ubuntu-latest
