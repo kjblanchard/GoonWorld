@@ -1,5 +1,7 @@
 #include <string>
 #include <map>
+#include <functional>
+#include <unordered_map>
 #include <cmath>
 #include <fstream>
 #include <iostream>

@@ -74,7 +74,7 @@ add_executable(${EXECUTABLE_TARGET_NAME}
 set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 
 # set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
-find_package(PkgConfig REQUIRED)
+# find_package(PkgConfig REQUIRED)
 
 # find_package(ZLIB)
 include(CTest)
@@ -99,9 +99,9 @@ if(WIN32)
 endif(WIN32)
 
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION")
-set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows" FORCE)
+# set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows" FORCE)
 set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests" FORCE)
-set(PNG_BUILD_ZLIB OFF CACHE BOOL "Build the libpng tests" FORCE)
+# set(PNG_BUILD_ZLIB OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(PNG_SHARED OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(GOON_FULL_MACOS_BUILD ${GOON_FULL_MACOS_BUILD} CACHE BOOL "Build the libpng tests" FORCE)
