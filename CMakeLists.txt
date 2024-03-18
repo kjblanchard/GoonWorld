@@ -99,11 +99,12 @@ if(WIN32)
 endif(WIN32)
 
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION")
-set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows")
-set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests")
-set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests")
+set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows" FORCE)
+set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests" FORCE)
+set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(GOON_FULL_MACOS_BUILD ${GOON_FULL_MACOS_BUILD} CACHE BOOL "Build the libpng tests" FORCE)
 set(GOON_DEBUG_SOUND ${GOON_DEBUG_SOUND} CACHE BOOL "Build from what?" FORCE)
+set(PNG_FRAMEWORK OFF CACHE BOOL "Build from what?" FORCE)
 
 # #########################################
 # Precompiled headers
@@ -156,7 +157,7 @@ add_subdirectory(./external/sg_engine)
 # #########################################
 if(EMSCRIPTEN)
     # set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
-    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 -sUSE_SDL=2 -sUSE_LIBPNG=1 -sUSE_FREETYPE=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
+    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 -sUSE_SDL=2 -sUSE_LIBPNG=1 -sUSE_FREETYPE=1 -sUSE_OGG=1 -sUSE_VORBIS=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s 'DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[\"$autoResumeAudioContext\",\"$dynCall\"]'")
 endif(EMSCRIPTEN)
 
