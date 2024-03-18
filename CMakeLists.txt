@@ -95,7 +95,8 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 # We want to skip installing freetype,etc, this is a var in their CMAKE file
 # Don't build the png tests
 if(WIN32)
-    set(FT_REQUIRE_ZLIB OFF CACHE BOOL "Skip zlip on windows")
+    # set(FT_REQUIRE_ZLIB OFF CACHE BOOL "Skip zlip on windows")
+    set(FT_DISABLE_ZLIB ON CACHE BOOL "Skip zlip on windows")
 endif(WIN32)
 
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION")
