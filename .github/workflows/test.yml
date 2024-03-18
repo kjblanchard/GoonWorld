@@ -26,6 +26,8 @@ jobs:
       - run: pip install --upgrade cppclean
       - name: Check out repository code
         uses: actions/checkout@v3
+      - name: Initialize subdirectories
+        run: make init
       - name: Configure CMake
         run: make CMAKE_BUILD_TYPE=Release ${{ matrix.make_cmd}}
       - name: Save packaged artifacts
