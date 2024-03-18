@@ -61,7 +61,7 @@ jobs:
           # cp /usr/lib/x86_64-linux-gnu/pkgconfig/freetype2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/freetype.pc
           # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
       - name: Actual build
-        run: cd repo && make CMAKE_BUILD_TYPE=Release erebuild
+        run: cd repo && make init && make CMAKE_BUILD_TYPE=Release erebuild
       - uses: actions/upload-artifact@v3
         name: Upload to S3
         with:
