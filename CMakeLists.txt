@@ -75,6 +75,7 @@ set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 
 # set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
 find_package(PkgConfig REQUIRED)
+
 # find_package(ZLIB)
 include(CTest)
 
@@ -93,6 +94,10 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 # Set cached variables for subprojects
 # We want to skip installing freetype,etc, this is a var in their CMAKE file
 # Don't build the png tests
+if(WIN32)
+    set(FT_REQUIRE_ZLIB OFF CACHE BOOL "Skip zlip on windows")
+endif(WIN32)
+
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION")
 set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests")
 set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests")
@@ -129,18 +134,19 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # Have both of these already built, and then we find them.
 
 # if(GOON_DEBUG_SOUND)
-#     add_subdirectory(./external/sg_sound)
-#     target_include_directories(${EXECUTABLE_TARGET_NAME} PUBLIC external/sg_sound/src/)
+# add_subdirectory(./external/sg_sound)
+# target_include_directories(${EXECUTABLE_TARGET_NAME} PUBLIC external/sg_sound/src/)
 # else()
-#     find_package(supergoonSound REQUIRED)
+# find_package(supergoonSound REQUIRED)
 # endif(GOON_DEBUG_SOUND)
 
 # message("Going to do the thing.. macos is ${MACOS} and GOON_FULL_MACOS_BUILD is ${GOON_FULL_MACOS_BUILD}")
 
 # if(MACOS AND NOT GOON_FULL_MACOS_BUILD)
-    add_subdirectory(./external/sg_engine)
+add_subdirectory(./external/sg_engine)
+
 # else()
-    # add_subdirectory(./external/sg_engine)
+# add_subdirectory(./external/sg_engine)
 # endif(MACOS AND NOT GOON_FULL_MACOS_BUILD)
 # find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 
@@ -211,9 +217,11 @@ target_compile_options(${EXECUTABLE_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS}
 # Linking Options
 # #########################################
 set(LIBRARIES_TO_LINK
+
     # supergoonSound::supergoonSound
     # supergoonSound
     SDL2::SDL2main
+
     # ZLIB::ZLIB
     # ${LIB_PNG}
 )
@@ -226,10 +234,10 @@ foreach(LIBRARY ${LIBRARIES_TO_LINK})
 endforeach()
 
 # target_link_libraries(${EXECUTABLE_TARGET_NAME}
-#     PUBLIC
-#     PRIVATE
-#     ${LIB_PNG}
-#     ${LIB_FREETYPE}
+# PUBLIC
+# PRIVATE
+# ${LIB_PNG}
+# ${LIB_FREETYPE}
 # )
 target_link_directories(${EXECUTABLE_TARGET_NAME}
     PRIVATE
