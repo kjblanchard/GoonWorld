@@ -43,11 +43,12 @@ package:
 	@$(PACKAGE_COMMAND)
 sound:
 	@cd ./external/sg_sound && make rebuild
+rebuild: FULL_MAC_BUILD = OFF
 rebuild: BUILD_SYSTEM = $(PRIMARY_BUILD_SYSTEM)
 rebuild: clean configure build install
 brebuild: BUILD_SYSTEM = $(BACKUP_BUILD_SYSTEM)
 brebuild: FULL_MAC_BUILD = ON
-brebuild: clean configure build install test package
+brebuild: clean configure build install package
 wrebuild: BUILD_SYSTEM=$(WINDOWS_BUILD_SYSTEM)
 wrebuild: PACKAGE_COMMAND = $(WINDOWS_PACKAGE_COMMAND)
 wrebuild: clean configure build install package
@@ -64,7 +65,3 @@ run:
 	@cd ./$(BUILD_FOLDER)/$(BINARY_FOLDER) && ./$(BINARY_NAME)
 erun:
 	@emrun ./$(BUILD_FOLDER)/$(BINARY_FOLDER)/$(BINARY_NAME).html
-dotnet:
-	@cd ./GoonWorld && dotnet build && dotnet run
-dotnetPublish:
-	@cs ./GoonWorld && dotnet publish -c Release --sc --use-current-runtime

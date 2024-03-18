@@ -20,6 +20,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # File globbing
 # #########################################
 message(STATUS "Getting all files for cmake..")
+
 # file(GLOB_RECURSE ENGINE_FILES external/sg_engine/src/GoonEngine/*.c* external/sg_physics/src/GoonPhysics/*.c*)
 file(GLOB_RECURSE GOON_WORLD_FILES src/GoonWorld/*.cpp*)
 
@@ -34,7 +35,7 @@ if(EMSCRIPTEN)
 elseif(APPLE)
     if(NOT IOS) # MACOS #
         message(STATUS "Configuring Macos")
-        set(MACOS ON)
+        set(MACOS ON CACHE BOOL "Is Macos")
 
         if(CMAKE_GENERATOR STREQUAL "Xcode")
             message(STATUS "Setting Build to Universal Binary")
@@ -58,20 +59,20 @@ message(STATUS "Initializing the project")
 
 # Linux use static?
 # if(LINUX)
-#     add_library(${LIBRARY_TARGET_NAME}
-#         STATIC
-#         ${ENGINE_FILES}
-#     )
+# add_library(${LIBRARY_TARGET_NAME}
+# STATIC
+# ${ENGINE_FILES}
+# )
 # else()
-#     add_library(${LIBRARY_TARGET_NAME}
-#         SHARED
-#         ${ENGINE_FILES}
-#     )
+# add_library(${LIBRARY_TARGET_NAME}
+# SHARED
+# ${ENGINE_FILES}
+# )
 # endif(LINUX)
-
 add_executable(${EXECUTABLE_TARGET_NAME}
     ${GOON_WORLD_FILES})
 set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
+
 # set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
 find_package(PkgConfig REQUIRED)
 find_package(ZLIB)
@@ -80,7 +81,7 @@ include(CTest)
 # #########################################
 # Options
 # #########################################
-option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" ON)
+option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" OFF)
 option(GOON_BUILD_PCH "Uses a PCH file to try and speed up compilation" ON)
 option(GOON_DEBUG_SOUND "Builds sound from subdirectory instead of using a made package so we can debug" ON)
 option(GOON_MULTITHREADED_SOUND "Adds multithreaded support for sound updates, experimental and has a memory leak somehow" OFF)
@@ -89,14 +90,22 @@ option(GOON_BUILD_TESTING "Should we enable testing with ctest" OFF)
 set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to our option
 
 # option(GOON_FULL_MACOS_BUILD "Full builds of all libraries, used for runners mostly, and passed in to override." OFF)
+# Set cached variables for subprojects
+# We want to skip installing freetype,etc, this is a var in their CMAKE file
+# Don't build the png tests
+set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION")
+set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests")
+set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests")
+set(GOON_FULL_MACOS_BUILD ${GOON_FULL_MACOS_BUILD} CACHE BOOL "Build the libpng tests" FORCE)
 
 # #########################################
 # Precompiled headers
 # #########################################
 if(GOON_BUILD_PCH)
     message(STATUS "Setting up PCH, mac needs objc")
+
     # target_precompile_headers(${LIBRARY_TARGET_NAME} PRIVATE
-    #     "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/GoonEngine/gnpch.h>")
+    # "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/GoonEngine/gnpch.h>")
     target_precompile_headers(${EXECUTABLE_TARGET_NAME} PRIVATE
         "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/GoonWorld/gnpch.hpp>")
 endif(GOON_BUILD_PCH)
@@ -126,25 +135,33 @@ else()
     find_package(supergoonSound REQUIRED)
 endif(GOON_DEBUG_SOUND)
 
-add_subdirectory(./external/sg_engine)
+message("Going to do the thing.. macos is ${MACOS} and GOON_FULL_MACOS_BUILD is ${GOON_FULL_MACOS_BUILD}")
 
-# find_library(LIB_PNG
-#     REQUIRED
-#     PATH_SUFFIXES .a
-#     NAMES libpng png.a png.dll libpng.a
-#     HINTS /usr/local/lib /c/cmake/lib)
+if(MACOS AND NOT GOON_FULL_MACOS_BUILD)
+    add_subdirectory(./external/sg_engine)
+else()
+    find_package(Git REQUIRED QUIET)
+    message(STATUS "Cloning and updating submodules")
 
-# find_library(LIB_FREETYPE
-#     REQUIRED
-#     PATH_SUFFIXES .a
-#     NAMES libfreetype.a libfreetype.dll freetype.a freetype.dll freetype libfreetype
-#     HINTS /usr/local/lib /c/cmake/lib)
+    if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            RESULT_VARIABLE GIT_SUBMOD_RESULT)
+
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+
+        add_subdirectory(./external/sg_engine)
+    endif()
+endif(MACOS AND NOT GOON_FULL_MACOS_BUILD)
 
 # #########################################
 # Platform Specific Build settings
 # #########################################
 if(EMSCRIPTEN)
-    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
+    # set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
+    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 -sUSE_LIBPNG=1 -sUSE_FREETYPE=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s 'DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[\"$autoResumeAudioContext\",\"$dynCall\"]'")
 endif(EMSCRIPTEN)
 
