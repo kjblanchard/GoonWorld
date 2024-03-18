@@ -75,7 +75,7 @@ set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
 
 # set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
 find_package(PkgConfig REQUIRED)
-find_package(ZLIB)
+# find_package(ZLIB)
 include(CTest)
 
 # #########################################
@@ -149,7 +149,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # #########################################
 if(EMSCRIPTEN)
     # set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
-    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 -sUSE_LIBPNG=1 -sUSE_FREETYPE=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
+    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 -sUSE_SDL=2 -sUSE_LIBPNG=1 -sUSE_FREETYPE=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s 'DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[\"$autoResumeAudioContext\",\"$dynCall\"]'")
 endif(EMSCRIPTEN)
 
@@ -214,8 +214,8 @@ set(LIBRARIES_TO_LINK
     # supergoonSound::supergoonSound
     # supergoonSound
     SDL2::SDL2main
-    ZLIB::ZLIB
-    ${LIB_PNG}
+    # ZLIB::ZLIB
+    # ${LIB_PNG}
 )
 
 foreach(LIBRARY ${LIBRARIES_TO_LINK})
