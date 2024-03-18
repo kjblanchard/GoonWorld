@@ -12,9 +12,9 @@ jobs:
     strategy:
         matrix:
           include:
-          # - os: windows
-          #   make_cmd: wrebuild
-          #   suffix: zip
+          - os: windows
+            make_cmd: wrebuild
+            suffix: zip
           # - os: macos
           #   make_cmd: xrebuild
           #   suffix: tgz
@@ -55,7 +55,7 @@ jobs:
         run: |
           apt update -y && apt upgrade -y
           # This is needed as system freetype doesn't have proper files for find package.
-          embuilder build freetype
+          embuilder build sdl2 freetype ogg libpng vorbis
           # apt install cmake pkg-config libfreetype-dev -y
           apt install cmake pkg-config  -y
           # cp /usr/lib/x86_64-linux-gnu/pkgconfig/freetype2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/freetype.pc
