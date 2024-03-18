@@ -127,7 +127,6 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # Packages
 # #########################################
 # Have both of these already built, and then we find them.
-find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 
 # if(GOON_DEBUG_SOUND)
 #     add_subdirectory(./external/sg_sound)
@@ -143,6 +142,7 @@ find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 # else()
     # add_subdirectory(./external/sg_engine)
 # endif(MACOS AND NOT GOON_FULL_MACOS_BUILD)
+# find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
 
 # #########################################
 # Platform Specific Build settings
