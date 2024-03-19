@@ -16,14 +16,22 @@ jobs:
           make_cmd: wrebuild
           suffix: zip
           zlib: wzlib
+          name: win
         - os: macos
-          make_cmd: xrebuild
+          make_cmd: xrebuild CMAKE_OSX_ARCHITECTURES=x86_64
           suffix: tgz
           zlib: zlib
+          name: macintel
+        - os: macos
+          make_cmd: xrebuild CMAKE_OSX_ARCHITECTURES=arm64
+          suffix: tgz
+          zlib: zlib
+          name: macsilicon
         - os: ubuntu
           make_cmd: brebuild
           suffix: tgz
           zlib: zlib
+          name: linux
     runs-on: ${{ matrix.os }}-latest
     steps:
       - run: pip install --upgrade cppclean
@@ -38,8 +46,8 @@ jobs:
       - name: Save packaged artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.os }}-artifacts
-          path: build/SupergoonDash.${{ matrix.suffix }}
+          name: ${{ matrix.name }}-artifacts
+          path: build/SupergoonWorld.${{ matrix.suffix }}
   # Use container as for some reason has permissions issues on a regular runner when I install emscripten.
   Build-Emscripten:
     runs-on: ubuntu-latest
@@ -88,9 +96,12 @@ jobs:
   #         - os: windows
   #           artifact_name: SupergoonDash.zip
   #           asset_name: supergoon_win.zip
-  #         - os: macos
+  #         - os: macosintel
   #           artifact_name: SupergoonDash.tgz
-  #           asset_name: supergoon_mac.zip
+  #           asset_name: supergoon_mac_intel.zip
+  #         - os: macossilicon
+  #           artifact_name: SupergoonDash.tgz
+  #           asset_name: supergoon_mac_silicon.zip
   #         - os: ubuntu
   #           artifact_name: SupergoonDash.tgz
   #           asset_name: supergoon_ubuntu.zip
