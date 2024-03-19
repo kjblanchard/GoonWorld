@@ -1,15 +1,19 @@
 # GoonWorld
 - A C++ game that utilizes Tiled and Aseprite for the game "engine".
-- Uses C self made libraries for physics, sound, and engine
+- Uses C self made libraries for physics, sound, and engine, found in the Libraries section
+- ![Build All Platforms]( https://github.com/kjblanchard/GoonWorld/actions/workflows/test.yml/badge.svg)
+- ![Status Picture](https://github.com/kjblanchard/GoonWorld/blob/master/img/status.gif?raw=true)
+- Play the game here, or likely watch its "progress" [Supergoon.com](https://world.supergoon.com)
+- Currently have 2 macos executables, as libpng cannot handle multiple architectures currently with a mac universal build, [issue here]()
 
 ## Development
 - Mostly developed on macos apple silicon
-- Builds on Mac locally until game is playable
+- Builds on Mac locally until game is playable, build on Windows, Universal Mac, Ubuntu, and Emscripten via github actions
 
 ## Goals
 - Better at C
 - Better at C++
-- Better at cross-platform building with cmake (Macos, Linux, Windows)
+- Better at cross-platform building with cmake (Macos, Linux, Windows, Emscripten)
 - Learn github actions to build and publish outside developer environment
 - Create a simple "Super mario bros" clone.
 
@@ -36,14 +40,9 @@
 ## Libraries
 - [Supergoon Sound](https://github.com/icculus/mojoAL/blob/main/LICENSE.txt) - ZLIB | OpenAL implementation - Mojoal wrapper
 - [Supergoon Physics](https://github.com/kjblanchard/goonPhysics) - MIT | Simple AABB physics simulation
+- [Supergoon Engine](https://github.com/kjblanchard/goonPhysics) - MIT | Pulls everything together
 - [SDL](https://www.libsdl.org/license.php) - ZLIB - Low level Windowing / Eventing
 - [doxygen](https://doxygen.nl) - GPL | Automatic documentation
 
-## Valgrind
-valgrind --track-origins=yes --leak-check=yes --leak-resolution=low --show-leak-kinds=definite ./SupergoonDash 2>&1 | tee memcheck.txt
-
-<!-- Linux steps -->
-cmake . -B build -DBUILD_TESTING=OFF -DJSON_BuildTests=OFF
-git submodule init external/sg_sound
-git submodule update external/sg_sound
-<!-- That is in the json library -->
+## Valgrind Checks
+- valgrind --track-origins=yes --leak-check=yes --leak-resolution=low --show-leak-kinds=definite ./SupergoonWorld 2>&1 | tee memcheck.txt

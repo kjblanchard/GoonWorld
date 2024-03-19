@@ -1,26 +1,25 @@
 # #########################################
 # Initial config
 # #########################################
-set(LIBRARY_TARGET_NAME SupergoonEngine)
 set(EXECUTABLE_TARGET_NAME SupergoonWorld)
 cmake_minimum_required(VERSION 3.16)
-message(STATUS "Starting ${LIBRARY_TARGET_NAME} project initialization")
+message(STATUS "Starting ${EXECUTABLE_TARGET_NAME} project initialization")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1) # This exports a file that clangd can use so that we know what compile/include flags so that we can use clangd language server properly with our cmake attributes.
 include(FindPkgConfig)
-project(${LIBRARY_TARGET_NAME} VERSION 0.1.0 LANGUAGES C CXX)
+project(${EXECUTABLE_TARGET_NAME} VERSION 0.1.0 LANGUAGES C CXX)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Adding PIC to enable linux builds test
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+# set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # #########################################
 # File globbing
 # #########################################
 message(STATUS "Getting all files for cmake..")
-file(GLOB_RECURSE ENGINE_FILES external/sg_engine/src/GoonEngine/*.c* external/sg_physics/src/GoonPhysics/*.c*)
+
 file(GLOB_RECURSE GOON_WORLD_FILES src/GoonWorld/*.cpp*)
 
 # #########################################
@@ -34,11 +33,11 @@ if(EMSCRIPTEN)
 elseif(APPLE)
     if(NOT IOS) # MACOS #
         message(STATUS "Configuring Macos")
-        set(MACOS ON)
+        set(MACOS ON CACHE BOOL "Is Macos")
 
         if(CMAKE_GENERATOR STREQUAL "Xcode")
-            message(STATUS "Setting Build to Universal Binary")
-            set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "" FORCE)
+            message(STATUS "Setting Build to Specific OS type, as libpng cannot handle universal.")
+            set(CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES} CACHE STRING "" FORCE)
         endif(CMAKE_GENERATOR STREQUAL "Xcode")
     else()
         # IOS
@@ -55,27 +54,9 @@ endif(EMSCRIPTEN)
 # Initialize
 # #########################################
 message(STATUS "Initializing the project")
-
-# Linux use static?
-if(LINUX)
-    add_library(${LIBRARY_TARGET_NAME}
-        STATIC
-        ${ENGINE_FILES}
-    )
-else()
-    add_library(${LIBRARY_TARGET_NAME}
-        SHARED
-        ${ENGINE_FILES}
-    )
-endif(LINUX)
-
 add_executable(${EXECUTABLE_TARGET_NAME}
     ${GOON_WORLD_FILES})
 set_property(TARGET ${EXECUTABLE_TARGET_NAME} PROPERTY CXX_STANDARD 17)
-set_property(TARGET ${LIBRARY_TARGET_NAME} PROPERTY C_STANDARD 11)
-find_package(PkgConfig REQUIRED)
-find_package(ZLIB)
-include(CTest)
 
 # #########################################
 # Options
@@ -91,12 +72,23 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 # option(GOON_FULL_MACOS_BUILD "Full builds of all libraries, used for runners mostly, and passed in to override." OFF)
 
 # #########################################
+# Set options for child projects.
+# #########################################
+set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION" FORCE)
+set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests" FORCE)
+set(PNG_ARM_NEON on CACHE BOOL "Build the libpng tests" FORCE)
+set(PNG_ARM_NEON_OPT 0 CACHE BOOL "What" FORCE)
+set(PNG_BUILD_ZLIB ON CACHE BOOL "Build the libpng tests" FORCE)
+set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests" FORCE)
+set(PNG_SHARED OFF CACHE BOOL "Build the libpng tests" FORCE)
+set(GOON_FULL_MACOS_BUILD ${GOON_FULL_MACOS_BUILD} CACHE BOOL "Build the libpng tests" FORCE)
+set(GOON_DEBUG_SOUND ${GOON_DEBUG_SOUND} CACHE BOOL "Build from what?" FORCE)
+set(PNG_FRAMEWORK OFF CACHE BOOL "Build from what?" FORCE)
+
+# #########################################
 # Precompiled headers
 # #########################################
 if(GOON_BUILD_PCH)
-    message(STATUS "Setting up PCH, mac needs objc")
-    target_precompile_headers(${LIBRARY_TARGET_NAME} PRIVATE
-        "$<$<COMPILE_LANGUAGE:C>:${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/GoonEngine/gnpch.h>")
     target_precompile_headers(${EXECUTABLE_TARGET_NAME} PRIVATE
         "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/GoonWorld/gnpch.hpp>")
 endif(GOON_BUILD_PCH)
@@ -107,51 +99,30 @@ endif(GOON_BUILD_PCH)
 # If we are debug, we should use the local path, otherwise use the location of embuilder from the docker image
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(EMBUILDER_PATH embuilder)
-    target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE -DGN_DEBUG_BUILD)
+    target_compile_definitions(${EXECUTABLE_TARGET_NAME} PRIVATE -DGN_DEBUG_BUILD)
 else()
     set(EMBUILDER_PATH /emsdk/upstream/emscripten/embuilder)
-    target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE -DGN_RELEASE_BUILD)
+    target_compile_definitions(${EXECUTABLE_TARGET_NAME} PRIVATE -DGN_RELEASE_BUILD)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # #########################################
-# Packages
+# Packages And subprojects
 # #########################################
-# Have both of these already built, and then we find them.
-find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
-
-if(GOON_DEBUG_SOUND)
-    add_subdirectory(./external/sg_sound)
-    target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC external/sg_sound/src/)
-else()
-    find_package(supergoonSound REQUIRED)
-endif(GOON_DEBUG_SOUND)
-
-find_library(LIB_PNG
-    REQUIRED
-    PATH_SUFFIXES .a
-    NAMES libpng png.a png.dll libpng.a
-    HINTS /usr/local/lib /c/cmake/lib)
-
-find_library(LIB_FREETYPE
-    REQUIRED
-    PATH_SUFFIXES .a
-    NAMES libfreetype.a libfreetype.dll freetype.a freetype.dll freetype libfreetype
-    HINTS /usr/local/lib /c/cmake/lib)
+add_subdirectory(./external/sg_engine)
 
 # #########################################
 # Platform Specific Build settings
 # #########################################
 if(EMSCRIPTEN)
-    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s SAFE_HEAP=2 -s STACK_OVERFLOW_CHECK=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
+    set_target_properties(${EXECUTABLE_TARGET_NAME} PROPERTIES LINK_FLAGS ${LINK_FLAGS} " -O0 -g -s -sUSE_SDL=2 -sUSE_LIBPNG=1 -sUSE_FREETYPE=1 -sUSE_OGG=1 -sUSE_VORBIS=1 --preload-file ${CMAKE_SOURCE_DIR}/assets@/assets")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s 'DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=[\"$autoResumeAudioContext\",\"$dynCall\"]'")
 endif(EMSCRIPTEN)
 
 # #########################################
 # Compile Definitions
 # #########################################
-
 # Platform-specific compile definitions
-target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE
+target_compile_definitions(${EXECUTABLE_TARGET_NAME} PRIVATE
     $<$<BOOL:${APPLE}>: -DGN_PLATFORM_MACOS>
     $<$<BOOL:${WIN32}>: -DGN_PLATFORM_WINDOWS>
     $<$<BOOL:${EMSCRIPTEN}>: -DGN_PLATFORM_EMSCRIPTEN>
@@ -159,7 +130,7 @@ target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE
 )
 
 # Other compile definitions
-target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE
+target_compile_definitions(${EXECUTABLE_TARGET_NAME} PRIVATE
     $<$<BOOL:${GOON_MULTITHREADED_SOUND}>: -DGN_MULTITHREADED>
     $<$<BOOL:${GOON_DEBUG_LUA}>: -DGN_DEBUG_LUA>
     $<$<BOOL:${GOON_BENCHMARKING}>: -DGN_BENCHMARKING_ENABLED>
@@ -198,38 +169,28 @@ elseif(EMSCRIPTEN)
     # target_compile_options(${EXECUTABLE_TARGET_NAME} PRIVATE -sUSE_SDL_TTF=2)
 endif(WIN32)
 
-target_compile_options(${LIBRARY_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS})
+target_compile_options(${EXECUTABLE_TARGET_NAME} PRIVATE ${FULL_COMPILE_OPTIONS})
 
 # #########################################
 # Linking Options
 # #########################################
 set(LIBRARIES_TO_LINK
-    supergoonSound::supergoonSound
-    supergoonSound
     SDL2::SDL2main
-    ZLIB::ZLIB
-    ${LIB_PNG}
 )
 
 foreach(LIBRARY ${LIBRARIES_TO_LINK})
     # Check if the target exists, if we are building it then we should link to it.
     if(TARGET ${LIBRARY})
-        target_link_libraries(${LIBRARY_TARGET_NAME} PRIVATE ${LIBRARY})
+        target_link_libraries(${EXECUTABLE_TARGET_NAME} PRIVATE ${LIBRARY})
     endif()
 endforeach()
 
-target_link_libraries(${LIBRARY_TARGET_NAME}
-    PUBLIC
-    PRIVATE
-    ${LIB_PNG}
-    ${LIB_FREETYPE}
-)
-target_link_directories(${LIBRARY_TARGET_NAME}
+target_link_directories(${EXECUTABLE_TARGET_NAME}
     PRIVATE
     /usr/local/lib
 )
 
-target_include_directories(${LIBRARY_TARGET_NAME}
+target_include_directories(${EXECUTABLE_TARGET_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
     ${CMAKE_CURRENT_SOURCE_DIR}/external/sg_engine/include/
@@ -246,6 +207,7 @@ target_link_libraries(${EXECUTABLE_TARGET_NAME}
     SupergoonEngine
     PRIVATE
 )
+
 target_include_directories(${EXECUTABLE_TARGET_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
@@ -257,6 +219,13 @@ target_include_directories(${EXECUTABLE_TARGET_NAME}
 # Install
 # #########################################
 set(FOLDERS_TO_COPY assets)
+
+if(MSVC OR CMAKE_GENERATOR STREQUAL "Xcode")
+    set(INSTALL_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
+else()
+    set(INSTALL_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif(MSVC OR CMAKE_GENERATOR STREQUAL "Xcode")
+
 install(DIRECTORY ${FOLDERS_TO_COPY}
-    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    DESTINATION ${INSTALL_DIR}
     COMPONENT assets)
