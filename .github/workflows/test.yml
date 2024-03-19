@@ -94,16 +94,16 @@ jobs:
         matrix:
           include:
           - os: win
-            artifact_name: SupergoonDash.zip
+            artifact_name: SupergoonWorld.zip
             asset_name: supergoon_win.zip
           - os: macintel
-            artifact_name: SupergoonDash.tgz
+            artifact_name: SupergoonWorld.tgz
             asset_name: supergoon_mac_intel.tgz
           - os: macsilicon
-            artifact_name: SupergoonDash.tgz
+            artifact_name: SupergoonWorld.tgz
             asset_name: supergoon_mac_silicon.zip
           - os: linux
-            artifact_name: SupergoonDash.tgz
+            artifact_name: SupergoonWorld.tgz
             asset_name: supergoon_ubuntu.tgz
     if: startsWith(github.event.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
