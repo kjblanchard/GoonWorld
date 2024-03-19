@@ -12,15 +12,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows
-            make_cmd: wrebuild
-            suffix: zip
+          # - os: windows
+          #   make_cmd: wrebuild
+          #   suffix: zip
         # - os: macos
         #   make_cmd: xrebuild
         #   suffix: tgz
-        # - os: ubuntu
-        #   make_cmd: brebuild
-        #   suffix: tgz
+        - os: ubuntu
+          make_cmd: brebuild
+          suffix: tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
       - run: pip install --upgrade cppclean
@@ -28,8 +28,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Initialize subdirectories
         run: make init
-      - name: Initialize subdirectories
-        run: make zlib
+      # - name: Initialize subdirectories
+      #   run: make zlib
       - name: Configure CMake
         run: make CMAKE_BUILD_TYPE=Release ${{ matrix.make_cmd}}
       - name: Save packaged artifacts
@@ -38,46 +38,46 @@ jobs:
           name: ${{ matrix.os }}-artifacts
           path: build/SupergoonDash.${{ matrix.suffix }}
   # Use container as for some reason has permissions issues on a regular runner when I install emscripten.
-  # Build-Emscripten:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: emscripten/emsdk:3.1.46
-  #     env:
-  #       thing: thing
-  #     credentials:
-  #       username: ${{ vars.DOCKER_USERNAME }}
-  #       password: ${{ secrets.DOCKER_PASSWORD }}
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         path: repo
-  #         submodules: recursive
-  #     - name: Install CMake
-  #       run: |
-  #         apt update -y && apt upgrade -y
-  #         # This is needed as system freetype doesn't have proper files for find package.
-  #         embuilder build sdl2 freetype ogg libpng vorbis
-  #         # apt install cmake pkg-config libfreetype-dev -y
-  #         apt install cmake pkg-config  -y
-  #         # cp /usr/lib/x86_64-linux-gnu/pkgconfig/freetype2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/freetype.pc
-  #         # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
-  #     - name: Actual build
-  #       run: cd repo && make init && make CMAKE_BUILD_TYPE=Release erebuild
-  #     - uses: actions/upload-artifact@v3
-  #       name: Upload to S3
-  #       with:
-  #         name: s3Artifact
-  #         path: repo/build/bin
-  # Push-Files-To-S3:
-  #   uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
-  #   needs: Build-Emscripten
-  #   secrets:
-  #     IAM_SECRET: ${{ secrets.IAM_SECRET }}
-  #   with:
-  #     IAM_USER: ${{ vars.IAM_USER }}
-  #     bucket_region: "us-east-1"
-  #     bucket_name: "supergoon-dash-external-site"
+  Build-Emscripten:
+    runs-on: ubuntu-latest
+    container:
+      image: emscripten/emsdk:3.1.46
+      env:
+        thing: thing
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          submodules: recursive
+      - name: Install CMake
+        run: |
+          apt update -y && apt upgrade -y
+          # This is needed as system freetype doesn't have proper files for find package.
+          embuilder build sdl2 freetype ogg libpng vorbis
+          # apt install cmake pkg-config libfreetype-dev -y
+          apt install cmake pkg-config  -y
+          # cp /usr/lib/x86_64-linux-gnu/pkgconfig/freetype2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/freetype.pc
+          # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
+      - name: Actual build
+        run: cd repo && make init && make CMAKE_BUILD_TYPE=Release erebuild
+      - uses: actions/upload-artifact@v3
+        name: Upload to S3
+        with:
+          name: s3Artifact
+          path: repo/build/bin
+  Push-Files-To-S3:
+    uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
+    needs: Build-Emscripten
+    secrets:
+      IAM_SECRET: ${{ secrets.IAM_SECRET }}
+    with:
+      IAM_USER: ${{ vars.IAM_USER }}
+      bucket_region: "us-east-1"
+      bucket_name: "supergoon-world-external-site"
   # Create-Release:
   #   strategy:
   #       matrix:
