@@ -29,7 +29,7 @@ jobs:
       - name: Initialize subdirectories
         run: make init
       - name: Initialize subdirectories
-        run: vcpkg install zlib
+        run: make zlib
       - name: Configure CMake
         run: make CMAKE_BUILD_TYPE=Release ${{ matrix.make_cmd}}
       - name: Save packaged artifacts
