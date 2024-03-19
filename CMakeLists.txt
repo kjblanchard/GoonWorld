@@ -196,7 +196,6 @@ if(CMAKE_DEBUG_VARIABLES)
         message(STATUS "${_variableName}=${${_variableName}}")
     endforeach()
 endif(CMAKE_DEBUG_VARIABLES)
-message(FATAL_ERROR "What")
 
 # #########################################
 # Compile Options

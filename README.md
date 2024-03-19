@@ -1,6 +1,9 @@
 # GoonWorld
 - A C++ game that utilizes Tiled and Aseprite for the game "engine".
 - Uses C self made libraries for physics, sound, and engine
+- ![Build All Platforms]( https://github.com/kjblanchard/GoonWorld/actions/workflows/test.yml/badge.svg)
+- ![Status Picture](https://github.com/kjblanchard/GoonWorld/blob/master/img/status.gif?raw=true)
+- Play the game here, or likely watch its "progress" [Supergoon.com](https://world.supergoon.com)
 
 ## Development
 - Mostly developed on macos apple silicon
