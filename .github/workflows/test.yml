@@ -98,13 +98,13 @@ jobs:
             asset_name: supergoon_win.zip
           - os: macintel
             artifact_name: SupergoonDash.tgz
-            asset_name: supergoon_mac_intel.zip
+            asset_name: supergoon_mac_intel.tgz
           - os: macsilicon
             artifact_name: SupergoonDash.tgz
             asset_name: supergoon_mac_silicon.zip
-          - os: linus
+          - os: linux
             artifact_name: SupergoonDash.tgz
-            asset_name: supergoon_ubuntu.zip
+            asset_name: supergoon_ubuntu.tgz
     if: startsWith(github.event.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     needs:
