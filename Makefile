@@ -65,10 +65,10 @@ run:
 	@cd ./$(BUILD_FOLDER)/$(BINARY_FOLDER) && ./$(BINARY_NAME)
 erun:
 	@emrun ./$(BUILD_FOLDER)/$(BINARY_FOLDER)/$(BINARY_NAME).html
-
 init:
 	@git submodule update --init --recursive
 	@cd external/sg_engine && git submodule update --init --recursive
 	@cd external/sg_engine/external/sg_sound && git submodule update --init --recursive
+
 zlib:
-  @cd external/sg_engine/external/zlib && cmake . -B build && cmake --build build && cmake --install build
+	@cd external/sg_engine/external/zlib && cmake . -B build && cmake --build build && cmake --install build
