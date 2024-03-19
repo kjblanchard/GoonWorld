@@ -12,9 +12,9 @@ jobs:
     strategy:
       matrix:
         include:
-          # - os: windows
-          #   make_cmd: wrebuild
-          #   suffix: zip
+        - os: windows
+          make_cmd: wrebuild
+          suffix: zip
         # - os: macos
         #   make_cmd: xrebuild
         #   suffix: tgz
