@@ -13,6 +13,7 @@
 ## Goals
 - Better at C
 - Better at C++
+- Learn about low-level programming for pictures (libpng) sound (ogg/openal), text (freetype) instead of using pre-made libraries
 - Better at cross-platform building with cmake (Macos, Linux, Windows, Emscripten)
 - Learn github actions to build and publish outside developer environment
 - Create a simple "Super mario bros" clone.
@@ -26,7 +27,6 @@
 - Emscripten: Build for web
 - Make: Streamlining building with one command
 - CMake: The actual cross-platform build system.
-- cppclean: Tests
 
 ## Licenses
 ### Full Game
@@ -38,11 +38,9 @@
 - [Fireball](https://freesound.org/people/adh.dreaming/sounds/615576/) - Creative Commons
 
 ## Libraries
-- [Supergoon Sound](https://github.com/icculus/mojoAL/blob/main/LICENSE.txt) - ZLIB | OpenAL implementation - Mojoal wrapper
-- [Supergoon Physics](https://github.com/kjblanchard/goonPhysics) - MIT | Simple AABB physics simulation
-- [Supergoon Engine](https://github.com/kjblanchard/goonPhysics) - MIT | Pulls everything together
+- [Supergoon Engine](https://github.com/kjblanchard/goonPhysics) - MIT | Custom Physics, OpenAL wrapper, libpng/freetype wrapper, SDL wrapper, etc
 - [SDL](https://www.libsdl.org/license.php) - ZLIB - Low level Windowing / Eventing
-- [doxygen](https://doxygen.nl) - GPL | Automatic documentation
+- [nlohmann json](https://github.com/nlohmann/json) - MIT - json parsing for appsettings file
 
 ## Valgrind Checks
 - valgrind --track-origins=yes --leak-check=yes --leak-resolution=low --show-leak-kinds=definite ./SupergoonWorld 2>&1 | tee memcheck.txt

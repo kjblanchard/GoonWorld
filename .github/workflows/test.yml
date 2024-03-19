@@ -93,16 +93,16 @@ jobs:
     strategy:
         matrix:
           include:
-          - os: windows
+          - os: win
             artifact_name: SupergoonDash.zip
             asset_name: supergoon_win.zip
-          - os: macosintel
+          - os: macintel
             artifact_name: SupergoonDash.tgz
             asset_name: supergoon_mac_intel.zip
-          - os: macossilicon
+          - os: macsilicon
             artifact_name: SupergoonDash.tgz
             asset_name: supergoon_mac_silicon.zip
-          - os: ubuntu
+          - os: linus
             artifact_name: SupergoonDash.tgz
             asset_name: supergoon_ubuntu.zip
     if: startsWith(github.event.ref, 'refs/tags/v')
