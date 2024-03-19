@@ -82,7 +82,7 @@ include(CTest)
 # #########################################
 # Options
 # #########################################
-option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" OFF)
+option(CMAKE_DEBUG_VARIABLES "Runs a debug on all variables for troubleshooting" ON)
 option(GOON_BUILD_PCH "Uses a PCH file to try and speed up compilation" ON)
 option(GOON_DEBUG_SOUND "Builds sound from subdirectory instead of using a made package so we can debug" ON)
 option(GOON_MULTITHREADED_SOUND "Adds multithreaded support for sound updates, experimental and has a memory leak somehow" OFF)
@@ -196,6 +196,7 @@ if(CMAKE_DEBUG_VARIABLES)
         message(STATUS "${_variableName}=${${_variableName}}")
     endforeach()
 endif(CMAKE_DEBUG_VARIABLES)
+message(FATAL_ERROR "What")
 
 # #########################################
 # Compile Options

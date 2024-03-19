@@ -15,12 +15,15 @@ jobs:
         - os: windows
           make_cmd: wrebuild
           suffix: zip
+          zlib: wzlib
         - os: macos
           make_cmd: xrebuild
           suffix: tgz
+          zlib: zlib
         - os: ubuntu
           make_cmd: brebuild
           suffix: tgz
+          zlib: zlib
     runs-on: ${{ matrix.os }}-latest
     steps:
       - run: pip install --upgrade cppclean
@@ -29,7 +32,7 @@ jobs:
       - name: Initialize subdirectories
         run: make init
       - name: Initialize subdirectories
-        run: make zlib
+        run: make ${{ matrix.zlib }}
       - name: Configure CMake
         run: make CMAKE_BUILD_TYPE=Release ${{ matrix.make_cmd}}
       - name: Save packaged artifacts
@@ -69,15 +72,15 @@ jobs:
         with:
           name: s3Artifact
           path: repo/build/bin
-  Push-Files-To-S3:
-    uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
-    needs: Build-Emscripten
-    secrets:
-      IAM_SECRET: ${{ secrets.IAM_SECRET }}
-    with:
-      IAM_USER: ${{ vars.IAM_USER }}
-      bucket_region: "us-east-1"
-      bucket_name: "supergoon-world-external-site"
+  # Push-Files-To-S3:
+  #   uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
+  #   needs: Build-Emscripten
+  #   secrets:
+  #     IAM_SECRET: ${{ secrets.IAM_SECRET }}
+  #   with:
+  #     IAM_USER: ${{ vars.IAM_USER }}
+  #     bucket_region: "us-east-1"
+  #     bucket_name: "supergoon-world-external-site"
   # Create-Release:
   #   strategy:
   #       matrix:
