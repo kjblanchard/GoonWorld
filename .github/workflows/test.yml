@@ -15,9 +15,9 @@ jobs:
         - os: windows
           make_cmd: wrebuild
           suffix: zip
-        # - os: macos
-        #   make_cmd: xrebuild
-        #   suffix: tgz
+        - os: macos
+          make_cmd: xrebuild
+          suffix: tgz
         - os: ubuntu
           make_cmd: brebuild
           suffix: tgz
@@ -28,8 +28,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Initialize subdirectories
         run: make init
-      # - name: Initialize subdirectories
-      #   run: make zlib
+      - name: Initialize subdirectories
+        run: make zlib
       - name: Configure CMake
         run: make CMAKE_BUILD_TYPE=Release ${{ matrix.make_cmd}}
       - name: Save packaged artifacts
