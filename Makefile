@@ -71,4 +71,4 @@ init:
 	@cd external/sg_engine/external/sg_sound && git submodule update --init --recursive
 
 zlib:
-	@cd external/sg_engine/external/zlib && cmake . -B build && cmake --build build && cmake --install build
+	@cd external/sg_engine/external/zlib && cmake . -B build && cmake --build build --config Release && cmake --install build
