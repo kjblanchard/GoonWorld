@@ -4,6 +4,7 @@
 - ![Build All Platforms]( https://github.com/kjblanchard/GoonWorld/actions/workflows/test.yml/badge.svg)
 - ![Status Picture](https://github.com/kjblanchard/GoonWorld/blob/master/img/status.gif?raw=true)
 - Play the game here, or likely watch its "progress" [Supergoon.com](https://world.supergoon.com)
+- Currently have 2 macos executables, as libpng cannot handle multiple architectures currently with a mac universal build, [issue here]()
 
 ## Development
 - Mostly developed on macos apple silicon

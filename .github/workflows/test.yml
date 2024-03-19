@@ -80,57 +80,56 @@ jobs:
         with:
           name: s3Artifact
           path: repo/build/bin
-  # Push-Files-To-S3:
-  #   uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
-  #   needs: Build-Emscripten
-  #   secrets:
-  #     IAM_SECRET: ${{ secrets.IAM_SECRET }}
-  #   with:
-  #     IAM_USER: ${{ vars.IAM_USER }}
-  #     bucket_region: "us-east-1"
-  #     bucket_name: "supergoon-world-external-site"
-  # Create-Release:
-  #   strategy:
-  #       matrix:
-  #         include:
-  #         - os: windows
-  #           artifact_name: SupergoonDash.zip
-  #           asset_name: supergoon_win.zip
-  #         - os: macosintel
-  #           artifact_name: SupergoonDash.tgz
-  #           asset_name: supergoon_mac_intel.zip
-  #         - os: macossilicon
-  #           artifact_name: SupergoonDash.tgz
-  #           asset_name: supergoon_mac_silicon.zip
-  #         - os: ubuntu
-  #           artifact_name: SupergoonDash.tgz
-  #           asset_name: supergoon_ubuntu.zip
-  #   if: startsWith(github.event.ref, 'refs/tags/v')
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #   - Build-Desktop
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-  #     - name: Fetch tags
-  #       run: git fetch --tags --force
-  #     - name: Download Build Artifacts
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: ${{ matrix.os }}-artifacts
-  #     - name: Get current tag annotation
-  #       id: tag-data
-  #       uses: ericcornelissen/git-tag-annotation-action@v2
+  Push-Files-To-S3:
+    uses: supergoongaming/sharedWorkflows/.github/workflows/push_to_s3.yml@master
+    needs: Build-Emscripten
+    secrets:
+      IAM_SECRET: ${{ secrets.IAM_SECRET }}
+    with:
+      IAM_USER: ${{ vars.IAM_USER }}
+      bucket_region: "us-east-1"
+      bucket_name: "supergoon-world-external-site"
+  Create-Release:
+    strategy:
+        matrix:
+          include:
+          - os: windows
+            artifact_name: SupergoonDash.zip
+            asset_name: supergoon_win.zip
+          - os: macosintel
+            artifact_name: SupergoonDash.tgz
+            asset_name: supergoon_mac_intel.zip
+          - os: macossilicon
+            artifact_name: SupergoonDash.tgz
+            asset_name: supergoon_mac_silicon.zip
+          - os: ubuntu
+            artifact_name: SupergoonDash.tgz
+            asset_name: supergoon_ubuntu.zip
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    needs:
+    - Build-Desktop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Fetch tags
+        run: git fetch --tags --force
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.os }}-artifacts
+      - name: Get current tag annotation
+        id: tag-data
+        uses: ericcornelissen/git-tag-annotation-action@v2
 
-  #     - name: Upload binaries to release
-  #       env:
-  #         ANNOTATION: ${{ steps.tag-data.outputs.git-tag-annotation }}
-  #       uses: svenstaro/upload-release-action@v2
-  #       with:
-  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
-  #         file: ${{ matrix.artifact_name }}
-  #         asset_name: ${{ matrix.asset_name }}
-  #         tag: ${{ github.ref }}
-  #         overwrite: true
-  #         # body: "$ANNOTATION"
-  #         body: ${{ steps.tag-data.outputs.git-tag-annotation }}
+      - name: Upload binaries to release
+        env:
+          ANNOTATION: ${{ steps.tag-data.outputs.git-tag-annotation }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: ${{ steps.tag-data.outputs.git-tag-annotation }}
