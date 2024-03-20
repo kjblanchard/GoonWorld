@@ -30,7 +30,7 @@ namespace GoonWorld
             static const int RunningButtonDown = 1 << 0;
             static const int CanJump = 1 << 1;
             static const int EnemyJustKilled = 1 << 2;
-            static const int NoDeathVelocity = 1 << 3;
+            static const int DeadNoGravity = 1 << 3;
             static const int IsBig = 1 << 4;
             static const int IsInvincible = 1 << 5;
             static const int IsSuper = 1 << 6;
@@ -80,6 +80,7 @@ namespace GoonWorld
         void CreateAnimationTransitions();
         void HandleLeftRightMovement(bool movingRight);
         void Jump();
+        void JumpExtend();
         float CalculateFrameMaxVelocity();
         void Powerup(bool isGettingBig);
         void FirePowerup(bool isGettingBig);

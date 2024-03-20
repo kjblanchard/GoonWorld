@@ -75,7 +75,7 @@ void Player::ShootFireball()
     auto location = _location;
     auto ballRight = !_animationComponent->Mirror;
     location.x += ballRight ? 8 : -8;
-    _fireballs.front()->Push(location, ballRight );
+    _fireballs.front()->Push(location, ballRight);
     _fireballs.pop();
 }
 
@@ -116,7 +116,7 @@ void Player::Update()
         }
         else
         {
-            if (!IsFlagSet(_playerFlags, PlayerFlags::NoDeathVelocity))
+            if (!IsFlagSet(_playerFlags, PlayerFlags::DeadNoGravity))
                 _rigidbodyComponent->Velocity().y = -250;
             _isDying = false;
             _isDead = true;
@@ -245,10 +245,14 @@ void Player::HandleInput()
     {
         HandleLeftRightMovement(true);
     }
-
-    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+    if (_playerInputComponent->IsButtonPressed(GameControllerButton::A))
     {
         Jump();
+    }
+
+    if (_playerInputComponent->IsButtonDown(GameControllerButton::A))
+    {
+        JumpExtend();
     }
 
     else if (_playerInputComponent->IsButtonReleased(GameControllerButton::A))
@@ -347,32 +351,27 @@ void Player::CreateAnimationTransitions()
 
 void Player::Jump()
 {
-    if (_isJumping)
-    {
-        // if (_currentJumpTime < *_maxJumpTime)
-        if (_currentJumpTime < _playerConfig->MaxJumpTime)
-        {
-            // _rigidbodyComponent->Acceleration().y += (*_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
-            _rigidbodyComponent->Acceleration().y += (_playerConfig->FrameJumpAcceleration * DeltaTime.GetTotalSeconds());
-            _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
-        }
-        // Else we should create a new jump timer.
-        else
-        {
-            _isJumping = false;
-            SetFlag(_playerFlags, PlayerFlags::CanJump, false);
-        }
-    }
+    if (!IsFlagSet(_playerFlags, PlayerFlags::CanJump))
+        return;
+    _currentJumpTime = 0;
+    _isJumping = true;
+    SetFlag(_playerFlags, PlayerFlags::CanJump, false);
+    _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
+    GetGameSound().PlaySfx("jump", 1.0f);
+}
 
-    else if (IsFlagSet(_playerFlags, PlayerFlags::CanJump))
+void Player::JumpExtend()
+{
+    if (!_isJumping)
+        return;
+    if (_currentJumpTime >= _playerConfig->MaxJumpTime)
     {
-        _currentJumpTime = 0;
-        _isJumping = true;
+        _isJumping = false;
         SetFlag(_playerFlags, PlayerFlags::CanJump, false);
-        // _rigidbodyComponent->Velocity().y = *_initialJumpVelocity;
-        _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
-        GetGameSound().PlaySfx("jump", 1.0f);
+        return;
     }
+    _rigidbodyComponent->Acceleration().y += (_playerConfig->FrameJumpAcceleration * DeltaTime.GetTotalSeconds());
+    _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
 }
 
 void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
@@ -392,7 +391,7 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
             player->_currentJumpTime = 0;
             player->_isJumping = true;
             player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
-            player->SetFlag(player->_playerFlags, PlayerFlags::NoDeathVelocity, false);
+            player->SetFlag(player->_playerFlags, PlayerFlags::DeadNoGravity, false);
             goomba->TakeDamage();
             return;
         }
