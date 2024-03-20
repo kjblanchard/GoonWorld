@@ -2,6 +2,7 @@
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/core/Content.hpp>
+#include <SupergoonSound/include/sound.h>
 using namespace GoonWorld;
 
 Bgm *Bgm::BgmFactory(std::string bgmName)
@@ -10,7 +11,8 @@ Bgm *Bgm::BgmFactory(std::string bgmName)
     auto loadedText = Content::GetContent(loadPath);
     if (loadedText)
         return (Bgm *)loadedText;
-    return new Bgm(bgmName);
+    // return new Bgm(bgmName);
+    return new Bgm(loadPath);
 }
 
 Bgm::Bgm(std::string &name)
@@ -43,7 +45,8 @@ Bgm::~Bgm()
 void Bgm::Load()
 {
     auto config = Game::Instance()->GetSound()->GetSoundConfig();
-    _bgm = gsLoadBgm(GetLoadPath(_bgmName).c_str());
+    // _bgm = gsLoadBgm(GetLoadPath(_bgmName).c_str());
+    _bgm = gsLoadBgm(_bgmName.c_str());
     for (auto &song : config->Music)
     {
         if (song.Name.find(_bgmName) != std::string::npos)

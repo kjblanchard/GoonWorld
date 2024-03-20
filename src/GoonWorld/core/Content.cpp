@@ -24,11 +24,6 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     case ContentTypes::Texture:
         loadedContent = CreateTextureFromFile(filename);
         break;
-    case ContentTypes::Sfx:
-
-        loadedContent = gsLoadSfxHelper(filename);
-        gsLoadSfx((gsSfx *)loadedContent);
-        break;
     default:
         break;
     }
@@ -52,9 +47,6 @@ void Content::ClearContent()
     {
         switch (value.first)
         {
-        case ContentTypes::Sfx:
-            gsUnloadSfx((gsSfx *)value.second);
-            break;
         case ContentTypes::Surface:
             DestroySurface((SDL_Surface *)value.second);
             break;

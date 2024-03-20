@@ -22,6 +22,7 @@
 #include <GoonWorld/events/EventTypes.hpp>
 #include <GoonWorld/core/Timer.hpp>
 #include <GoonWorld/content/Bgm.hpp>
+#include <GoonWorld/content/Sfx.hpp>
 using namespace GoonWorld;
 
 const char *jumpSound = "jump";
@@ -29,6 +30,10 @@ const char *powerDownSound = "powerdown";
 const char *whistleSound = "whistle";
 const char *playerDieBgm = "playerdie";
 const char *playerWinBgm = "win";
+
+static Sfx* jumpSfx;
+static Sfx* powerDownSfx;
+static Sfx* whistleSfx;
 
 static Bgm *winBgm;
 static Bgm *dieBgm;
@@ -43,7 +48,10 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
-    GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
+    // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
+    jumpSfx = Sfx::SfxFactory(jumpSound);
+    powerDownSfx = Sfx::SfxFactory(powerDownSound);
+    whistleSfx = Sfx::SfxFactory(whistleSound);
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     BindOverlapFunctions();
@@ -365,7 +373,7 @@ void Player::Jump()
     _isJumping = true;
     SetFlag(_playerFlags, PlayerFlags::CanJump, false);
     _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
-    GetGameSound().PlaySfx("jump", 1.0f);
+    jumpSfx->Play();
 }
 
 void Player::JumpExtend()
@@ -413,7 +421,7 @@ void Player::TakeDamage()
     SetFlag(_playerFlags, PlayerFlags::IsSuper, false);
     if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
     {
-        Game::Instance()->GetSound()->PlaySfx(powerDownSound, 1.0);
+        powerDownSfx->Play();
         // Powerup(false);
         PowerChangeStart(false);
         SetFlag(_playerFlags, PlayerFlags::IsInvincible, true);
@@ -459,7 +467,7 @@ void Player::Win()
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
-        GetGameSound().PlaySfx(whistleSound);
+        whistleSfx->Play();
         auto timer = new Timer(this,
                                _winningWhistleTimer,
                                [](GameObject *obj, bool isComplete)

@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
 #include <GoonWorld/interfaces/ILoadContent.hpp>
-#include <SupergoonSound/include/sound.h>
-// typedef struct SDL_Texture SDL_Texture;
+typedef struct gsBgm gsBgm;
 namespace GoonWorld
 {
     class Bgm : public ILoadContent

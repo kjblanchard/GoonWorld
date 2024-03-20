@@ -190,7 +190,8 @@ void Game::RestartLevel()
 void Game::LoadLevel(std::string level)
 {
     InitializePhysics();
-    auto result = _sound->LoadBgm("platforms");
+    // auto result = _sound->LoadBgm("platforms");
+
     if (!_loadedLevel || _shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<TiledLevel>(level.c_str());

@@ -8,6 +8,7 @@ namespace GoonWorld
     class DebugDrawComponent;
     class RigidbodyComponent;
     class AnimationComponent;
+    class Sfx;
     class ItemBox : public GameObject, ITakeDamage
     {
     public:
@@ -20,6 +21,8 @@ namespace GoonWorld
         AnimationComponent *_animationComponent = nullptr;
         bool _isOpened = false;
         int _contents = 0;
+        Sfx *bumpSfx = nullptr;
+        Sfx *powerupSpawnSfx = nullptr;
 
         enum class ItemBrickContents
         {

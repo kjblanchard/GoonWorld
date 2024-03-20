@@ -7,11 +7,13 @@
 #include <GoonWorld/gameobjects/Fireflower.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonEngine/rectangle.h>
+#include <GoonWorld/content/Sfx.hpp>
 
 using namespace GoonWorld;
 
 extern const char *bumpSound;
 extern const char *powerupSpawnSound;
+
 
 ItemBox::ItemBox(TiledMap::TiledObject &object)
 {
@@ -27,8 +29,8 @@ ItemBox::ItemBox(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
     _animationComponent = new AnimationComponent("itembox");
-    GetGameSound().LoadSfx(bumpSound);
-    GetGameSound().LoadSfx(powerupSpawnSound);
+    bumpSfx = Sfx::SfxFactory(bumpSound);
+    powerupSpawnSfx = Sfx::SfxFactory(powerupSpawnSound);
     AddComponent({_rigidbodyComponent, _debugDrawComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("idle", "empty", true, &_isOpened);
@@ -38,7 +40,7 @@ void ItemBox::TakeDamage()
     switch (_contents)
     {
     case (int)ItemBrickContents::Empty:
-        GetGameSound().PlaySfx(bumpSound);
+        bumpSfx->Play();
         /* code */
         break;
     case (int)ItemBrickContents::Mushroom:
@@ -49,7 +51,7 @@ void ItemBox::TakeDamage()
         _contents = 0;
         _isOpened = true;
 
-        GetGameSound().PlaySfx(powerupSpawnSound);
+        powerupSpawnSfx->Play();
         break;
     }
     case (int)ItemBrickContents::Fireflower:
@@ -59,7 +61,7 @@ void ItemBox::TakeDamage()
         _contents = 0;
         _isOpened = true;
 
-        GetGameSound().PlaySfx(powerupSpawnSound);
+        // powerupSpawnSfx->Play();
         break;
     }
 
