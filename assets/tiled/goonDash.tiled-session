@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level2.tmj",
+    "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        "templates",
         ".",
+        "templates",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
         "/Users/kevin/Documents/tiled"
     ],
@@ -84,11 +84,11 @@
                 5,
                 13
             ],
-            "scale": 3,
+            "scale": 1.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 503.83333333333337,
-                "y": 142.16666666666663
+                "x": 509.33333333333326,
+                "y": 304.6666666666667
             }
         },
         "level1.tmx": {
@@ -155,11 +155,11 @@
     "project": "goonDash.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "level1.tmj",
-        "background.tsj",
-        "blocks.tsj",
-        "scenery.tsj",
         "level2.tmj",
+        "scenery.tsj",
+        "blocks.tsj",
+        "background.tsj",
+        "level1.tmj",
         "terrain.tsj",
         "background.tsx",
         "terrain.tsx",
