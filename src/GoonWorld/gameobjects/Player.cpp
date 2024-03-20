@@ -31,9 +31,9 @@ const char *whistleSound = "whistle";
 const char *playerDieBgm = "playerdie";
 const char *playerWinBgm = "win";
 
-static Sfx* jumpSfx;
-static Sfx* powerDownSfx;
-static Sfx* whistleSfx;
+static Sfx *jumpSfx;
+static Sfx *powerDownSfx;
+static Sfx *whistleSfx;
 
 static Bgm *winBgm;
 static Bgm *dieBgm;
@@ -88,6 +88,8 @@ void Player::ShootFireball()
 {
     if (!IsFlagSet(_playerFlags, PlayerFlags::IsSuper) || _fireballs.empty())
         return;
+    _currentFireballTimer = 0;
+    SetFlag(_playerFlags, PlayerFlags::IsThrowingFireball, true);
     auto location = _location;
     auto ballRight = !_animationComponent->Mirror;
     location.x += ballRight ? 8 : -8;
@@ -137,6 +139,12 @@ void Player::Update()
             _isDying = false;
             _isDead = true;
         }
+    }
+    if (IsFlagSet(_playerFlags, PlayerFlags::IsThrowingFireball))
+    {
+        _currentFireballTimer += DeltaTime.GetTotalSeconds();
+        if (_currentFireballTimer >= _fireballThrowTime)
+            SetFlag(_playerFlags, PlayerFlags::IsThrowingFireball, false);
     }
     if (_rigidbodyComponent->JustGotOnGround())
     {
@@ -220,6 +228,16 @@ void Player::AnimationUpdate()
     _shouldIdleAnim = _isOnGround && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _isOnGround && _rigidbodyComponent->Velocity().x != 0;
     _shouldTurnAnim = _isTurning;
+    if (IsFlagSet(_playerFlags, PlayerFlags::IsThrowingFireball))
+    {
+        _shouldThrowFireballIdleAnim = _rigidbodyComponent->Velocity().x == 0 || !_rigidbodyComponent->IsOnGround();
+        _shouldThrowFireballRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
+    }
+    else
+    {
+        _shouldThrowFireballIdleAnim = false;
+        _shouldThrowFireballRunAnim = false;
+    }
 }
 
 float Player::CalculateFrameMaxVelocity()
@@ -241,8 +259,10 @@ void Player::HandleInput()
     {
         if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
         {
-            // Game::Instance()->TriggerRestartLevel();
-            Game::Instance()->TriggerNextLevel();
+            if (_isDead)
+                Game::Instance()->TriggerRestartLevel();
+            else
+                Game::Instance()->TriggerNextLevel();
         }
         return;
     }
@@ -363,6 +383,15 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("idlef", "dead", true, &_isDying);
     _animationComponent->AddTransition("turnf", "dead", true, &_isDying);
     _animationComponent->AddTransition("jumpf", "dead", true, &_isDying);
+    // Fireball
+    _animationComponent->AddTransition("walkf", "walkft", true, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("walkft", "walkf", false, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("idlef", "idleft", true, &_shouldThrowFireballIdleAnim);
+    _animationComponent->AddTransition("idleft", "idlef", false, &_shouldThrowFireballIdleAnim);
+    _animationComponent->AddTransition("idleft", "runft", true, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("runft", "idleft", true, &_shouldThrowFireballIdleAnim);
+    _animationComponent->AddTransition("turnf", "walkft", true, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("jumpf", "idleft", true, &_shouldThrowFireballIdleAnim);
 }
 
 void Player::Jump()
@@ -449,9 +478,6 @@ void Player::Die()
     auto bigEvent = Event{this, this, (int)EventTypes::PlayerDie};
     GetGame().PushEvent(bigEvent);
     dieBgm->Play(0);
-    // GetGameSound().LoadBgm("playerdie");
-    // GetGameSound().PlayBgm("playerdie", 0);
-
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);
     _rigidbodyComponent->Velocity().x = 0;

@@ -34,6 +34,7 @@ namespace GoonWorld
             static const int IsBig = 1 << 4;
             static const int IsInvincible = 1 << 5;
             static const int IsSuper = 1 << 6;
+            static const int IsThrowingFireball = 1 << 7;
         };
         int32_t _playerFlags = 0;
         AppSettings::PlayerConfig *_playerConfig;
@@ -43,6 +44,8 @@ namespace GoonWorld
         // Animations
     private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
+        bool _shouldThrowFireballIdleAnim = false;
+        bool _shouldThrowFireballRunAnim = false;
         // State
     private:
         bool _isJumping = false, _isTurning = false, _isDying = false, _isDead = false;
@@ -50,6 +53,7 @@ namespace GoonWorld
         // Timers
     private:
         float _currentJumpTime = 0, _currentEnemyKillTime = 0, _currentDeadTime = 0, _currentBigIterationTime = 0, _currentInvincibleTime = 0;
+        float _currentFireballTimer = 0;
         // Constants
     private:
         const float _winningWhistleTimer = .75;
@@ -57,6 +61,7 @@ namespace GoonWorld
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
         const float _bigIterationTime = 0.1;
+        const float _fireballThrowTime = 0.15;
         // Components
     private:
         DebugDrawComponent *_debugDrawComponent = nullptr;
