@@ -82,7 +82,8 @@ namespace GoonWorld
         void Jump();
         void JumpExtend();
         float CalculateFrameMaxVelocity();
-        void Powerup(bool isGettingBig);
+        void PowerupStart(bool isGettingBig);
+        void Powerup();
         void FirePowerup(bool isGettingBig);
         void Die();
         void Win();

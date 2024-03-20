@@ -90,7 +90,7 @@ void Player::Update()
         }
         else
         {
-            Powerup(IsFlagSet(_playerFlags, PlayerFlags::IsBig));
+            Powerup();
         }
         return;
     }
@@ -406,7 +406,8 @@ void Player::TakeDamage()
     if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
     {
         Game::Instance()->GetSound()->PlaySfx(powerDownSound, 1.0);
-        Powerup(false);
+        // Powerup(false);
+        PowerupStart(false);
         SetFlag(_playerFlags, PlayerFlags::IsInvincible, true);
         return;
     }
@@ -498,7 +499,7 @@ void Player::MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBo
     if (!mushroom->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
-        player->Powerup(true);
+        player->PowerupStart(true);
     mushroom->TakeDamage();
 }
 void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
@@ -511,7 +512,7 @@ void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlap
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
     {
-        player->Powerup(true);
+        player->PowerupStart(true);
     }
     else
     {
@@ -533,17 +534,21 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
     coin->TakeDamage();
 }
 
-void Player::Powerup(bool isGettingBig)
+void Player::PowerupStart(bool isGettingBig)
 {
-    SetFlag(_playerFlags, PlayerFlags::IsBig, isGettingBig);
     if (!_isTurningBig)
     {
-        _isTurningBig = true;
+        SetFlag(_playerFlags, PlayerFlags::IsBig, isGettingBig);
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
         auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
         GetGame().PushEvent(bigEvent);
+        _isTurningBig = true;
     }
+}
+
+void Player::Powerup()
+{
 
     // End
     if (_currentBigIterations > _bigIterations)
