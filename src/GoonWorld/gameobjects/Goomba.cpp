@@ -9,9 +9,11 @@
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/core/Sound.hpp>
+#include <GoonWorld/content/Sfx.hpp>
 using namespace GoonWorld;
 
 const char *deadSound = "death";
+static Sfx* deadSfx;
 
 Goomba::Goomba(TiledMap::TiledObject &object)
 {
@@ -23,7 +25,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
-    GetGameSound().LoadSfx(deadSound);
+    deadSfx = Sfx::SfxFactory(deadSound);
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
     _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("walk", "dead", true, &_isDead);
@@ -32,7 +34,7 @@ void Goomba::TakeDamage()
 {
     if (_isDead)
         return;
-    GetGameSound().PlaySfx(deadSound);
+    deadSfx->Play();
     _isDead = true;
     _rigidbodyComponent->GravityEnabled(false);
 }

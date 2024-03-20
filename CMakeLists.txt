@@ -74,6 +74,7 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 # #########################################
 # Set options for child projects.
 # #########################################
+set(GOON_DEBUG_SOUND ON CACHE BOOL "Builds sound from subdirectory instead of using a made package so we can debug" FORCE)
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION" FORCE)
 set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(PNG_ARM_NEON on CACHE BOOL "Build the libpng tests" FORCE)

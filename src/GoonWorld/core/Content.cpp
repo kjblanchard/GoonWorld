@@ -1,12 +1,13 @@
 #include <GoonWorld/gnpch.hpp>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/core/Content.hpp>
+#include <GoonWorld/content/Text.hpp>
 #include <SupergoonSound/include/sound.h>
 
 using namespace GoonWorld;
 
 static std::unordered_map<std::string, std::pair<ContentTypes, void *>> _loadedContent;
-// static std::vector<void *> _loadedPixelData;
+static std::unordered_map<std::string, ILoadContent *> _loadedContents;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
 {
@@ -19,18 +20,9 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     {
     case ContentTypes::Surface:
         loadedContent = LoadSurfaceFromFile(filename);
-        // _loadedPixelData.push_back(pixelData);
         break;
     case ContentTypes::Texture:
         loadedContent = CreateTextureFromFile(filename);
-        break;
-    case ContentTypes::Bgm:
-        loadedContent = gsLoadBgm((filename));
-        break;
-    case ContentTypes::Sfx:
-
-        loadedContent = gsLoadSfxHelper(filename);
-        gsLoadSfx((gsSfx*)loadedContent);
         break;
     default:
         break;
@@ -55,20 +47,35 @@ void Content::ClearContent()
     {
         switch (value.first)
         {
-        case ContentTypes::Sfx:
-            gsUnloadSfx((gsSfx *)value.second);
-            break;
         case ContentTypes::Surface:
             DestroySurface((SDL_Surface *)value.second);
             break;
         case ContentTypes::Texture:
             DestroyTexture((SDL_Texture *)value.second);
             break;
-        case ContentTypes::Bgm:
-            free((gsBgm *)value.second);
-            break;
         default:
             break;
         }
     }
+}
+
+void Content::AddContent(ILoadContent *content)
+{
+    _loadedContents[content->GetContentName()] = content;
+}
+
+void Content::LoadAllContent()
+{
+    for (auto &[key, value] : _loadedContents)
+    {
+        value->Load();
+    }
+}
+
+ILoadContent *Content::GetContent(std::string &name)
+{
+    auto iter = _loadedContents.find(name);
+    if (iter != _loadedContents.end())
+        return iter->second;
+    return nullptr;
 }

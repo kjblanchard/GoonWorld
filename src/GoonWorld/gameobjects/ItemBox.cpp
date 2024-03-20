@@ -7,6 +7,7 @@
 #include <GoonWorld/gameobjects/Fireflower.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonEngine/rectangle.h>
+#include <GoonWorld/content/Sfx.hpp>
 
 using namespace GoonWorld;
 
@@ -27,43 +28,50 @@ ItemBox::ItemBox(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
     _animationComponent = new AnimationComponent("itembox");
-    GetGameSound().LoadSfx(bumpSound);
-    GetGameSound().LoadSfx(powerupSpawnSound);
+    bumpSfx = Sfx::SfxFactory(bumpSound);
+    powerupSpawnSfx = Sfx::SfxFactory(powerupSpawnSound);
     AddComponent({_rigidbodyComponent, _debugDrawComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("idle", "empty", true, &_isOpened);
+    auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
+    switch (_contents)
+    {
+    case (int)ItemBrickContents::Mushroom:
+        content = new Mushroom(&loc);
+        break;
+    case (int)ItemBrickContents::Fireflower:
+        content = new Fireflower(&loc);
+    default:
+        break;
+    }
+    content->Enabled(false);
 }
 void ItemBox::TakeDamage()
 {
     switch (_contents)
     {
     case (int)ItemBrickContents::Empty:
-        GetGameSound().PlaySfx(bumpSound);
-        /* code */
+        bumpSfx->Play();
         break;
     case (int)ItemBrickContents::Mushroom:
     {
-        auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
-        auto shroom = new Mushroom(&loc);
+        auto shroom = dynamic_cast<Mushroom *>(content);
+        shroom->Enabled(true);
         shroom->Push(true);
-        _contents = 0;
-        _isOpened = true;
 
-        GetGameSound().PlaySfx(powerupSpawnSound);
+        powerupSpawnSfx->Play();
         break;
     }
     case (int)ItemBrickContents::Fireflower:
     {
-        auto loc = geRectangle{_location.x, _location.y - 16, 18, 18};
-        auto shroom = new Fireflower(&loc);
-        _contents = 0;
-        _isOpened = true;
-
-        GetGameSound().PlaySfx(powerupSpawnSound);
+        content->Enabled(true);
+        powerupSpawnSfx->Play();
         break;
     }
 
     default:
         break;
     }
+    _contents = 0;
+    _isOpened = true;
 }

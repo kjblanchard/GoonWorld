@@ -21,11 +21,22 @@
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
 #include <GoonWorld/core/Timer.hpp>
+#include <GoonWorld/content/Bgm.hpp>
+#include <GoonWorld/content/Sfx.hpp>
 using namespace GoonWorld;
 
 const char *jumpSound = "jump";
 const char *powerDownSound = "powerdown";
 const char *whistleSound = "whistle";
+const char *playerDieBgm = "playerdie";
+const char *playerWinBgm = "win";
+
+static Sfx *jumpSfx;
+static Sfx *powerDownSfx;
+static Sfx *whistleSfx;
+
+static Bgm *winBgm;
+static Bgm *dieBgm;
 
 Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
@@ -37,7 +48,10 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
-    GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
+    // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
+    jumpSfx = Sfx::SfxFactory(jumpSound);
+    powerDownSfx = Sfx::SfxFactory(powerDownSound);
+    whistleSfx = Sfx::SfxFactory(whistleSound);
     AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     BindOverlapFunctions();
@@ -52,6 +66,8 @@ Player::Player(TiledMap::TiledObject &object)
         _fireballs.push(fireball);
         xLoc += 32;
     }
+    winBgm = Bgm::BgmFactory(playerWinBgm);
+    dieBgm = Bgm::BgmFactory(playerDieBgm);
 }
 void Player::BindOverlapFunctions()
 {
@@ -72,10 +88,12 @@ void Player::ShootFireball()
 {
     if (!IsFlagSet(_playerFlags, PlayerFlags::IsSuper) || _fireballs.empty())
         return;
+    _currentFireballTimer = 0;
+    SetFlag(_playerFlags, PlayerFlags::IsThrowingFireball, true);
     auto location = _location;
     auto ballRight = !_animationComponent->Mirror;
     location.x += ballRight ? 8 : -8;
-    _fireballs.front()->Push(location, ballRight );
+    _fireballs.front()->Push(location, ballRight);
     _fireballs.pop();
 }
 
@@ -86,11 +104,11 @@ void Player::Update()
         // Need to handle which
         if (IsFlagSet(_playerFlags, PlayerFlags::IsSuper))
         {
-            FirePowerup(true);
+            SuperPowerupTick();
         }
         else
         {
-            Powerup(IsFlagSet(_playerFlags, PlayerFlags::IsBig));
+            PowerupTick();
         }
         return;
     }
@@ -116,11 +134,17 @@ void Player::Update()
         }
         else
         {
-            if (!IsFlagSet(_playerFlags, PlayerFlags::NoDeathVelocity))
+            if (!IsFlagSet(_playerFlags, PlayerFlags::DeadNoGravity))
                 _rigidbodyComponent->Velocity().y = -250;
             _isDying = false;
             _isDead = true;
         }
+    }
+    if (IsFlagSet(_playerFlags, PlayerFlags::IsThrowingFireball))
+    {
+        _currentFireballTimer += DeltaTime.GetTotalSeconds();
+        if (_currentFireballTimer >= _fireballThrowTime)
+            SetFlag(_playerFlags, PlayerFlags::IsThrowingFireball, false);
     }
     if (_rigidbodyComponent->JustGotOnGround())
     {
@@ -204,6 +228,16 @@ void Player::AnimationUpdate()
     _shouldIdleAnim = _isOnGround && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _isOnGround && _rigidbodyComponent->Velocity().x != 0;
     _shouldTurnAnim = _isTurning;
+    if (IsFlagSet(_playerFlags, PlayerFlags::IsThrowingFireball))
+    {
+        _shouldThrowFireballIdleAnim = _rigidbodyComponent->Velocity().x == 0 || !_rigidbodyComponent->IsOnGround();
+        _shouldThrowFireballRunAnim = _rigidbodyComponent->IsOnGround() && _rigidbodyComponent->Velocity().x != 0;
+    }
+    else
+    {
+        _shouldThrowFireballIdleAnim = false;
+        _shouldThrowFireballRunAnim = false;
+    }
 }
 
 float Player::CalculateFrameMaxVelocity()
@@ -225,8 +259,10 @@ void Player::HandleInput()
     {
         if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
         {
-            // Game::Instance()->TriggerRestartLevel();
-            Game::Instance()->TriggerNextLevel();
+            if (_isDead)
+                Game::Instance()->TriggerRestartLevel();
+            else
+                Game::Instance()->TriggerNextLevel();
         }
         return;
     }
@@ -245,10 +281,14 @@ void Player::HandleInput()
     {
         HandleLeftRightMovement(true);
     }
-
-    if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+    if (_playerInputComponent->IsButtonPressed(GameControllerButton::A))
     {
         Jump();
+    }
+
+    if (_playerInputComponent->IsButtonDown(GameControllerButton::A))
+    {
+        JumpExtend();
     }
 
     else if (_playerInputComponent->IsButtonReleased(GameControllerButton::A))
@@ -343,36 +383,40 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("idlef", "dead", true, &_isDying);
     _animationComponent->AddTransition("turnf", "dead", true, &_isDying);
     _animationComponent->AddTransition("jumpf", "dead", true, &_isDying);
+    // Fireball
+    _animationComponent->AddTransition("walkf", "walkft", true, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("walkft", "walkf", false, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("idlef", "idleft", true, &_shouldThrowFireballIdleAnim);
+    _animationComponent->AddTransition("idleft", "idlef", false, &_shouldThrowFireballIdleAnim);
+    _animationComponent->AddTransition("idleft", "runft", true, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("runft", "idleft", true, &_shouldThrowFireballIdleAnim);
+    _animationComponent->AddTransition("turnf", "walkft", true, &_shouldThrowFireballRunAnim);
+    _animationComponent->AddTransition("jumpf", "idleft", true, &_shouldThrowFireballIdleAnim);
 }
 
 void Player::Jump()
 {
-    if (_isJumping)
-    {
-        // if (_currentJumpTime < *_maxJumpTime)
-        if (_currentJumpTime < _playerConfig->MaxJumpTime)
-        {
-            // _rigidbodyComponent->Acceleration().y += (*_jumpFrameVelocity * DeltaTime.GetTotalSeconds());
-            _rigidbodyComponent->Acceleration().y += (_playerConfig->FrameJumpAcceleration * DeltaTime.GetTotalSeconds());
-            _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
-        }
-        // Else we should create a new jump timer.
-        else
-        {
-            _isJumping = false;
-            SetFlag(_playerFlags, PlayerFlags::CanJump, false);
-        }
-    }
+    if (!IsFlagSet(_playerFlags, PlayerFlags::CanJump))
+        return;
+    _currentJumpTime = 0;
+    _isJumping = true;
+    SetFlag(_playerFlags, PlayerFlags::CanJump, false);
+    _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
+    jumpSfx->Play();
+}
 
-    else if (IsFlagSet(_playerFlags, PlayerFlags::CanJump))
+void Player::JumpExtend()
+{
+    if (!_isJumping)
+        return;
+    if (_currentJumpTime >= _playerConfig->MaxJumpTime)
     {
-        _currentJumpTime = 0;
-        _isJumping = true;
+        _isJumping = false;
         SetFlag(_playerFlags, PlayerFlags::CanJump, false);
-        // _rigidbodyComponent->Velocity().y = *_initialJumpVelocity;
-        _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
-        GetGameSound().PlaySfx("jump", 1.0f);
+        return;
     }
+    _rigidbodyComponent->Acceleration().y += (_playerConfig->FrameJumpAcceleration * DeltaTime.GetTotalSeconds());
+    _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
 }
 
 void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
@@ -392,7 +436,7 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
             player->_currentJumpTime = 0;
             player->_isJumping = true;
             player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
-            player->SetFlag(player->_playerFlags, PlayerFlags::NoDeathVelocity, false);
+            player->SetFlag(player->_playerFlags, PlayerFlags::DeadNoGravity, false);
             goomba->TakeDamage();
             return;
         }
@@ -406,8 +450,9 @@ void Player::TakeDamage()
     SetFlag(_playerFlags, PlayerFlags::IsSuper, false);
     if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
     {
-        Game::Instance()->GetSound()->PlaySfx(powerDownSound, 1.0);
-        Powerup(false);
+        powerDownSfx->Play();
+        // Powerup(false);
+        PowerChangeStart(false);
         SetFlag(_playerFlags, PlayerFlags::IsInvincible, true);
         return;
     }
@@ -432,9 +477,7 @@ void Player::Die()
 {
     auto bigEvent = Event{this, this, (int)EventTypes::PlayerDie};
     GetGame().PushEvent(bigEvent);
-    GetGameSound().LoadBgm("playerdie");
-    GetGameSound().PlayBgm("playerdie", 0);
-
+    dieBgm->Play(0);
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);
     _rigidbodyComponent->Velocity().x = 0;
@@ -450,7 +493,7 @@ void Player::Win()
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
-        GetGameSound().PlaySfx(whistleSound);
+        whistleSfx->Play();
         auto timer = new Timer(this,
                                _winningWhistleTimer,
                                [](GameObject *obj, bool isComplete)
@@ -462,6 +505,8 @@ void Player::Win()
                                    return true;
                                });
         AddTimer(timer);
+        // Add overlap func to disappear when running into wall
+        _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &EndLevelStaticOverlapFunc);
         return;
     }
 }
@@ -499,7 +544,7 @@ void Player::MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBo
     if (!mushroom->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
-        player->Powerup(true);
+        player->PowerChangeStart(true);
     mushroom->TakeDamage();
 }
 void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
@@ -512,12 +557,12 @@ void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlap
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
     {
-        player->Powerup(true);
+        player->PowerChangeStart(true);
     }
     else
     {
         player->SetFlag(player->_playerFlags, Player::PlayerFlags::IsSuper, true);
-        player->FirePowerup(true);
+        player->SuperPowerupTick();
     }
     flower->TakeDamage();
 }
@@ -532,20 +577,36 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
         return;
     ++player->_coinsCollected;
     coin->TakeDamage();
+    auto coinEvent = Event{player, (void *)&player->_coinsCollected, (int)EventTypes::CoinCollected};
+    player->GetGame().PushEvent(coinEvent);
 }
 
-void Player::Powerup(bool isGettingBig)
+void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
-    SetFlag(_playerFlags, PlayerFlags::IsBig, isGettingBig);
+    Player *player = static_cast<Player *>(instance);
+    switch (overlap->overlapDirection)
+    {
+    case gpOverlapRight:
+        player->_animationComponent->Visible(false);
+        break;
+    }
+}
+
+void Player::PowerChangeStart(bool isGettingBig)
+{
     if (!_isTurningBig)
     {
-        _isTurningBig = true;
+        SetFlag(_playerFlags, PlayerFlags::IsBig, isGettingBig);
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
         auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
         GetGame().PushEvent(bigEvent);
+        _isTurningBig = true;
     }
+}
 
+void Player::PowerupTick()
+{
     // End
     if (_currentBigIterations > _bigIterations)
     {
@@ -582,22 +643,30 @@ void Player::Powerup(bool isGettingBig)
 
             auto currentAnim = _animationComponent->GetCurrentAnimation();
             auto newName = currentAnim.second->Name;
+            // Handle where our offset should be, as our location is different per.
+            auto wasPreviouslyBig = !IsFlagSet(_playerFlags, PlayerFlags::IsBig);
             auto isBig = endsWith(newName, "b") || endsWith(newName, "f");
             if (isBig)
             {
                 newName.erase(newName.size() - 1);
-                _animationComponent->Offset(Point{0, -36});
+                if (wasPreviouslyBig)
+                {
+                    _animationComponent->Offset(Point{0, -4});
+                }
             }
             else
             {
                 newName = newName + "b";
-                _animationComponent->Offset(Point{0, -40});
+                if (wasPreviouslyBig)
+                {
+                    _animationComponent->Offset(Point{0, -8});
+                }
             }
             _animationComponent->ChangeAnimation(newName);
         }
     }
 }
-void Player::FirePowerup(bool isGettingBig)
+void Player::SuperPowerupTick()
 {
     if (!_isTurningBig)
     {
@@ -645,8 +714,7 @@ void Player::FirePowerup(bool isGettingBig)
 void Player::SlideFunc()
 {
     _rigidbodyComponent->GravityEnabled(true);
-    Game::Instance()->GetSound()->LoadBgm("win");
-    Game::Instance()->GetSound()->PlayBgm("win", 0);
+    winBgm->Play(0);
     _isWinning = false;
     _isWinWalking = true;
     _currentDeadTime = 0;

@@ -12,6 +12,7 @@ namespace GoonWorld
     class RigidbodyComponent;
     class AnimationComponent;
     class Player;
+    class Sfx;
     class Mushroom : public GameObject, public ITakeDamage
     {
     public:
@@ -27,6 +28,7 @@ namespace GoonWorld
         static void StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         const int _moveSpeed = 25;
         bool _movingRight, _startedMoving;
+        Sfx *mushroomSoundSfx;
 
         int _contents;
     };

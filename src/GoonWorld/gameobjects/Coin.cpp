@@ -1,6 +1,7 @@
 #include <GoonWorld/gameobjects/Coin.hpp>
-#include <GoonWorld/core/Sound.hpp>
+// #include <GoonWorld/core/Sound.hpp>
 // #include <GoonEngine/Sound.h>
+#include <GoonWorld/content/Sfx.hpp>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
@@ -11,6 +12,7 @@ using namespace GoonWorld;
 
 // static gsSfx *coinsound;
 const char* coinSound = "coin";
+static Sfx* coinSfx;
 
 Coin::Coin(TiledMap::TiledObject &object)
 {
@@ -25,7 +27,8 @@ Coin::Coin(TiledMap::TiledObject &object)
     _animationComponent = new AnimationComponent("coin");
     _animationComponent->SizeMultiplier = 1;
     // coinsound = (gsSfx *)Content::LoadContent(ContentTypes::Sfx, "coin");
-    GetGameSound().LoadSfx(coinSound);
+    coinSfx = Sfx::SfxFactory("coin");
+    // GetGameSound().LoadSfx(coinSound);
     AddComponent({_rigidbodyComponent, _animationComponent, _debugDrawComponent});
     _debugDrawComponent->Enabled(false);
 }
@@ -38,7 +41,8 @@ void Coin::TakeDamage()
 {
     if (!IsEnabled())
         return;
-        GetGameSound().PlaySfx(coinSound, 0.25);
+    coinSfx->Play(0.25);
+        // GetGameSound().PlaySfx(coinSound, 0.25);
     // gsPlaySfxOneShot(coinsound, 0.25f);
     Enabled(false);
 }

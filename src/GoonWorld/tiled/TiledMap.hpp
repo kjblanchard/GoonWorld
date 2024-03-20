@@ -66,8 +66,8 @@ namespace GoonWorld
     public:
         TiledMap(std::string filename);
         geRectangle GetGidSourceRect(int gid);
-        const TiledMapTileset *const GetGidTiledMapTileset(int gid);
-        const Tileset *const GetTiledMapTilesetTileset(const TiledMapTileset *tilesetName);
+        const TiledMapTileset *GetGidTiledMapTileset(int gid);
+        const Tileset *GetTiledMapTilesetTileset(const TiledMapTileset *tilesetName);
 
     public:
         int Width, Height, TileWidth, TileHeight;

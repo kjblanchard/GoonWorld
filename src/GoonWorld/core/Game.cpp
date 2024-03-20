@@ -17,7 +17,10 @@
 #include <GoonWorld/events/Observer.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
 
+#include <GoonWorld/content/Bgm.hpp>
 #include <GoonWorld/content/Text.hpp>
+#include <GoonWorld/ui/CoinsCollected.hpp>
+#include <GoonWorld/ui/LevelTimer.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -25,7 +28,7 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr)
+    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
     {
@@ -47,9 +50,8 @@ Game::Game()
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
-    // Testing Text
-    auto text = new Text("Kevin is a nerd!", Point{150, 20});
-    text->Load();
+    _coinUI = std::make_unique<CoinsCollectedUI>();
+    _levelTimerUI = std::make_unique<LevelTimer>();
 }
 
 Game::~Game()
@@ -71,6 +73,7 @@ void Game::Update(double timeMs)
     ++_ticks;
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
+    _deltaTime = TimeSpan(totalSeconds);
 
     if (_shouldRestart)
         RestartLevel();
@@ -187,7 +190,8 @@ void Game::RestartLevel()
 void Game::LoadLevel(std::string level)
 {
     InitializePhysics();
-    auto result = _sound->LoadBgm("platforms");
+    // auto result = _sound->LoadBgm("platforms");
+
     if (!_loadedLevel || _shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
@@ -197,9 +201,18 @@ void Game::LoadLevel(std::string level)
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
-    _sound->PlayBgm("platforms");
+
+    // _sound->PlayBgm("platforms");
+    auto bgm = Bgm::BgmFactory("platforms");
     _camera->Restart();
     LoadGameObjects();
+    Content::LoadAllContent();
+    AddUIObject(_coinUI.get());
+    AddUIObject(_levelTimerUI.get());
+    AddUpdateObject(_levelTimerUI.get());
+    bgm->Play();
+    _coinUI->UpdateCoins(0);
+    _levelTimerUI->UpdateTime(0);
 }
 void Game::LoadGameObjects()
 {
@@ -230,6 +243,7 @@ void Game::PlayerDieEvent(Event &event)
     auto player = static_cast<Player *>(event.eventArgs);
     PlayerDie(player);
 }
+
 void Game::ChangeLevel()
 {
     _shouldRestart = false;
@@ -240,8 +254,6 @@ void Game::ChangeLevel()
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     auto nextLevel = _loadedLevel->GetNextLevel();
-    // _loadedLevel = std::make_unique<TiledLevel>("level2");
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;
-    // _loadedLevel->RestartLevel();
 }

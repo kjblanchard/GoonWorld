@@ -6,8 +6,9 @@
 // struct SDL_Texture;
 namespace GoonWorld
 {
-    struct Animation
+    class Animation
     {
+    public:
         std::string Name;
         bool Looping;
         SDL_Texture *Image;

@@ -17,6 +17,8 @@ namespace GoonWorld
     class Player;
     class Sound;
     class Camera;
+    class CoinsCollectedUI;
+    class LevelTimer;
 
     class Game
     {
@@ -37,6 +39,7 @@ namespace GoonWorld
         inline void AddDrawObject(IDraw *draw) { DrawObjects.push_back(draw); }
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
+        inline TimeSpan DeltaTime() { return _deltaTime; }
         void SetCurrentLevel(TiledLevel *level);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
@@ -47,7 +50,7 @@ namespace GoonWorld
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
         std::vector<IDraw *> DrawObjects;
-        std::vector<IDraw*> UIDrawObjects;
+        std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);
         void LoadGameObjects();
@@ -68,5 +71,9 @@ namespace GoonWorld
         std::unique_ptr<Observer> _playerBigObserver;
         std::unique_ptr<Observer> _playerDieObserver;
         std::unique_ptr<AppSettings> _gameSettings;
+        std::unique_ptr<CoinsCollectedUI> _coinUI;
+        std::unique_ptr<LevelTimer> _levelTimerUI;
+
+        TimeSpan _deltaTime;
     };
 }

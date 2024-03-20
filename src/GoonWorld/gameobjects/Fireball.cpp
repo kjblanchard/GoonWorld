@@ -7,12 +7,15 @@
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
-#include <GoonWorld/core/Sound.hpp>
+// #include <GoonWorld/core/Sound.hpp>
+#include <GoonWorld/content/Sfx.hpp>
 
 using namespace GoonWorld;
 
 const char *fireballSound = "fireball";
 const char *fireballDeadSound = "death";
+static Sfx *fireballSfx;
+static Sfx *fireballDeadSfx;
 
 Fireball::Fireball(geRectangle *rect, std::queue<Fireball *> *home)
     : GameObject(rect), _fireballHome(home)
@@ -25,7 +28,8 @@ Fireball::Fireball(geRectangle *rect, std::queue<Fireball *> *home)
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Goomba, &GoombaOverlapFunc);
     _animationComponent = new AnimationComponent("fireball");
     _animationComponent->SizeMultiplier = 1;
-    GetGameSound().LoadSfx(fireballSound);
+    fireballSfx = Sfx::SfxFactory(fireballSound);
+    fireballDeadSfx = Sfx::SfxFactory(fireballDeadSound);
     AddComponent({_rigidbodyComponent, _animationComponent});
     Enabled(false);
 }
@@ -60,7 +64,7 @@ void Fireball::Push(Point spawnLocation, bool right)
     _location = spawnLocation;
     _rigidbodyComponent->Velocity().x = right ? _moveSpeed : -_moveSpeed;
     _movingRight = right;
-    GetGameSound().PlaySfx(fireballSound);
+    fireballSfx->Play();
 }
 void Fireball::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
@@ -86,7 +90,7 @@ void Fireball::StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overl
         break;
     case gpOverlapLeft:
     case gpOverlapRight:
-        fireball->GetGameSound().PlaySfx(fireballDeadSound);
+        fireballDeadSfx->Play();
         fireball->End();
         break;
     }

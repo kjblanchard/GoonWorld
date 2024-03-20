@@ -5,6 +5,7 @@
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/core/Sound.hpp>
+#include <GoonWorld/content/Sfx.hpp>
 
 using namespace GoonWorld;
 
@@ -19,7 +20,7 @@ Mushroom::Mushroom(geRectangle *rect)
     _animationComponent = new AnimationComponent("mushroom");
     _animationComponent->SizeMultiplier = 1;
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
-    GetGameSound().LoadSfx(mushroomSound);
+    mushroomSoundSfx = Sfx::SfxFactory(mushroomSound);
     AddComponent({_rigidbodyComponent, _animationComponent});
 }
 void Mushroom::Update()
@@ -32,7 +33,7 @@ void Mushroom::TakeDamage()
 {
     if (!IsEnabled())
         return;
-    GetGameSound().PlaySfx(mushroomSound);
+    mushroomSoundSfx->Play();
     Enabled(false);
 }
 void Mushroom::Push(bool right)
