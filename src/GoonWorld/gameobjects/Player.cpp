@@ -86,11 +86,11 @@ void Player::Update()
         // Need to handle which
         if (IsFlagSet(_playerFlags, PlayerFlags::IsSuper))
         {
-            FirePowerup(true);
+            SuperPowerupTick();
         }
         else
         {
-            Powerup();
+            PowerupTick();
         }
         return;
     }
@@ -407,7 +407,7 @@ void Player::TakeDamage()
     {
         Game::Instance()->GetSound()->PlaySfx(powerDownSound, 1.0);
         // Powerup(false);
-        PowerupStart(false);
+        PowerChangeStart(false);
         SetFlag(_playerFlags, PlayerFlags::IsInvincible, true);
         return;
     }
@@ -462,6 +462,8 @@ void Player::Win()
                                    return true;
                                });
         AddTimer(timer);
+        // Add overlap func to disappear when running into wall
+        _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &EndLevelStaticOverlapFunc);
         return;
     }
 }
@@ -499,7 +501,7 @@ void Player::MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBo
     if (!mushroom->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
-        player->PowerupStart(true);
+        player->PowerChangeStart(true);
     mushroom->TakeDamage();
 }
 void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
@@ -512,12 +514,12 @@ void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlap
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
     {
-        player->PowerupStart(true);
+        player->PowerChangeStart(true);
     }
     else
     {
         player->SetFlag(player->_playerFlags, Player::PlayerFlags::IsSuper, true);
-        player->FirePowerup(true);
+        player->SuperPowerupTick();
     }
     flower->TakeDamage();
 }
@@ -533,8 +535,18 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
     ++player->_coinsCollected;
     coin->TakeDamage();
 }
+void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    Player *player = static_cast<Player *>(instance);
+    switch (overlap->overlapDirection)
+    {
+    case gpOverlapRight:
+        player->_animationComponent->Visible(false);
+        break;
+    }
+}
 
-void Player::PowerupStart(bool isGettingBig)
+void Player::PowerChangeStart(bool isGettingBig)
 {
     if (!_isTurningBig)
     {
@@ -547,7 +559,7 @@ void Player::PowerupStart(bool isGettingBig)
     }
 }
 
-void Player::Powerup()
+void Player::PowerupTick()
 {
     // End
     if (_currentBigIterations > _bigIterations)
@@ -593,11 +605,7 @@ void Player::Powerup()
                 newName.erase(newName.size() - 1);
                 if (wasPreviouslyBig)
                 {
-                    // _animationComponent->Offset(Point{0, -36});
                     _animationComponent->Offset(Point{0, -4});
-                }
-                else
-                {
                 }
             }
             else
@@ -607,15 +615,12 @@ void Player::Powerup()
                 {
                     _animationComponent->Offset(Point{0, -8});
                 }
-                else
-                {
-                }
             }
             _animationComponent->ChangeAnimation(newName);
         }
     }
 }
-void Player::FirePowerup(bool isGettingBig)
+void Player::SuperPowerupTick()
 {
     if (!_isTurningBig)
     {

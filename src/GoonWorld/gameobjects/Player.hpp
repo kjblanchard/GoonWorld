@@ -39,7 +39,7 @@ namespace GoonWorld
         AppSettings::PlayerConfig *_playerConfig;
         int _currentBigIterations = 0;
         int _coinsCollected = 0;
-        std::queue<Fireball*> _fireballs;
+        std::queue<Fireball *> _fireballs;
         // Animations
     private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
@@ -82,9 +82,9 @@ namespace GoonWorld
         void Jump();
         void JumpExtend();
         float CalculateFrameMaxVelocity();
-        void PowerupStart(bool isGettingBig);
-        void Powerup();
-        void FirePowerup(bool isGettingBig);
+        void PowerChangeStart(bool isGettingBig);
+        void SuperPowerupTick();
+        void PowerupTick();
         void Die();
         void Win();
         void WinWalking();
@@ -99,5 +99,6 @@ namespace GoonWorld
         static void DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

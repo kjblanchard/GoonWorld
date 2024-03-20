@@ -16,6 +16,7 @@ Fireflower::Fireflower(geRectangle *rect)
     _rigidbodyComponent->SetBodyType(BodyTypes::Fireflower);
     _animationComponent = new AnimationComponent("fireflower");
     AddComponent({_rigidbodyComponent, _animationComponent});
+    GetGameSound().LoadSfx(mushroomSound);
 }
 
 void Fireflower::TakeDamage()
