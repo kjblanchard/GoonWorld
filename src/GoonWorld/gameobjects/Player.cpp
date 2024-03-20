@@ -549,7 +549,6 @@ void Player::PowerupStart(bool isGettingBig)
 
 void Player::Powerup()
 {
-
     // End
     if (_currentBigIterations > _bigIterations)
     {
@@ -586,16 +585,31 @@ void Player::Powerup()
 
             auto currentAnim = _animationComponent->GetCurrentAnimation();
             auto newName = currentAnim.second->Name;
+            // Handle where our offset should be, as our location is different per.
+            auto wasPreviouslyBig = !IsFlagSet(_playerFlags, PlayerFlags::IsBig);
             auto isBig = endsWith(newName, "b") || endsWith(newName, "f");
             if (isBig)
             {
                 newName.erase(newName.size() - 1);
-                _animationComponent->Offset(Point{0, -36});
+                if (wasPreviouslyBig)
+                {
+                    // _animationComponent->Offset(Point{0, -36});
+                    _animationComponent->Offset(Point{0, -4});
+                }
+                else
+                {
+                }
             }
             else
             {
                 newName = newName + "b";
-                _animationComponent->Offset(Point{0, -40});
+                if (wasPreviouslyBig)
+                {
+                    _animationComponent->Offset(Point{0, -8});
+                }
+                else
+                {
+                }
             }
             _animationComponent->ChangeAnimation(newName);
         }
