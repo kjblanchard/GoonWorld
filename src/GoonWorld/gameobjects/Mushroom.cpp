@@ -20,10 +20,7 @@ Mushroom::Mushroom(geRectangle *rect)
     _animationComponent = new AnimationComponent("mushroom");
     _animationComponent->SizeMultiplier = 1;
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
-    // Since this is created after the level loads, the sound needs to be loaded after the fact.
     mushroomSoundSfx = Sfx::SfxFactory(mushroomSound);
-    mushroomSoundSfx->Load();
-
     AddComponent({_rigidbodyComponent, _animationComponent});
 }
 void Mushroom::Update()
@@ -36,7 +33,7 @@ void Mushroom::TakeDamage()
 {
     if (!IsEnabled())
         return;
-        mushroomSoundSfx->Play();
+    mushroomSoundSfx->Play();
     Enabled(false);
 }
 void Mushroom::Push(bool right)

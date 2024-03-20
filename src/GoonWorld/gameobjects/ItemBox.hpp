@@ -23,6 +23,7 @@ namespace GoonWorld
         int _contents = 0;
         Sfx *bumpSfx = nullptr;
         Sfx *powerupSpawnSfx = nullptr;
+        GameObject *content;
 
         enum class ItemBrickContents
         {

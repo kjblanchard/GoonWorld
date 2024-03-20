@@ -14,7 +14,6 @@ using namespace GoonWorld;
 extern const char *bumpSound;
 extern const char *powerupSpawnSound;
 
-
 ItemBox::ItemBox(TiledMap::TiledObject &object)
 {
     for (auto &prop : object.Properties)
@@ -34,6 +33,18 @@ ItemBox::ItemBox(TiledMap::TiledObject &object)
     AddComponent({_rigidbodyComponent, _debugDrawComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("idle", "empty", true, &_isOpened);
+    auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
+    switch (_contents)
+    {
+    case (int)ItemBrickContents::Mushroom:
+        content = new Mushroom(&loc);
+        break;
+    case (int)ItemBrickContents::Fireflower:
+        content = new Fireflower(&loc);
+    default:
+        break;
+    }
+    content->Enabled(false);
 }
 void ItemBox::TakeDamage()
 {
@@ -41,31 +52,26 @@ void ItemBox::TakeDamage()
     {
     case (int)ItemBrickContents::Empty:
         bumpSfx->Play();
-        /* code */
         break;
     case (int)ItemBrickContents::Mushroom:
     {
-        auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
-        auto shroom = new Mushroom(&loc);
+        auto shroom = dynamic_cast<Mushroom *>(content);
+        shroom->Enabled(true);
         shroom->Push(true);
-        _contents = 0;
-        _isOpened = true;
 
         powerupSpawnSfx->Play();
         break;
     }
     case (int)ItemBrickContents::Fireflower:
     {
-        auto loc = geRectangle{_location.x, _location.y - 16, 18, 18};
-        auto shroom = new Fireflower(&loc);
-        _contents = 0;
-        _isOpened = true;
-
-        // powerupSpawnSfx->Play();
+        content->Enabled(true);
+        powerupSpawnSfx->Play();
         break;
     }
 
     default:
         break;
     }
+    _contents = 0;
+    _isOpened = true;
 }
