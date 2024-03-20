@@ -1,5 +1,4 @@
 #include <GoonWorld/content/Text.hpp>
-#include <GoonWorld/core/Game.hpp>
 #include <GoonEngine/text.h>
 #include <GoonEngine/SdlSurface.h>
 using namespace std;
@@ -46,7 +45,6 @@ void Text::Load()
     _loadedTexture = geCreateTextureForString(_stringToDisplay.c_str(), &textureDimensions, _textColor);
     _boundingBox.w = textureDimensions.x;
     _boundingBox.h = textureDimensions.y;
-    Game::Instance()->AddUIObject(this);
     _isLoaded = true;
 }
 

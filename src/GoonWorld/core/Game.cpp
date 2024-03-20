@@ -18,6 +18,7 @@
 #include <GoonWorld/events/EventTypes.hpp>
 
 #include <GoonWorld/content/Text.hpp>
+#include <GoonWorld/ui/CoinsCollected.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -48,9 +49,11 @@ Game::Game()
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
     // Testing Text
-    auto text = new Text("Kevin is a nerd!", Point{150, 20});
-    Content::CreateContent(text);
+    // auto text = new Text("Kevin is a nerd!", Point{150, 20});
+    // Content::CreateContent(text);
     // text->Load();
+    auto coinUI = new CoinsCollectedUI();
+    coinUI->UpdateCoins(0);
 }
 
 Game::~Game()

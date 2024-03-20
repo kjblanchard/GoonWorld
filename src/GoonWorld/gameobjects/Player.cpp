@@ -535,6 +535,7 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
     ++player->_coinsCollected;
     coin->TakeDamage();
 }
+
 void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
