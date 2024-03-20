@@ -1,11 +1,13 @@
 #include <GoonWorld/gnpch.hpp>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/core/Content.hpp>
+#include <GoonWorld/content/Text.hpp>
 #include <SupergoonSound/include/sound.h>
 
 using namespace GoonWorld;
 
 static std::unordered_map<std::string, std::pair<ContentTypes, void *>> _loadedContent;
+static std::unordered_map<std::string, ILoadContent *> _loadedContents;
 // static std::vector<void *> _loadedPixelData;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
@@ -30,7 +32,7 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     case ContentTypes::Sfx:
 
         loadedContent = gsLoadSfxHelper(filename);
-        gsLoadSfx((gsSfx*)loadedContent);
+        gsLoadSfx((gsSfx *)loadedContent);
         break;
     default:
         break;
@@ -71,4 +73,28 @@ void Content::ClearContent()
             break;
         }
     }
+}
+
+void Content::CreateContent(ILoadContent *content)
+{
+    auto iter = _loadedContents.find(content->GetContentName());
+    if (iter != _loadedContents.end())
+        return;
+    _loadedContents[content->GetContentName()] = content;
+}
+
+void Content::LoadAllContents()
+{
+    for (auto &[key, value] : _loadedContents)
+    {
+        value->Load();
+    }
+}
+
+ILoadContent *Content::GetContent(std::string &name)
+{
+    auto iter = _loadedContents.find(name);
+    if (iter != _loadedContents.end())
+        return iter->second;
+    return nullptr;
 }

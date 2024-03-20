@@ -13,6 +13,7 @@ namespace GoonWorld
     public:
         Text(std::string stringToLoad, Point location, geColor textColor = geColor{255, 255, 255, 255});
         ~Text();
+        inline std::string &GetContentName() override { return _stringToDisplay; }
         void Load() override;
         void Unload() override;
         void Draw() override;

@@ -101,7 +101,7 @@ jobs:
             asset_name: supergoon_mac_intel.tgz
           - os: macsilicon
             artifact_name: SupergoonWorld.tgz
-            asset_name: supergoon_mac_silicon.zip
+            asset_name: supergoon_mac_silicon.tgz
           - os: linux
             artifact_name: SupergoonWorld.tgz
             asset_name: supergoon_ubuntu.tgz

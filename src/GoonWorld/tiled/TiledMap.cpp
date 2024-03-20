@@ -6,7 +6,7 @@
 using json = nlohmann::json;
 using namespace GoonWorld;
 
-const TiledMap::TiledMapTileset *const TiledMap::GetGidTiledMapTileset(int gid)
+const TiledMap::TiledMapTileset *TiledMap::GetGidTiledMapTileset(int gid)
 {
     TiledMap::TiledMapTileset *tiledMapTileset = nullptr;
     for (auto tileset = TiledmapTilesets.begin(); tileset != TiledmapTilesets.end(); ++tileset)
@@ -26,7 +26,7 @@ const TiledMap::TiledMapTileset *const TiledMap::GetGidTiledMapTileset(int gid)
     return tiledMapTileset;
 }
 
-const TiledMap::Tileset *const TiledMap::GetTiledMapTilesetTileset(const TiledMapTileset *tiledMapTileset)
+const TiledMap::Tileset *TiledMap::GetTiledMapTilesetTileset(const TiledMapTileset *tiledMapTileset)
 {
     for (auto tileset = Tilesets.begin(); tileset != Tilesets.end(); ++tileset)
     {
@@ -73,7 +73,7 @@ TiledMap::TiledMap(std::string filename)
     auto pathPrefix = AssetPrefix + TiledPrefix + filename + ".tmj";
     std::ifstream file(pathPrefix);
     json data = json::parse(file);
-    auto &tilesets = data["tilesets"];
+    // auto &tilesets = data["tilesets"];
     Width = data["width"];
     Height = data["height"];
     TileWidth = data["tilewidth"];

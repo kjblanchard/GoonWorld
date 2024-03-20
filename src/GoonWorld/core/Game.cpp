@@ -49,7 +49,8 @@ Game::Game()
     _gameInstance = this;
     // Testing Text
     auto text = new Text("Kevin is a nerd!", Point{150, 20});
-    text->Load();
+    Content::CreateContent(text);
+    // text->Load();
 }
 
 Game::~Game()
@@ -200,6 +201,7 @@ void Game::LoadLevel(std::string level)
     _sound->PlayBgm("platforms");
     _camera->Restart();
     LoadGameObjects();
+    Content::LoadAllContents();
 }
 void Game::LoadGameObjects()
 {
@@ -230,6 +232,7 @@ void Game::PlayerDieEvent(Event &event)
     auto player = static_cast<Player *>(event.eventArgs);
     PlayerDie(player);
 }
+
 void Game::ChangeLevel()
 {
     _shouldRestart = false;
@@ -240,8 +243,6 @@ void Game::ChangeLevel()
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     auto nextLevel = _loadedLevel->GetNextLevel();
-    // _loadedLevel = std::make_unique<TiledLevel>("level2");
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;
-    // _loadedLevel->RestartLevel();
 }

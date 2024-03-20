@@ -1,6 +1,7 @@
 #pragma once
 namespace GoonWorld
 {
+    class ILoadContent;
     enum class ContentTypes
     {
         Default,
@@ -8,6 +9,7 @@ namespace GoonWorld
         Texture,
         Bgm,
         Sfx,
+        Text,
     };
 
     class Content
@@ -17,6 +19,10 @@ namespace GoonWorld
         template <typename T>
         static T *GetLoadedContentOfType(const char *filename);
         static void *GetLoadedContent(const char *filename);
+
+        static void CreateContent(ILoadContent *content);
+        static void LoadAllContents();
+        static ILoadContent *GetContent(std::string &name);
         static void ClearContent();
 
     private:

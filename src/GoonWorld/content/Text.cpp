@@ -26,7 +26,6 @@ void Text::Draw()
     testBox.w /= 2;
     testBox.h /= 2;
     geDrawTexture(_loadedTexture, NULL, &_boundingBox, false);
-    // geDrawTexture(_loadedTexture, NULL, &testBox, false);
 }
 
 void Text::Visible(bool isVisible)
@@ -41,11 +40,14 @@ bool Text::IsVisible()
 
 void Text::Load()
 {
+    if (_isLoaded)
+        return;
     Point textureDimensions = gePointZero();
     _loadedTexture = geCreateTextureForString(_stringToDisplay.c_str(), &textureDimensions, _textColor);
     _boundingBox.w = textureDimensions.x;
     _boundingBox.h = textureDimensions.y;
     Game::Instance()->AddUIObject(this);
+    _isLoaded = true;
 }
 
 void Text::Unload()
