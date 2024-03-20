@@ -7,7 +7,6 @@ namespace GoonWorld
         Default,
         Surface,
         Texture,
-        Bgm,
         Sfx,
         Text,
     };
@@ -20,8 +19,8 @@ namespace GoonWorld
         static T *GetLoadedContentOfType(const char *filename);
         static void *GetLoadedContent(const char *filename);
 
-        static void CreateContent(ILoadContent *content);
-        static void LoadAllContents();
+        static void AddContent(ILoadContent *content);
+        static void LoadAllContent();
         static ILoadContent *GetContent(std::string &name);
         static void ClearContent();
 

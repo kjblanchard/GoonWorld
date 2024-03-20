@@ -21,11 +21,17 @@
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
 #include <GoonWorld/core/Timer.hpp>
+#include <GoonWorld/content/Bgm.hpp>
 using namespace GoonWorld;
 
 const char *jumpSound = "jump";
 const char *powerDownSound = "powerdown";
 const char *whistleSound = "whistle";
+const char *playerDieBgm = "playerdie";
+const char *playerWinBgm = "win";
+
+static Bgm *winBgm;
+static Bgm *dieBgm;
 
 Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
@@ -52,6 +58,8 @@ Player::Player(TiledMap::TiledObject &object)
         _fireballs.push(fireball);
         xLoc += 32;
     }
+    winBgm = Bgm::BgmFactory(playerWinBgm);
+    dieBgm = Bgm::BgmFactory(playerDieBgm);
 }
 void Player::BindOverlapFunctions()
 {
@@ -432,8 +440,9 @@ void Player::Die()
 {
     auto bigEvent = Event{this, this, (int)EventTypes::PlayerDie};
     GetGame().PushEvent(bigEvent);
-    GetGameSound().LoadBgm("playerdie");
-    GetGameSound().PlayBgm("playerdie", 0);
+    dieBgm->Play(0);
+    // GetGameSound().LoadBgm("playerdie");
+    // GetGameSound().PlayBgm("playerdie", 0);
 
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);
@@ -534,7 +543,7 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
         return;
     ++player->_coinsCollected;
     coin->TakeDamage();
-    auto coinEvent = Event{player, (void*)&player->_coinsCollected, (int)EventTypes::CoinCollected};
+    auto coinEvent = Event{player, (void *)&player->_coinsCollected, (int)EventTypes::CoinCollected};
     player->GetGame().PushEvent(coinEvent);
 }
 
@@ -671,8 +680,7 @@ void Player::SuperPowerupTick()
 void Player::SlideFunc()
 {
     _rigidbodyComponent->GravityEnabled(true);
-    Game::Instance()->GetSound()->LoadBgm("win");
-    Game::Instance()->GetSound()->PlayBgm("win", 0);
+    winBgm->Play(0);
     _isWinning = false;
     _isWinWalking = true;
     _currentDeadTime = 0;

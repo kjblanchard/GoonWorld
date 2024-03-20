@@ -10,12 +10,12 @@ LevelTimer::LevelTimer()
     : currentTimeSeconds(0), x(300), y(10)
 {
     _timeText = Text::TextFactory("Time", Point{x, y}, geColor{255, 255, 0, 255});
-    Content::CreateContent(_timeText);
+    Content::AddContent(_timeText);
     _timeText->Visible(true);
     for (size_t i = 0; i < 10; i++)
     {
         auto text = Text::TextFactory(std::to_string(i), gePointZero());
-        Content::CreateContent(text);
+        Content::AddContent(text);
         _loadedNumbers.push_back(text);
     }
 }

@@ -8,7 +8,6 @@ using namespace GoonWorld;
 
 static std::unordered_map<std::string, std::pair<ContentTypes, void *>> _loadedContent;
 static std::unordered_map<std::string, ILoadContent *> _loadedContents;
-// static std::vector<void *> _loadedPixelData;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
 {
@@ -21,13 +20,9 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
     {
     case ContentTypes::Surface:
         loadedContent = LoadSurfaceFromFile(filename);
-        // _loadedPixelData.push_back(pixelData);
         break;
     case ContentTypes::Texture:
         loadedContent = CreateTextureFromFile(filename);
-        break;
-    case ContentTypes::Bgm:
-        loadedContent = gsLoadBgm((filename));
         break;
     case ContentTypes::Sfx:
 
@@ -66,24 +61,18 @@ void Content::ClearContent()
         case ContentTypes::Texture:
             DestroyTexture((SDL_Texture *)value.second);
             break;
-        case ContentTypes::Bgm:
-            free((gsBgm *)value.second);
-            break;
         default:
             break;
         }
     }
 }
 
-void Content::CreateContent(ILoadContent *content)
+void Content::AddContent(ILoadContent *content)
 {
-    auto iter = _loadedContents.find(content->GetContentName());
-    if (iter != _loadedContents.end())
-        return;
     _loadedContents[content->GetContentName()] = content;
 }
 
-void Content::LoadAllContents()
+void Content::LoadAllContent()
 {
     for (auto &[key, value] : _loadedContents)
     {

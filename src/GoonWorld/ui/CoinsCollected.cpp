@@ -11,13 +11,13 @@ CoinsCollectedUI::CoinsCollectedUI()
 {
     // _coinText = new Text("Coins", Point{x, y}, geColor{255, 255, 0, 255});
     _coinText = Text::TextFactory("Coins", Point{x, y}, geColor{255, 255, 0, 255});
-    Content::CreateContent(_coinText);
+    Content::AddContent(_coinText);
     _coinText->Visible(true);
     for (size_t i = 0; i < 10; i++)
     {
         // auto text = new Text(std::to_string(i), gePointZero());
         auto text = Text::TextFactory(std::to_string(i), gePointZero());
-        Content::CreateContent(text);
+        Content::AddContent(text);
         text->Visible(true);
         _loadedNumbers.push_back(text);
     }

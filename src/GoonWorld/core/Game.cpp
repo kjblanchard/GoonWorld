@@ -17,6 +17,7 @@
 #include <GoonWorld/events/Observer.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
 
+#include <GoonWorld/content/Bgm.hpp>
 #include <GoonWorld/content/Text.hpp>
 #include <GoonWorld/ui/CoinsCollected.hpp>
 #include <GoonWorld/ui/LevelTimer.hpp>
@@ -199,13 +200,16 @@ void Game::LoadLevel(std::string level)
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
-    _sound->PlayBgm("platforms");
+
+    // _sound->PlayBgm("platforms");
+    auto bgm = Bgm::BgmFactory("platforms");
     _camera->Restart();
     LoadGameObjects();
-    Content::LoadAllContents();
+    Content::LoadAllContent();
     AddUIObject(_coinUI.get());
     AddUIObject(_levelTimerUI.get());
     AddUpdateObject(_levelTimerUI.get());
+    bgm->Play();
     _coinUI->UpdateCoins(0);
     _levelTimerUI->UpdateTime(0);
 }
