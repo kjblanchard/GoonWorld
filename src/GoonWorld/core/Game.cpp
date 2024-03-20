@@ -19,6 +19,7 @@
 
 #include <GoonWorld/content/Text.hpp>
 #include <GoonWorld/ui/CoinsCollected.hpp>
+#include <GoonWorld/ui/LevelTimer.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -26,7 +27,7 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr)
+    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
     {
@@ -49,6 +50,7 @@ Game::Game()
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
     _coinUI = std::make_unique<CoinsCollectedUI>();
+    _levelTimerUI = std::make_unique<LevelTimer>();
 }
 
 Game::~Game()
@@ -70,6 +72,7 @@ void Game::Update(double timeMs)
     ++_ticks;
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
+    _deltaTime = TimeSpan(totalSeconds);
 
     if (_shouldRestart)
         RestartLevel();

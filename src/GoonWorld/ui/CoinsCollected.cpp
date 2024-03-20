@@ -7,8 +7,11 @@
 using namespace GoonWorld;
 
 CoinsCollectedUI::CoinsCollectedUI()
-    : _currentCoins(0), x(50), y(20)
+    : _currentCoins(0), x(150), y(20)
 {
+    _coinText = new Text("Coins", Point{x, y}, geColor{255, 255, 0, 255});
+    Content::CreateContent(_coinText);
+    _coinText->Visible(true);
     for (size_t i = 0; i < 10; i++)
     {
         auto text = new Text(std::to_string(i), gePointZero());
@@ -39,6 +42,8 @@ void CoinsCollectedUI::UpdateCoins(int coins)
 
 void CoinsCollectedUI::Draw()
 {
+    _coinText->SetX(x - _coinText->Width() - 10);
+    _coinText->Draw();
     int tens = _currentCoins / 10;
     int ones = _currentCoins % 10;
     _loadedNumbers[tens]->SetLocation(Point{x, y});
