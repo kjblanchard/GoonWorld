@@ -5,6 +5,8 @@
 namespace GoonWorld
 {
     class Text;
+    class Event;
+    class Observer;
     class CoinsCollectedUI : public IDraw
     {
     public:
@@ -19,6 +21,8 @@ namespace GoonWorld
         void Draw() override;
         void Visible(bool isVisible) override;
         bool IsVisible() override;
+        void CoinCollectedEvent(Event &event);
+        std::unique_ptr<Observer> coinObserver;
     };
 
 }

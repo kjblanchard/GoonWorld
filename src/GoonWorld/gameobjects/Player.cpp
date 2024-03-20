@@ -534,6 +534,8 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
         return;
     ++player->_coinsCollected;
     coin->TakeDamage();
+    auto coinEvent = Event{player, (void*)&player->_coinsCollected, (int)EventTypes::CoinCollected};
+    player->GetGame().PushEvent(coinEvent);
 }
 
 void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)

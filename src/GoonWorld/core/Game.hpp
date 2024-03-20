@@ -17,6 +17,7 @@ namespace GoonWorld
     class Player;
     class Sound;
     class Camera;
+    class CoinsCollectedUI;
 
     class Game
     {
@@ -68,5 +69,6 @@ namespace GoonWorld
         std::unique_ptr<Observer> _playerBigObserver;
         std::unique_ptr<Observer> _playerDieObserver;
         std::unique_ptr<AppSettings> _gameSettings;
+        std::unique_ptr<CoinsCollectedUI> _coinUI;
     };
 }

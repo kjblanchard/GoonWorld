@@ -2,6 +2,8 @@
 #include <GoonWorld/content/Text.hpp>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/events/Observer.hpp>
+#include <GoonWorld/events/EventTypes.hpp>
 using namespace GoonWorld;
 
 CoinsCollectedUI::CoinsCollectedUI()
@@ -15,6 +17,9 @@ CoinsCollectedUI::CoinsCollectedUI()
         _loadedNumbers.push_back(text);
     }
     Game::Instance()->AddUIObject(this);
+    coinObserver = std::make_unique<Observer>((int)EventTypes::CoinCollected, [this](Event &event)
+                                              { this->CoinCollectedEvent(event); });
+    Game::Instance()->AddEventObserver((int)EventTypes::CoinCollected, coinObserver.get());
 }
 
 void CoinsCollectedUI::UpdateCoins(int coins)
@@ -49,4 +54,10 @@ void CoinsCollectedUI::Visible(bool isVisible)
 bool CoinsCollectedUI::IsVisible()
 {
     return true;
+}
+
+void CoinsCollectedUI::CoinCollectedEvent(Event &event)
+{
+    auto coins = static_cast<int *>(event.eventArgs);
+    UpdateCoins(*coins);
 }

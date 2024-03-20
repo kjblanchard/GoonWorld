@@ -48,12 +48,7 @@ Game::Game()
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
-    // Testing Text
-    // auto text = new Text("Kevin is a nerd!", Point{150, 20});
-    // Content::CreateContent(text);
-    // text->Load();
-    auto coinUI = new CoinsCollectedUI();
-    coinUI->UpdateCoins(0);
+    _coinUI = std::make_unique<CoinsCollectedUI>();
 }
 
 Game::~Game()
@@ -205,6 +200,7 @@ void Game::LoadLevel(std::string level)
     _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContents();
+    _coinUI->UpdateCoins(0);
 }
 void Game::LoadGameObjects()
 {
