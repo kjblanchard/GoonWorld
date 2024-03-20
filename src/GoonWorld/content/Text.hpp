@@ -22,6 +22,7 @@ namespace GoonWorld
             _boundingBox.x = newLocation.x;
             _boundingBox.y = newLocation.y;
         }
+        static Text *TextFactory(std::string stringToLoad, Point location, geColor textColor = geColor{255, 255, 255, 255});
         inline int Width() { return _boundingBox.w / 2; }
         void Load() override;
         void Unload() override;

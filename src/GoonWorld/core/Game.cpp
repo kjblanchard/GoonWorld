@@ -203,7 +203,11 @@ void Game::LoadLevel(std::string level)
     _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContents();
+    AddUIObject(_coinUI.get());
+    AddUIObject(_levelTimerUI.get());
+    AddUpdateObject(_levelTimerUI.get());
     _coinUI->UpdateCoins(0);
+    _levelTimerUI->UpdateTime(0);
 }
 void Game::LoadGameObjects()
 {

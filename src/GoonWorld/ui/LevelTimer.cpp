@@ -7,41 +7,23 @@
 using namespace GoonWorld;
 
 LevelTimer::LevelTimer()
-    : currentTimeSeconds(0), x(300), y(20)
+    : currentTimeSeconds(0), x(300), y(10)
 {
-    _timeText = new Text("Time", Point{x, y}, geColor{255, 255, 0, 255});
+    _timeText = Text::TextFactory("Time", Point{x, y}, geColor{255, 255, 0, 255});
     Content::CreateContent(_timeText);
     _timeText->Visible(true);
     for (size_t i = 0; i < 10; i++)
     {
-        auto text = new Text(std::to_string(i), gePointZero());
+        auto text = Text::TextFactory(std::to_string(i), gePointZero());
         Content::CreateContent(text);
-        text->Visible(false);
         _loadedNumbers.push_back(text);
     }
-    Game::Instance()->AddUpdateObject(this);
-    Game::Instance()->AddUIObject(this);
 }
 
 void LevelTimer::UpdateTime(int coins)
 {
-    int minutes = currentTimeSeconds / 60;
-    int totalSeconds = currentTimeSeconds % 60;
-    int secondsTens = totalSeconds / 10;
-    int secondsOnes = currentTimeSeconds % 10;
-    // Set old numbers to not visible
-    _loadedNumbers[minutes]->Visible(false);
-    _loadedNumbers[secondsTens]->Visible(false);
-    _loadedNumbers[secondsOnes]->Visible(false);
+    currentTimeTotalSeconds = coins;
     currentTimeSeconds = coins;
-    // Set new numbers to visible
-    minutes = currentTimeSeconds / 60;
-    totalSeconds = currentTimeSeconds % 60;
-    secondsTens = totalSeconds / 10;
-    secondsOnes = currentTimeSeconds % 10;
-    _loadedNumbers[minutes]->Visible(true);
-    _loadedNumbers[secondsTens]->Visible(true);
-    _loadedNumbers[secondsOnes]->Visible(true);
 }
 
 void LevelTimer::Draw()

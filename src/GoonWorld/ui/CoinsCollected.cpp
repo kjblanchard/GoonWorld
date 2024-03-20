@@ -7,19 +7,20 @@
 using namespace GoonWorld;
 
 CoinsCollectedUI::CoinsCollectedUI()
-    : _currentCoins(0), x(150), y(20)
+    : _currentCoins(0), x(150), y(10)
 {
-    _coinText = new Text("Coins", Point{x, y}, geColor{255, 255, 0, 255});
+    // _coinText = new Text("Coins", Point{x, y}, geColor{255, 255, 0, 255});
+    _coinText = Text::TextFactory("Coins", Point{x, y}, geColor{255, 255, 0, 255});
     Content::CreateContent(_coinText);
     _coinText->Visible(true);
     for (size_t i = 0; i < 10; i++)
     {
-        auto text = new Text(std::to_string(i), gePointZero());
+        // auto text = new Text(std::to_string(i), gePointZero());
+        auto text = Text::TextFactory(std::to_string(i), gePointZero());
         Content::CreateContent(text);
-        text->Visible(false);
+        text->Visible(true);
         _loadedNumbers.push_back(text);
     }
-    Game::Instance()->AddUIObject(this);
     coinObserver = std::make_unique<Observer>((int)EventTypes::CoinCollected, [this](Event &event)
                                               { this->CoinCollectedEvent(event); });
     Game::Instance()->AddEventObserver((int)EventTypes::CoinCollected, coinObserver.get());
@@ -30,14 +31,14 @@ void CoinsCollectedUI::UpdateCoins(int coins)
     int tens = _currentCoins / 10;
     int ones = _currentCoins % 10;
     // Set old numbers to not visible
-    _loadedNumbers[tens]->Visible(false);
-    _loadedNumbers[ones]->Visible(false);
+    // _loadedNumbers[tens]->Visible(false);
+    // _loadedNumbers[ones]->Visible(false);
     _currentCoins = coins;
     // Set new numbers to visible
     tens = _currentCoins / 10;
     ones = _currentCoins % 10;
-    _loadedNumbers[tens]->Visible(true);
-    _loadedNumbers[ones]->Visible(true);
+    // _loadedNumbers[tens]->Visible(true);
+    // _loadedNumbers[ones]->Visible(true);
 }
 
 void CoinsCollectedUI::Draw()

@@ -1,4 +1,5 @@
 #include <GoonWorld/content/Text.hpp>
+#include <GoonWorld/core/Content.hpp>
 #include <GoonEngine/text.h>
 #include <GoonEngine/SdlSurface.h>
 using namespace std;
@@ -9,6 +10,14 @@ Text::Text(string stringToLoad, Point location, geColor textColor)
 {
     _boundingBox.x = location.x;
     _boundingBox.y = location.y;
+}
+
+Text * Text::TextFactory(std::string stringToLoad, Point location, geColor textColor)
+{
+    auto loadedText = Content::GetContent(stringToLoad);
+    if (loadedText)
+        return (Text *)loadedText;
+    return new Text(stringToLoad, location, textColor);
 }
 
 Text::~Text()
