@@ -38,7 +38,7 @@
 - [Fireball](https://freesound.org/people/adh.dreaming/sounds/615576/) - Creative Commons
 
 ## Libraries
-- [Supergoon Engine](https://github.com/kjblanchard/goonPhysics) - MIT | Custom Physics, OpenAL wrapper, libpng/freetype wrapper, SDL wrapper, etc
+- [Supergoon Engine](https://github.com/supergoongaming/sg_engine) - MIT | Custom Physics, OpenAL wrapper, libpng/freetype wrapper, SDL wrapper, etc
 - [SDL](https://www.libsdl.org/license.php) - ZLIB - Low level Windowing / Eventing
 - [nlohmann json](https://github.com/nlohmann/json) - MIT - json parsing for appsettings file
 

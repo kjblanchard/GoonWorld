@@ -392,6 +392,16 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("runft", "idleft", true, &_shouldThrowFireballIdleAnim);
     _animationComponent->AddTransition("turnf", "walkft", true, &_shouldThrowFireballRunAnim);
     _animationComponent->AddTransition("jumpf", "idleft", true, &_shouldThrowFireballIdleAnim);
+    // climbing
+    _animationComponent->AddTransition("walk", "climb", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("walkb", "climbb", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("walkf", "climbf", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("climb", "walk", false, &_shouldClimbAnim);
+    _animationComponent->AddTransition("climbb", "walkb", false, &_shouldClimbAnim);
+    _animationComponent->AddTransition("climbf", "walkf", false, &_shouldClimbAnim);
+    _animationComponent->AddTransition("jumpf", "climbf", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("jumpb", "climbb", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("jump", "climb", true, &_shouldClimbAnim);
 }
 
 void Player::Jump()
@@ -722,5 +732,6 @@ void Player::SlideFunc()
 
 void Player::WinWalking()
 {
-    _rigidbodyComponent->Velocity().x = 45;
+    _rigidbodyComponent->Velocity().x = _rigidbodyComponent->IsOnGround() ? 45 : 0;
+    _shouldClimbAnim = _rigidbodyComponent->IsOnGround() ? false : true;
 }

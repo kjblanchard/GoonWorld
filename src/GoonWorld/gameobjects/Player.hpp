@@ -44,8 +44,8 @@ namespace GoonWorld
         // Animations
     private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
-        bool _shouldThrowFireballIdleAnim = false;
-        bool _shouldThrowFireballRunAnim = false;
+        bool _shouldThrowFireballIdleAnim = false, _shouldThrowFireballRunAnim = false;
+        bool _shouldClimbAnim = false;
         // State
     private:
         bool _isJumping = false, _isTurning = false, _isDying = false, _isDead = false;
@@ -56,7 +56,7 @@ namespace GoonWorld
         float _currentFireballTimer = 0;
         // Constants
     private:
-        const float _winningWhistleTimer = .75;
+        const float _winningWhistleTimer = .25;
         const float _deadTimer = 0.65;
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;

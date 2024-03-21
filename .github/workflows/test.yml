@@ -33,6 +33,7 @@ jobs:
           zlib: zlib
           name: linux
     runs-on: ${{ matrix.os }}-latest
+    environment: prod
     steps:
       - run: pip install --upgrade cppclean
       - name: Check out repository code
@@ -51,6 +52,7 @@ jobs:
   # Use container as for some reason has permissions issues on a regular runner when I install emscripten.
   Build-Emscripten:
     runs-on: ubuntu-latest
+    environment: prod
     container:
       image: emscripten/emsdk:3.1.46
       env:
@@ -107,6 +109,7 @@ jobs:
             asset_name: supergoon_ubuntu.tgz
     if: startsWith(github.event.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    environment: prod
     needs:
     - Build-Desktop
     steps:
