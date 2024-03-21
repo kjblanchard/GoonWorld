@@ -5,5 +5,5 @@ enum class EventTypes
     PlayerBig,
     PlayerDie,
     CoinCollected,
-    TimeUpdate,
+    PlayerWin,
 };

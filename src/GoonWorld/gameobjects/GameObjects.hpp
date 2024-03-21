@@ -6,3 +6,4 @@
 #include <GoonWorld/gameobjects/Goomba.hpp>
 #include <GoonWorld/gameobjects/ItemBox.hpp>
 #include <GoonWorld/gameobjects/Fireflower.hpp>
+#include <GoonWorld/gameobjects/Flag.hpp>

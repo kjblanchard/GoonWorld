@@ -25,6 +25,10 @@ std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> Game
      {
          return new ItemBox(object);
      }},
+    {"Flag", [](TiledMap::TiledObject &object)
+     {
+         return new Flag(object);
+     }},
     {"Brick", [](TiledMap::TiledObject &object)
      {
          return new ItemBrick(object);

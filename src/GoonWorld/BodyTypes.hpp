@@ -14,6 +14,7 @@ namespace GoonWorld
         DeathBox,
         WinBox,
         Coin,
+        Flag,
         Max,
     };
 }

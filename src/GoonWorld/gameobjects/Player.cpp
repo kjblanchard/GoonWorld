@@ -480,6 +480,8 @@ void Player::DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, 
 void Player::WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
+    auto winEvent = Event{player, nullptr, (int)EventTypes::PlayerWin};
+    player->GetGame().PushEvent(winEvent);
     player->Win();
 }
 
