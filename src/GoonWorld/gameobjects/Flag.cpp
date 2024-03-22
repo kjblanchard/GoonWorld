@@ -20,7 +20,7 @@ Flag::Flag(TiledMap::TiledObject &object)
     _animationComponent = new AnimationComponent("flags");
     AddComponent({_rigidbodyComponent, _animationComponent});
 
-    _playerWinObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
+    _playerWinObserver = std::make_unique<Observer>((int)EventTypes::PlayerWin, [this](Event &event)
                                                     { this->PlayerWinEvent(event); });
     Game::Instance()->AddEventObserver((int)EventTypes::PlayerWin, _playerWinObserver.get());
 }

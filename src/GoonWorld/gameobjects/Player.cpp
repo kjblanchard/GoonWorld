@@ -17,6 +17,7 @@
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/gameobjects/ItemBox.hpp>
 #include <GoonWorld/gameobjects/Fireball.hpp>
+#include <GoonWorld/gameobjects/Flag.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
@@ -79,6 +80,7 @@ void Player::BindOverlapFunctions()
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Flag, &Player::FlagOverlapFunc);
 }
 
 void Player::InitializePlayerConfig()
@@ -484,6 +486,16 @@ void Player::WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gp
     player->GetGame().PushEvent(winEvent);
     player->Win();
 }
+void Player::FlagOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    auto player = (Player *)instance;
+    auto flag = static_cast<Flag *>(overlapBody->funcArgs);
+    if (!flag)
+        return;
+    flag->TakeDamage();
+    player->SlideFunc();
+    player->_rigidbodyComponent->GravityEnabled(true);
+}
 
 void Player::Die()
 {
@@ -506,17 +518,19 @@ void Player::Win()
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
         whistleSfx->Play();
-        auto timer = new Timer(this,
-                               _winningWhistleTimer,
-                               [](GameObject *obj, bool isComplete)
-                               {
-                                   if (!isComplete)
-                                       return false;
-                                   auto player = static_cast<Player *>(obj);
-                                   player->SlideFunc();
-                                   return true;
-                               });
-        AddTimer(timer);
+        _shouldClimbAnim = true;
+        _animationComponent->Update();
+        // auto timer = new Timer(this,
+        //                        _winningWhistleTimer,
+        //                        [](GameObject *obj, bool isComplete)
+        //                        {
+        //                            if (!isComplete)
+        //                                return false;
+        //                            auto player = static_cast<Player *>(obj);
+        //                            player->SlideFunc();
+        //                            return true;
+        //                        });
+        // AddTimer(timer);
         // Add overlap func to disappear when running into wall
         _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &EndLevelStaticOverlapFunc);
         return;
@@ -734,6 +748,9 @@ void Player::SlideFunc()
 
 void Player::WinWalking()
 {
-    _rigidbodyComponent->Velocity().x = _rigidbodyComponent->IsOnGround() ? 45 : 0;
-    _shouldClimbAnim = _rigidbodyComponent->IsOnGround() ? false : true;
+    static bool playerHitGround = false;
+    if (_rigidbodyComponent->IsOnGround())
+        playerHitGround = true;
+    _rigidbodyComponent->Velocity().x = playerHitGround ? 45 : 0;
+    _shouldClimbAnim = playerHitGround ? false : true;
 }

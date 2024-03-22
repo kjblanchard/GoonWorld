@@ -104,6 +104,7 @@ namespace GoonWorld
         static void DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void FlagOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }
