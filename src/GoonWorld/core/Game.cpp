@@ -56,14 +56,22 @@ Game::Game()
 
 Game::~Game()
 {
-    for (auto [key, value] : _observers)
-    {
-        for (auto observer : value)
-        {
-            if (observer)
-                RemoveObserver(observer);
-        }
-    }
+    _shouldChangeLevel = false;
+    _shouldRestart = false;
+    _playerDying = nullptr;
+    _playerBig = nullptr;
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    GameObject::ClearGameObjects();
+    RigidbodyComponent::ResetRigidBodyVector();
+    // for (auto [key, value] : _observers)
+    // {
+    //     for (auto observer : value)
+    //     {
+    //         if (observer)
+    //             RemoveObserver(observer);
+    //     }
+    // }
     GameSpawnMap.clear();
     Content::ClearContent();
 }
@@ -136,12 +144,21 @@ void Game::SetCurrentLevel(TiledLevel *level)
 
 void Game::RemoveObserver(Observer *observer)
 {
-    auto &vec = _observers[observer->EventType];
+    auto &vec = _observers.at(observer->EventType);
     for (size_t i = 0; i < vec.size(); i++)
     {
-        if (vec[i] == observer)
+        // if (vec[i] == observer)
+        // {
+        //     // vec[i] = nullptr;
+        //     return;
+        // }
+        for (auto it = vec.begin(); it != vec.end(); ++it)
         {
-            vec[i] = nullptr;
+            if (*it == observer)
+            {
+                vec.erase(it);
+                return;
+            }
         }
     }
 }

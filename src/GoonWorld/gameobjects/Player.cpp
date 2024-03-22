@@ -444,7 +444,7 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
         {
             player->_currentEnemyKillTime = 0;
             // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
-            player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
+            player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity / 2;
             player->_currentJumpTime = 0;
             player->_isJumping = true;
             player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);

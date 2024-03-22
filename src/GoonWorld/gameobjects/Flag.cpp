@@ -25,6 +25,7 @@ Flag::Flag(TiledMap::TiledObject &object)
     Game::Instance()->AddEventObserver((int)EventTypes::PlayerWin, _playerWinObserver.get());
 }
 
+
 void Flag::PlayerWinEvent(Event &event)
 {
     _rigidbodyComponent->GravityEnabled(true);
