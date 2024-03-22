@@ -20,6 +20,8 @@ BoxColliderComponent::~BoxColliderComponent()
 }
 void BoxColliderComponent::AddOverlapFunction(int overlapType, OverlapFunc func)
 {
+    auto args = bodyOverlapArgs{_boxCollider->bodyType, overlapType, func};
+    gpBoxColliderAddOverlapBeginFunc(_boxCollider, args);
 }
 void BoxColliderComponent::OnEnabled()
 {
@@ -45,8 +47,8 @@ void BoxColliderComponent::Draw()
     auto drawColor = geColor{0, 255, 255, 255};
     auto loc = _parent->Location();
     geRectangle dstRect{
-        (int)loc.x,
-        (int)loc.y,
+        (int)loc.x + _offset.x,
+        (int)loc.y + _offset.y,
         (int)_boxCollider->boundingBox.w,
         (int)_boxCollider->boundingBox.h};
     geDrawDebugRect(&dstRect, &drawColor);

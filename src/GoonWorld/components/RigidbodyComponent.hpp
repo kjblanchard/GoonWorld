@@ -10,6 +10,7 @@
 
 namespace GoonWorld
 {
+    class BoxColliderComponent;
     class RigidbodyComponent : public Component, public IDraw
     {
     public:
@@ -53,6 +54,7 @@ namespace GoonWorld
         inline void SetBodyType(int bodyType) { _body->bodyType = bodyType; }
         inline gpBB &BoundingBox() { return _body->boundingBox; }
         static inline void ResetRigidBodyVector() { _currentRigidbodies.clear(); }
+        inline void AddBoxCollider(BoxColliderComponent *box) { _boxColliders.push_back(box); }
 
     private:
         void OnComponentAdd(GameObject &parent) override;
@@ -64,6 +66,7 @@ namespace GoonWorld
         bool _isOnGround, _static, _isGravityEnabled = true;
         Point _offset;
         bool _debugDraw = false;
+        std::vector<BoxColliderComponent *> _boxColliders;
     };
     // template <typename T>
     // void RigidbodyComponent::AddOverlapFunction(int overlapType, std::function<void(void* args, gpBody *body, gpBody* overlapBody, gpOverlap *overlap)> func)

@@ -45,15 +45,18 @@ Player::Player(TiledMap::TiledObject &object)
 {
     _location = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);
-    auto bodyRect = geRectangle{object.X, object.Y, object.Width - 3, object.Height};
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _debugDrawComponent = new DebugDrawComponent(Point{bodyRect.w, bodyRect.h});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
     auto bigBodyRect = bodyRect;
-    bigBodyRect.w *= 2;
-    bigBodyRect.h *= 2;
-    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, gePointZero());
+    // bigBodyRect.w *= 2;
+    bigBodyRect.h += 6;
+    bigBodyRect.w -= 2;
+    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{1,-3});
+    _boxColliderComponent->SetBodyType(1);
+    _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
     jumpSfx = Sfx::SfxFactory(jumpSound);
     powerDownSfx = Sfx::SfxFactory(powerDownSound);
@@ -81,15 +84,17 @@ Player::Player(TiledMap::TiledObject &object)
 }
 void Player::BindOverlapFunctions()
 {
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Flag, &Player::FlagOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Flag, &Player::FlagOverlapFunc);
+
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
+
 }
 
 void Player::InitializePlayerConfig()
@@ -538,7 +543,7 @@ void Player::Win()
 void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
-    if (player->_isDead || player->_isDying)
+    if (player->_isDead || player->_isDying || !player->_isJumping)
         return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
@@ -550,7 +555,7 @@ void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody,
 void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
-    if (player->_isDead || player->_isDying)
+    if (player->_isDead || player->_isDying || !player->_isJumping)
         return;
     ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)

@@ -5,6 +5,7 @@
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonEngine/color.h>
 #include <GoonEngine/SdlSurface.h>
+#include <GoonWorld/components/BoxColliderComponent.hpp>
 using namespace GoonWorld;
 
 std::vector<RigidbodyComponent *> RigidbodyComponent::_currentRigidbodies;
@@ -73,6 +74,15 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
         return;
     gameobject->Location().x = body->boundingBox.x;
     gameobject->Location().y = body->boundingBox.y;
+    // TODO this is probably slow.
+    auto comp = gameobject->GetComponent((int)ComponentTypes::Rigidbody);
+    auto rb = dynamic_cast<RigidbodyComponent *>(comp);
+    if (!rb)
+        return;
+    for (auto box : rb->_boxColliders)
+    {
+        box->SetLocation(Point{(int)body->boundingBox.x + box->Offset().x, (int)body->boundingBox.y + box->Offset().y});
+    }
 }
 
 void RigidbodyComponent::Draw()
