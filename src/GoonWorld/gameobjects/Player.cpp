@@ -518,20 +518,9 @@ void Player::Win()
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
         whistleSfx->Play();
+        _animationComponent->Mirror = false;
         _shouldClimbAnim = true;
         _animationComponent->Update();
-        // auto timer = new Timer(this,
-        //                        _winningWhistleTimer,
-        //                        [](GameObject *obj, bool isComplete)
-        //                        {
-        //                            if (!isComplete)
-        //                                return false;
-        //                            auto player = static_cast<Player *>(obj);
-        //                            player->SlideFunc();
-        //                            return true;
-        //                        });
-        // AddTimer(timer);
-        // Add overlap func to disappear when running into wall
         _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &EndLevelStaticOverlapFunc);
         return;
     }
