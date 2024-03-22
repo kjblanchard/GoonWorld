@@ -8,6 +8,7 @@
 #include <GoonWorld/components/PlayerInputComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
+#include <GoonWorld/components/BoxColliderComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/animation/Animation.hpp>
 #include <GoonWorld/gameobjects/Coin.hpp>
@@ -49,11 +50,17 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
+    auto bigBodyRect = bodyRect;
+    bigBodyRect.w *= 2;
+    bigBodyRect.h *= 2;
+    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, gePointZero());
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
     jumpSfx = Sfx::SfxFactory(jumpSound);
     powerDownSfx = Sfx::SfxFactory(powerDownSound);
     whistleSfx = Sfx::SfxFactory(whistleSound);
-    AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+
+    // AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+    AddComponent({_boxColliderComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     BindOverlapFunctions();
     CreateAnimationTransitions();
@@ -69,6 +76,8 @@ Player::Player(TiledMap::TiledObject &object)
     }
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
+
+    _rigidbodyComponent->SetDebug(true);
 }
 void Player::BindOverlapFunctions()
 {

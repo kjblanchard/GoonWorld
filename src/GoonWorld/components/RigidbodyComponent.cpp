@@ -3,11 +3,13 @@
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/scene.h>
 #include <GoonWorld/base/GameObject.hpp>
+#include <GoonEngine/color.h>
+#include <GoonEngine/SdlSurface.h>
 using namespace GoonWorld;
 
 std::vector<RigidbodyComponent *> RigidbodyComponent::_currentRigidbodies;
 
-RigidbodyComponent::RigidbodyComponent(geRectangle *rect)
+RigidbodyComponent::RigidbodyComponent(geRectangle *rect, Point offset)
     : Component((int)ComponentTypes::Rigidbody), _static(false)
 {
     auto bb = gpBBNew(rect->x, rect->y, rect->w, rect->h);
@@ -48,6 +50,8 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
     {
         _bodyNum = gpSceneAddBody(_body);
     }
+    Enabled(true);
+    GetGame().AddDrawObject(this);
 }
 
 void RigidbodyComponent::OnEnabled()
@@ -69,4 +73,26 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
         return;
     gameobject->Location().x = body->boundingBox.x;
     gameobject->Location().y = body->boundingBox.y;
+}
+
+void RigidbodyComponent::Draw()
+{
+    if (!_enabled || !_debugDraw)
+        return;
+    auto drawColor = geColor{255, 0, 0, 255};
+    geRectangle dstRect{
+        (int)_body->boundingBox.x,
+        (int)_body->boundingBox.y,
+        (int)_body->boundingBox.w,
+        (int)_body->boundingBox.h};
+    geDrawDebugRect(&dstRect, &drawColor);
+}
+
+void RigidbodyComponent::Visible(bool isVisible)
+{
+}
+
+bool RigidbodyComponent::IsVisible()
+{
+    return true;
 }

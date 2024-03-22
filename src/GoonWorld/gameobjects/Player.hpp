@@ -14,6 +14,7 @@ namespace GoonWorld
     class PlayerInputComponent;
     class RigidbodyComponent;
     class AnimationComponent;
+    class BoxColliderComponent;
 
     class Player : public GameObject,
                    public ITakeDamage
@@ -68,6 +69,7 @@ namespace GoonWorld
         PlayerInputComponent *_playerInputComponent = nullptr;
         RigidbodyComponent *_rigidbodyComponent = nullptr;
         AnimationComponent *_animationComponent = nullptr;
+        BoxColliderComponent* _boxColliderComponent = nullptr;
 
     private:
         void BindOverlapFunctions();

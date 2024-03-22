@@ -6,17 +6,21 @@
 #include <GoonEngine/rectangle.h>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
+#include <GoonWorld/interfaces/IDraw.hpp>
 
 namespace GoonWorld
 {
-    class RigidbodyComponent : public Component
+    class RigidbodyComponent : public Component, public IDraw
     {
     public:
-        RigidbodyComponent(geRectangle *rect);
+        RigidbodyComponent(geRectangle *rect, Point offset = gePointZero());
         ~RigidbodyComponent();
         static void PhysicsUpdate();
         bool IsOnGround();
         void AddOverlapFunction(int overlapType, OverlapFunc func);
+        void Draw() override;
+        void Visible(bool isVisible) override;
+        bool IsVisible() override;
         inline bool JustGotOnGround(void) { return gpBodyJustGotOnGround(_body); }
         inline bool JustLeftGround(void) { return gpBodyJustNotOnGround(_body); }
         inline void GravityEnabled(bool isEnabled)
@@ -38,6 +42,7 @@ namespace GoonWorld
             _body->boundingBox.w = newSize.x;
             _body->boundingBox.h = newSize.y;
         }
+        inline void SetDebug(bool debug) { _debugDraw = debug; }
         inline gpVec &Velocity() { return _body->velocity; }
         inline gpVec &Acceleration() { return _body->acceleration; }
         inline gpVec &MaxVelocity() { return _body->maxVelocity; }
@@ -51,12 +56,14 @@ namespace GoonWorld
 
     private:
         void OnComponentAdd(GameObject &parent) override;
-        static void OnBodyUpdate(void* args, gpBody* body);
+        static void OnBodyUpdate(void *args, gpBody *body);
         gpBody *_body;
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;
         long long _isOnGroundCached;
         bool _isOnGround, _static, _isGravityEnabled = true;
+        Point _offset;
+        bool _debugDraw = false;
     };
     // template <typename T>
     // void RigidbodyComponent::AddOverlapFunction(int overlapType, std::function<void(void* args, gpBody *body, gpBody* overlapBody, gpOverlap *overlap)> func)
