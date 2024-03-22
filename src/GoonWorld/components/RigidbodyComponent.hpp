@@ -51,6 +51,7 @@ namespace GoonWorld
 
     private:
         void OnComponentAdd(GameObject &parent) override;
+        static void OnBodyUpdate(void* args, gpBody* body);
         gpBody *_body;
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;

@@ -13,12 +13,12 @@ RigidbodyComponent::RigidbodyComponent(geRectangle *rect)
     auto bb = gpBBNew(rect->x, rect->y, rect->w, rect->h);
     _body = gpBodyNew(bb);
     _body->gravityEnabled = 1;
+    _body->updateFunc = &OnBodyUpdate;
     _currentRigidbodies.push_back(this);
 }
 RigidbodyComponent::~RigidbodyComponent()
 {
     gpSceneRemoveBody(_bodyNum);
-    // gpBodyFree(_body);
 }
 
 void RigidbodyComponent::AddOverlapFunction(int overlapType, OverlapFunc func)
@@ -33,7 +33,6 @@ bool RigidbodyComponent::IsOnGround()
         return _isOnGround;
     _isOnGroundCached = Game::GetTicks();
     return _isOnGround = gpBodyIsOnGround(_body);
-    // return Game::GetTicks() == _isOnGroundCached ? _isOnGround : _isOnGround = gpBodyIsOnGround(_body);
 }
 
 void RigidbodyComponent::OnComponentAdd(GameObject &parent)
@@ -62,14 +61,12 @@ void RigidbodyComponent::OnDisabled()
     _body->gravityEnabled = false;
     Component::OnDisabled();
 }
-void RigidbodyComponent::PhysicsUpdate()
-{
-    for (auto rigidbody : _currentRigidbodies)
-    {
-        if (!rigidbody->Parent())
-            continue;
 
-        rigidbody->Parent()->Location().x = rigidbody->_body->boundingBox.x;
-        rigidbody->Parent()->Location().y = rigidbody->_body->boundingBox.y;
-    }
+void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
+{
+    auto gameobject = static_cast<GameObject *>(args);
+    if (!gameobject)
+        return;
+    gameobject->Location().x = body->boundingBox.x;
+    gameobject->Location().y = body->boundingBox.y;
 }

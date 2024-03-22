@@ -64,14 +64,6 @@ Game::~Game()
     DrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
-    // for (auto [key, value] : _observers)
-    // {
-    //     for (auto observer : value)
-    //     {
-    //         if (observer)
-    //             RemoveObserver(observer);
-    //     }
-    // }
     GameSpawnMap.clear();
     Content::ClearContent();
 }
@@ -88,10 +80,6 @@ void Game::Update(double timeMs)
     if (_shouldChangeLevel)
         ChangeLevel();
     // If there is not a player getting big, we should update physics.
-    if (!_playerBig)
-    {
-        RigidbodyComponent::PhysicsUpdate();
-    }
     _camera->Update();
     // If there is a player dying or player getting big, we should only update them.
     if (_playerDying || _playerBig)
