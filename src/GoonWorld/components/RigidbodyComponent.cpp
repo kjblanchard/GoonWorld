@@ -11,9 +11,11 @@ using namespace GoonWorld;
 std::vector<RigidbodyComponent *> RigidbodyComponent::_currentRigidbodies;
 
 RigidbodyComponent::RigidbodyComponent(geRectangle *rect, Point offset)
-    : Component((int)ComponentTypes::Rigidbody), _static(false)
+    : Component((int)ComponentTypes::Rigidbody), _static(false), _offset(offset)
 {
     auto bb = gpBBNew(rect->x, rect->y, rect->w, rect->h);
+    bb.x + offset.x;
+    bb.y + offset.y;
     _body = gpBodyNew(bb);
     _body->gravityEnabled = 1;
     _body->updateFunc = &OnBodyUpdate;
@@ -72,13 +74,13 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
     auto gameobject = static_cast<GameObject *>(args);
     if (!gameobject)
         return;
-    gameobject->Location().x = body->boundingBox.x;
-    gameobject->Location().y = body->boundingBox.y;
     // TODO this is probably slow.
     auto comp = gameobject->GetComponent((int)ComponentTypes::Rigidbody);
     auto rb = dynamic_cast<RigidbodyComponent *>(comp);
     if (!rb)
         return;
+    gameobject->Location().x = body->boundingBox.x + rb->_offset.x;
+    gameobject->Location().y = body->boundingBox.y + rb->_offset.x;
     for (auto box : rb->_boxColliders)
     {
         box->SetLocation(Point{(int)body->boundingBox.x + box->Offset().x, (int)body->boundingBox.y + box->Offset().y});

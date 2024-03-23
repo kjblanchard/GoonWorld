@@ -47,14 +47,16 @@ Player::Player(TiledMap::TiledObject &object)
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _debugDrawComponent = new DebugDrawComponent(Point{bodyRect.w, bodyRect.h});
-    _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
+    bodyRect.w -= 4;
+    bodyRect.h -= 4;
+    _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{-2, -2});
     _rigidbodyComponent->SetBodyType(1);
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
     auto bigBodyRect = bodyRect;
     // bigBodyRect.w *= 2;
     bigBodyRect.h += 6;
     bigBodyRect.w -= 2;
-    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{1,-3});
+    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{1, -3});
     _boxColliderComponent->SetBodyType(1);
     _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
@@ -84,7 +86,10 @@ Player::Player(TiledMap::TiledObject &object)
 }
 void Player::BindOverlapFunctions()
 {
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
+    // If rb overlap, we should die if not from  above
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
+    // If collider overlap, we should kill goomba.
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFuncJumpBox);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
@@ -94,7 +99,6 @@ void Player::BindOverlapFunctions()
 
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
-
 }
 
 void Player::InitializePlayerConfig()
@@ -454,6 +458,19 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
+        return;
+    player->TakeDamage();
+}
+
+void Player::GoombaOverlapFuncJumpBox(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    auto player = (Player *)instance;
+    if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
+        return;
+    Goomba *goomba = (Goomba *)overlapBody->funcArgs;
+    if (goomba->IsDead())
+        return;
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
         if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
         {
             player->_currentEnemyKillTime = 0;
@@ -466,7 +483,6 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
             goomba->TakeDamage();
             return;
         }
-    player->TakeDamage();
 }
 void Player::TakeDamage()
 {
