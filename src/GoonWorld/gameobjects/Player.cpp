@@ -47,6 +47,7 @@ Player::Player(TiledMap::TiledObject &object)
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _debugDrawComponent = new DebugDrawComponent(Point{bodyRect.w, bodyRect.h});
+    // Size of body should be smaller than the size of the tile object
     bodyRect.w -= 4;
     bodyRect.h -= 4;
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{-2, -2});
@@ -54,9 +55,10 @@ Player::Player(TiledMap::TiledObject &object)
     _animationComponent = new AnimationComponent("mario", Point{0, -20});
     auto bigBodyRect = bodyRect;
     // bigBodyRect.w *= 2;
-    bigBodyRect.h += 6;
+    // This is the jump hitbox, it should be taller and skinnier than the body
+    bigBodyRect.h += 8;
     bigBodyRect.w -= 2;
-    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{1, -3});
+    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{1, -4});
     _boxColliderComponent->SetBodyType(1);
     _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
