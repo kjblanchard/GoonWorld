@@ -60,12 +60,14 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
 void RigidbodyComponent::OnEnabled()
 {
     _body->gravityEnabled = _isGravityEnabled;
+    SetOverlapsEnabled(true);
     Component::OnEnabled();
 }
 
 void RigidbodyComponent::OnDisabled()
 {
     _body->gravityEnabled = false;
+    SetOverlapsEnabled(false);
     Component::OnDisabled();
 }
 

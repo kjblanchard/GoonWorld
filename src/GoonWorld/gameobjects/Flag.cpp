@@ -16,14 +16,14 @@ Flag::Flag(TiledMap::TiledObject &object)
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Flag);
-    _rigidbodyComponent->GravityEnabled(false);
-    _rigidbodyComponent->SetOverlapsEnabled(false);
     _animationComponent = new AnimationComponent("flags");
     AddComponent({_rigidbodyComponent, _animationComponent});
 
     _playerWinObserver = std::make_unique<Observer>((int)EventTypes::PlayerWin, [this](Event &event)
                                                     { this->PlayerWinEvent(event); });
     Game::Instance()->AddEventObserver((int)EventTypes::PlayerWin, _playerWinObserver.get());
+    _rigidbodyComponent->GravityEnabled(false);
+    _rigidbodyComponent->SetOverlapsEnabled(false);
 }
 
 

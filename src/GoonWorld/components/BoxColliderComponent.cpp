@@ -26,10 +26,12 @@ void BoxColliderComponent::AddOverlapFunction(int overlapType, OverlapFunc func)
 }
 void BoxColliderComponent::OnEnabled()
 {
+    SetOverlapsEnabled(true);
     Component::OnEnabled();
 }
 void BoxColliderComponent::OnDisabled()
 {
+    SetOverlapsEnabled(false);
     Component::OnDisabled();
 }
 void BoxColliderComponent::OnComponentAdd(GameObject &parent)
