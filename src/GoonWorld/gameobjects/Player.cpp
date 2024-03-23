@@ -578,8 +578,8 @@ void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody,
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    // if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
-    //     return;
+    if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
+        return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
@@ -593,8 +593,8 @@ void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBod
     if (player->_isDead || player->_isDying)
         return;
     // If we are not traveling upwards
-    // if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
-    //     return;
+    if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
+        return;
     ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
