@@ -77,7 +77,8 @@ void Content::LoadAllContent()
 {
     for (auto &[key, value] : _loadedContents)
     {
-        value->Load();
+        if (!value->IsLoaded())
+            value->Load();
     }
 }
 

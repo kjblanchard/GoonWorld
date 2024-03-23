@@ -43,22 +43,9 @@ Bgm::~Bgm()
 
 void Bgm::Load()
 {
-    // auto config = Game::Instance()->GetSound()->GetSoundConfig();
-    // _bgm = gsLoadBgm(GetLoadPath(_bgmName).c_str());
     _bgm = gsLoadBgm(_bgmName.c_str());
     _bgm->loop_begin = _bgmStart;
     _bgm->loop_end = _bgmEnd;
-    // for (auto &song : config->Music)
-    // {
-    //     if (song.Name.find(_bgmName) != std::string::npos)
-    //     {
-    //         _bgm->loop_begin = song.LoopStart;
-    //         _bgm->loop_end = song.LoopEnd;
-    //         return;
-    //     }
-    // }
-    // _bgm->loop_begin = 0;
-    // _bgm->loop_end = 0;
 }
 
 void Bgm::Unload()

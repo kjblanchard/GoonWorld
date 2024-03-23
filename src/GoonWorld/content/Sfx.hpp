@@ -9,6 +9,7 @@ namespace GoonWorld
     public:
         static Sfx *SfxFactory(std::string sfxName);
         static inline std::string GetLoadPath(std::string &title) { return "assets/audio/" + title + ".ogg"; }
+        inline bool IsLoaded() override { return _sfx != nullptr; }
         Sfx(std::string &name);
         void Play(float volume = 1.0);
         ~Sfx();
@@ -18,7 +19,7 @@ namespace GoonWorld
 
     private:
         std::string _sfxName;
-        gsSfx *_sfx;
+        gsSfx *_sfx = nullptr;
     };
 
 }

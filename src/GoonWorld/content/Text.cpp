@@ -47,8 +47,6 @@ bool Text::IsVisible()
 
 void Text::Load()
 {
-    if (_isLoaded)
-        return;
     Point textureDimensions = gePointZero();
     _loadedTexture = geCreateTextureForString(_stringToDisplay.c_str(), &textureDimensions, _textColor);
     _boundingBox.w = textureDimensions.x;
