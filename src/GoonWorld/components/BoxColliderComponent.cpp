@@ -14,6 +14,7 @@ BoxColliderComponent::BoxColliderComponent(geRectangle *rect, Point offset)
     _boxCollider = gpBoxColliderNew(bb);
     _currentBoxColliders.push_back(this);
 }
+
 BoxColliderComponent::~BoxColliderComponent()
 {
     gpSceneRemoveBoxCollider(_boxNum);

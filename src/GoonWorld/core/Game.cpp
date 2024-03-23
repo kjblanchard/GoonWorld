@@ -3,6 +3,7 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
+#include <GoonWorld/components/BoxColliderComponent.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
@@ -188,6 +189,7 @@ void Game::RestartLevel()
     DrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
+    BoxColliderComponent::ResetBoxColliders();
     LoadLevel(_loadedLevel->GetName());
     _loadedLevel->RestartLevel();
 }
@@ -258,6 +260,7 @@ void Game::ChangeLevel()
     DrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
+    BoxColliderComponent::ResetBoxColliders();
     auto nextLevel = _loadedLevel->GetNextLevel();
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;
