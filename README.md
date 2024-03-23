@@ -34,8 +34,11 @@
 ### Sounds
 - [Mushroom](https://freesound.org/people/timgormly/sounds/170155/) - Attribution
 - [Powerup](https://freesound.org/people/ProjectsU012/sounds/341629/) - Attribution
-- [Castle](https://freesound.org/people/Sirkoto51/sounds/416632/) - Attribution
 - [Fireball](https://freesound.org/people/adh.dreaming/sounds/615576/) - Creative Commons
+- [Level1-ArcadeLoop](https://freesound.org/people/joshuaempyre/sounds/251461/) - Attribution
+- [Level2-ChiptuneBeat](https://freesound.org/people/YipYep/sounds/679167/) - Attribution
+- [Level3-RetroFunk](https://freesound.org/people/sonically_sound/sounds/624874/) - Attribution
+- [Level4-Castle](https://freesound.org/people/Sirkoto51/sounds/416632/) - Attribution
 
 ## Libraries
 - [Supergoon Engine](https://github.com/supergoongaming/sg_engine) - MIT | Custom Physics, OpenAL wrapper, libpng/freetype wrapper, SDL wrapper, etc

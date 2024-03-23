@@ -30,6 +30,10 @@ namespace GoonWorld
         void SetTextureAtlas();
 
         inline Point GetGravity() { return _gravity; }
+        inline std::string &BgmName() { return _bgmName; }
+        inline float BgmLoopStart() { return _bgmStart;}
+        inline float BgmLoopEnd() { return _bgmEnd;}
+        inline float BgmVolume() { return _volume;}
         std::string GetNextLevel();
 
     private:
@@ -52,6 +56,7 @@ namespace GoonWorld
         struct SDL_Surface *GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset);
 
         void LoadGravity();
+        void LoadBgm();
 
     private:
         std::string _name;
@@ -59,5 +64,7 @@ namespace GoonWorld
         struct SDL_Texture *_loadedAtlas;
         std::unique_ptr<TiledMap> _mapData;
         Point _gravity;
+        std::string _bgmName = "";
+        float _bgmStart = 0.0, _bgmEnd = 0.0, _volume = 0.0;
     };
 }

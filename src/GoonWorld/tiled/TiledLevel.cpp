@@ -10,13 +10,14 @@
 using namespace GoonWorld;
 
 TiledLevel::TiledLevel(const char *filename)
-: _loadedAtlas (nullptr)
+    : _loadedAtlas(nullptr)
 {
     _mapData = std::make_unique<TiledMap>(filename);
     _name = filename;
     LoadGravity();
     LoadSurfaces();
     LoadSolidObjects();
+    LoadBgm();
     CreateBackgroundAtlas();
 }
 std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
@@ -149,6 +150,20 @@ void TiledLevel::LoadGravity()
         auto gravityJson = nlohmann::json::parse(property.ValueJsonString);
         _gravity.x = gravityJson["x"];
         _gravity.y = gravityJson["y"];
+    }
+}
+
+void TiledLevel::LoadBgm()
+{
+    for (auto &property : _mapData->Properties)
+    {
+        if (property.Name != "bgm")
+            continue;
+        auto gravityJson = nlohmann::json::parse(property.ValueJsonString);
+        _bgmName = gravityJson["bgmName"];
+        _bgmStart = gravityJson["loopBegin"];
+        _bgmEnd = gravityJson["loopEnd"];
+        _volume = gravityJson["volume"];
     }
 }
 

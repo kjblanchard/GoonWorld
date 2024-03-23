@@ -80,7 +80,6 @@ Player::Player(TiledMap::TiledObject &object)
     }
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
-
 }
 void Player::BindOverlapFunctions()
 {
@@ -93,7 +92,6 @@ void Player::BindOverlapFunctions()
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Flag, &Player::FlagOverlapFunc);
 
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
@@ -156,6 +154,7 @@ void Player::Update()
                 _rigidbodyComponent->Velocity().y = -250;
             _isDying = false;
             _isDead = true;
+            SetFlag(_playerFlags, PlayerFlags::CanExitLevel, true);
         }
     }
     if (IsFlagSet(_playerFlags, PlayerFlags::IsThrowingFireball))
@@ -277,6 +276,8 @@ void Player::HandleInput()
     {
         if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
         {
+            if (!IsFlagSet(_playerFlags, PlayerFlags::CanExitLevel))
+                return;
             if (_isDead)
                 Game::Instance()->TriggerRestartLevel();
             else
@@ -551,6 +552,7 @@ void Player::Win()
         _shouldClimbAnim = true;
         _animationComponent->Update();
         _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &EndLevelStaticOverlapFunc);
+        _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Flag, &Player::FlagOverlapFunc);
         return;
     }
 }
@@ -637,6 +639,7 @@ void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *ove
     {
     case gpOverlapRight:
         player->_animationComponent->Visible(false);
+        player->SetFlag(player->_playerFlags, PlayerFlags::CanExitLevel, true);
         break;
     }
 }
@@ -766,7 +769,7 @@ void Player::SuperPowerupTick()
 void Player::SlideFunc()
 {
     _rigidbodyComponent->GravityEnabled(true);
-    winBgm->Play(0);
+    winBgm->Play(0, 0.5);
     _isWinning = false;
     _isWinWalking = true;
     _currentDeadTime = 0;

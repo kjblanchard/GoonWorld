@@ -36,6 +36,7 @@ namespace GoonWorld
             static const int IsSuper = 1 << 6;
             static const int IsThrowingFireball = 1 << 7;
             static const int IsClimbing = 1 << 8;
+            static const int CanExitLevel = 1 << 9;
         };
         int32_t _playerFlags = 0;
         AppSettings::PlayerConfig *_playerConfig;
@@ -68,7 +69,7 @@ namespace GoonWorld
         PlayerInputComponent *_playerInputComponent = nullptr;
         RigidbodyComponent *_rigidbodyComponent = nullptr;
         AnimationComponent *_animationComponent = nullptr;
-        BoxColliderComponent* _boxColliderComponent = nullptr;
+        BoxColliderComponent *_boxColliderComponent = nullptr;
 
     private:
         void BindOverlapFunctions();

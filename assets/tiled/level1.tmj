@@ -820,9 +820,10 @@
          "type":"class",
          "value":
             {
-             "bgmName":"rangers",
-             "loopBegin":20.397,
-             "loopEnd":43.08
+             "bgmName":"arcade",
+             "loopBegin":0,
+             "loopEnd":0,
+             "volume":0.5
             }
         }, 
         {

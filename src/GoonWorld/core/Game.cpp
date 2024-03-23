@@ -197,7 +197,6 @@ void Game::RestartLevel()
 void Game::LoadLevel(std::string level)
 {
     InitializePhysics();
-    // auto result = _sound->LoadBgm("platforms");
 
     if (!_loadedLevel || _shouldChangeLevel)
     {
@@ -210,14 +209,14 @@ void Game::LoadLevel(std::string level)
     SetCameraRect(_camera->Bounds());
 
     // _sound->PlayBgm("platforms");
-    auto bgm = Bgm::BgmFactory("platforms");
+    auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
     _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContent();
     AddUIObject(_coinUI.get());
     AddUIObject(_levelTimerUI.get());
     AddUpdateObject(_levelTimerUI.get());
-    bgm->Play();
+    bgm->Play(-1, _loadedLevel->BgmVolume());
     _coinUI->UpdateCoins(0);
     _levelTimerUI->UpdateTime(0);
 }

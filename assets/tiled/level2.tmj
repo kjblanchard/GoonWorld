@@ -378,6 +378,17 @@
                  "width":16,
                  "x":800,
                  "y":240
+                }, 
+                {
+                 "height":288,
+                 "id":28,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":880,
+                 "y":0
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -386,9 +397,21 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":27,
+ "nextobjectid":29,
  "orientation":"orthogonal",
  "properties":[
+        {
+         "name":"bgm",
+         "propertytype":"Bgm",
+         "type":"class",
+         "value":
+            {
+             "bgmName":"chiptune",
+             "loopBegin":0,
+             "loopEnd":0,
+             "volume":0.75
+            }
+        }, 
         {
          "name":"gravity",
          "propertytype":"Vector",
