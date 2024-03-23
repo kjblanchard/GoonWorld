@@ -64,8 +64,8 @@ void Fireball::Push(Point spawnLocation, bool right)
     _rigidbodyComponent->SetLocation(spawnLocation);
     _location = spawnLocation;
     _rigidbodyComponent->Velocity().x = right ? _moveSpeed : -_moveSpeed;
-    LogWarn("Fireball vel: %f:%f  Acc: %f:%f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y,
-            _rigidbodyComponent->Acceleration().x, _rigidbodyComponent->Acceleration().y);
+    // LogWarn("Fireball vel: %f:%f  Acc: %f:%f", _rigidbodyComponent->Velocity().x, _rigidbodyComponent->Velocity().y,
+    //         _rigidbodyComponent->Acceleration().x, _rigidbodyComponent->Acceleration().y);
     _movingRight = right;
     fireballSfx->Play();
 }
