@@ -88,10 +88,10 @@ void Player::BindOverlapFunctions()
     // If collider overlap, we should kill goomba.
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFuncJumpBox);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
+    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
 
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
@@ -457,7 +457,17 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
+    {
+        player->_currentEnemyKillTime = 0;
+        // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
+        player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
+        player->_currentJumpTime = 0;
+        player->_isJumping = true;
+        player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
+        player->SetFlag(player->_playerFlags, PlayerFlags::DeadNoGravity, false);
+        goomba->TakeDamage();
         return;
+    }
     player->TakeDamage();
 }
 
@@ -474,7 +484,13 @@ void Player::GoombaOverlapFuncJumpBox(void *instance, gpBody *body, gpBody *over
         {
             player->_currentEnemyKillTime = 0;
             // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
-            player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity / 2;
+            auto vel = player->_playerConfig->InitialJumpVelocity / 2;
+            if (player->_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+            {
+                vel *= 2;
+            }
+
+            player->_rigidbodyComponent->Velocity().y = vel;
             player->_currentJumpTime = 0;
             player->_isJumping = true;
             player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
@@ -562,8 +578,8 @@ void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody,
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
-        return;
+    // if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
+    //     return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
@@ -577,8 +593,8 @@ void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBod
     if (player->_isDead || player->_isDying)
         return;
     // If we are not traveling upwards
-    if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
-        return;
+    // if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
+    //     return;
     ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
@@ -700,10 +716,11 @@ void Player::PowerupTick()
             auto newName = currentAnim.second->Name;
             // Handle where our offset should be, as our location is different per.
             auto wasPreviouslyBig = !IsFlagSet(_playerFlags, PlayerFlags::IsBig);
-            auto isBig = endsWith(newName, "b") || endsWith(newName, "f");
+            auto isBig = endsWith(newName, "b") || endsWith(newName, "f") || endsWith(newName, "ft");
             if (isBig)
             {
-                newName.erase(newName.size() - 1);
+                auto removeChars = endsWith(newName, "ft") ? 2 : 1;
+                newName.erase(newName.size() - removeChars);
                 if (wasPreviouslyBig)
                 {
                     _animationComponent->Offset(Point{0, -4});

@@ -33,9 +33,11 @@ namespace GoonWorld
             _boxCollider->boundingBox.w = newSize.x;
             _boxCollider->boundingBox.h = newSize.y;
         }
-        inline const Point& Offset(){return _offset;}
+        inline const Point &Offset() { return _offset; }
         inline void SetBodyType(BodyTypes bodyType) { _boxCollider->bodyType = (int)bodyType; }
+        inline void SetOverlapsEnabled(bool enabled) { _boxCollider->enabled = enabled; }
         inline void SetBodyType(int bodyType) { _boxCollider->bodyType = bodyType; }
+        inline void SetDebug(bool debug) { _debugDraw = debug; }
         inline gpBB &BoundingBox() { return _boxCollider->boundingBox; }
         static inline void ResetBoxColliders() { _currentBoxColliders.clear(); }
 

@@ -17,6 +17,7 @@ Flag::Flag(TiledMap::TiledObject &object)
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Flag);
     _rigidbodyComponent->GravityEnabled(false);
+    _rigidbodyComponent->SetOverlapsEnabled(false);
     _animationComponent = new AnimationComponent("flags");
     AddComponent({_rigidbodyComponent, _animationComponent});
 
@@ -29,6 +30,7 @@ Flag::Flag(TiledMap::TiledObject &object)
 void Flag::PlayerWinEvent(Event &event)
 {
     _rigidbodyComponent->GravityEnabled(true);
+    _rigidbodyComponent->SetOverlapsEnabled(true);
 }
 
 void Flag::TakeDamage()

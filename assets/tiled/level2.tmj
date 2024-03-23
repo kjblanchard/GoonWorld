@@ -179,7 +179,7 @@
                          "name":"contents",
                          "propertytype":"BoxContents",
                          "type":"int",
-                         "value":2
+                         "value":1
                         }],
                  "rotation":0,
                  "type":"ItemBox",
@@ -246,6 +246,28 @@
                  "width":16,
                  "x":800,
                  "y":80
+                }, 
+                {
+                 "height":16,
+                 "id":29,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Brick",
+                 "visible":true,
+                 "width":32,
+                 "x":400,
+                 "y":192
+                }, 
+                {
+                 "height":16,
+                 "id":30,
+                 "name":"",
+                 "rotation":0,
+                 "type":"Brick",
+                 "visible":true,
+                 "width":32,
+                 "x":448,
+                 "y":192
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -314,17 +336,6 @@
                  "y":208
                 }, 
                 {
-                 "height":16,
-                 "id":20,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":400,
-                 "y":192
-                }, 
-                {
                  "height":64,
                  "id":21,
                  "name":"",
@@ -359,17 +370,6 @@
                 }, 
                 {
                  "height":16,
-                 "id":24,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":448,
-                 "y":192
-                }, 
-                {
-                 "height":16,
                  "id":25,
                  "name":"",
                  "rotation":0,
@@ -397,7 +397,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":29,
+ "nextobjectid":31,
  "orientation":"orthogonal",
  "properties":[
         {

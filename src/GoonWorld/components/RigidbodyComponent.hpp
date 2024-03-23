@@ -23,6 +23,7 @@ namespace GoonWorld
         void Visible(bool isVisible) override;
         bool IsVisible() override;
         inline bool JustGotOnGround(void) { return gpBodyJustGotOnGround(_body); }
+        inline void SetOverlapsEnabled(bool enabled) { _body->enabled = enabled; }
         inline bool JustLeftGround(void) { return gpBodyJustNotOnGround(_body); }
         inline void GravityEnabled(bool isEnabled)
         {
