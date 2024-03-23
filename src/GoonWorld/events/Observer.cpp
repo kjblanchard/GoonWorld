@@ -3,7 +3,7 @@
 using namespace GoonWorld;
 Observer::~Observer()
 {
+        if (!Game::Instance())
+                return;
         Game::Instance()->RemoveObserver(this);
 }
-// using namespace GoonWorld;
-        // ~Observer();

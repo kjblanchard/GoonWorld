@@ -10,10 +10,10 @@ typedef struct gpOverlap gpOverlap;
 namespace GoonWorld
 {
     class Fireball;
-    class DebugDrawComponent;
     class PlayerInputComponent;
     class RigidbodyComponent;
     class AnimationComponent;
+    class BoxColliderComponent;
 
     class Player : public GameObject,
                    public ITakeDamage
@@ -35,6 +35,8 @@ namespace GoonWorld
             static const int IsInvincible = 1 << 5;
             static const int IsSuper = 1 << 6;
             static const int IsThrowingFireball = 1 << 7;
+            static const int IsClimbing = 1 << 8;
+            static const int CanExitLevel = 1 << 9;
         };
         int32_t _playerFlags = 0;
         AppSettings::PlayerConfig *_playerConfig;
@@ -44,8 +46,8 @@ namespace GoonWorld
         // Animations
     private:
         bool _shouldFallAnim, _shouldTurnAnim, _shouldRunAnim, _shouldIdleAnim;
-        bool _shouldThrowFireballIdleAnim = false;
-        bool _shouldThrowFireballRunAnim = false;
+        bool _shouldThrowFireballIdleAnim = false, _shouldThrowFireballRunAnim = false;
+        bool _shouldClimbAnim = false;
         // State
     private:
         bool _isJumping = false, _isTurning = false, _isDying = false, _isDead = false;
@@ -56,7 +58,7 @@ namespace GoonWorld
         float _currentFireballTimer = 0;
         // Constants
     private:
-        const float _winningWhistleTimer = .75;
+        const float _winningWhistleTimer = .25;
         const float _deadTimer = 0.65;
         const float _invincibleTime = 1.0;
         const int _bigIterations = 4;
@@ -64,10 +66,10 @@ namespace GoonWorld
         const float _fireballThrowTime = 0.15;
         // Components
     private:
-        DebugDrawComponent *_debugDrawComponent = nullptr;
         PlayerInputComponent *_playerInputComponent = nullptr;
         RigidbodyComponent *_rigidbodyComponent = nullptr;
         AnimationComponent *_animationComponent = nullptr;
+        BoxColliderComponent *_boxColliderComponent = nullptr;
 
     private:
         void BindOverlapFunctions();
@@ -99,11 +101,13 @@ namespace GoonWorld
         static void BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void GoombaOverlapFuncJumpBox(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void FlagOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
         static void EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
     };
 }

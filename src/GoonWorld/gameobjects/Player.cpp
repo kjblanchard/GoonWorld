@@ -4,10 +4,10 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/core/Camera.hpp>
-#include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/PlayerInputComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
+#include <GoonWorld/components/BoxColliderComponent.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/animation/Animation.hpp>
 #include <GoonWorld/gameobjects/Coin.hpp>
@@ -17,6 +17,7 @@
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/gameobjects/ItemBox.hpp>
 #include <GoonWorld/gameobjects/Fireball.hpp>
+#include <GoonWorld/gameobjects/Flag.hpp>
 #include <GoonWorld/common/Helpers.hpp>
 #include <GoonWorld/events/Event.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
@@ -43,17 +44,28 @@ Player::Player(TiledMap::TiledObject &object)
 {
     _location = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);
-    auto bodyRect = geRectangle{object.X, object.Y, object.Width - 3, object.Height};
-    _debugDrawComponent = new DebugDrawComponent(Point{bodyRect.w, bodyRect.h});
-    _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
+    auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
+    // Size of body should be smaller than the size of the tile object
+    bodyRect.w += _playerConfig->RigidBodyOffsetW;
+    bodyRect.h += _playerConfig->RigidBodyOffsetH;
+    _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{_playerConfig->RigidBodyOffsetX, _playerConfig->RigidBodyOffsetY});
     _rigidbodyComponent->SetBodyType(1);
-    _animationComponent = new AnimationComponent("mario", Point{0, -20});
+    // _animationComponent = new AnimationComponent("mario", Point{0, -20});
+    _animationComponent = new AnimationComponent("mario", Point{0, -22});
+    auto bigBodyRect = bodyRect;
+    // bigBodyRect.w *= 2;
+    // This is the jump hitbox, it should be taller and skinnier than the body
+    bigBodyRect.w += _playerConfig->JumpColliderOffsetW;
+    bigBodyRect.h += _playerConfig->JumpColliderOffsetH;
+    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
+    _boxColliderComponent->SetBodyType(1);
+    _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
     jumpSfx = Sfx::SfxFactory(jumpSound);
     powerDownSfx = Sfx::SfxFactory(powerDownSound);
     whistleSfx = Sfx::SfxFactory(whistleSound);
-    AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    _debugDrawComponent->Enabled(false);
+
+    AddComponent({_boxColliderComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
     BindOverlapFunctions();
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -68,17 +80,22 @@ Player::Player(TiledMap::TiledObject &object)
     }
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
+
+    _rigidbodyComponent->SetDebug(true);
+    _boxColliderComponent->SetDebug(true);
 }
 void Player::BindOverlapFunctions()
 {
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
-    _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
+
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFuncJumpBox);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
 }
 
 void Player::InitializePlayerConfig()
@@ -138,6 +155,7 @@ void Player::Update()
                 _rigidbodyComponent->Velocity().y = -250;
             _isDying = false;
             _isDead = true;
+            SetFlag(_playerFlags, PlayerFlags::CanExitLevel, true);
         }
     }
     if (IsFlagSet(_playerFlags, PlayerFlags::IsThrowingFireball))
@@ -259,6 +277,8 @@ void Player::HandleInput()
     {
         if (_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
         {
+            if (!IsFlagSet(_playerFlags, PlayerFlags::CanExitLevel))
+                return;
             if (_isDead)
                 Game::Instance()->TriggerRestartLevel();
             else
@@ -392,6 +412,16 @@ void Player::CreateAnimationTransitions()
     _animationComponent->AddTransition("runft", "idleft", true, &_shouldThrowFireballIdleAnim);
     _animationComponent->AddTransition("turnf", "walkft", true, &_shouldThrowFireballRunAnim);
     _animationComponent->AddTransition("jumpf", "idleft", true, &_shouldThrowFireballIdleAnim);
+    // climbing
+    _animationComponent->AddTransition("walk", "climb", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("walkb", "climbb", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("walkf", "climbf", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("climb", "walk", false, &_shouldClimbAnim);
+    _animationComponent->AddTransition("climbb", "walkb", false, &_shouldClimbAnim);
+    _animationComponent->AddTransition("climbf", "walkf", false, &_shouldClimbAnim);
+    _animationComponent->AddTransition("jumpf", "climbf", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("jumpb", "climbb", true, &_shouldClimbAnim);
+    _animationComponent->AddTransition("jump", "climb", true, &_shouldClimbAnim);
 }
 
 void Player::Jump()
@@ -428,11 +458,40 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
+    {
+        player->_currentEnemyKillTime = 0;
+        // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
+        player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
+        player->_currentJumpTime = 0;
+        player->_isJumping = true;
+        player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
+        player->SetFlag(player->_playerFlags, PlayerFlags::DeadNoGravity, false);
+        goomba->TakeDamage();
+        return;
+    }
+    player->TakeDamage();
+}
+
+void Player::GoombaOverlapFuncJumpBox(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    auto player = (Player *)instance;
+    if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
+        return;
+    Goomba *goomba = (Goomba *)overlapBody->funcArgs;
+    if (goomba->IsDead())
+        return;
+    if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
         if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
         {
             player->_currentEnemyKillTime = 0;
             // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
-            player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
+            auto vel = player->_playerConfig->InitialJumpVelocity / 2;
+            if (player->_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+            {
+                vel *= 2;
+            }
+
+            player->_rigidbodyComponent->Velocity().y = vel;
             player->_currentJumpTime = 0;
             player->_isJumping = true;
             player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);
@@ -440,7 +499,6 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
             goomba->TakeDamage();
             return;
         }
-    player->TakeDamage();
 }
 void Player::TakeDamage()
 {
@@ -470,7 +528,19 @@ void Player::DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, 
 void Player::WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
+    auto winEvent = Event{player, nullptr, (int)EventTypes::PlayerWin};
+    player->GetGame().PushEvent(winEvent);
     player->Win();
+}
+void Player::FlagOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+{
+    auto player = (Player *)instance;
+    auto flag = static_cast<Flag *>(overlapBody->funcArgs);
+    if (!flag)
+        return;
+    flag->TakeDamage();
+    player->SlideFunc();
+    player->_rigidbodyComponent->GravityEnabled(true);
 }
 
 void Player::Die()
@@ -493,20 +563,13 @@ void Player::Win()
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
+        SetFlag(_playerFlags, PlayerFlags::IsClimbing, true);
         whistleSfx->Play();
-        auto timer = new Timer(this,
-                               _winningWhistleTimer,
-                               [](GameObject *obj, bool isComplete)
-                               {
-                                   if (!isComplete)
-                                       return false;
-                                   auto player = static_cast<Player *>(obj);
-                                   player->SlideFunc();
-                                   return true;
-                               });
-        AddTimer(timer);
-        // Add overlap func to disappear when running into wall
+        _animationComponent->Mirror = false;
+        _shouldClimbAnim = true;
+        _animationComponent->Update();
         _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &EndLevelStaticOverlapFunc);
+        _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Flag, &Player::FlagOverlapFunc);
         return;
     }
 }
@@ -515,6 +578,8 @@ void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody,
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
+        return;
+    if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
@@ -527,6 +592,9 @@ void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBod
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
+        return;
+    // If we are not traveling upwards
+    if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
     ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
@@ -588,6 +656,7 @@ void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *ove
     {
     case gpOverlapRight:
         player->_animationComponent->Visible(false);
+        player->SetFlag(player->_playerFlags, PlayerFlags::CanExitLevel, true);
         break;
     }
 }
@@ -615,21 +684,24 @@ void Player::PowerupTick()
         GetGame().PushEvent(bigEvent);
         if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
         {
-            auto newSize = Point{16, 32};
+            // Move marios current location up by 16 pixes cause he is getting big
             _location.y -= 16;
+            // Adjust rigidbody location upwards and increase height
             _rigidbodyComponent->BoundingBox().y -= 16;
-            _rigidbodyComponent->SizeChange(newSize);
+            _rigidbodyComponent->BoundingBox().h += 16;
+            _boxColliderComponent->BoundingBox().y -= 16;
+            _boxColliderComponent->BoundingBox().h += 16;
+            // Adjust animation offset
             _animationComponent->Offset(Point{0, -4});
-            _debugDrawComponent->Size = newSize;
         }
         else
         {
-            auto newSize = Point{16, 16};
             _location.y += 16;
             _rigidbodyComponent->BoundingBox().y += 16;
-            _rigidbodyComponent->SizeChange(newSize);
+            _rigidbodyComponent->BoundingBox().h -= 16;
+            _boxColliderComponent->BoundingBox().y += 16;
+            _boxColliderComponent->BoundingBox().h -= 16;
             _animationComponent->Offset(Point{0, -20});
-            _debugDrawComponent->Size = newSize;
         }
     }
     // Regular loop
@@ -645,10 +717,11 @@ void Player::PowerupTick()
             auto newName = currentAnim.second->Name;
             // Handle where our offset should be, as our location is different per.
             auto wasPreviouslyBig = !IsFlagSet(_playerFlags, PlayerFlags::IsBig);
-            auto isBig = endsWith(newName, "b") || endsWith(newName, "f");
+            auto isBig = endsWith(newName, "b") || endsWith(newName, "f") || endsWith(newName, "ft");
             if (isBig)
             {
-                newName.erase(newName.size() - 1);
+                auto removeChars = endsWith(newName, "ft") ? 2 : 1;
+                newName.erase(newName.size() - removeChars);
                 if (wasPreviouslyBig)
                 {
                     _animationComponent->Offset(Point{0, -4});
@@ -714,7 +787,7 @@ void Player::SuperPowerupTick()
 void Player::SlideFunc()
 {
     _rigidbodyComponent->GravityEnabled(true);
-    winBgm->Play(0);
+    winBgm->Play(0, 0.5);
     _isWinning = false;
     _isWinWalking = true;
     _currentDeadTime = 0;
@@ -722,5 +795,11 @@ void Player::SlideFunc()
 
 void Player::WinWalking()
 {
-    _rigidbodyComponent->Velocity().x = 45;
+    if (IsFlagSet(_playerFlags, PlayerFlags::IsClimbing))
+    {
+        if (_rigidbodyComponent->IsOnGround())
+            SetFlag(_playerFlags, PlayerFlags::IsClimbing, false);
+    }
+    _rigidbodyComponent->Velocity().x = IsFlagSet(_playerFlags, PlayerFlags::IsClimbing) ? 0 : 45;
+    _shouldClimbAnim = IsFlagSet(_playerFlags, PlayerFlags::IsClimbing) ? true : false;
 }

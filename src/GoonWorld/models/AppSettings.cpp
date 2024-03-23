@@ -61,4 +61,12 @@ void AppSettings::LoadPlayerConfigFromJson(nlohmann::json &playerConfigJson)
     PlayerConfigs.InitialJumpVelocity = playerConfigJson["initialJumpVelocity"];
     PlayerConfigs.MaxJumpTime = playerConfigJson["maxJumpTime"];
     PlayerConfigs.InitialMoveVelocity = playerConfigJson["initialMoveVelocity"];
+    PlayerConfigs.RigidBodyOffsetX = playerConfigJson["rbOffset"]["x"];
+    PlayerConfigs.RigidBodyOffsetY = playerConfigJson["rbOffset"]["y"];
+    PlayerConfigs.RigidBodyOffsetW = playerConfigJson["rbOffset"]["w"];
+    PlayerConfigs.RigidBodyOffsetH = playerConfigJson["rbOffset"]["h"];
+    PlayerConfigs.JumpColliderOffsetX = playerConfigJson["jumpColliderOffset"]["x"];
+    PlayerConfigs.JumpColliderOffsetY = playerConfigJson["jumpColliderOffset"]["y"];
+    PlayerConfigs.JumpColliderOffsetW = playerConfigJson["jumpColliderOffset"]["w"];
+    PlayerConfigs.JumpColliderOffsetH = playerConfigJson["jumpColliderOffset"]["h"];
 }

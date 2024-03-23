@@ -6,6 +6,14 @@
 - Play the game here, or likely watch its "progress" [Supergoon.com](https://world.supergoon.com)
 - Currently have 2 macos executables, as libpng cannot handle multiple architectures currently with a mac universal build, [issue here]()
 
+## Tiled
+- Configure the background, entities, etc
+- ![Tiled](https://github.com/kjblanchard/GoonWorld/blob/master/img/tiled.png?raw=true)
+
+## Aseprite
+- Configure the Animations, time per frame, Sprites, etc
+- ![Tiled](https://github.com/kjblanchard/GoonWorld/blob/master/img/aseprite.png?raw=true)
+
 ## Development
 - Mostly developed on macos apple silicon
 - Builds on Mac locally until game is playable, build on Windows, Universal Mac, Ubuntu, and Emscripten via github actions
@@ -34,11 +42,14 @@
 ### Sounds
 - [Mushroom](https://freesound.org/people/timgormly/sounds/170155/) - Attribution
 - [Powerup](https://freesound.org/people/ProjectsU012/sounds/341629/) - Attribution
-- [Castle](https://freesound.org/people/Sirkoto51/sounds/416632/) - Attribution
 - [Fireball](https://freesound.org/people/adh.dreaming/sounds/615576/) - Creative Commons
+- [Level1-ArcadeLoop](https://freesound.org/people/joshuaempyre/sounds/251461/) - Attribution
+- [Level2-ChiptuneBeat](https://freesound.org/people/YipYep/sounds/679167/) - Attribution
+- [Level3-RetroFunk](https://freesound.org/people/sonically_sound/sounds/624874/) - Attribution
+- [Level4-Castle](https://freesound.org/people/Sirkoto51/sounds/416632/) - Attribution
 
 ## Libraries
-- [Supergoon Engine](https://github.com/kjblanchard/goonPhysics) - MIT | Custom Physics, OpenAL wrapper, libpng/freetype wrapper, SDL wrapper, etc
+- [Supergoon Engine](https://github.com/supergoongaming/sg_engine) - MIT | Custom Physics, OpenAL wrapper, libpng/freetype wrapper, SDL wrapper, etc
 - [SDL](https://www.libsdl.org/license.php) - ZLIB - Low level Windowing / Eventing
 - [nlohmann json](https://github.com/nlohmann/json) - MIT - json parsing for appsettings file
 

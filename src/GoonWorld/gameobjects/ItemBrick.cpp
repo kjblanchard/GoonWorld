@@ -16,6 +16,7 @@ static Sfx *bumpSfx2 = nullptr;
 static Sfx *powerupSpawnSfx2 = nullptr;
 
 ItemBrick::ItemBrick(TiledMap::TiledObject &object)
+    : _contents(0)
 {
     for (auto &prop : object.Properties)
     {

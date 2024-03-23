@@ -17,6 +17,7 @@ namespace GoonWorld
         inline void SetX(int x) { _boundingBox.x = x; }
         inline void SetY(int y) { _boundingBox.x = y; }
         inline int X() { return _boundingBox.x; }
+        inline bool IsLoaded() override { return _isLoaded; }
         inline void SetLocation(Point newLocation)
         {
             _boundingBox.x = newLocation.x;

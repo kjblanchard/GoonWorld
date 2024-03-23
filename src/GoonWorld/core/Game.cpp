@@ -3,6 +3,7 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
+#include <GoonWorld/components/BoxColliderComponent.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonWorld/interfaces/IDraw.hpp>
@@ -56,14 +57,14 @@ Game::Game()
 
 Game::~Game()
 {
-    for (auto [key, value] : _observers)
-    {
-        for (auto observer : value)
-        {
-            if (observer)
-                RemoveObserver(observer);
-        }
-    }
+    _shouldChangeLevel = false;
+    _shouldRestart = false;
+    _playerDying = nullptr;
+    _playerBig = nullptr;
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    GameObject::ClearGameObjects();
+    RigidbodyComponent::ResetRigidBodyVector();
     GameSpawnMap.clear();
     Content::ClearContent();
 }
@@ -80,10 +81,6 @@ void Game::Update(double timeMs)
     if (_shouldChangeLevel)
         ChangeLevel();
     // If there is not a player getting big, we should update physics.
-    if (!_playerBig)
-    {
-        RigidbodyComponent::PhysicsUpdate();
-    }
     _camera->Update();
     // If there is a player dying or player getting big, we should only update them.
     if (_playerDying || _playerBig)
@@ -136,12 +133,21 @@ void Game::SetCurrentLevel(TiledLevel *level)
 
 void Game::RemoveObserver(Observer *observer)
 {
-    auto &vec = _observers[observer->EventType];
+    auto &vec = _observers.at(observer->EventType);
     for (size_t i = 0; i < vec.size(); i++)
     {
-        if (vec[i] == observer)
+        // if (vec[i] == observer)
+        // {
+        //     // vec[i] = nullptr;
+        //     return;
+        // }
+        for (auto it = vec.begin(); it != vec.end(); ++it)
         {
-            vec[i] = nullptr;
+            if (*it == observer)
+            {
+                vec.erase(it);
+                return;
+            }
         }
     }
 }
@@ -181,8 +187,10 @@ void Game::RestartLevel()
     _playerBig = nullptr;
     UpdateObjects.clear();
     DrawObjects.clear();
+    UIDrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
+    BoxColliderComponent::ResetBoxColliders();
     LoadLevel(_loadedLevel->GetName());
     _loadedLevel->RestartLevel();
 }
@@ -190,8 +198,6 @@ void Game::RestartLevel()
 void Game::LoadLevel(std::string level)
 {
     InitializePhysics();
-    // auto result = _sound->LoadBgm("platforms");
-
     if (!_loadedLevel || _shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
@@ -201,16 +207,14 @@ void Game::LoadLevel(std::string level)
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
-
-    // _sound->PlayBgm("platforms");
-    auto bgm = Bgm::BgmFactory("platforms");
+    auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
     _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContent();
     AddUIObject(_coinUI.get());
     AddUIObject(_levelTimerUI.get());
     AddUpdateObject(_levelTimerUI.get());
-    bgm->Play();
+    bgm->Play(-1, _loadedLevel->BgmVolume());
     _coinUI->UpdateCoins(0);
     _levelTimerUI->UpdateTime(0);
 }
@@ -253,6 +257,7 @@ void Game::ChangeLevel()
     DrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
+    BoxColliderComponent::ResetBoxColliders();
     auto nextLevel = _loadedLevel->GetNextLevel();
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;

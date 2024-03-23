@@ -7,9 +7,12 @@ namespace GoonWorld
     class Bgm : public ILoadContent
     {
     public:
-        static Bgm *BgmFactory(std::string bgmName);
+        // static Bgm *BgmFactory(std::string bgmName);
+        static Bgm *BgmFactory(std::string bgmName, float start = 0, float end = 0);
         static inline std::string GetLoadPath(std::string &title) { return "assets/audio/" + title + ".ogg"; }
-        Bgm(std::string &name);
+
+        inline bool IsLoaded() override { return _bgm != nullptr; }
+        Bgm(std::string &name, float start = 0, float end = 0);
         void Play(int loops = -1, float volume = 1.0);
         ~Bgm();
         inline std::string &GetContentName() override { return _bgmName; }
@@ -18,7 +21,8 @@ namespace GoonWorld
 
     private:
         std::string _bgmName;
-        gsBgm *_bgm;
+        float _bgmStart, _bgmEnd;
+        gsBgm *_bgm = nullptr;
     };
 
 }

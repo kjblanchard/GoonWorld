@@ -25,6 +25,11 @@
                     "name": "loopEnd",
                     "type": "float",
                     "value": 0
+                },
+                {
+                    "name": "volume",
+                    "type": "float",
+                    "value": 0
                 }
             ],
             "name": "Bgm",

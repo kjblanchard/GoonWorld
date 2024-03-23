@@ -5,18 +5,17 @@
 #include <SupergoonSound/include/sound.h>
 using namespace GoonWorld;
 
-Bgm *Bgm::BgmFactory(std::string bgmName)
+Bgm *Bgm::BgmFactory(std::string bgmName, float start, float end)
 {
     auto loadPath = Bgm::GetLoadPath(bgmName);
     auto loadedText = Content::GetContent(loadPath);
     if (loadedText)
         return (Bgm *)loadedText;
-    // return new Bgm(bgmName);
-    return new Bgm(loadPath);
+    return new Bgm(loadPath, start, end);
 }
 
-Bgm::Bgm(std::string &name)
-    : _bgmName(name), _bgm(nullptr)
+Bgm::Bgm(std::string &name, float start, float end)
+    : _bgmName(name), _bgmStart(start), _bgmEnd(end), _bgm(nullptr)
 {
     Content::AddContent(this);
 }
@@ -44,20 +43,9 @@ Bgm::~Bgm()
 
 void Bgm::Load()
 {
-    auto config = Game::Instance()->GetSound()->GetSoundConfig();
-    // _bgm = gsLoadBgm(GetLoadPath(_bgmName).c_str());
     _bgm = gsLoadBgm(_bgmName.c_str());
-    for (auto &song : config->Music)
-    {
-        if (song.Name.find(_bgmName) != std::string::npos)
-        {
-            _bgm->loop_begin = song.LoopStart;
-            _bgm->loop_end = song.LoopEnd;
-            return;
-        }
-    }
-    _bgm->loop_begin = 0;
-    _bgm->loop_end = 0;
+    _bgm->loop_begin = _bgmStart;
+    _bgm->loop_end = _bgmEnd;
 }
 
 void Bgm::Unload()
