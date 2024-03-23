@@ -80,19 +80,20 @@ Player::Player(TiledMap::TiledObject &object)
     }
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
+
+    _rigidbodyComponent->SetDebug(true);
+    _boxColliderComponent->SetDebug(true);
 }
 void Player::BindOverlapFunctions()
 {
-    // If rb overlap, we should die if not from  above
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFunc);
-    // If collider overlap, we should kill goomba.
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFuncJumpBox);
-    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::DeathBox, &Player::DeathBoxOverlap);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Mushroom, &Player::MushroomOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Fireflower, &Player::FireflowerOverlapFunc);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::WinBox, &Player::WinBoxOverlap);
 
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Goomba, &Player::GoombaOverlapFuncJumpBox);
+    _boxColliderComponent->AddOverlapFunction((int)BodyTypes::Coin, &Player::CoinOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBrick, &Player::ItemBoxOverlapFunc);
     _boxColliderComponent->AddOverlapFunction((int)BodyTypes::ItemBox, &Player::ItemBoxOverlapFunc);
 }
