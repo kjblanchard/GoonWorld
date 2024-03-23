@@ -476,6 +476,17 @@
                  "width":192,
                  "x":1344,
                  "y":48
+                }, 
+                {
+                 "height":32,
+                 "id":620,
+                 "name":"",
+                 "rotation":0,
+                 "type":"DeathBox",
+                 "visible":true,
+                 "width":2000,
+                 "x":-16,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -841,7 +852,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":620,
+ "nextobjectid":622,
  "orientation":"orthogonal",
  "properties":[
         {

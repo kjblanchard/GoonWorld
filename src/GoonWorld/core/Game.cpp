@@ -181,28 +181,23 @@ void Game::RestartLevel()
 {
     if (!_loadedLevel)
         return;
-    for (size_t i = 0; i < 1000; i++)
-    {
-        /* code */
-
-        _shouldChangeLevel = false;
-        _shouldRestart = false;
-        _playerDying = nullptr;
-        _playerBig = nullptr;
-        UpdateObjects.clear();
-        DrawObjects.clear();
-        GameObject::ClearGameObjects();
-        RigidbodyComponent::ResetRigidBodyVector();
-        BoxColliderComponent::ResetBoxColliders();
-        LoadLevel(_loadedLevel->GetName());
-        _loadedLevel->RestartLevel();
-    }
+    _shouldChangeLevel = false;
+    _shouldRestart = false;
+    _playerDying = nullptr;
+    _playerBig = nullptr;
+    UpdateObjects.clear();
+    DrawObjects.clear();
+    UIDrawObjects.clear();
+    GameObject::ClearGameObjects();
+    RigidbodyComponent::ResetRigidBodyVector();
+    BoxColliderComponent::ResetBoxColliders();
+    LoadLevel(_loadedLevel->GetName());
+    _loadedLevel->RestartLevel();
 }
 
 void Game::LoadLevel(std::string level)
 {
     InitializePhysics();
-
     if (!_loadedLevel || _shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
@@ -212,8 +207,6 @@ void Game::LoadLevel(std::string level)
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     SetCameraRect(_camera->Bounds());
-
-    // _sound->PlayBgm("platforms");
     auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
     _camera->Restart();
     LoadGameObjects();
