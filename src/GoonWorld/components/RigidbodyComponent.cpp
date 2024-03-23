@@ -1,3 +1,4 @@
+#include <vector>
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonPhysics/body.h>

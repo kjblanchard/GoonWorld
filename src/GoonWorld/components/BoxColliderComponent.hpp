@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <GoonWorld/base/Component.hpp>
 #include <GoonEngine/point.h>
 // #include <GoonPhysics/body.h>
