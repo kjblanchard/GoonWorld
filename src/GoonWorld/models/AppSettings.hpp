@@ -55,6 +55,7 @@ namespace GoonWorld
         struct PlayerConfig
         {
             int InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, WalkSpeedBoost, RunSpeedBoost, MaxWalkSpeed, MaxRunSpeed;
+            int RigidBodyOffsetX, RigidBodyOffsetY, RigidBodyOffsetW, RigidBodyOffsetH, JumpColliderOffsetX,  JumpColliderOffsetY,  JumpColliderOffsetW,  JumpColliderOffsetH;
             float MaxJumpTime;
         };
         struct Animation

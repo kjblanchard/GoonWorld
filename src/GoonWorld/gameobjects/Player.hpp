@@ -10,7 +10,6 @@ typedef struct gpOverlap gpOverlap;
 namespace GoonWorld
 {
     class Fireball;
-    class DebugDrawComponent;
     class PlayerInputComponent;
     class RigidbodyComponent;
     class AnimationComponent;
@@ -65,7 +64,6 @@ namespace GoonWorld
         const float _fireballThrowTime = 0.15;
         // Components
     private:
-        DebugDrawComponent *_debugDrawComponent = nullptr;
         PlayerInputComponent *_playerInputComponent = nullptr;
         RigidbodyComponent *_rigidbodyComponent = nullptr;
         AnimationComponent *_animationComponent = nullptr;

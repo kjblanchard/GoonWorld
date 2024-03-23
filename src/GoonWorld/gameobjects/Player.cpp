@@ -4,7 +4,6 @@
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/core/Camera.hpp>
-#include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/PlayerInputComponent.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
@@ -46,19 +45,19 @@ Player::Player(TiledMap::TiledObject &object)
     _location = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
-    _debugDrawComponent = new DebugDrawComponent(Point{bodyRect.w, bodyRect.h});
     // Size of body should be smaller than the size of the tile object
-    bodyRect.w -= 4;
-    bodyRect.h -= 4;
-    _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{-2, -2});
+    bodyRect.w += _playerConfig->RigidBodyOffsetW;
+    bodyRect.h += _playerConfig->RigidBodyOffsetH;
+    _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{_playerConfig->RigidBodyOffsetX, _playerConfig->RigidBodyOffsetY});
     _rigidbodyComponent->SetBodyType(1);
-    _animationComponent = new AnimationComponent("mario", Point{0, -20});
+    // _animationComponent = new AnimationComponent("mario", Point{0, -20});
+    _animationComponent = new AnimationComponent("mario", Point{0, -22});
     auto bigBodyRect = bodyRect;
     // bigBodyRect.w *= 2;
     // This is the jump hitbox, it should be taller and skinnier than the body
-    bigBodyRect.h += 8;
-    bigBodyRect.w -= 2;
-    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{1, -4});
+    bigBodyRect.w += _playerConfig->JumpColliderOffsetW;
+    bigBodyRect.h += _playerConfig->JumpColliderOffsetH;
+    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
     _boxColliderComponent->SetBodyType(1);
     _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
@@ -66,9 +65,7 @@ Player::Player(TiledMap::TiledObject &object)
     powerDownSfx = Sfx::SfxFactory(powerDownSound);
     whistleSfx = Sfx::SfxFactory(whistleSound);
 
-    // AddComponent({_debugDrawComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
     AddComponent({_boxColliderComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
-    _debugDrawComponent->Enabled(false);
     BindOverlapFunctions();
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -561,7 +558,9 @@ void Player::Win()
 void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
-    if (player->_isDead || player->_isDying || !player->_isJumping)
+    if (player->_isDead || player->_isDying)
+        return;
+    if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
         return;
     ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
@@ -573,7 +572,10 @@ void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody,
 void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
-    if (player->_isDead || player->_isDying || !player->_isJumping)
+    if (player->_isDead || player->_isDying)
+        return;
+    // If we are not traveling upwards
+    if (player->_rigidbodyComponent->Velocity().y >= 0 && player->_rigidbodyComponent->Acceleration().y >= 0)
         return;
     ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
@@ -662,21 +664,24 @@ void Player::PowerupTick()
         GetGame().PushEvent(bigEvent);
         if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
         {
-            auto newSize = Point{16, 32};
+            // Move marios current location up by 16 pixes cause he is getting big
             _location.y -= 16;
+            // Adjust rigidbody location upwards and increase height
             _rigidbodyComponent->BoundingBox().y -= 16;
-            _rigidbodyComponent->SizeChange(newSize);
+            _rigidbodyComponent->BoundingBox().h += 16;
+            _boxColliderComponent->BoundingBox().y -= 16;
+            _boxColliderComponent->BoundingBox().h += 16;
+            // Adjust animation offset
             _animationComponent->Offset(Point{0, -4});
-            _debugDrawComponent->Size = newSize;
         }
         else
         {
-            auto newSize = Point{16, 16};
             _location.y += 16;
             _rigidbodyComponent->BoundingBox().y += 16;
-            _rigidbodyComponent->SizeChange(newSize);
+            _rigidbodyComponent->BoundingBox().h -= 16;
+            _boxColliderComponent->BoundingBox().y += 16;
+            _boxColliderComponent->BoundingBox().h -= 16;
             _animationComponent->Offset(Point{0, -20});
-            _debugDrawComponent->Size = newSize;
         }
     }
     // Regular loop
