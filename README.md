@@ -6,6 +6,14 @@
 - Play the game here, or likely watch its "progress" [Supergoon.com](https://world.supergoon.com)
 - Currently have 2 macos executables, as libpng cannot handle multiple architectures currently with a mac universal build, [issue here]()
 
+## Tiled
+- Configure the background, entities, etc
+- ![Tiled](https://github.com/kjblanchard/GoonWorld/blob/master/img/tiled.png?raw=true)
+
+## Aseprite
+- Configure the Animations, time per frame, Sprites, etc
+- ![Tiled](https://github.com/kjblanchard/GoonWorld/blob/master/img/aseprite.png?raw=true)
+
 ## Development
 - Mostly developed on macos apple silicon
 - Builds on Mac locally until game is playable, build on Windows, Universal Mac, Ubuntu, and Emscripten via github actions
