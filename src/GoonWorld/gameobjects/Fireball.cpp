@@ -99,6 +99,8 @@ void Fireball::End()
 {
     _rigidbodyComponent->Velocity().x = 0;
     _rigidbodyComponent->Velocity().y = 0;
+    _rigidbodyComponent->Acceleration().x = 0;
+    _rigidbodyComponent->Acceleration().y = 0;
     Enabled(false);
     _fireballHome->push(this);
 }
