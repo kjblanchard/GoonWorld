@@ -81,7 +81,6 @@ Player::Player(TiledMap::TiledObject &object)
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
 
-    _rigidbodyComponent->SetDebug(true);
 }
 void Player::BindOverlapFunctions()
 {
@@ -546,6 +545,7 @@ void Player::Win()
         _rigidbodyComponent->Velocity().x = 0;
         _rigidbodyComponent->Velocity().y = 0;
         _rigidbodyComponent->GravityEnabled(false);
+        SetFlag(_playerFlags, PlayerFlags::IsClimbing, true);
         whistleSfx->Play();
         _animationComponent->Mirror = false;
         _shouldClimbAnim = true;
@@ -774,9 +774,11 @@ void Player::SlideFunc()
 
 void Player::WinWalking()
 {
-    static bool playerHitGround = false;
-    if (_rigidbodyComponent->IsOnGround())
-        playerHitGround = true;
-    _rigidbodyComponent->Velocity().x = playerHitGround ? 45 : 0;
-    _shouldClimbAnim = playerHitGround ? false : true;
+    if (IsFlagSet(_playerFlags, PlayerFlags::IsClimbing))
+    {
+        if (_rigidbodyComponent->IsOnGround())
+            SetFlag(_playerFlags, PlayerFlags::IsClimbing, false);
+    }
+    _rigidbodyComponent->Velocity().x = IsFlagSet(_playerFlags, PlayerFlags::IsClimbing) ? 0 : 45;
+    _shouldClimbAnim = IsFlagSet(_playerFlags, PlayerFlags::IsClimbing) ? true : false;
 }

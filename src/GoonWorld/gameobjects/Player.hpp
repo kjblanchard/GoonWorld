@@ -35,6 +35,7 @@ namespace GoonWorld
             static const int IsInvincible = 1 << 5;
             static const int IsSuper = 1 << 6;
             static const int IsThrowingFireball = 1 << 7;
+            static const int IsClimbing = 1 << 8;
         };
         int32_t _playerFlags = 0;
         AppSettings::PlayerConfig *_playerConfig;

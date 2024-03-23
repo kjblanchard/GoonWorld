@@ -45,6 +45,6 @@ namespace GoonWorld
         static std::vector<BoxColliderComponent *> _currentBoxColliders;
         int _boxNum;
         Point _offset;
-        bool _debugDraw = true;
+        bool _debugDraw = false;
     };
 }
