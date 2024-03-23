@@ -57,6 +57,15 @@ void Content::ClearContent()
             break;
         }
     }
+    for (auto &[key, value] : _loadedContents)
+    {
+        if (value)
+        {
+            delete (value);
+        }
+    }
+    _loadedContent.clear();
+    _loadedContents.clear();
 }
 
 void Content::AddContent(ILoadContent *content)

@@ -43,9 +43,9 @@ namespace GoonWorld
 
     private:
         void OnComponentAdd(GameObject &parent) override;
-        gpBoxCollider *_boxCollider;
+        gpBoxCollider *_boxCollider = nullptr;
         static std::vector<BoxColliderComponent *> _currentBoxColliders;
-        int _boxNum;
+        int _boxNum = 0;;
         Point _offset;
         bool _debugDraw = false;
     };

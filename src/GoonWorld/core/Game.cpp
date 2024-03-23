@@ -181,17 +181,22 @@ void Game::RestartLevel()
 {
     if (!_loadedLevel)
         return;
-    _shouldChangeLevel = false;
-    _shouldRestart = false;
-    _playerDying = nullptr;
-    _playerBig = nullptr;
-    UpdateObjects.clear();
-    DrawObjects.clear();
-    GameObject::ClearGameObjects();
-    RigidbodyComponent::ResetRigidBodyVector();
-    BoxColliderComponent::ResetBoxColliders();
-    LoadLevel(_loadedLevel->GetName());
-    _loadedLevel->RestartLevel();
+    for (size_t i = 0; i < 1000; i++)
+    {
+        /* code */
+
+        _shouldChangeLevel = false;
+        _shouldRestart = false;
+        _playerDying = nullptr;
+        _playerBig = nullptr;
+        UpdateObjects.clear();
+        DrawObjects.clear();
+        GameObject::ClearGameObjects();
+        RigidbodyComponent::ResetRigidBodyVector();
+        BoxColliderComponent::ResetBoxColliders();
+        LoadLevel(_loadedLevel->GetName());
+        _loadedLevel->RestartLevel();
+    }
 }
 
 void Game::LoadLevel(std::string level)

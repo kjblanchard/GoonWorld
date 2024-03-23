@@ -64,7 +64,7 @@ namespace GoonWorld
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;
         long long _isOnGroundCached;
-        bool _isOnGround, _static, _isGravityEnabled = true;
+        bool _isOnGround = false, _static = false, _isGravityEnabled = true;
         Point _offset;
         bool _debugDraw = false;
         std::vector<BoxColliderComponent *> _boxColliders;

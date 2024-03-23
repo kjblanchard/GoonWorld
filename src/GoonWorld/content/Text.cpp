@@ -22,7 +22,6 @@ Text * Text::TextFactory(std::string stringToLoad, Point location, geColor textC
 
 Text::~Text()
 {
-    printf("Text unloading\n");
     Unload();
 }
 
