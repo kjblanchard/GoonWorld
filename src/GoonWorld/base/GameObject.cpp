@@ -11,7 +11,7 @@ TimeSpan GameObject::DeltaTime = TimeSpan(0);
 std::vector<std::shared_ptr<GameObject>> GameObject::_gameobjects;
 
 GameObject::GameObject()
-    : _id(_numGameObjects++), _location(Point{0, 0})
+    : _id(_numGameObjects++), _location(Point{0, 0}), _previousLocation(Point{0, 0})
 {
     Game::Instance()->AddUpdateObject(this);
     _gameobjects.push_back(std::shared_ptr<GameObject>(this));
@@ -119,4 +119,12 @@ void GameObject ::UpdateTimers()
 void GameObject::AddTimer(Timer *timer)
 {
     _timers.push_back(std::shared_ptr<Timer>(timer));
+}
+
+Point GameObject::DrawLocation(double accum)
+{
+    double interpX = _previousLocation.x + (_location.x - _previousLocation.x) * accum;
+    double interpY = _previousLocation.y + (_location.y - _previousLocation.y) * accum;
+    return Point{(int)interpX, (int)interpY};
+
 }

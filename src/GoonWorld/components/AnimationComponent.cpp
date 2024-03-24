@@ -84,7 +84,7 @@ void AnimationComponent::Draw(double accum)
 {
     if (!IsEnabled() || _currentAnimation == nullptr)
         return;
-    auto rect = GetDrawRect();
+    auto rect = GetDrawRect(accum);
     geDrawTextureWithCameraOffset(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
 }
 
@@ -94,9 +94,10 @@ void AnimationComponent::OnComponentAdd(GameObject &parent)
     GetGame().AddDrawObject(this);
 }
 
-geRectangle AnimationComponent::GetDrawRect()
+geRectangle AnimationComponent::GetDrawRect(double accum)
 {
-    return geRectangle{Parent()->Location().x + _offset.x, Parent()->Location().y + _offset.y, SpriteImageRect.w * SizeMultiplier, SpriteImageRect.h * SizeMultiplier};
+    // return geRectangle{Parent()->Location().x + _offset.x, Parent()->Location().y + _offset.y, SpriteImageRect.w * SizeMultiplier, SpriteImageRect.h * SizeMultiplier};
+    return geRectangle{Parent()->DrawLocation(accum).x + _offset.x, Parent()->DrawLocation(accum).y + _offset.y, SpriteImageRect.w * SizeMultiplier, SpriteImageRect.h * SizeMultiplier};
 }
 
 void AnimationComponent::AddTransition(std::string from, std::string to, bool matchCondition, bool *matchRef)

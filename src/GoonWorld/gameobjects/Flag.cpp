@@ -13,6 +13,7 @@ using namespace GoonWorld;
 Flag::Flag(TiledMap::TiledObject &object)
 {
     _location = Point{object.X, object.Y};
+    _previousLocation = Point{object.X, object.Y};
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Flag);

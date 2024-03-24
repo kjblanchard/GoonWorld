@@ -83,6 +83,9 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
     if (!rb)
         return;
     // Update the parents location
+    gameobject->PreviousLocation().x = gameobject->Location().x;
+    gameobject->PreviousLocation().y = gameobject->Location().y;
+
     gameobject->Location().x = body->boundingBox.x + rb->_offset.x;
     gameobject->Location().y = body->boundingBox.y + rb->_offset.y;
     // Update all the attached box colliders locations

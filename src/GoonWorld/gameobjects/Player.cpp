@@ -43,6 +43,7 @@ Player::Player(TiledMap::TiledObject &object)
     : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
 {
     _location = Point{object.X, object.Y};
+    _previousLocation = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     // Size of body should be smaller than the size of the tile object

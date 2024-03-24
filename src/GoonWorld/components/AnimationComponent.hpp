@@ -32,7 +32,7 @@ namespace GoonWorld
         bool Mirror = false;
 
     private:
-        geRectangle GetDrawRect();
+        geRectangle GetDrawRect(double accum);
         std::string _currentAnimationString;
         Animator *_animator;
         Animation *_currentAnimation;

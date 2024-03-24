@@ -18,6 +18,7 @@ static Sfx *deadSfx;
 Goomba::Goomba(TiledMap::TiledObject &object)
 {
     _location = Point{object.X, object.Y};
+    _previousLocation = Point{object.X, object.Y};
     _movingRight = false;
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     bodyRect.h -= 2;

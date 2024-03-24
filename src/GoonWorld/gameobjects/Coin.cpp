@@ -17,6 +17,7 @@ static Sfx* coinSfx;
 Coin::Coin(TiledMap::TiledObject &object)
 {
     _location = Point{object.X, object.Y};
+    _previousLocation = Point{object.X, object.Y};
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     // _debugDrawComponent = new DebugDrawComponent(Point{rect->w, rect->h});

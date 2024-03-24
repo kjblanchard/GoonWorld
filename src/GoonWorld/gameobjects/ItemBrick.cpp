@@ -23,6 +23,7 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
         _contents = prop.ValueInt;
     }
     _location = Point{object.X, object.Y};
+    _previousLocation = Point{object.X, object.Y};
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
