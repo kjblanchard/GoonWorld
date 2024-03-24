@@ -48,10 +48,10 @@ void BoxColliderComponent::Draw(double accum)
     if (!_enabled || !_debugDraw)
         return;
     auto drawColor = geColor{0, 255, 255, 255};
-    auto loc = _parent->Location();
+    // auto loc = _parent->Location();
     geRectangle dstRect{
-        (int)_boxCollider->boundingBox.x,
-        (int)_boxCollider->boundingBox.y,
+        Parent()->DrawLocation(accum).x,
+        Parent()->DrawLocation(accum).y,
         (int)_boxCollider->boundingBox.w,
         (int)_boxCollider->boundingBox.h};
     geDrawDebugRect(&dstRect, &drawColor);

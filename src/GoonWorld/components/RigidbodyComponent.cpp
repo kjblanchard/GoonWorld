@@ -101,8 +101,8 @@ void RigidbodyComponent::Draw(double accum)
         return;
     auto drawColor = geColor{255, 0, 0, 255};
     geRectangle dstRect{
-        (int)_body->boundingBox.x,
-        (int)_body->boundingBox.y,
+        Parent()->DrawLocation(accum).x,
+        Parent()->DrawLocation(accum).y,
         (int)_body->boundingBox.w,
         (int)_body->boundingBox.h};
     geDrawDebugRect(&dstRect, &drawColor);
