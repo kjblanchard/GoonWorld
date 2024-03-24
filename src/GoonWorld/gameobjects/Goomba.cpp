@@ -21,8 +21,8 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _previousLocation = Point{object.X, object.Y};
     _movingRight = false;
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
-    bodyRect.h -= 2;
-    _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{0, -2});
+    bodyRect.h -= 4;
+    _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{0, 2});
     // _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");

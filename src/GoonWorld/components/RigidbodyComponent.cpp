@@ -1,5 +1,6 @@
 #include <vector>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonEngine/debug.h>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/scene.h>
@@ -15,8 +16,8 @@ RigidbodyComponent::RigidbodyComponent(geRectangle *rect, Point offset)
     : Component((int)ComponentTypes::Rigidbody), _static(false), _offset(offset)
 {
     auto bb = gpBBNew(rect->x, rect->y, rect->w, rect->h);
-    bb.x + offset.x;
-    bb.y + offset.y;
+    bb.x += offset.x;
+    bb.y += offset.y;
     _body = gpBodyNew(bb);
     _body->gravityEnabled = 1;
     _body->updateFunc = &OnBodyUpdate;
@@ -83,15 +84,13 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
     if (!rb)
         return;
     // Update the parents location
-    gameobject->PreviousLocation().x = gameobject->Location().x;
-    gameobject->PreviousLocation().y = gameobject->Location().y;
-
-    gameobject->Location().x = body->boundingBox.x + rb->_offset.x;
-    gameobject->Location().y = body->boundingBox.y + rb->_offset.y;
+    gameobject->SetPreviousLocation(gameobject->Location());
+    gameobject->SetLocationX(body->boundingBox.x - rb->_offset.x);
+    gameobject->SetLocationY(body->boundingBox.y - rb->_offset.y);
     // Update all the attached box colliders locations
     for (auto box : rb->_boxColliders)
     {
-        box->SetLocation(Point{(int)body->boundingBox.x + box->Offset().x, (int)body->boundingBox.y + box->Offset().y});
+        box->SetLocation(Point{(int)gameobject->Location().x + box->Offset().x, (int)gameobject->Location().y + box->Offset().y});
     }
 }
 
@@ -101,8 +100,10 @@ void RigidbodyComponent::Draw(double accum)
         return;
     auto drawColor = geColor{255, 0, 0, 255};
     geRectangle dstRect{
-        Parent()->DrawLocation(accum).x,
-        Parent()->DrawLocation(accum).y,
+        Parent()->DrawLocation(accum).x + _offset.x,
+        Parent()->DrawLocation(accum).y + _offset.y,
+        // Parent()->DrawLocation(accum).x,
+        // Parent()->DrawLocation(accum).y,
         (int)_body->boundingBox.w,
         (int)_body->boundingBox.h};
     geDrawDebugRect(&dstRect, &drawColor);

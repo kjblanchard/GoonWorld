@@ -24,8 +24,11 @@ namespace GoonWorld
         virtual void Start() const override;
         virtual void Update() override;
         inline unsigned int Id() { return _id; }
-        inline Point &Location() { return _location; }
-        inline Point &PreviousLocation() { return _previousLocation; }
+        inline void SetLocationX(int x) { _location.x = x; }
+        inline void SetLocationY(int y) { _location.y = y; }
+        inline void SetPreviousLocation(Point point) { _previousLocation = point; }
+        inline Point Location() { return _location; }
+        inline Point PreviousLocation() { return _previousLocation; }
         Point DrawLocation(double accum);
         static inline void ClearGameObjects() { _gameobjects.clear(); }
         inline bool IsEnabled() const override { return _enabled; }

@@ -1,5 +1,6 @@
 #include <GoonWorld/components/BoxColliderComponent.hpp>
 #include <GoonPhysics/scene.h>
+#include <GoonEngine/debug.h>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/core/Game.hpp>
@@ -48,10 +49,10 @@ void BoxColliderComponent::Draw(double accum)
     if (!_enabled || !_debugDraw)
         return;
     auto drawColor = geColor{0, 255, 255, 255};
-    // auto loc = _parent->Location();
+    // Our location is set manually by rigidbody and includes our offset, so no need to draw it with the offset in it.
     geRectangle dstRect{
-        Parent()->DrawLocation(accum).x,
-        Parent()->DrawLocation(accum).y,
+        Parent()->DrawLocation(accum).x + _offset.x,
+        Parent()->DrawLocation(accum).y + _offset.y,
         (int)_boxCollider->boundingBox.w,
         (int)_boxCollider->boundingBox.h};
     geDrawDebugRect(&dstRect, &drawColor);
