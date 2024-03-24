@@ -19,7 +19,7 @@ namespace GoonWorld
             _cameraBounds.y = 0;
         }
         inline void SetFollowTarget(GameObject *target) { _followTarget = target; }
-        void Update();
+        void Update(double accum);
 
     private:
         geRectangle _cameraBounds;

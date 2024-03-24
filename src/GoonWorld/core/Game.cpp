@@ -81,7 +81,7 @@ void Game::Update(double timeMs)
     if (_shouldChangeLevel)
         ChangeLevel();
     // If there is not a player getting big, we should update physics.
-    _camera->Update();
+
     // If there is a player dying or player getting big, we should only update them.
     if (_playerDying || _playerBig)
     {
@@ -103,6 +103,8 @@ void Game::Update(double timeMs)
 
 void Game::Draw(double accum)
 {
+    _camera->Update(accum);
+
     for (auto object : DrawObjects)
     {
         if (object->IsVisible())
