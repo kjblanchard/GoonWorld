@@ -25,7 +25,7 @@ Text::~Text()
     Unload();
 }
 
-void Text::Draw()
+void Text::Draw(double accum)
 {
     if (!IsVisible())
         return;

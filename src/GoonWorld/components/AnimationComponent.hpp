@@ -18,7 +18,7 @@ namespace GoonWorld
         float AnimationSpeed;
         geRectangle SpriteImageRect;
         void Update() override;
-        void Draw() override;
+        void Draw(double accum) override;
         void OnComponentAdd(GameObject &parent) override;
         inline std::pair<int, Animation *> GetCurrentAnimation() const { return {_currentFrame, _currentAnimation}; };
         void ChangeAnimation(std::string &, int frameInAnim);

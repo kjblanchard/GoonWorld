@@ -20,7 +20,7 @@ namespace GoonWorld
         void AddOverlapFunction(int overlapType, OverlapFunc func);
         void OnEnabled() override;
         void OnDisabled() override;
-        void Draw() override;
+        void Draw(double accum) override;
         void Visible(bool isVisible) override;
         bool IsVisible() override;
         inline void ParentUpdate();

@@ -80,7 +80,7 @@ void AnimationComponent::ChangeAnimation(std::string &nextAnim)
         _currentAnimationDocument->frames[_currentFrame].frame.h,
     };
 }
-void AnimationComponent::Draw()
+void AnimationComponent::Draw(double accum)
 {
     if (!IsEnabled() || _currentAnimation == nullptr)
         return;

@@ -19,7 +19,7 @@ namespace GoonWorld
         static void PhysicsUpdate();
         bool IsOnGround();
         void AddOverlapFunction(int overlapType, OverlapFunc func);
-        void Draw() override;
+        void Draw(double accum) override;
         void Visible(bool isVisible) override;
         bool IsVisible() override;
         inline bool JustGotOnGround(void) { return gpBodyJustGotOnGround(_body); }

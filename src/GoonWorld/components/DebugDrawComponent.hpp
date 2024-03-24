@@ -10,7 +10,7 @@ namespace GoonWorld
     {
     public:
         DebugDrawComponent(Point size);
-        void Draw() override;
+        void Draw(double accum) override;
         void OnComponentAdd(GameObject &parent) override;
         inline void Visible(bool isVisible) override { _visible = isVisible; }
         inline bool IsVisible() override { return _visible; }

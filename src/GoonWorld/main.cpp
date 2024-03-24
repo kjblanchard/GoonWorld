@@ -8,9 +8,9 @@ void Update(double timeMs)
     game->Update(timeMs);
 }
 
-void Draw()
+void Draw(double accumulator)
 {
-    game->Draw();
+    game->Draw(accumulator);
 }
 
 int main()

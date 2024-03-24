@@ -43,7 +43,7 @@ void BoxColliderComponent::OnComponentAdd(GameObject &parent)
     Enabled(true);
 }
 
-void BoxColliderComponent::Draw()
+void BoxColliderComponent::Draw(double accum)
 {
     if (!_enabled || !_debugDraw)
         return;

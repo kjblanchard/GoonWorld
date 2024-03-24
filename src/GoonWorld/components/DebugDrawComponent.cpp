@@ -9,7 +9,7 @@ DebugDrawComponent::DebugDrawComponent(Point size)
     : Component((int)ComponentTypes::DebugDrawComponent), DrawColor{255, 0, 0, 255}, Size(size), _visible(true)
 {
 }
-void DebugDrawComponent::Draw()
+void DebugDrawComponent::Draw(double accum)
 {
     if (!_enabled)
         return;

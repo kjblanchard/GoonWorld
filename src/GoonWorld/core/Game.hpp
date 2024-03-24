@@ -28,7 +28,7 @@ namespace GoonWorld
         Game();
         ~Game();
         void Update(double time);
-        void Draw();
+        void Draw(double accum);
         inline void TriggerRestartLevel() { _shouldRestart = true; }
         inline void TriggerNextLevel() { _shouldChangeLevel = true; }
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }

@@ -101,12 +101,12 @@ void Game::Update(double timeMs)
     }
 }
 
-void Game::Draw()
+void Game::Draw(double accum)
 {
     for (auto object : DrawObjects)
     {
         if (object->IsVisible())
-            object->Draw();
+            object->Draw(accum);
     }
 
     if (_gameSettings->DebugConfig.SolidDebug)
@@ -122,7 +122,7 @@ void Game::Draw()
     for (auto object : UIDrawObjects)
     {
         if (object->IsVisible())
-            object->Draw();
+            object->Draw(accum);
     }
 }
 

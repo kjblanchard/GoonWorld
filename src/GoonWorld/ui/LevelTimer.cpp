@@ -26,20 +26,20 @@ void LevelTimer::UpdateTime(int coins)
     currentTimeSeconds = coins;
 }
 
-void LevelTimer::Draw()
+void LevelTimer::Draw(double accum)
 {
     _timeText->SetX(x - _timeText->Width() - 10);
-    _timeText->Draw();
+    _timeText->Draw(accum);
     int minutes = currentTimeSeconds / 60;
     int totalSeconds = currentTimeSeconds % 60;
     int secondsTens = totalSeconds / 10;
     int secondsOnes = currentTimeSeconds % 10;
     _loadedNumbers[minutes]->SetLocation(Point{x, y});
-    _loadedNumbers[minutes]->Draw();
+    _loadedNumbers[minutes]->Draw(accum);
     _loadedNumbers[secondsTens]->SetLocation(Point{x + _loadedNumbers[minutes]->Width(), y});
-    _loadedNumbers[secondsTens]->Draw();
+    _loadedNumbers[secondsTens]->Draw(accum);
     _loadedNumbers[secondsOnes]->SetLocation(Point{_loadedNumbers[secondsTens]->X() + _loadedNumbers[secondsTens]->Width(), y});
-    _loadedNumbers[secondsOnes]->Draw();
+    _loadedNumbers[secondsOnes]->Draw(accum);
 }
 
 void LevelTimer::Update()

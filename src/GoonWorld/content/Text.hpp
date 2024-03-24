@@ -27,7 +27,7 @@ namespace GoonWorld
         inline int Width() { return _boundingBox.w / 2; }
         void Load() override;
         void Unload() override;
-        void Draw() override;
+        void Draw(double accum) override;
         void Visible(bool isVisible) override;
         bool IsVisible() override;
 

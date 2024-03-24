@@ -19,7 +19,7 @@ namespace GoonWorld
         Text *_coinText;
         int numberOffset;
         std::vector<Text *> _loadedNumbers;
-        void Draw() override;
+        void Draw(double accum) override;
         void Visible(bool isVisible) override;
         bool IsVisible() override;
         void CoinCollectedEvent(Event &event);

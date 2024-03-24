@@ -41,16 +41,16 @@ void CoinsCollectedUI::UpdateCoins(int coins)
     // _loadedNumbers[ones]->Visible(true);
 }
 
-void CoinsCollectedUI::Draw()
+void CoinsCollectedUI::Draw(double accum)
 {
     _coinText->SetX(x - _coinText->Width() - 10);
-    _coinText->Draw();
+    _coinText->Draw(accum);
     int tens = _currentCoins / 10;
     int ones = _currentCoins % 10;
     _loadedNumbers[tens]->SetLocation(Point{x, y});
-    _loadedNumbers[tens]->Draw();
+    _loadedNumbers[tens]->Draw(accum);
     _loadedNumbers[ones]->SetLocation(Point{x + _loadedNumbers[tens]->Width(), y});
-    _loadedNumbers[ones]->Draw();
+    _loadedNumbers[ones]->Draw(accum);
 }
 
 void CoinsCollectedUI::Visible(bool isVisible)

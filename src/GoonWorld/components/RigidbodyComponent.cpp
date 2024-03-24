@@ -92,7 +92,7 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
     }
 }
 
-void RigidbodyComponent::Draw()
+void RigidbodyComponent::Draw(double accum)
 {
     if (!_enabled || !_debugDraw)
         return;
