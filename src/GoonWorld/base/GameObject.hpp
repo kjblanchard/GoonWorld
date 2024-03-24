@@ -57,6 +57,7 @@ namespace GoonWorld
         static std::vector<std::shared_ptr<GameObject>> _gameobjects;
         unsigned int _id;
         Point _location;
+        Point _previousLocation;
         std::vector<std::shared_ptr<Component>> _components;
 
     private:
