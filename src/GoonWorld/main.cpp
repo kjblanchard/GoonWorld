@@ -13,10 +13,16 @@ void Draw(double accumulator)
     game->Draw(accumulator);
 }
 
+void CameraUpdate(double accumulator)
+{
+    game->CameraUpdate(accumulator);
+}
+
 int main()
 {
     geInitializeEngine();
     geGameSetUpdateFunc(Update);
+    geSetCameraUpdateFunc(CameraUpdate);
     geGameSetDrawFunc(Draw);
     game = std::make_unique<Game>();
     game->LoadLevel("level1");

@@ -100,10 +100,13 @@ void Game::Update(double timeMs)
         object->Update();
     }
 }
+void Game::CameraUpdate(double accum)
+{
+    _camera->Update(accum);
+}
 
 void Game::Draw(double accum)
 {
-    _camera->Update(accum);
 
     for (auto object : DrawObjects)
     {
