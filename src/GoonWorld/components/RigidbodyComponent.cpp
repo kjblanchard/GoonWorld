@@ -15,8 +15,8 @@ RigidbodyComponent::RigidbodyComponent(geRectangle *rect, Point offset)
     : Component((int)ComponentTypes::Rigidbody), _static(false), _offset(offset)
 {
     auto bb = gpBBNew(rect->x, rect->y, rect->w, rect->h);
-    bb.x + offset.x;
-    bb.y + offset.y;
+    bb.x += offset.x;
+    bb.y += offset.y;
     _body = gpBodyNew(bb);
     _body->gravityEnabled = 1;
     _body->updateFunc = &OnBodyUpdate;
@@ -83,12 +83,15 @@ void RigidbodyComponent::OnBodyUpdate(void *args, gpBody *body)
     if (!rb)
         return;
     // Update the parents location
-    gameobject->Location().x = body->boundingBox.x + rb->_offset.x;
-    gameobject->Location().y = body->boundingBox.y + rb->_offset.y;
+    // gameobject->Location().x = body->boundingBox.x + rb->_offset.x;
+    // gameobject->Location().y = body->boundingBox.y + rb->_offset.y;
+    gameobject->Location().x = body->boundingBox.x - rb->_offset.x;
+    gameobject->Location().y = body->boundingBox.y - rb->_offset.y;
     // Update all the attached box colliders locations
     for (auto box : rb->_boxColliders)
     {
-        box->SetLocation(Point{(int)body->boundingBox.x + box->Offset().x, (int)body->boundingBox.y + box->Offset().y});
+        // box->SetLocation(Point{(int)body->boundingBox.x + box->Offset().x, (int)body->boundingBox.y + box->Offset().y});
+        box->SetLocation(Point{(int)gameobject->Location().x + box->Offset().x, (int)gameobject->Location().y + box->Offset().y});
     }
 }
 
@@ -98,8 +101,10 @@ void RigidbodyComponent::Draw()
         return;
     auto drawColor = geColor{255, 0, 0, 255};
     geRectangle dstRect{
-        (int)_body->boundingBox.x,
-        (int)_body->boundingBox.y,
+        // (int)_body->boundingBox.x,
+        // (int)_body->boundingBox.y,
+        Parent()->Location().x + _offset.x,
+        Parent()->Location().y + _offset.y,
         (int)_body->boundingBox.w,
         (int)_body->boundingBox.h};
     geDrawDebugRect(&dstRect, &drawColor);
