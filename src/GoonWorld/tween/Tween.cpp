@@ -18,7 +18,8 @@ int Tween<int>::Interpolate(double &deltaTimeSeconds)
     double easedProgress = GetProgressPercent();
     // Interpolate between start and end values based on the eased progress
     (*_value) = _start + static_cast<int>((_end - _start) * easedProgress);
-    LogWarn("Current value is %d", *_value);
+    if (_completed && _callback && _args)
+        _callback(_args);
 }
 
 template <>

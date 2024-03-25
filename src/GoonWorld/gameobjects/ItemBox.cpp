@@ -33,7 +33,7 @@ ItemBox::ItemBox(TiledMap::TiledObject &object)
     AddComponent({_rigidbodyComponent, _debugDrawComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("idle", "empty", true, &_isOpened);
-    auto loc = geRectangle{_location.x, _location.y - 16, 16, 16};
+    auto loc = geRectangle{_location.x, _location.y, 16, 16};
     switch (_contents)
     {
     case (int)ItemBrickContents::Mushroom:
@@ -56,9 +56,8 @@ void ItemBox::TakeDamage()
     case (int)ItemBrickContents::Mushroom:
     {
         auto shroom = dynamic_cast<Mushroom *>(content);
-        shroom->Enabled(true);
+        // shroom->Enabled(true);
         shroom->Push(true);
-
         powerupSpawnSfx->Play();
         break;
     }

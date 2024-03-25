@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <GoonWorld/interfaces/ITween.hpp>
 #include <GoonEngine/debug.h>
 #include <GoonEngine/easing.h>
@@ -45,8 +46,10 @@ namespace GoonWorld
     {
     public:
         Tween(T &start, T end, double time, Easings easeType);
-        void Update(double& deltaTimeSeconds) override;
-        T Interpolate(double& deltaTimeSeconds);
+        void Update(double &deltaTimeSeconds) override;
+        inline void SetCallback(std::function<void(void* args)> callback) { _callback = callback; }
+        inline void SetCallbackArgs(void* args) { _args = args; }
+        T Interpolate(double &deltaTimeSeconds);
 
     private:
         double GetProgressPercent();
@@ -57,6 +60,8 @@ namespace GoonWorld
         double _endTime;
         bool _looping;
         bool _completed;
+        std::function<void(void* args)> _callback;
+        void* _args;
         Easings _easeType;
     };
 
@@ -79,19 +84,19 @@ namespace GoonWorld
 
     template <typename T>
     Tween<T>::Tween(T &start, T end, double time, Easings easeType)
-        : _value(&start), _start(start), _end(end), _currentTime(0), _endTime(time), _looping(false), _completed(false), _easeType(easeType)
+        : _value(&start), _start(start), _end(end), _currentTime(0), _endTime(time), _looping(false), _completed(false), _easeType(easeType), _callback(nullptr), _args(nullptr)
     {
     }
 
     template <typename T>
-    void Tween<T>::Update(double& deltaTimeSeconds)
+    void Tween<T>::Update(double &deltaTimeSeconds)
     {
         if (!_completed)
             Interpolate(deltaTimeSeconds);
     }
 
     template <typename T>
-    T Tween<T>::Interpolate(double& deltaTimeSeconds)
+    T Tween<T>::Interpolate(double &deltaTimeSeconds)
     {
         static_assert(std::is_arithmetic<T>::value, "Interpolation not implemented for this type");
     }

@@ -26,11 +26,13 @@ namespace GoonWorld
         RigidbodyComponent *_rigidbodyComponent;
         AnimationComponent *_animationComponent;
         static void StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void TweenEndCallback(void* args);
         const int _moveSpeed = 25;
         bool _movingRight, _startedMoving;
         Sfx *mushroomSoundSfx;
 
         int _contents;
+        int _testTween = 0;
     };
 
 }

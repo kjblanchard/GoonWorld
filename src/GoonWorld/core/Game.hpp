@@ -31,6 +31,7 @@ namespace GoonWorld
         ~Game();
         void Update(double time);
         void Draw();
+        inline void AddTween(ITween *tween) { _tweens.push_back(std::unique_ptr<ITween>(tween)); }
         inline void TriggerRestartLevel() { _shouldRestart = true; }
         inline void TriggerNextLevel() { _shouldChangeLevel = true; }
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
@@ -51,7 +52,8 @@ namespace GoonWorld
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
-        std::vector<ITween *> Tweens;
+        // std::vector<ITween *> _tweens;
+        std::vector<std::unique_ptr<ITween>> _tweens;
         std::vector<IDraw *> DrawObjects;
         std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);

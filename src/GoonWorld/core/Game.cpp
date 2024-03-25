@@ -58,9 +58,6 @@ Game::Game()
     _gameInstance = this;
     _coinUI = std::make_unique<CoinsCollectedUI>();
     _levelTimerUI = std::make_unique<LevelTimer>();
-
-    auto intTween = new Tween<int>(testTween, -200, 5.0, Easings::QuadEaseIn);
-    Tweens.push_back(intTween);
 }
 
 Game::~Game()
@@ -91,7 +88,7 @@ void Game::Update(double timeMs)
     // If there is not a player getting big, we should update physics.
     _camera->Update();
     auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
-    for (auto &tween : Tweens)
+    for (auto &tween : _tweens)
     {
         tween->Update(deltaTimeSeconds);
     }
