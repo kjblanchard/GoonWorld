@@ -4,14 +4,16 @@
 #include <queue>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/events/Event.hpp>
+#include <GoonWorld/interfaces/ITween.hpp>
 
 typedef struct gpScene gpScene;
 
 namespace GoonWorld
 {
+    // class ITween;
     class IUpdate;
-    class Observer;
     class IDraw;
+    class Observer;
     class AppSettings;
     class TiledLevel;
     class Player;
@@ -49,6 +51,7 @@ namespace GoonWorld
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
+        std::vector<ITween *> Tweens;
         std::vector<IDraw *> DrawObjects;
         std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);
@@ -73,6 +76,8 @@ namespace GoonWorld
         std::unique_ptr<AppSettings> _gameSettings;
         std::unique_ptr<CoinsCollectedUI> _coinUI;
         std::unique_ptr<LevelTimer> _levelTimerUI;
+
+        int testTween = 0;
 
         TimeSpan _deltaTime;
     };

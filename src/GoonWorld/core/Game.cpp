@@ -18,6 +18,11 @@
 #include <GoonWorld/events/Observer.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
 
+// Tweening test
+#include <GoonWorld/interfaces/ITween.hpp>
+#include <GoonWorld/tween/Tween.hpp>
+
+// New Content test
 #include <GoonWorld/content/Bgm.hpp>
 #include <GoonWorld/content/Text.hpp>
 #include <GoonWorld/ui/CoinsCollected.hpp>
@@ -53,6 +58,9 @@ Game::Game()
     _gameInstance = this;
     _coinUI = std::make_unique<CoinsCollectedUI>();
     _levelTimerUI = std::make_unique<LevelTimer>();
+
+    auto intTween = new Tween<int>(testTween, -200, 5.0, Easings::QuadEaseIn);
+    Tweens.push_back(intTween);
 }
 
 Game::~Game()
@@ -82,6 +90,11 @@ void Game::Update(double timeMs)
         ChangeLevel();
     // If there is not a player getting big, we should update physics.
     _camera->Update();
+    auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
+    for (auto &tween : Tweens)
+    {
+        tween->Update(deltaTimeSeconds);
+    }
     // If there is a player dying or player getting big, we should only update them.
     if (_playerDying || _playerBig)
     {
