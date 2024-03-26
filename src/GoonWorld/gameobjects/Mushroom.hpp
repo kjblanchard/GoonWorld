@@ -24,7 +24,7 @@ namespace GoonWorld
     private:
         RigidbodyComponent *_rigidbodyComponent;
         AnimationComponent *_animationComponent;
-        static void StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void StaticBodyOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
         static void TweenEndCallback(void *args);
         const int _moveSpeed = 25;
         bool _movingRight, _startedMoving;

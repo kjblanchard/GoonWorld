@@ -58,7 +58,7 @@ void Mushroom::TweenEndCallback(void* args)
     mushroom->_rigidbodyComponent->Velocity().x = mushroom->_movingRight ? mushroom->_moveSpeed : -mushroom->_moveSpeed;
 }
 
-void Mushroom::StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Mushroom::StaticBodyOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto mushroom = static_cast<Mushroom *>(instance);
     switch (overlap->overlapDirection)
