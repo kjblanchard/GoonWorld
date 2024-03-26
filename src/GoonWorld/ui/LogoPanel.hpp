@@ -21,6 +21,6 @@ namespace GoonWorld
         static void FadeOutTweenCompleteFunc(void *args);
         static void FadeInTextTweenCompleteFunc(void *args);
         static void FadeOutTextTweenCompleteFunc(void *args);
-        Game *_game;
+        Game *_game = nullptr;
     };
 }

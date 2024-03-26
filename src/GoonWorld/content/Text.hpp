@@ -42,8 +42,8 @@ namespace GoonWorld
         geColor _textColor;
         SDL_Texture *_loadedTexture = nullptr;
         geRectangle _boundingBox;
-        int _alpha;
-        bool _isVisible;
+        int _alpha = 255;
+        bool _isVisible = true;
         bool _isLoaded = false;
     };
 
