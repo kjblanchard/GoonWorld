@@ -38,8 +38,13 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    // : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
+    // DrawObjects{4, {}};
+    std::vector<std::vector<IDraw*>> DrawObjects(4, std::vector<IDraw*>());
+    // DrawObjects(4, std::vector<IDraw *>());
+
     if (_gameInstance)
     {
         fprintf(stderr, "Can only create one game instance");
