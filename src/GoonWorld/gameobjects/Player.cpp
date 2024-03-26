@@ -40,7 +40,7 @@ static Bgm *winBgm;
 static Bgm *dieBgm;
 
 Player::Player(TiledMap::TiledObject &object)
-    : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
+    : _playerConfig(&GetGame().GetAppSettings().PlayerConfigs), _isDying(false), _isDead(false)
 {
     _location = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);

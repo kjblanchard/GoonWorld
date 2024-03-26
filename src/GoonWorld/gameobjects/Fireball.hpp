@@ -24,7 +24,6 @@ namespace GoonWorld
         void End();
 
     private:
-        DebugDrawComponent *_debugDrawComponent;
         RigidbodyComponent *_rigidbodyComponent;
         AnimationComponent *_animationComponent;
         static void StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);

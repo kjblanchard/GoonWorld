@@ -19,7 +19,7 @@ namespace GoonWorld
     };
     class IUpdate;
     class IDraw;
-    class Observer;
+    struct Observer;
     class AppSettings;
     class TiledLevel;
     class Player;
@@ -90,10 +90,6 @@ namespace GoonWorld
         std::unique_ptr<LevelTimer> _levelTimerUI;
 
         GameStates _currentState = GameStates::Default;
-        int testTween = 0;
-
-        // Testing bg image
-        Image *bgImage = nullptr;
         TimeSpan _deltaTime;
 
         Panel* logoPanel = nullptr;

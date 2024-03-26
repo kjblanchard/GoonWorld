@@ -84,7 +84,7 @@ namespace GoonWorld
 
     template <typename T>
     Tween<T>::Tween(T &start, T end, double time, Easings easeType)
-        : _value(&start), _start(start), _end(end), _currentTime(0), _endTime(time), _looping(false), _completed(false), _easeType(easeType), _callback(nullptr), _args(nullptr)
+        : _value(&start), _start(start), _end(end), _currentTime(0), _endTime(time), _looping(false), _completed(false), _callback(nullptr), _args(nullptr), _easeType(easeType)
     {
     }
 
@@ -97,7 +97,7 @@ namespace GoonWorld
 
 #ifndef WIN32
     template <typename T>
-    void Tween<T>::Interpolate(double &deltaTimeSeconds)
+    void Tween<T>::Interpolate(double &)
     {
         static_assert(std::is_arithmetic<T>::value, "Interpolation not implemented for this type");
     }

@@ -6,8 +6,8 @@
 namespace GoonWorld
 {
     class Text;
-    class Event;
-    class Observer;
+    struct Event;
+    struct Observer;
     class CoinsCollectedUI : public IDraw
     {
     public:

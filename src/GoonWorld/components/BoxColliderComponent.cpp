@@ -48,7 +48,6 @@ void BoxColliderComponent::Draw()
     if (!_enabled || !_debugDraw)
         return;
     auto drawColor = geColor{0, 255, 255, 255};
-    auto loc = _parent->Location();
     geRectangle dstRect{
         // (int)_boxCollider->boundingBox.x,
         // (int)_boxCollider->boundingBox.y,

@@ -38,7 +38,7 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr), _deltaTime(0), DrawObjects(4)
+    : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
     {
@@ -169,7 +169,7 @@ void Game::Draw()
     }
 }
 
-void Game:: StartGameLevel(std::string &levelName)
+void Game::StartGameLevel(std::string &levelName)
 {
     _currentState = GameStates::Level;
     LoadLevel(levelName);

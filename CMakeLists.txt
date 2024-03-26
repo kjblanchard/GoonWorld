@@ -161,6 +161,7 @@ set(FULL_COMPILE_OPTIONS
     -Wno-newline-eof
     -Wno-strict-prototypes
     -Wno-sign-compare
+    -Wno-unused-parameter
     -pthread
 )
 
