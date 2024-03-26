@@ -56,7 +56,7 @@ jobs:
     container:
       image: emscripten/emsdk:3.1.46
       env:
-        thing: thing
+        THING_ADD: <div>The emscripten Build sucks!  The update sync time makes it look ghost-y<br>Use WASD to move<br>Space to jump, shift to run<br>Or, use a controller!></div>
       credentials:
         username: ${{ vars.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -77,6 +77,9 @@ jobs:
           # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
       - name: Actual build
         run: cd repo && make init && make CMAKE_BUILD_TYPE=Release erebuild
+      - name: Update html build
+        run: cd repo/build/bin && awk '/<textarea id="output" rows="8"><\/textarea>/ {print; print ENVIRON["THING_ADD"]; next} 1' SupergoonWorld.html > temp.html && mv temp.html SupergoonWorld.html
+
       - uses: actions/upload-artifact@v3
         name: Upload to S3
         with:
