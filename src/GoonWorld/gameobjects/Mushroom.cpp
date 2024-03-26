@@ -19,10 +19,11 @@ Mushroom::Mushroom(geRectangle *rect)
     _rigidbodyComponent = new RigidbodyComponent(rect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Mushroom);
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
-    _animationComponent = new AnimationComponent("mushroom");
+    _animationComponent = new AnimationComponent("mushroom", Point{0, -1});
     _animationComponent->AddTransition("idle", "walk", true, &_startedMoving);
     mushroomSoundSfx = Sfx::SfxFactory(mushroomSound);
     AddComponent({_rigidbodyComponent, _animationComponent});
+    Enabled(false);
 }
 
 void Mushroom::Update()

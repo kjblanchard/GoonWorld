@@ -70,6 +70,7 @@ Player::Player(TiledMap::TiledObject &object)
     whistleSfx = Sfx::SfxFactory(whistleSound);
 
     AddComponent({_boxColliderComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+    _animationComponent->ChangeLayer(2);
     BindOverlapFunctions();
     CreateAnimationTransitions();
     InitializePlayerConfig();

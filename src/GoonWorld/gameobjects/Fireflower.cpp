@@ -6,6 +6,8 @@
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
+#include <GoonWorld/tween/Tween.hpp>
+#include <GoonWorld/core/Game.hpp>
 
 using namespace GoonWorld;
 
@@ -13,13 +15,24 @@ extern const char *mushroomSound;
 static Sfx *mushroomSfx;
 
 Fireflower::Fireflower(geRectangle *rect)
+    : GameObject(rect)
 {
     _rigidbodyComponent = new RigidbodyComponent(rect);
     _rigidbodyComponent->SetBodyType(BodyTypes::Fireflower);
-    _animationComponent = new AnimationComponent("fireflower");
+    _animationComponent = new AnimationComponent("fireflower", Point{-1, 0});
     AddComponent({_rigidbodyComponent, _animationComponent});
     mushroomSfx = Sfx::SfxFactory(mushroomSound);
-    // GetGameSound().LoadSfx(mushroomSound);
+    Enabled(false);
+}
+
+void Fireflower::Push()
+{
+    Enabled(true);
+    _rigidbodyComponent->GravityEnabled(false);
+    auto tween = new Tween<int>(_location.y, _location.y - 16, 0.5, Easings::Linear);
+    tween->SetCallback(TweenEndCallback);
+    tween->SetCallbackArgs(this);
+    GetGame().AddTween(tween);
 }
 
 void Fireflower::TakeDamage()
@@ -28,4 +41,10 @@ void Fireflower::TakeDamage()
         return;
     mushroomSfx->Play();
     Enabled(false);
+}
+
+void Fireflower::TweenEndCallback(void* args)
+{
+    auto flower = static_cast<Fireflower*>(args);
+    flower->_rigidbodyComponent->BoundingBox().y = flower->_location.y;
 }

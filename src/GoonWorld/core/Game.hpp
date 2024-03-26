@@ -39,7 +39,8 @@ namespace GoonWorld
         inline Camera *GetCamera() { return _camera.get(); }
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
         inline void AddUpdateObject(IUpdate *update) { UpdateObjects.push_back(update); }
-        inline void AddDrawObject(IDraw *draw) { DrawObjects.push_back(draw); }
+        void AddDrawObject(IDraw *draw);
+        void ChangeDrawObjectLayer(IDraw* draw, int newLayer);
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
@@ -54,7 +55,7 @@ namespace GoonWorld
         std::vector<IUpdate *> UpdateObjects;
         // std::vector<ITween *> _tweens;
         std::vector<std::unique_ptr<ITween>> _tweens;
-        std::vector<IDraw *> DrawObjects;
+        std::vector<std::vector<IDraw *>> DrawObjects;
         std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);

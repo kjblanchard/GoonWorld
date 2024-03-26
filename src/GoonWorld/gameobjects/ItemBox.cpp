@@ -33,6 +33,7 @@ ItemBox::ItemBox(TiledMap::TiledObject &object)
     AddComponent({_rigidbodyComponent, _debugDrawComponent, _animationComponent});
     _debugDrawComponent->Enabled(false);
     _animationComponent->AddTransition("idle", "empty", true, &_isOpened);
+    _animationComponent->ChangeLayer(1);
     auto loc = geRectangle{_location.x, _location.y, 16, 16};
     switch (_contents)
     {
@@ -63,7 +64,9 @@ void ItemBox::TakeDamage()
     }
     case (int)ItemBrickContents::Fireflower:
     {
-        content->Enabled(true);
+        auto flower = dynamic_cast<Fireflower *>(content);
+        flower->Push();
+        // content->Enabled(true);
         powerupSpawnSfx->Play();
         break;
     }

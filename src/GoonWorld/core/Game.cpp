@@ -34,7 +34,7 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr), _deltaTime(0), DrawObjects(4)
 {
     if (_gameInstance)
     {
@@ -113,10 +113,13 @@ void Game::Update(double timeMs)
 
 void Game::Draw()
 {
-    for (auto object : DrawObjects)
+    for (auto layer : DrawObjects)
     {
-        if (object->IsVisible())
-            object->Draw();
+        for (auto object : layer)
+        {
+            if (object->IsVisible())
+                object->Draw();
+        }
     }
 
     if (_gameSettings->DebugConfig.SolidDebug)
@@ -196,7 +199,10 @@ void Game::RestartLevel()
     _playerDying = nullptr;
     _playerBig = nullptr;
     UpdateObjects.clear();
-    DrawObjects.clear();
+    for (auto& layer : DrawObjects)
+    {
+        layer.clear();
+    }
     UIDrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
@@ -264,11 +270,41 @@ void Game::ChangeLevel()
     _playerDying = nullptr;
     _playerBig = nullptr;
     UpdateObjects.clear();
-    DrawObjects.clear();
+    for (auto& layer : DrawObjects)
+    {
+        layer.clear();
+    }
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
     auto nextLevel = _loadedLevel->GetNextLevel();
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;
+}
+
+void Game::AddDrawObject(IDraw *draw)
+{
+    DrawObjects[draw->DrawLayer()].push_back(draw);
+}
+
+void Game::ChangeDrawObjectLayer(IDraw *draw, int newLayer)
+{
+    int currentLayer = draw->DrawLayer(); // Current layer of the IDraw object
+    int objectIndex = -1;
+
+    for (size_t i = 0; i < DrawObjects[currentLayer].size(); ++i)
+    {
+
+        if (DrawObjects[currentLayer][i] == draw)
+        {
+            objectIndex = i; // Store the current layer
+            break;           // Exit the inner loop
+        }
+    }
+
+    if (objectIndex != -1)
+    {
+        DrawObjects[newLayer].push_back(draw);
+        DrawObjects[currentLayer].erase(DrawObjects[currentLayer].begin() + objectIndex);
+    }
 }
