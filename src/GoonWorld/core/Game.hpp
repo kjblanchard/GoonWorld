@@ -52,6 +52,7 @@ namespace GoonWorld
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
+        void StartGameLevel(std::string& levelName);
         void SetCurrentLevel(TiledLevel *level);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);

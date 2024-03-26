@@ -16,7 +16,7 @@ namespace GoonWorld
         inline int& Alpha(){return _alpha;}
         void Draw() override;
         void Visible(bool isVisible) override;
-        void Update();
+        void Update() override;
         void UpdateImageAlpha(int alpha);
         bool IsVisible() override;
         Image(std::string &name, geRectangle dstRect);

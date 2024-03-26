@@ -1,7 +1,13 @@
 #include <GoonWorld/ui/Panel.hpp>
 #include <GoonWorld/content/Image.hpp>
+#include <GoonWorld/content/Text.hpp>
 using namespace GoonWorld;
 
+void Panel::AddText(Text *image)
+{
+    AddUIDrawObject(image);
+    AddUIUpdateObject(image);
+}
 void Panel::AddImage(Image *image)
 {
     AddUIDrawObject(image);

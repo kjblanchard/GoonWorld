@@ -10,9 +10,11 @@ Text::Text(string stringToLoad, Point location, geColor textColor)
 {
     _boundingBox.x = location.x;
     _boundingBox.y = location.y;
+
+    Content::AddContent(this);
 }
 
-Text * Text::TextFactory(std::string stringToLoad, Point location, geColor textColor)
+Text *Text::TextFactory(std::string stringToLoad, Point location, geColor textColor)
 {
     auto loadedText = Content::GetContent(stringToLoad);
     if (loadedText)
@@ -57,4 +59,15 @@ void Text::Load()
 void Text::Unload()
 {
     DestroyTexture(_loadedTexture);
+}
+
+void Text::Update()
+{
+    UpdateTextAlpha(_alpha);
+}
+
+void Text::UpdateTextAlpha(int alpha)
+{
+    geUpdateTextureAlpha(_loadedTexture, alpha);
+    _alpha = alpha;
 }

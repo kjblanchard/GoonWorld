@@ -12,9 +12,9 @@ Image *Image::ImageFactory(std::string imageName, geRectangle dstRect)
 }
 
 Image::Image(std::string &name, geRectangle dstRect)
-    : _imageName(name), _destRect(dstRect)
+    : _imageName(name), _destRect(dstRect), surface(nullptr)
 {
-    surface = CreateTextureFromFile(GetLoadPath(name).c_str());
+    Content::AddContent(this);
 }
 
 Image::~Image()
@@ -23,6 +23,8 @@ Image::~Image()
 
 void Image::Load()
 {
+    puts("Loading image");
+    surface = CreateTextureFromFile(GetLoadPath(_imageName).c_str());
 }
 
 void Image::Unload()

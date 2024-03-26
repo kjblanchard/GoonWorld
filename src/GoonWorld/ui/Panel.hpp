@@ -6,10 +6,12 @@
 namespace GoonWorld
 {
     class Image;
+    class Text;
     class Panel : public IDraw, public IUpdate
     {
     public:
         void AddImage(Image *image);
+        void AddText(Text *image);
         inline void AddUIUpdateObject(IUpdate *obj) { UIUpdateObjects.push_back(obj); }
         inline void AddUIDrawObject(IDraw *obj) { UIDrawObjects.push_back(obj); }
         virtual void Visible(bool isVisible) override;
