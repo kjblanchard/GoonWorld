@@ -1,0 +1,146 @@
+==1070868== Memcheck, a memory error detector
+==1070868== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1070868== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==1070868== Command: ./SupergoonWorld
+==1070868== 
+==1070868== Conditional jump or move depends on uninitialised value(s)
+==1070868==    at 0x10DAF565: pa_shm_cleanup (in /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-13.99.so)
+==1070868==    by 0x10DAF7A1: pa_shm_create_rw (in /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-13.99.so)
+==1070868==    by 0x10D9F4B6: pa_mempool_new (in /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-13.99.so)
+==1070868==    by 0x10D249B1: pa_context_new_with_proplist (in /usr/lib/x86_64-linux-gnu/libpulse.so.0.21.2)
+==1070868==    by 0x7EF2AB: ConnectToPulseServer_Internal (external/sg_engine/external/sg_sound/external/SDL/src/audio/pulseaudio/SDL_pulseaudio.c:296)
+==1070868==    by 0x7EDBDC: ConnectToPulseServer (external/sg_engine/external/sg_sound/external/SDL/src/audio/pulseaudio/SDL_pulseaudio.c:331)
+==1070868==    by 0x7EDA48: PULSEAUDIO_Init (external/sg_engine/external/sg_sound/external/SDL/src/audio/pulseaudio/SDL_pulseaudio.c:887)
+==1070868==    by 0x73B795: SDL_AudioInit_REAL (external/sg_engine/external/sg_sound/external/SDL/src/audio/SDL_audio.c:977)
+==1070868==    by 0x736B4A: SDL_InitSubSystem_REAL (external/sg_engine/external/sg_sound/external/SDL/src/SDL.c:263)
+==1070868==    by 0x5A6076: SDL_InitSubSystem (external/sg_engine/external/sg_sound/external/SDL/src/dynapi/SDL_dynapi_procs.h:89)
+==1070868==    by 0x4A2E31: prep_alc_device (external/sg_engine/external/sg_sound/external/mojoAL/mojoal.c:681)
+==1070868==    by 0x4A2DFC: alcOpenDevice (external/sg_engine/external/sg_sound/external/mojoAL/mojoal.c:732)
+==1070868==  Uninitialised value was created by a heap allocation
+==1070868==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x4CD0F18: __alloc_dir (opendir.c:118)
+==1070868==    by 0x4CD0F18: opendir_tail (opendir.c:69)
+==1070868==    by 0x4CD0F18: opendir (opendir.c:92)
+==1070868==    by 0x10DAF52F: pa_shm_cleanup (in /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-13.99.so)
+==1070868==    by 0x10DAF7A1: pa_shm_create_rw (in /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-13.99.so)
+==1070868==    by 0x10D9F4B6: pa_mempool_new (in /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-13.99.so)
+==1070868==    by 0x10D249B1: pa_context_new_with_proplist (in /usr/lib/x86_64-linux-gnu/libpulse.so.0.21.2)
+==1070868==    by 0x7EF2AB: ConnectToPulseServer_Internal (external/sg_engine/external/sg_sound/external/SDL/src/audio/pulseaudio/SDL_pulseaudio.c:296)
+==1070868==    by 0x7EDBDC: ConnectToPulseServer (external/sg_engine/external/sg_sound/external/SDL/src/audio/pulseaudio/SDL_pulseaudio.c:331)
+==1070868==    by 0x7EDA48: PULSEAUDIO_Init (external/sg_engine/external/sg_sound/external/SDL/src/audio/pulseaudio/SDL_pulseaudio.c:887)
+==1070868==    by 0x73B795: SDL_AudioInit_REAL (external/sg_engine/external/sg_sound/external/SDL/src/audio/SDL_audio.c:977)
+==1070868==    by 0x736B4A: SDL_InitSubSystem_REAL (external/sg_engine/external/sg_sound/external/SDL/src/SDL.c:263)
+==1070868==    by 0x5A6076: SDL_InitSubSystem (external/sg_engine/external/sg_sound/external/SDL/src/dynapi/SDL_dynapi_procs.h:89)
+==1070868== 
+==1070868== Invalid read of size 8
+==1070868==    at 0x459665: std::__uniq_ptr_impl<ITween, std::default_delete<ITween> >::_M_ptr() const (unique_ptr.h:154)
+==1070868==    by 0x459624: std::unique_ptr<ITween, std::default_delete<ITween> >::get() const (unique_ptr.h:361)
+==1070868==    by 0x450894: std::unique_ptr<ITween, std::default_delete<ITween> >::operator bool() const (unique_ptr.h:375)
+==1070868==    by 0x44DD7E: GoonWorld::Game::Update(double) (src/GoonWorld/core/Game.cpp:101)
+==1070868==    by 0x46B4AB: Update(double) (src/GoonWorld/main.cpp:8)
+==1070868==    by 0x49DE52: loop_func (external/sg_engine/src/GoonEngine/test.c:95)
+==1070868==    by 0x49DC12: gePlayLoop (external/sg_engine/src/GoonEngine/test.c:135)
+==1070868==    by 0x46B53E: main (src/GoonWorld/main.cpp:22)
+==1070868==  Address 0x678b298 is 24 bytes inside a block of size 32 free'd
+==1070868==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x456E5F: __gnu_cxx::new_allocator<std::unique_ptr<ITween, std::default_delete<ITween> > >::deallocate(std::unique_ptr<ITween, std::default_delete<ITween> >*, unsigned long) (new_allocator.h:128)
+==1070868==    by 0x456E37: std::allocator_traits<std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::deallocate(std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > >&, std::unique_ptr<ITween, std::default_delete<ITween> >*, unsigned long) (alloc_traits.h:469)
+==1070868==    by 0x456DDA: std::_Vector_base<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::_M_deallocate(std::unique_ptr<ITween, std::default_delete<ITween> >*, unsigned long) (stl_vector.h:351)
+==1070868==    by 0x45E06F: void std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::_M_realloc_insert<std::unique_ptr<ITween, std::default_delete<ITween> > >(__gnu_cxx::__normal_iterator<std::unique_ptr<ITween, std::default_delete<ITween> >*, std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > > >, std::unique_ptr<ITween, std::default_delete<ITween> >&&) (vector.tcc:500)
+==1070868==    by 0x45DE60: std::unique_ptr<ITween, std::default_delete<ITween> >& std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::emplace_back<std::unique_ptr<ITween, std::default_delete<ITween> > >(std::unique_ptr<ITween, std::default_delete<ITween> >&&) (vector.tcc:121)
+==1070868==    by 0x45DD7F: std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::push_back(std::unique_ptr<ITween, std::default_delete<ITween> >&&) (stl_vector.h:1201)
+==1070868==    by 0x45DBCC: GoonWorld::Game::AddTween(ITween*) (src/GoonWorld/core/Game.hpp:42)
+==1070868==    by 0x49A84D: GoonWorld::LogoPanel::FadeInTextTweenCompleteFunc(void*) (src/GoonWorld/ui/LogoPanel.cpp:66)
+==1070868==    by 0x45EDF1: std::_Function_handler<void (void*), void (*)(void*)>::_M_invoke(std::_Any_data const&, void*&&) (std_function.h:300)
+==1070868==    by 0x4982AA: std::function<void (void*)>::operator()(void*) const (std_function.h:688)
+==1070868==    by 0x49812D: GoonWorld::Tween<int>::Interpolate(double&) (src/GoonWorld/tween/Tween.cpp:22)
+==1070868==  Block was alloc'd at
+==1070868==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x45E6C6: __gnu_cxx::new_allocator<std::unique_ptr<ITween, std::default_delete<ITween> > >::allocate(unsigned long, void const*) (new_allocator.h:114)
+==1070868==    by 0x45E673: std::allocator_traits<std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::allocate(std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > >&, unsigned long) (alloc_traits.h:443)
+==1070868==    by 0x45E4E2: std::_Vector_base<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::_M_allocate(unsigned long) (stl_vector.h:343)
+==1070868==    by 0x45DF59: void std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::_M_realloc_insert<std::unique_ptr<ITween, std::default_delete<ITween> > >(__gnu_cxx::__normal_iterator<std::unique_ptr<ITween, std::default_delete<ITween> >*, std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > > >, std::unique_ptr<ITween, std::default_delete<ITween> >&&) (vector.tcc:440)
+==1070868==    by 0x45DE60: std::unique_ptr<ITween, std::default_delete<ITween> >& std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::emplace_back<std::unique_ptr<ITween, std::default_delete<ITween> > >(std::unique_ptr<ITween, std::default_delete<ITween> >&&) (vector.tcc:121)
+==1070868==    by 0x45DD7F: std::vector<std::unique_ptr<ITween, std::default_delete<ITween> >, std::allocator<std::unique_ptr<ITween, std::default_delete<ITween> > > >::push_back(std::unique_ptr<ITween, std::default_delete<ITween> >&&) (stl_vector.h:1201)
+==1070868==    by 0x45DBCC: GoonWorld::Game::AddTween(ITween*) (src/GoonWorld/core/Game.hpp:42)
+==1070868==    by 0x49A6B3: GoonWorld::LogoPanel::FadeOutTweenCompleteFunc(void*) (src/GoonWorld/ui/LogoPanel.cpp:52)
+==1070868==    by 0x45EDF1: std::_Function_handler<void (void*), void (*)(void*)>::_M_invoke(std::_Any_data const&, void*&&) (std_function.h:300)
+==1070868==    by 0x4982AA: std::function<void (void*)>::operator()(void*) const (std_function.h:688)
+==1070868==    by 0x49812D: GoonWorld::Tween<int>::Interpolate(double&) (src/GoonWorld/tween/Tween.cpp:22)
+==1070868== 
+03-26-23:46-37: Refresh rate is set to 60 end
+Opened "Default OpenAL playback device"
+Loading image
+We are not playing OR paused, we are 4113
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+We are not playing OR paused, we are 4116
+==1070868== 
+==1070868== HEAP SUMMARY:
+==1070868==     in use at exit: 3,877,394 bytes in 13,079 blocks
+==1070868==   total heap usage: 145,950 allocs, 132,871 frees, 61,974,834 bytes allocated
+==1070868== 
+==1070868== 32 bytes in 1 blocks are definitely lost in loss record 153 of 752
+==1070868==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x561B3CF: XextAddDisplay (in /usr/lib/x86_64-linux-gnu/libXext.so.6.4.0)
+==1070868==    by 0x6FD3774: ???
+==1070868==    by 0x6FD60FC: ???
+==1070868==    by 0x6FC872D: ???
+==1070868==    by 0x6FC3DD3: ???
+==1070868==    by 0x6FC4908: ???
+==1070868==    by 0x7FCC9C: X11_GL_GetVisual (external/sg_engine/external/sg_sound/external/SDL/src/video/x11/SDL_x11opengl.c:643)
+==1070868==    by 0x7FC325: X11_GL_InitExtensions (external/sg_engine/external/sg_sound/external/SDL/src/video/x11/SDL_x11opengl.c:352)
+==1070868==    by 0x7FC129: X11_GL_LoadLibrary (external/sg_engine/external/sg_sound/external/SDL/src/video/x11/SDL_x11opengl.c:248)
+==1070868==    by 0x628B43: SDL_GL_LoadLibrary_REAL (external/sg_engine/external/sg_sound/external/SDL/src/video/SDL_video.c:3386)
+==1070868==    by 0x629C52: SDL_RecreateWindow (external/sg_engine/external/sg_sound/external/SDL/src/video/SDL_video.c:1936)
+==1070868== 
+==1070868== 72 bytes in 3 blocks are definitely lost in loss record 270 of 752
+==1070868==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x4A12E9: gsLoadBgm (external/sg_engine/external/sg_sound/src/SupergoonSound/sound/sound.c:20)
+==1070868==    by 0x44818D: GoonWorld::Bgm::Load() (src/GoonWorld/content/Bgm.cpp:46)
+==1070868==    by 0x449B93: GoonWorld::Content::LoadAllContent() (src/GoonWorld/core/Content.cpp:82)
+==1070868==    by 0x44E98E: GoonWorld::Game::LoadLevel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (src/GoonWorld/core/Game.cpp:270)
+==1070868==    by 0x44E6D2: GoonWorld::Game::StartGameLevel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (src/GoonWorld/core/Game.cpp:180)
+==1070868==    by 0x49A964: GoonWorld::LogoPanel::FadeOutTextTweenCompleteFunc(void*) (src/GoonWorld/ui/LogoPanel.cpp:78)
+==1070868==    by 0x45EDF1: std::_Function_handler<void (void*), void (*)(void*)>::_M_invoke(std::_Any_data const&, void*&&) (std_function.h:300)
+==1070868==    by 0x4982AA: std::function<void (void*)>::operator()(void*) const (std_function.h:688)
+==1070868==    by 0x49812D: GoonWorld::Tween<int>::Interpolate(double&) (src/GoonWorld/tween/Tween.cpp:22)
+==1070868==    by 0x45EA8E: GoonWorld::Tween<int>::Update(double&) (src/GoonWorld/tween/Tween.hpp:95)
+==1070868==    by 0x44DDA0: GoonWorld::Game::Update(double) (src/GoonWorld/core/Game.cpp:103)
+==1070868== 
+==1070868== 160 (96 direct, 64 indirect) bytes in 1 blocks are definitely lost in loss record 417 of 752
+==1070868==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x44D70E: GoonWorld::Game::Game() (src/GoonWorld/core/Game.cpp:70)
+==1070868==    by 0x46B639: std::_MakeUniq<GoonWorld::Game>::__single_object std::make_unique<GoonWorld::Game>() (unique_ptr.h:857)
+==1070868==    by 0x46B516: main (src/GoonWorld/main.cpp:21)
+==1070868== 
+==1070868== 362 (144 direct, 218 indirect) bytes in 9 blocks are definitely lost in loss record 504 of 752
+==1070868==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1070868==    by 0x4A1425: gsLoadSfxHelper (external/sg_engine/external/sg_sound/src/SupergoonSound/sound/sound.c:47)
+==1070868==    by 0x448C2D: GoonWorld::Sfx::Load() (src/GoonWorld/content/Sfx.cpp:36)
+==1070868==    by 0x449B93: GoonWorld::Content::LoadAllContent() (src/GoonWorld/core/Content.cpp:82)
+==1070868==    by 0x44E98E: GoonWorld::Game::LoadLevel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (src/GoonWorld/core/Game.cpp:270)
+==1070868==    by 0x44E6D2: GoonWorld::Game::StartGameLevel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (src/GoonWorld/core/Game.cpp:180)
+==1070868==    by 0x49A964: GoonWorld::LogoPanel::FadeOutTextTweenCompleteFunc(void*) (src/GoonWorld/ui/LogoPanel.cpp:78)
+==1070868==    by 0x45EDF1: std::_Function_handler<void (void*), void (*)(void*)>::_M_invoke(std::_Any_data const&, void*&&) (std_function.h:300)
+==1070868==    by 0x4982AA: std::function<void (void*)>::operator()(void*) const (std_function.h:688)
+==1070868==    by 0x49812D: GoonWorld::Tween<int>::Interpolate(double&) (src/GoonWorld/tween/Tween.cpp:22)
+==1070868==    by 0x45EA8E: GoonWorld::Tween<int>::Update(double&) (src/GoonWorld/tween/Tween.hpp:95)
+==1070868==    by 0x44DDA0: GoonWorld::Game::Update(double) (src/GoonWorld/core/Game.cpp:103)
+==1070868== 
+==1070868== LEAK SUMMARY:
+==1070868==    definitely lost: 344 bytes in 14 blocks
+==1070868==    indirectly lost: 282 bytes in 11 blocks
+==1070868==      possibly lost: 1,132,141 bytes in 4,356 blocks
+==1070868==    still reachable: 2,744,627 bytes in 8,698 blocks
+==1070868==         suppressed: 0 bytes in 0 blocks
+==1070868== Reachable blocks (those to which a pointer was found) are not shown.
+==1070868== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==1070868== 
+==1070868== For lists of detected and suppressed errors, rerun with: -s
+==1070868== ERROR SUMMARY: 107 errors from 106 contexts (suppressed: 0 from 0)

@@ -159,7 +159,7 @@ set(FULL_COMPILE_OPTIONS
     -Wpedantic
     -Wdeprecated
     -Wno-newline-eof
-    -Wno-strict-prototypes
+    # -Wno-strict-prototypes
     -Wno-sign-compare
     -Wno-unused-parameter
     -pthread
