@@ -86,8 +86,8 @@ Player::Player(TiledMap::TiledObject &object)
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
 
-    _rigidbodyComponent->SetDebug(true);
-    _boxColliderComponent->SetDebug(true);
+    // _rigidbodyComponent->SetDebug(true);
+    // _boxColliderComponent->SetDebug(true);
 }
 void Player::BindOverlapFunctions()
 {

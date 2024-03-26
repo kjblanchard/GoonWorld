@@ -28,7 +28,7 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     deadSfx = Sfx::SfxFactory(deadSound);
     AddComponent({_rigidbodyComponent, _animationComponent});
-    _rigidbodyComponent->SetDebug(true);
+    // _rigidbodyComponent->SetDebug(true);
     _animationComponent->AddTransition("walk", "dead", true, &_isDead);
 }
 void Goomba::TakeDamage()

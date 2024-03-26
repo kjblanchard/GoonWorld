@@ -57,7 +57,6 @@ void ItemBox::TakeDamage()
     case (int)ItemBrickContents::Mushroom:
     {
         auto shroom = dynamic_cast<Mushroom *>(content);
-        // shroom->Enabled(true);
         shroom->Push(true);
         powerupSpawnSfx->Play();
         break;

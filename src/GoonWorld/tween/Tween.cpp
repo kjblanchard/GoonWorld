@@ -4,7 +4,7 @@
 using namespace GoonWorld;
 
 template <>
-int Tween<int>::Interpolate(double &deltaTimeSeconds)
+void Tween<int>::Interpolate(double &deltaTimeSeconds)
 {
     _currentTime += deltaTimeSeconds;
     if (_currentTime > _endTime)
@@ -23,25 +23,21 @@ int Tween<int>::Interpolate(double &deltaTimeSeconds)
 }
 
 template <>
-float Tween<float>::Interpolate(double &deltaTimeSeconds)
+void Tween<float>::Interpolate(double &deltaTimeSeconds)
 {
-    return 0;
 }
 
 template <>
-double Tween<double>::Interpolate(double &deltaTimeSeconds)
+void Tween<double>::Interpolate(double &deltaTimeSeconds)
 {
-    return 0;
 }
 
 template <>
-Point Tween<Point>::Interpolate(double &deltaTimeSeconds)
+void Tween<Point>::Interpolate(double &deltaTimeSeconds)
 {
-    return gePointZero();
 }
 
 template <>
-geRectangle Tween<geRectangle>::Interpolate(double &deltaTimeSeconds)
+void Tween<geRectangle>::Interpolate(double &deltaTimeSeconds)
 {
-    return geRectangleZero();
 }
