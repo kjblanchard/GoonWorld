@@ -7,6 +7,7 @@ namespace GoonWorld
         virtual void Draw() = 0;
         virtual void Visible(bool isVisible) = 0;
         virtual bool IsVisible() = 0;
+        virtual int DrawLayer() { return 0; }
         virtual ~IDraw() {}
     };
 

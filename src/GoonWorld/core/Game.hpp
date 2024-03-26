@@ -4,14 +4,16 @@
 #include <queue>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/events/Event.hpp>
+#include <GoonWorld/interfaces/ITween.hpp>
 
 typedef struct gpScene gpScene;
 
 namespace GoonWorld
 {
+    // class ITween;
     class IUpdate;
-    class Observer;
     class IDraw;
+    class Observer;
     class AppSettings;
     class TiledLevel;
     class Player;
@@ -29,6 +31,7 @@ namespace GoonWorld
         ~Game();
         void Update(double time);
         void Draw();
+        inline void AddTween(ITween *tween) { _tweens.push_back(std::unique_ptr<ITween>(tween)); }
         inline void TriggerRestartLevel() { _shouldRestart = true; }
         inline void TriggerNextLevel() { _shouldChangeLevel = true; }
         inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
@@ -36,7 +39,8 @@ namespace GoonWorld
         inline Camera *GetCamera() { return _camera.get(); }
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
         inline void AddUpdateObject(IUpdate *update) { UpdateObjects.push_back(update); }
-        inline void AddDrawObject(IDraw *draw) { DrawObjects.push_back(draw); }
+        void AddDrawObject(IDraw *draw);
+        void ChangeDrawObjectLayer(IDraw* draw, int newLayer);
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
@@ -49,7 +53,9 @@ namespace GoonWorld
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
-        std::vector<IDraw *> DrawObjects;
+        // std::vector<ITween *> _tweens;
+        std::vector<std::unique_ptr<ITween>> _tweens;
+        std::vector<std::vector<IDraw *>> DrawObjects;
         std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);
@@ -73,6 +79,8 @@ namespace GoonWorld
         std::unique_ptr<AppSettings> _gameSettings;
         std::unique_ptr<CoinsCollectedUI> _coinUI;
         std::unique_ptr<LevelTimer> _levelTimerUI;
+
+        int testTween = 0;
 
         TimeSpan _deltaTime;
     };

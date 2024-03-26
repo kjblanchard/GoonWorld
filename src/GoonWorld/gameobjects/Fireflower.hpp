@@ -14,8 +14,10 @@ namespace GoonWorld
     public:
         Fireflower(TiledMap::TiledObject &object);
         Fireflower(geRectangle *rect);
+        void Push();
         // void Update() override;
         void TakeDamage() override;
+        static void TweenEndCallback(void *args);
 
     private:
         DebugDrawComponent *_debugDrawComponent;

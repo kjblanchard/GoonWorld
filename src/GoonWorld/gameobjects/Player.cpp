@@ -52,12 +52,16 @@ Player::Player(TiledMap::TiledObject &object)
     _rigidbodyComponent->SetBodyType(1);
     // _animationComponent = new AnimationComponent("mario", Point{0, -20});
     _animationComponent = new AnimationComponent("mario", Point{0, -22});
-    auto bigBodyRect = bodyRect;
+    // auto bigBodyRect = bodyRect;
     // bigBodyRect.w *= 2;
     // This is the jump hitbox, it should be taller and skinnier than the body
-    bigBodyRect.w += _playerConfig->JumpColliderOffsetW;
-    bigBodyRect.h += _playerConfig->JumpColliderOffsetH;
-    _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
+    // bigBodyRect.w += _playerConfig->JumpColliderOffsetW;
+    // bigBodyRect.h += _playerConfig->JumpColliderOffsetH;
+    auto boxRect = geRectangle{object.X, object.Y, object.Width, object.Height};
+    boxRect.w += _playerConfig->JumpColliderOffsetW;
+    boxRect.h += _playerConfig->JumpColliderOffsetH;
+    _boxColliderComponent = new BoxColliderComponent(&boxRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
+    // _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
     _boxColliderComponent->SetBodyType(1);
     _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
     // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
@@ -66,6 +70,7 @@ Player::Player(TiledMap::TiledObject &object)
     whistleSfx = Sfx::SfxFactory(whistleSound);
 
     AddComponent({_boxColliderComponent, _playerInputComponent, _rigidbodyComponent, _animationComponent});
+    _animationComponent->ChangeLayer(2);
     BindOverlapFunctions();
     CreateAnimationTransitions();
     InitializePlayerConfig();
@@ -81,8 +86,8 @@ Player::Player(TiledMap::TiledObject &object)
     winBgm = Bgm::BgmFactory(playerWinBgm);
     dieBgm = Bgm::BgmFactory(playerDieBgm);
 
-    _rigidbodyComponent->SetDebug(true);
-    _boxColliderComponent->SetDebug(true);
+    // _rigidbodyComponent->SetDebug(true);
+    // _boxColliderComponent->SetDebug(true);
 }
 void Player::BindOverlapFunctions()
 {
@@ -461,7 +466,13 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     {
         player->_currentEnemyKillTime = 0;
         // player->_rigidbodyComponent->Velocity().y = *player->_initialJumpVelocity;
-        player->_rigidbodyComponent->Velocity().y = player->_playerConfig->InitialJumpVelocity;
+        auto vel = player->_playerConfig->InitialJumpVelocity / 2;
+        if (player->_playerInputComponent->IsButtonDownOrHeld(GameControllerButton::A))
+        {
+            vel *= 2;
+        }
+
+        player->_rigidbodyComponent->Velocity().y = vel;
         player->_currentJumpTime = 0;
         player->_isJumping = true;
         player->SetFlag(player->_playerFlags, PlayerFlags::EnemyJustKilled, true);

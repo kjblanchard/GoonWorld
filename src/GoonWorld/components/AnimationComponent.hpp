@@ -22,6 +22,7 @@ namespace GoonWorld
         void OnComponentAdd(GameObject &parent) override;
         inline std::pair<int, Animation *> GetCurrentAnimation() const { return {_currentFrame, _currentAnimation}; };
         void ChangeAnimation(std::string &, int frameInAnim);
+        void ChangeLayer(int layer);
         void ChangeAnimation(std::string &);
         inline void Visible(bool isVisible) override { _visible = isVisible; }
         inline bool IsVisible() override { return _visible; }
@@ -39,6 +40,7 @@ namespace GoonWorld
         AsepriteDocument *_currentAnimationDocument;
         double _secondsThisFrame;
         int _currentFrame;
+        int _layer;
         Point _offset = Point{0, 0};
         std::vector<std::unique_ptr<AnimationTransition>> _transitions;
         bool _visible;

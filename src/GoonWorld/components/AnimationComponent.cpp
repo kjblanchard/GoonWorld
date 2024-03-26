@@ -103,3 +103,9 @@ void AnimationComponent::AddTransition(std::string from, std::string to, bool ma
 {
     _transitions.push_back(std::make_unique<AnimationTransition>(from, to, matchCondition, matchRef));
 }
+
+void AnimationComponent::ChangeLayer(int layer)
+{
+    GetGame().ChangeDrawObjectLayer(this, layer);
+    _layer = layer;
+}
