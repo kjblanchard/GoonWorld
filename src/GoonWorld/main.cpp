@@ -19,6 +19,6 @@ int main()
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
     game = std::make_unique<Game>();
-    game->LoadLevel("level1");
+    // game->LoadLevel("level1");
     gePlayLoop();
 }
