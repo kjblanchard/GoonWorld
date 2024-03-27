@@ -23,7 +23,6 @@ Image::~Image()
 
 void Image::Load()
 {
-    puts("Loading image");
     surface = CreateTextureFromFile(GetLoadPath(_imageName).c_str());
 }
 

@@ -45,26 +45,17 @@ Player::Player(TiledMap::TiledObject &object)
     _location = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
-    // Size of body should be smaller than the size of the tile object
     bodyRect.w += _playerConfig->RigidBodyOffsetW;
     bodyRect.h += _playerConfig->RigidBodyOffsetH;
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{_playerConfig->RigidBodyOffsetX, _playerConfig->RigidBodyOffsetY});
     _rigidbodyComponent->SetBodyType(1);
-    // _animationComponent = new AnimationComponent("mario", Point{0, -20});
     _animationComponent = new AnimationComponent("mario", Point{0, -22});
-    // auto bigBodyRect = bodyRect;
-    // bigBodyRect.w *= 2;
-    // This is the jump hitbox, it should be taller and skinnier than the body
-    // bigBodyRect.w += _playerConfig->JumpColliderOffsetW;
-    // bigBodyRect.h += _playerConfig->JumpColliderOffsetH;
     auto boxRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     boxRect.w += _playerConfig->JumpColliderOffsetW;
     boxRect.h += _playerConfig->JumpColliderOffsetH;
     _boxColliderComponent = new BoxColliderComponent(&boxRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
-    // _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
     _boxColliderComponent->SetBodyType(1);
     _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
-    // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
     jumpSfx = Sfx::SfxFactory(jumpSound);
     powerDownSfx = Sfx::SfxFactory(powerDownSound);
     whistleSfx = Sfx::SfxFactory(whistleSound);
@@ -703,7 +694,7 @@ void Player::PowerupTick()
             _boxColliderComponent->BoundingBox().y -= 16;
             _boxColliderComponent->BoundingBox().h += 16;
             // Adjust animation offset
-            _animationComponent->Offset(Point{0, -4});
+            _animationComponent->Offset(Point{0, -6});
         }
         else
         {
@@ -735,7 +726,7 @@ void Player::PowerupTick()
                 newName.erase(newName.size() - removeChars);
                 if (wasPreviouslyBig)
                 {
-                    _animationComponent->Offset(Point{0, -4});
+                    _animationComponent->Offset(Point{0, -6});
                 }
             }
             else

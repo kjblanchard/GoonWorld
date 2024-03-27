@@ -28,6 +28,9 @@ LogoPanel::LogoPanel()
     fadeInSggTween->SetCallback(FadeInTweenCompleteFunc);
     fadeInSggTween->SetCallbackArgs(this);
 }
+LogoPanel::~LogoPanel()
+{
+}
 
 void LogoPanel::FadeInTweenCompleteFunc(void *args)
 {

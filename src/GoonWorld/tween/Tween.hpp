@@ -46,6 +46,7 @@ namespace GoonWorld
     {
     public:
         Tween(T &start, T end, double time, Easings easeType);
+        ~Tween();
         void Update(double &deltaTimeSeconds) override;
         inline void SetCallback(std::function<void(void *args)> callback) { _callback = callback; }
         inline void SetCallbackArgs(void *args) { _args = args; }
@@ -85,6 +86,10 @@ namespace GoonWorld
     template <typename T>
     Tween<T>::Tween(T &start, T end, double time, Easings easeType)
         : _value(&start), _start(start), _end(end), _currentTime(0), _endTime(time), _looping(false), _completed(false), _callback(nullptr), _args(nullptr), _easeType(easeType)
+    {
+    }
+    template <typename T>
+    Tween<T>::~Tween()
     {
     }
 

@@ -11,6 +11,7 @@ namespace GoonWorld
 
     public:
         LogoPanel();
+        ~LogoPanel();
         Image *sggImage = nullptr;
         Text* textLine1 = nullptr;
         Text* textLine2 = nullptr;

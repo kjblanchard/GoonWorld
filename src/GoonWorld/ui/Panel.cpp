@@ -3,6 +3,12 @@
 #include <GoonWorld/content/Text.hpp>
 using namespace GoonWorld;
 
+Panel::~Panel()
+{
+    UIDrawObjects.clear();
+    UIUpdateObjects.clear();
+}
+
 void Panel::AddText(Text *image)
 {
     AddUIDrawObject(image);

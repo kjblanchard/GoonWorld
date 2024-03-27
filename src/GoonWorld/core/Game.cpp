@@ -31,6 +31,7 @@
 // Image test
 // #include <GoonWorld/content/Image.hpp>
 #include <GoonWorld/ui/LogoPanel.hpp>
+#include <GoonWorld/ui/Panel.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -39,7 +40,7 @@ extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
 
 Game::Game()
     : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
-    // : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+// : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     // DrawObjects{4, {}};
     // std::vector<std::vector<IDraw*>> DrawObjects(4, std::vector<IDraw*>());
@@ -67,7 +68,7 @@ Game::Game()
     _gameInstance = this;
     _coinUI = std::make_unique<CoinsCollectedUI>();
     _levelTimerUI = std::make_unique<LevelTimer>();
-    logoPanel = new LogoPanel();
+    logoPanel = std::make_unique<LogoPanel>();
     _currentState = GameStates::Logos;
     Content::LoadAllContent();
 }
@@ -80,6 +81,7 @@ Game::~Game()
     _playerBig = nullptr;
     UpdateObjects.clear();
     DrawObjects.clear();
+    _tweens.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     GameSpawnMap.clear();
@@ -233,6 +235,7 @@ void Game::PlayerBig(Player *player)
 
 void Game::RestartLevel()
 {
+    _tweens.clear();
     if (!_loadedLevel)
         return;
     _shouldChangeLevel = false;
@@ -254,6 +257,7 @@ void Game::RestartLevel()
 
 void Game::LoadLevel(std::string level)
 {
+    _tweens.clear();
     InitializePhysics();
     if (!_loadedLevel || _shouldChangeLevel)
     {

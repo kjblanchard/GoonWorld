@@ -29,6 +29,7 @@ namespace GoonWorld
     class LevelTimer;
     class Image;
     class Panel;
+    class LogoPanel;
 
     class Game
     {
@@ -52,7 +53,7 @@ namespace GoonWorld
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
-        void StartGameLevel(std::string& levelName);
+        void StartGameLevel(std::string &levelName);
         void SetCurrentLevel(TiledLevel *level);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
@@ -88,10 +89,9 @@ namespace GoonWorld
         std::unique_ptr<AppSettings> _gameSettings;
         std::unique_ptr<CoinsCollectedUI> _coinUI;
         std::unique_ptr<LevelTimer> _levelTimerUI;
+        std::unique_ptr<LogoPanel> logoPanel;
 
         GameStates _currentState = GameStates::Default;
         TimeSpan _deltaTime;
-
-        Panel* logoPanel = nullptr;
     };
 }
