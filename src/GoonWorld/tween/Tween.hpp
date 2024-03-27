@@ -95,12 +95,4 @@ namespace GoonWorld
             Interpolate(deltaTimeSeconds);
     }
 
-#ifndef WIN32
-    template <typename T>
-    void Tween<T>::Interpolate(double &)
-    {
-        static_assert(std::is_arithmetic<T>::value, "Interpolation not implemented for this type");
-    }
-#endif
-
 }
