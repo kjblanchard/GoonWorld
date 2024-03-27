@@ -1,7 +1,7 @@
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 using namespace GoonWorld;
-Camera::Camera(geRectangle cameraBounds) : _cameraBounds(cameraBounds), _followTarget(nullptr), levelSize(Point{0, 0})
+Camera::Camera(geRectangle cameraBounds) : _cameraBounds(cameraBounds),  levelSize(Point{0, 0}), _followTarget(nullptr)
 {
 }
 
@@ -18,7 +18,6 @@ void Camera::Update()
 bool Camera::IsPointOnCamera(Point point)
 {
     auto cameraViewX = _cameraBounds.x + _cameraBounds.w;
-    auto cameraViewY = _cameraBounds.y + _cameraBounds.h;
 
     if (point.x >= _cameraBounds.x && point.x <= cameraViewX)
         return true;

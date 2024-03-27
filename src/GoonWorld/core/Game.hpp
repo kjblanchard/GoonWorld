@@ -10,10 +10,16 @@ typedef struct gpScene gpScene;
 
 namespace GoonWorld
 {
-    // class ITween;
+    enum class GameStates
+    {
+        Default,
+        Logos,
+        Level,
+        Loading,
+    };
     class IUpdate;
     class IDraw;
-    class Observer;
+    struct Observer;
     class AppSettings;
     class TiledLevel;
     class Player;
@@ -21,6 +27,9 @@ namespace GoonWorld
     class Camera;
     class CoinsCollectedUI;
     class LevelTimer;
+    class Image;
+    class Panel;
+    class LogoPanel;
 
     class Game
     {
@@ -40,10 +49,11 @@ namespace GoonWorld
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
         inline void AddUpdateObject(IUpdate *update) { UpdateObjects.push_back(update); }
         void AddDrawObject(IDraw *draw);
-        void ChangeDrawObjectLayer(IDraw* draw, int newLayer);
+        void ChangeDrawObjectLayer(IDraw *draw, int newLayer);
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
+        void StartGameLevel(std::string &levelName);
         void SetCurrentLevel(TiledLevel *level);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
@@ -79,9 +89,9 @@ namespace GoonWorld
         std::unique_ptr<AppSettings> _gameSettings;
         std::unique_ptr<CoinsCollectedUI> _coinUI;
         std::unique_ptr<LevelTimer> _levelTimerUI;
+        std::unique_ptr<LogoPanel> logoPanel;
 
-        int testTween = 0;
-
+        GameStates _currentState = GameStates::Default;
         TimeSpan _deltaTime;
     };
 }

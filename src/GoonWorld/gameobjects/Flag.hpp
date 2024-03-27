@@ -8,8 +8,8 @@ namespace GoonWorld
     class RigidbodyComponent;
     class AnimationComponent;
     class TiledObject;
-    class Observer;
-    class Event;
+    struct Observer;
+    struct Event;
     class Flag : public GameObject, public ITakeDamage
     {
     public:

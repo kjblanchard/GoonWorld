@@ -2,7 +2,7 @@
 #include <functional>
 namespace GoonWorld
 {
-    class Event;
+    struct Event;
     struct Observer
     {
         using EventFunction = std::function<void(Event& event)>;

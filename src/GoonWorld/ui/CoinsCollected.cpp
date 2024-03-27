@@ -28,17 +28,7 @@ CoinsCollectedUI::CoinsCollectedUI()
 
 void CoinsCollectedUI::UpdateCoins(int coins)
 {
-    int tens = _currentCoins / 10;
-    int ones = _currentCoins % 10;
-    // Set old numbers to not visible
-    // _loadedNumbers[tens]->Visible(false);
-    // _loadedNumbers[ones]->Visible(false);
     _currentCoins = coins;
-    // Set new numbers to visible
-    tens = _currentCoins / 10;
-    ones = _currentCoins % 10;
-    // _loadedNumbers[tens]->Visible(true);
-    // _loadedNumbers[ones]->Visible(true);
 }
 
 void CoinsCollectedUI::Draw()

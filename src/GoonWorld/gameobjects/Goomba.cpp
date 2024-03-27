@@ -59,7 +59,7 @@ void Goomba::Update()
     _rigidbodyComponent->Velocity().x = _isDead ? 0 : speed;
     GameObject::Update();
 }
-void Goomba::StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Goomba::StaticBodyOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto goomba = static_cast<Goomba *>(instance);
     switch (overlap->overlapDirection)

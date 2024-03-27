@@ -25,7 +25,7 @@ namespace GoonWorld
         bool _movingRight = false, _isDead = false;
         const float _deadTimer = 0.5f;
         float _currentDeadTime = 0.0f;
-        static void StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void StaticBodyOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
         bool _shouldWalkAnim = false;
     };
 }

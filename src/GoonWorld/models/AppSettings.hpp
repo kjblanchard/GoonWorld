@@ -76,4 +76,4 @@ namespace GoonWorld
         void LoadPlayerConfigFromJson(nlohmann::json &playerConfigJson);
     };
 
-};
+}

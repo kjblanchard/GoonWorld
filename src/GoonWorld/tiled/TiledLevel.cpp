@@ -32,12 +32,12 @@ TiledLevel::~TiledLevel()
 
 void TiledLevel::SetTextureAtlas()
 {
-    auto rect = geRectangle{
-        0,
-        0,
-        _mapData->Width * _mapData->TileWidth,
-        _mapData->Height * _mapData->TileHeight,
-    };
+    // auto rect = geRectangle{
+    //     0,
+    //     0,
+    //     _mapData->Width * _mapData->TileWidth,
+    //     _mapData->Height * _mapData->TileHeight,
+    // };
     SetBackgroundAtlas(_loadedAtlas);
 }
 

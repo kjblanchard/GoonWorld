@@ -27,6 +27,11 @@
 #include <GoonWorld/content/Text.hpp>
 #include <GoonWorld/ui/CoinsCollected.hpp>
 #include <GoonWorld/ui/LevelTimer.hpp>
+
+// Image test
+// #include <GoonWorld/content/Image.hpp>
+#include <GoonWorld/ui/LogoPanel.hpp>
+#include <GoonWorld/ui/Panel.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -34,8 +39,13 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _scene(nullptr), _playerDying(nullptr), _playerBig(nullptr), _loadedLevel(nullptr), _deltaTime(0), DrawObjects(4)
+    : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+// : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
+    // DrawObjects{4, {}};
+    // std::vector<std::vector<IDraw*>> DrawObjects(4, std::vector<IDraw*>());
+    // DrawObjects(4, std::vector<IDraw *>());
+
     if (_gameInstance)
     {
         fprintf(stderr, "Can only create one game instance");
@@ -58,6 +68,9 @@ Game::Game()
     _gameInstance = this;
     _coinUI = std::make_unique<CoinsCollectedUI>();
     _levelTimerUI = std::make_unique<LevelTimer>();
+    logoPanel = std::make_unique<LogoPanel>();
+    _currentState = GameStates::Logos;
+    Content::LoadAllContent();
 }
 
 Game::~Game()
@@ -68,6 +81,7 @@ Game::~Game()
     _playerBig = nullptr;
     UpdateObjects.clear();
     DrawObjects.clear();
+    _tweens.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     GameSpawnMap.clear();
@@ -80,63 +94,92 @@ void Game::Update(double timeMs)
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
     _deltaTime = TimeSpan(totalSeconds);
+    if (_currentState == GameStates::Logos)
+    {
+        logoPanel->Update();
+        auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
+        for (auto &tween : _tweens)
+        {
+            if (!tween)
+                continue;
+            tween->Update(deltaTimeSeconds);
+        }
+    }
+    else
+    {
 
-    if (_shouldRestart)
-        RestartLevel();
-    if (_shouldChangeLevel)
-        ChangeLevel();
-    // If there is not a player getting big, we should update physics.
-    _camera->Update();
-    auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
-    for (auto &tween : _tweens)
-    {
-        tween->Update(deltaTimeSeconds);
-    }
-    // If there is a player dying or player getting big, we should only update them.
-    if (_playerDying || _playerBig)
-    {
-        if (_playerDying)
-            _playerDying->Update();
-        if (_playerBig)
-            _playerBig->Update();
-        return;
-    }
-    GameObject::UpdateTimers();
-    for (auto object : UpdateObjects)
-    {
-        auto updateEnable = dynamic_cast<IEnable *>(object);
-        if (updateEnable && !updateEnable->IsEnabled())
-            continue;
-        object->Update();
+        if (_shouldRestart)
+            RestartLevel();
+        if (_shouldChangeLevel)
+            ChangeLevel();
+        // If there is not a player getting big, we should update physics.
+        _camera->Update();
+        auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
+        for (auto &tween : _tweens)
+        {
+            if (!tween)
+                continue;
+            tween->Update(deltaTimeSeconds);
+        }
+        // If there is a player dying or player getting big, we should only update them.
+        if (_playerDying || _playerBig)
+        {
+            if (_playerDying)
+                _playerDying->Update();
+            if (_playerBig)
+                _playerBig->Update();
+            return;
+        }
+        GameObject::UpdateTimers();
+        for (auto object : UpdateObjects)
+        {
+            auto updateEnable = dynamic_cast<IEnable *>(object);
+            if (updateEnable && !updateEnable->IsEnabled())
+                continue;
+            object->Update();
+        }
     }
 }
 
 void Game::Draw()
 {
-    for (auto layer : DrawObjects)
+    if (_currentState == GameStates::Logos)
     {
-        for (auto object : layer)
+        logoPanel->Draw();
+    }
+    else
+    {
+        for (auto layer : DrawObjects)
+        {
+            for (auto object : layer)
+            {
+                if (object->IsVisible())
+                    object->Draw();
+            }
+        }
+
+        if (_gameSettings->DebugConfig.SolidDebug)
+        {
+            for (auto &solid : _loadedLevel->GetAllSolidObjects())
+            {
+                auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
+                auto color = geColor{0, 255, 0, 255};
+                geDrawDebugRect(&box, &color);
+            }
+        }
+
+        for (auto object : UIDrawObjects)
         {
             if (object->IsVisible())
                 object->Draw();
         }
     }
+}
 
-    if (_gameSettings->DebugConfig.SolidDebug)
-    {
-        for (auto &solid : _loadedLevel->GetAllSolidObjects())
-        {
-            auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
-            auto color = geColor{0, 255, 0, 255};
-            geDrawDebugRect(&box, &color);
-        }
-    }
-
-    for (auto object : UIDrawObjects)
-    {
-        if (object->IsVisible())
-            object->Draw();
-    }
+void Game::StartGameLevel(std::string &levelName)
+{
+    _currentState = GameStates::Level;
+    LoadLevel(levelName);
 }
 
 void Game::SetCurrentLevel(TiledLevel *level)
@@ -192,6 +235,7 @@ void Game::PlayerBig(Player *player)
 
 void Game::RestartLevel()
 {
+    _tweens.clear();
     if (!_loadedLevel)
         return;
     _shouldChangeLevel = false;
@@ -199,7 +243,7 @@ void Game::RestartLevel()
     _playerDying = nullptr;
     _playerBig = nullptr;
     UpdateObjects.clear();
-    for (auto& layer : DrawObjects)
+    for (auto &layer : DrawObjects)
     {
         layer.clear();
     }
@@ -213,6 +257,7 @@ void Game::RestartLevel()
 
 void Game::LoadLevel(std::string level)
 {
+    _tweens.clear();
     InitializePhysics();
     if (!_loadedLevel || _shouldChangeLevel)
     {
@@ -270,7 +315,7 @@ void Game::ChangeLevel()
     _playerDying = nullptr;
     _playerBig = nullptr;
     UpdateObjects.clear();
-    for (auto& layer : DrawObjects)
+    for (auto &layer : DrawObjects)
     {
         layer.clear();
     }

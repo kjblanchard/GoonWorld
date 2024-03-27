@@ -25,6 +25,7 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
         loadedContent = CreateTextureFromFile(filename);
         break;
     default:
+        loadedContent = nullptr;
         break;
     }
     if (!loadedContent)

@@ -98,16 +98,16 @@ namespace GoonWorld
 
         // Overlap Functions
     private:
-        static void BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void GoombaOverlapFuncJumpBox(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void FlagOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
-        static void EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap);
+        static void BrickOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void ItemBoxOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void GoombaOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void GoombaOverlapFuncJumpBox(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void MushroomOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void FireflowerOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void DeathBoxOverlap(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void WinBoxOverlap(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void CoinOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void FlagOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
+        static void EndLevelStaticOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap);
     };
 }

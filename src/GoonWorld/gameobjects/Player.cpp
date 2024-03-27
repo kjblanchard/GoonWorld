@@ -40,31 +40,22 @@ static Bgm *winBgm;
 static Bgm *dieBgm;
 
 Player::Player(TiledMap::TiledObject &object)
-    : _isDead(false), _isDying(false), _playerConfig(&GetGame().GetAppSettings().PlayerConfigs)
+    : _playerConfig(&GetGame().GetAppSettings().PlayerConfigs), _isDying(false), _isDead(false)
 {
     _location = Point{object.X, object.Y};
     _playerInputComponent = new PlayerInputComponent(0);
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
-    // Size of body should be smaller than the size of the tile object
     bodyRect.w += _playerConfig->RigidBodyOffsetW;
     bodyRect.h += _playerConfig->RigidBodyOffsetH;
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{_playerConfig->RigidBodyOffsetX, _playerConfig->RigidBodyOffsetY});
     _rigidbodyComponent->SetBodyType(1);
-    // _animationComponent = new AnimationComponent("mario", Point{0, -20});
     _animationComponent = new AnimationComponent("mario", Point{0, -22});
-    // auto bigBodyRect = bodyRect;
-    // bigBodyRect.w *= 2;
-    // This is the jump hitbox, it should be taller and skinnier than the body
-    // bigBodyRect.w += _playerConfig->JumpColliderOffsetW;
-    // bigBodyRect.h += _playerConfig->JumpColliderOffsetH;
     auto boxRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     boxRect.w += _playerConfig->JumpColliderOffsetW;
     boxRect.h += _playerConfig->JumpColliderOffsetH;
     _boxColliderComponent = new BoxColliderComponent(&boxRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
-    // _boxColliderComponent = new BoxColliderComponent(&bigBodyRect, Point{_playerConfig->JumpColliderOffsetX, _playerConfig->JumpColliderOffsetY});
     _boxColliderComponent->SetBodyType(1);
     _rigidbodyComponent->AddBoxCollider(_boxColliderComponent);
-    // GetGameSound().LoadSfx({jumpSound, powerDownSound, whistleSound});
     jumpSfx = Sfx::SfxFactory(jumpSound);
     powerDownSfx = Sfx::SfxFactory(powerDownSound);
     whistleSfx = Sfx::SfxFactory(whistleSound);
@@ -454,12 +445,12 @@ void Player::JumpExtend()
     _currentJumpTime += (float)DeltaTime.GetTotalSeconds();
 }
 
-void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::GoombaOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
-    Goomba *goomba = (Goomba *)overlapBody->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody*) overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
@@ -483,12 +474,12 @@ void Player::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody
     player->TakeDamage();
 }
 
-void Player::GoombaOverlapFuncJumpBox(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::GoombaOverlapFuncJumpBox(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
-    Goomba *goomba = (Goomba *)overlapBody->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody*) overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
@@ -528,7 +519,7 @@ void Player::TakeDamage()
     // If small, die
     Die();
 }
-void Player::DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::DeathBoxOverlap(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying)
@@ -536,17 +527,17 @@ void Player::DeathBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, 
     player->Die();
 }
 
-void Player::WinBoxOverlap(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::WinBoxOverlap(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
     auto winEvent = Event{player, nullptr, (int)EventTypes::PlayerWin};
     player->GetGame().PushEvent(winEvent);
     player->Win();
 }
-void Player::FlagOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::FlagOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
-    auto flag = static_cast<Flag *>(overlapBody->funcArgs);
+    auto flag = static_cast<Flag *>(static_cast<gpBody*>(overlapBody)->funcArgs);
     if (!flag)
         return;
     flag->TakeDamage();
@@ -585,21 +576,21 @@ void Player::Win()
     }
 }
 
-void Player::BrickOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::BrickOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
     if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
-    ItemBrick *itemBox = (ItemBrick *)overlapBody->funcArgs;
+    ItemBrick *itemBox = (ItemBrick *)((gpBody* )overlapBody)->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
     }
 }
 
-void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::ItemBoxOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
@@ -607,31 +598,31 @@ void Player::ItemBoxOverlapFunc(void *instance, gpBody *body, gpBody *overlapBod
     // If we are not traveling upwards
     if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
-    ItemBox *itemBox = (ItemBox *)overlapBody->funcArgs;
+    ItemBox *itemBox = (ItemBox *)((gpBody*) overlapBody)->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
     }
 }
 
-void Player::MushroomOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::MushroomOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Mushroom *mushroom = (Mushroom *)overlapBody->funcArgs;
+    Mushroom *mushroom = (Mushroom *)((gpBody*)overlapBody)->funcArgs;
     if (!mushroom->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
         player->PowerChangeStart(true);
     mushroom->TakeDamage();
 }
-void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::FireflowerOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Fireflower *flower = (Fireflower *)overlapBody->funcArgs;
+    Fireflower *flower = (Fireflower *)((gpBody*)overlapBody)->funcArgs;
     if (!flower->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
@@ -646,12 +637,12 @@ void Player::FireflowerOverlapFunc(void *instance, gpBody *body, gpBody *overlap
     flower->TakeDamage();
 }
 
-void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::CoinOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Coin *coin = (Coin *)overlapBody->funcArgs;
+    Coin *coin = (Coin *)((gpBody *)overlapBody)->funcArgs;
     if (!coin->IsEnabled())
         return;
     ++player->_coinsCollected;
@@ -660,7 +651,7 @@ void Player::CoinOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, 
     player->GetGame().PushEvent(coinEvent);
 }
 
-void Player::EndLevelStaticOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Player::EndLevelStaticOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     Player *player = static_cast<Player *>(instance);
     switch (overlap->overlapDirection)
@@ -703,7 +694,7 @@ void Player::PowerupTick()
             _boxColliderComponent->BoundingBox().y -= 16;
             _boxColliderComponent->BoundingBox().h += 16;
             // Adjust animation offset
-            _animationComponent->Offset(Point{0, -4});
+            _animationComponent->Offset(Point{0, -6});
         }
         else
         {
@@ -735,7 +726,7 @@ void Player::PowerupTick()
                 newName.erase(newName.size() - removeChars);
                 if (wasPreviouslyBig)
                 {
-                    _animationComponent->Offset(Point{0, -4});
+                    _animationComponent->Offset(Point{0, -6});
                 }
             }
             else

@@ -69,10 +69,10 @@ void Fireball::Push(Point spawnLocation, bool right)
     _movingRight = right;
     fireballSfx->Play();
 }
-void Fireball::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Fireball::GoombaOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto fireball = (Fireball *)instance;
-    Goomba *goomba = (Goomba *)overlapBody->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody *)overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     goomba->TakeDamage();
@@ -80,7 +80,7 @@ void Fireball::GoombaOverlapFunc(void *instance, gpBody *body, gpBody *overlapBo
     return;
 }
 
-void Fireball::StaticBodyOverlapFunc(void *instance, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
+void Fireball::StaticBodyOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto fireball = static_cast<Fireball *>(instance);
     switch (overlap->overlapDirection)
