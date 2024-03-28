@@ -5,10 +5,7 @@ typedef struct gpOverlap gpOverlap;
 
 namespace GoonWorld
 {
-    class DebugDrawComponent;
     class RigidbodyComponent;
-    // class AnimationComponent;
-    class Player;
     class ItemBrick : public GameObject, ITakeDamage
     {
     public:
@@ -17,7 +14,6 @@ namespace GoonWorld
         void TakeDamage() override;
 
     private:
-        DebugDrawComponent *_debugDrawComponent;
         RigidbodyComponent *_rigidbodyComponent;
         int _contents;
 

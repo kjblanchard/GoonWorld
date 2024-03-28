@@ -3,14 +3,14 @@
 using namespace GoonWorld;
 static std::unique_ptr<Game> game;
 
-void Update(double timeMs)
+static void Update(double timeMs)
 {
-    game->Update(timeMs);
+    // game->Update(timeMs);
 }
 
-void Draw()
+static void Draw()
 {
-    game->Draw();
+    // game->Draw();
 }
 
 int main()

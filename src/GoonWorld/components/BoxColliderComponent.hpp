@@ -2,7 +2,6 @@
 #include <vector>
 #include <GoonWorld/base/Component.hpp>
 #include <GoonEngine/point.h>
-// #include <GoonPhysics/body.h>
 #include <GoonPhysics/boxCollider.h>
 #include <GoonWorld/BodyTypes.hpp>
 #include <GoonEngine/rectangle.h>

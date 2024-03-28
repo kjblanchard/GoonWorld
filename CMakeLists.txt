@@ -85,6 +85,10 @@ set(PNG_SHARED OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(GOON_FULL_MACOS_BUILD ${GOON_FULL_MACOS_BUILD} CACHE BOOL "Build the libpng tests" FORCE)
 set(GOON_DEBUG_SOUND ${GOON_DEBUG_SOUND} CACHE BOOL "Build from what?" FORCE)
 set(PNG_FRAMEWORK OFF CACHE BOOL "Build from what?" FORCE)
+set(CGLM_SHARED OFF CACHE BOOL "Build from what?" FORCE)
+set(CGLM_STATIC ON CACHE BOOL "Build from what?" FORCE)
+set(CGLM_USE_C99 OFF CACHE BOOL "Build from what?" FORCE)
+set(CGLM_USE_TEST OFF CACHE BOOL "Build from what?" FORCE)
 
 # #########################################
 # Precompiled headers

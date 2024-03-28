@@ -1,7 +1,6 @@
 #include <GoonWorld/gameobjects/ItemBrick.hpp>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
-#include <GoonWorld/components/DebugDrawComponent.hpp>
 #include <GoonWorld/gameobjects/Mushroom.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/content/Sfx.hpp>
@@ -24,15 +23,13 @@ ItemBrick::ItemBrick(TiledMap::TiledObject &object)
     }
     _location = Point{object.X, object.Y};
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
-    _debugDrawComponent = new DebugDrawComponent(Point{object.Width, object.Height});
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(BodyTypes::ItemBrick);
     _rigidbodyComponent->SetStaticBody(true);
     _rigidbodyComponent->GravityEnabled(false);
     bumpSfx2 = Sfx::SfxFactory(bumpSound);
     powerupSpawnSfx2 = Sfx::SfxFactory(powerupSpawnSound);
-    AddComponent({_rigidbodyComponent, _debugDrawComponent});
-    _debugDrawComponent->Enabled(false);
+    AddComponent({_rigidbodyComponent});
 }
 void ItemBrick::Update()
 {

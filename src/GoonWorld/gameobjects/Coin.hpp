@@ -8,12 +8,10 @@ namespace GoonWorld
     class RigidbodyComponent;
     class AnimationComponent;
     class TiledObject;
-    class Player;
     class Coin : public GameObject, public ITakeDamage
     {
     public:
         Coin(TiledMap::TiledObject &object);
-        // void Update() override;
         void TakeDamage() override;
 
     private:

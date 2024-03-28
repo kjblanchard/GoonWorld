@@ -10,10 +10,8 @@ typedef struct gpBody gpBody;
 
 namespace GoonWorld
 {
-    class DebugDrawComponent;
     class RigidbodyComponent;
     class AnimationComponent;
-    class Player;
     class Fireball : public GameObject, public ITakeDamage
     {
     public:

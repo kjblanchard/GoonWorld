@@ -4,7 +4,6 @@
 #include <GoonPhysics/body.h>
 #include <GoonWorld/BodyTypes.hpp>
 #include <GoonEngine/rectangle.h>
-#include <GoonPhysics/body.h>
 #include <GoonPhysics/overlap.h>
 #include <GoonWorld/interfaces/IDraw.hpp>
 
@@ -69,17 +68,4 @@ namespace GoonWorld
         bool _debugDraw = false;
         std::vector<BoxColliderComponent *> _boxColliders;
     };
-    // template <typename T>
-    // void RigidbodyComponent::AddOverlapFunction(int overlapType, std::function<void(void* args, gpBody *body, gpBody* overlapBody, gpOverlap *overlap)> func)
-    // {
-    // auto instance = dynamic_cast<T *>(_parent);
-    // bodyOverlapArgs args;
-    // args.bodyType = _body->bodyType;
-    // args.overlapBodyType = overlapType;
-    // args.overlapFunc = [func](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-    // {
-    //     func(instance, overlapBody, overlap);
-    // };
-    // gpBodyAddOverlapBeginFunc(_body, func);
-    // }
 }

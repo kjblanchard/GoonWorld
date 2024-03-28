@@ -57,20 +57,20 @@ Game::Game()
                                 _gameSettings->WindowConfig.WorldSize.x,
                                 _gameSettings->WindowConfig.WorldSize.y,
                                 _gameSettings->WindowConfig.Title.c_str());
-    _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
-                                                    { this->PlayerBigEvent(event); });
-    _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
-                                                    { this->PlayerDieEvent(event); });
-    AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
-    AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
+    // _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
+    //                                                 { this->PlayerBigEvent(event); });
+    // _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
+    //                                                 { this->PlayerDieEvent(event); });
+    // AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
+    // AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
-    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
+    // _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
-    _coinUI = std::make_unique<CoinsCollectedUI>();
-    _levelTimerUI = std::make_unique<LevelTimer>();
-    logoPanel = std::make_unique<LogoPanel>();
-    _currentState = GameStates::Logos;
-    Content::LoadAllContent();
+    // _coinUI = std::make_unique<CoinsCollectedUI>();
+    // _levelTimerUI = std::make_unique<LevelTimer>();
+    // logoPanel = std::make_unique<LogoPanel>();
+    // _currentState = GameStates::Logos;
+    // Content::LoadAllContent();
 }
 
 Game::~Game()

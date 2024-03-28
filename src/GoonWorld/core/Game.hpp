@@ -27,8 +27,6 @@ namespace GoonWorld
     class Camera;
     class CoinsCollectedUI;
     class LevelTimer;
-    class Image;
-    class Panel;
     class LogoPanel;
 
     class Game
@@ -63,7 +61,6 @@ namespace GoonWorld
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<IUpdate *> UpdateObjects;
-        // std::vector<ITween *> _tweens;
         std::vector<std::unique_ptr<ITween>> _tweens;
         std::vector<std::vector<IDraw *>> DrawObjects;
         std::vector<IDraw *> UIDrawObjects;

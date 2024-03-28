@@ -53,5 +53,8 @@
 - [SDL](https://www.libsdl.org/license.php) - ZLIB - Low level Windowing / Eventing
 - [nlohmann json](https://github.com/nlohmann/json) - MIT - json parsing for appsettings file
 
+## OpenGL
+- [GladLink](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D3.3&api=gles1%3Dnone&api=gles2%3D2.0&api=glsc2%3Dnone&profile=core&loader=on)
+
 ## Valgrind Checks
 - valgrind --track-origins=yes --leak-check=yes --leak-resolution=low --show-leak-kinds=definite ./SupergoonWorld 2>&1 | tee memcheck.txt
