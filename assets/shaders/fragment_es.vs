@@ -1,6 +1,11 @@
 precision mediump float; // Specify precision for float
 
+varying vec3 ourColor;
+varying vec2 TexCoord;
+
+uniform sampler2D ourTexture;
+
 void main() {
-    // Do not output, but set the fragment color specifically.
-    gl_FragColor = vec4(0.05, 0.8, 0.42, 1.0);
+    gl_FragColor = texture2D(ourTexture, TexCoord);
+    // gl_FragColor = vec4(ourColor, 1.0);
 }

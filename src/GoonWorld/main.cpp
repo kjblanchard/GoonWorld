@@ -27,11 +27,21 @@ static void Draw()
     geShaderUse(shader);
     if (USE_GL_ES)
     {
-        // Bind the vertex buffer
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         // Specify the vertex attribute pointers
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+        // color attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        // texture coord attribute
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+
+        // Bind the vertex buffer
+        glActiveTexture(GL_TEXTURE0);
+        geTexture2DBind(texture);
     }
     else
     {
