@@ -11,6 +11,14 @@ uniform bool flipHorizontal;
 
 void main() {
     vec2 adjustedTexCoords = vertex.zw * texSize + texOffset;
+    if(flipHorizontal) {
+        // Calculate the original normalized texture coordinates within the subtexture
+        vec2 originalCoords = (adjustedTexCoords - texOffset) / texSize;
+        // Mirror the texture coordinates horizontally within the subtexture
+        originalCoords.x = 1.0 - originalCoords.x;
+        // Transform back to the texture space
+        adjustedTexCoords = originalCoords * texSize + texOffset;
+    }
     TexCoords = adjustedTexCoords;
     gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
 }
