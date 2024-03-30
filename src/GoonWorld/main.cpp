@@ -4,6 +4,8 @@
 #include <GoonEngine/Shader.h>
 #include <GoonEngine/Sprite.h>
 #include <GoonEngine/Texture2D.h>
+#include <cglm/mat4.h>
+#include <cglm/cglm.h>
 
 using namespace GoonWorld;
 static std::unique_ptr<Game> game;
@@ -14,9 +16,21 @@ static geShader *shader;
 static geTexture2D *texture;
 extern unsigned int USE_GL_ES;
 
+static int ticks = 0;
+
 static void Update(double timeMs)
 {
     // game->Update(timeMs);
+    // Scale and rotate
+    ++ticks;
+    mat4 trans;
+    glm_mat4_identity(trans);
+    auto rotationRadians = glm_rad(ticks);
+    glm_rotate(trans, rotationRadians, vec3{0, 0, 1.0});
+    auto rotationRadiansz = glm_rad(-ticks);
+    glm_rotate(trans, rotationRadiansz, vec3{0, 1.0, 0});
+    glm_scale(trans, vec3{1, 1, 1});
+    geShaderSetMatrix4(shader, "transform", &trans, true);
 }
 
 static void Draw()
