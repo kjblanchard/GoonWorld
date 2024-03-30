@@ -6,6 +6,7 @@
 #include <GoonEngine/Texture2D.h>
 #include <cglm/mat4.h>
 #include <cglm/cglm.h>
+#include <GoonWorld/models/AppSettings.hpp>
 
 using namespace GoonWorld;
 static std::unique_ptr<Game> game;
@@ -14,61 +15,10 @@ static unsigned int VAO = 0;
 static unsigned int EBO = 0;
 static geShader *shader;
 static geTexture2D *texture;
+static geSpriteRenderer *sprite;
 extern unsigned int USE_GL_ES;
 
 static int ticks = 0;
-
-static void Update(double timeMs)
-{
-    // game->Update(timeMs);
-    // Scale and rotate
-    ++ticks;
-    mat4 trans;
-    glm_mat4_identity(trans);
-    auto rotationRadians = glm_rad(ticks);
-    glm_rotate(trans, rotationRadians, vec3{0, 0, 1.0});
-    auto rotationRadiansz = glm_rad(-ticks);
-    glm_rotate(trans, rotationRadiansz, vec3{0, 1.0, 0});
-    glm_scale(trans, vec3{1, 1, 1});
-    geShaderSetMatrix4(shader, "transform", &trans, true);
-}
-
-static void Draw()
-{
-    // game->Draw();
-
-    // Bind our shader
-    geShaderUse(shader);
-    if (USE_GL_ES)
-    {
-        // Bind the vertex buffer
-        glActiveTexture(GL_TEXTURE0);
-        geTexture2DBind(texture);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        // Specify the vertex attribute pointers
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
-        glEnableVertexAttribArray(0);
-        // color attribute
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        // texture coord attribute
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE0);
-        geTexture2DBind(texture);
-        glBindVertexArray(VAO);
-    }
-    // Draw the triangle
-    // glDrawArrays(GL_TRIANGLES, 0, 3);
-    // Draw the elements (from ebo)
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    // Unbind the buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
 
 static void InitSprite()
 {
@@ -130,12 +80,112 @@ static void InitSprite()
     geShaderSetInteger(shader, "ourTexture", 0, true);
 }
 
+static void DrawSimple()
+{
+    geShaderUse(shader);
+    if (USE_GL_ES)
+    {
+        // Bind the vertex buffer
+        glActiveTexture(GL_TEXTURE0);
+        geTexture2DBind(texture);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        // Specify the vertex attribute pointers
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+        glEnableVertexAttribArray(0);
+        // color attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        // texture coord attribute
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+    }
+    else
+    {
+        glActiveTexture(GL_TEXTURE0);
+        geTexture2DBind(texture);
+        glBindVertexArray(VAO);
+    }
+    // Draw the triangle
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
+    // Draw the elements (from ebo)
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // Unbind the buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+static void UpdateSimple()
+{
+    // Scale and rotate
+    ++ticks;
+    mat4 trans;
+    glm_mat4_identity(trans);
+    auto rotationRadians = glm_rad(ticks);
+    // glm_rotate(trans, rotationRadians, vec3{0, 0, 1.0});
+    auto rotationRadiansz = glm_rad(-ticks);
+    // glm_rotate(trans, rotationRadiansz, vec3{0, 1.0, 0});
+    // glm_scale(trans, vec3{1, 1, 1});
+    geShaderSetMatrix4(shader, "transform", &trans, true);
+}
+
+static void InitReal(int width, int height)
+{
+    auto shader = geShaderNew();
+    const char *vertexShaderFile = USE_GL_ES ? "assets/shaders/vertex_es.vs" : "assets/shaders/vertex.vs";
+    const char *fragmentShaderFile = USE_GL_ES ? "assets/shaders/fragment_es.vs" : "assets/shaders/fragment.vs";
+    sprite = geSpriteRendererNew(shader);
+    texture = geTexture2DNew();
+    geTexture2DGenerate(texture, "assets/img/blocks.png");
+    geShaderCompile(shader, vertexShaderFile, fragmentShaderFile, NULL);
+    // geShaderSetInteger(shader, "ourTexture", 0, true);
+    mat4 projection;
+    glm_mat4_identity(projection);
+    glm_ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f, projection);
+    geShaderSetInteger(shader, "image", 0, true);
+    geShaderSetMatrix4(shader, "projection", &projection, true);
+}
+
+static bool movingLeft;
+static bool movingDown;
+static float x = 0, y = 0;
+static float rotation = 0;
+static void Update(double timeMs)
+{
+    x = movingLeft ? x - 0.5 : x + 0.5;
+    y = !movingDown ? y - 0.5 : y + 0.5;
+    if (x < 0)
+    {
+        movingLeft = false;
+    }
+    if (x > game->GetAppSettings().WindowConfig.WindowSize.x)
+    {
+        movingLeft = true;
+    }
+    if (y < 0)
+    {
+        movingDown = true;
+    }
+    if (y > game->GetAppSettings().WindowConfig.WindowSize.y)
+    {
+        movingDown = false;
+    }
+
+    rotation += 0.5;
+    // game->Update(timeMs);
+}
+
+static void Draw()
+{
+    // game->Draw();
+    geSpriteRendererDraw(sprite, texture, vec2{x, y}, vec2{400, 200}, rotation, vec3{1, 1, 1});
+}
+
 int main()
 {
     geInitializeEngine();
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
     game = std::make_unique<Game>();
-    InitSprite();
+    // InitSprite();
+    InitReal(game->GetAppSettings().WindowConfig.WindowSize.x, game->GetAppSettings().WindowConfig.WindowSize.y);
     gePlayLoop();
 }
