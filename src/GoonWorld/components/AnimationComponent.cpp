@@ -5,14 +5,23 @@
 #include <GoonWorld/animation/AnimationTransition.hpp>
 #include <GoonWorld/common/TimeSpan.hpp>
 #include <GoonWorld/base/GameObject.hpp>
-#include <GoonEngine/SdlSurface.h>
+// #include <GoonEngine/SdlSurface.h>
+
+// temp
+#include <GoonEngine/Shader.h>
+#include <GoonEngine/Sprite.h>
+#include <cglm/vec2.h>
+#include <cglm/vec2.h>
 using namespace GoonWorld;
+
+extern geShader *shader;
 
 AnimationComponent::AnimationComponent(std::string animator)
     : Component((int)ComponentTypes::Animation), AnimationSpeed(1.0), _animator(Animator::GetAnimator(animator)), _visible(true)
 {
     _currentAnimationDocument = &_animator->_loadedDocument;
     ChangeAnimation(_animator->_defaultAnimation);
+    _sprite = geSpriteRendererNew(shader);
 }
 
 AnimationComponent::AnimationComponent(std::string animator, Point offset)
@@ -85,7 +94,10 @@ void AnimationComponent::Draw()
     if (!IsEnabled() || _currentAnimation == nullptr)
         return;
     auto rect = GetDrawRect();
-    geDrawTextureWithCameraOffset(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
+    // geDrawTextureWithCameraOffset(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
+    geSpriteRendererDraw(_sprite, _currentAnimation->Image->GetTexture(), vec2{(float)rect.x, (float)rect.y},
+                         vec2{(float)rect.w, (float)rect.h}, 0, vec3{1, 1, 1}, vec2{(float)SpriteImageRect.x, (float)SpriteImageRect.y},
+                         vec2{(float)SpriteImageRect.w, (float)SpriteImageRect.h}, Mirror);
 }
 
 void AnimationComponent::OnComponentAdd(GameObject &parent)

@@ -1,8 +1,11 @@
 #pragma once
-#include <GoonWorld/animation/AnimationTransition.hpp>
 #include <string>
 #include <vector>
-#include <SDL2/SDL_render.h>
+#include <GoonWorld/animation/AnimationTransition.hpp>
+#include <GoonWorld/content/Image.hpp>
+#include <GoonEngine/Texture2D.h>
+
+// #include <SDL2/SDL_render.h>
 // struct SDL_Texture;
 namespace GoonWorld
 {
@@ -11,7 +14,7 @@ namespace GoonWorld
     public:
         std::string Name;
         bool Looping;
-        SDL_Texture *Image;
+        Image *Image;
         int StartFrame, EndFrame;
         std::vector<AnimationTransition> Transitions;
     };

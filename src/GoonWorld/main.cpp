@@ -13,7 +13,7 @@ static std::unique_ptr<Game> game;
 static unsigned int VBO = 0;
 static unsigned int VAO = 0;
 static unsigned int EBO = 0;
-static geShader *shader;
+geShader *shader;
 static geTexture2D *texture;
 static geSpriteRenderer *sprite;
 extern unsigned int USE_GL_ES;
@@ -129,12 +129,13 @@ static void UpdateSimple()
 
 static void InitReal(int width, int height)
 {
-    auto shader = geShaderNew();
+    shader = geShaderNew();
     const char *vertexShaderFile = USE_GL_ES ? "assets/shaders/vertex_es.vs" : "assets/shaders/vertex.vs";
     const char *fragmentShaderFile = USE_GL_ES ? "assets/shaders/fragment_es.vs" : "assets/shaders/fragment.vs";
-    sprite = geSpriteRendererNew(shader);
-    texture = geTexture2DNew();
-    geTexture2DGenerate(texture, "assets/img/blocks.png");
+
+    // sprite = geSpriteRendererNew(shader);
+    // texture = geTexture2DNew();
+    // geTexture2DGenerate(texture, "assets/img/blocks.png");
     geShaderCompile(shader, vertexShaderFile, fragmentShaderFile, NULL);
     // geShaderSetInteger(shader, "ourTexture", 0, true);
     mat4 projection;
@@ -144,39 +145,15 @@ static void InitReal(int width, int height)
     geShaderSetMatrix4(shader, "projection", &projection, true);
 }
 
-static bool movingLeft;
-static bool movingDown;
-static float x = 0, y = 0;
-static float rotation = 0;
 static void Update(double timeMs)
 {
-    // x = movingLeft ? x - 0.5 : x + 0.5;
-    // y = !movingDown ? y - 0.5 : y + 0.5;
-    // if (x < 0)
-    // {
-    //     movingLeft = false;
-    // }
-    // if (x + 400 > game->GetAppSettings().WindowConfig.WindowSize.x)
-    // {
-    //     movingLeft = true;
-    // }
-    // if (y < 0)
-    // {
-    //     movingDown = true;
-    // }
-    // if (y + 200 > game->GetAppSettings().WindowConfig.WindowSize.y)
-    // {
-    //     movingDown = false;
-    // }
-
-    // rotation += 0.5;
-    // game->Update(timeMs);
+    game->Update(timeMs);
 }
 
 static void Draw()
 {
-    // game->Draw();
-    geSpriteRendererDraw(sprite, texture, vec2{x, y}, vec2{16, 16}, rotation, vec3{1, 1, 1}, vec2{0,0}, vec2{16,16});
+    game->Draw();
+    // geSpriteRendererDraw(sprite, texture, vec2{128, 256}, vec2{16, 16}, 0, vec3{1, 1, 1}, vec2{32,32}, vec2{16,16});
 }
 
 int main()
@@ -185,7 +162,8 @@ int main()
     geGameSetUpdateFunc(Update);
     geGameSetDrawFunc(Draw);
     game = std::make_unique<Game>();
-    // InitSprite();
     InitReal(game->GetAppSettings().WindowConfig.WindowSize.x, game->GetAppSettings().WindowConfig.WindowSize.y);
+    std::string levelName = "level1";
+    game->StartGameLevel(levelName);
     gePlayLoop();
 }

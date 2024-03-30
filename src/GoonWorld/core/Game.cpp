@@ -12,7 +12,7 @@
 #include <GoonPhysics/GoonPhysics.h>
 #include <GoonEngine/test.h>
 #include <GoonEngine/color.h>
-#include <GoonEngine/SdlSurface.h>
+// #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/SdlWindow.h>
 #include <GoonEngine/rectangle.h>
 #include <GoonWorld/events/Observer.hpp>
@@ -40,11 +40,7 @@ extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)
 
 Game::Game()
     : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
-// : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
-    // DrawObjects{4, {}};
-    // std::vector<std::vector<IDraw*>> DrawObjects(4, std::vector<IDraw*>());
-    // DrawObjects(4, std::vector<IDraw *>());
 
     if (_gameInstance)
     {
@@ -57,12 +53,12 @@ Game::Game()
                                 _gameSettings->WindowConfig.WorldSize.x,
                                 _gameSettings->WindowConfig.WorldSize.y,
                                 _gameSettings->WindowConfig.Title.c_str());
-    // _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
-    //                                                 { this->PlayerBigEvent(event); });
-    // _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
-    //                                                 { this->PlayerDieEvent(event); });
-    // AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
-    // AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
+    _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
+                                                    { this->PlayerBigEvent(event); });
+    _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
+                                                    { this->PlayerDieEvent(event); });
+    AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
+    AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     // _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
@@ -113,7 +109,7 @@ void Game::Update(double timeMs)
         if (_shouldChangeLevel)
             ChangeLevel();
         // If there is not a player getting big, we should update physics.
-        _camera->Update();
+        // _camera->Update();
         auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
         for (auto &tween : _tweens)
         {
@@ -133,9 +129,13 @@ void Game::Update(double timeMs)
         GameObject::UpdateTimers();
         for (auto object : UpdateObjects)
         {
+            // NOT SURE
+            if (!object)
+                continue;
             auto updateEnable = dynamic_cast<IEnable *>(object);
             if (updateEnable && !updateEnable->IsEnabled())
                 continue;
+
             object->Update();
         }
     }
@@ -158,21 +158,21 @@ void Game::Draw()
             }
         }
 
-        if (_gameSettings->DebugConfig.SolidDebug)
-        {
-            for (auto &solid : _loadedLevel->GetAllSolidObjects())
-            {
-                auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
-                auto color = geColor{0, 255, 0, 255};
-                geDrawDebugRect(&box, &color);
-            }
-        }
+        // if (_gameSettings->DebugConfig.SolidDebug)
+        // {
+        //     for (auto &solid : _loadedLevel->GetAllSolidObjects())
+        //     {
+        //         auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
+        //         auto color = geColor{0, 255, 0, 255};
+        //         geDrawDebugRect(&box, &color);
+        //     }
+        // }
 
-        for (auto object : UIDrawObjects)
-        {
-            if (object->IsVisible())
-                object->Draw();
-        }
+        // for (auto object : UIDrawObjects)
+        // {
+        //     if (object->IsVisible())
+        //         object->Draw();
+        // }
     }
 }
 
@@ -192,11 +192,6 @@ void Game::RemoveObserver(Observer *observer)
     auto &vec = _observers.at(observer->EventType);
     for (size_t i = 0; i < vec.size(); i++)
     {
-        // if (vec[i] == observer)
-        // {
-        //     // vec[i] = nullptr;
-        //     return;
-        // }
         for (auto it = vec.begin(); it != vec.end(); ++it)
         {
             if (*it == observer)
@@ -247,7 +242,7 @@ void Game::RestartLevel()
     {
         layer.clear();
     }
-    UIDrawObjects.clear();
+    // UIDrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
@@ -265,19 +260,19 @@ void Game::LoadLevel(std::string level)
     }
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
-    _loadedLevel->SetTextureAtlas();
-    _camera->SetLevelSize(_loadedLevel->GetSize());
-    SetCameraRect(_camera->Bounds());
+    // _loadedLevel->SetTextureAtlas();
+    // _camera->SetLevelSize(_loadedLevel->GetSize());
+    // SetCameraRect(_camera->Bounds());
     auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
-    _camera->Restart();
+    // _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContent();
-    AddUIObject(_coinUI.get());
-    AddUIObject(_levelTimerUI.get());
+    // AddUIObject(_coinUI.get());
+    // AddUIObject(_levelTimerUI.get());
     AddUpdateObject(_levelTimerUI.get());
     bgm->Play(-1, _loadedLevel->BgmVolume());
-    _coinUI->UpdateCoins(0);
-    _levelTimerUI->UpdateTime(0);
+    // _coinUI->UpdateCoins(0);
+    // _levelTimerUI->UpdateTime(0);
 }
 void Game::LoadGameObjects()
 {

@@ -9,7 +9,7 @@ LogoPanel::LogoPanel()
     : Panel()
 {
 
-    sggImage = Image::ImageFactory("supergoongameslogo", geRectangle{50, 50, 400, 200});
+    // sggImage = Image::ImageFactory("supergoongameslogo", geRectangle{50, 50, 400, 200});
     sggImage->UpdateImageAlpha(0);
 
     textLine1 = Text::TextFactory("Made with SDL2 and..", Point{50, 50});

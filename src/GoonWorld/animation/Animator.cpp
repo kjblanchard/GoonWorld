@@ -5,6 +5,7 @@
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/models/AppSettings.hpp>
 #include <GoonWorld/core/Content.hpp>
+#include <GoonWorld/content/Image.hpp>
 using json = nlohmann::json;
 using namespace GoonWorld;
 
@@ -46,7 +47,8 @@ Animator::Animator(std::string filepath)
                 anim.EndFrame = transition.to;
             }
         }
-        anim.Image = (SDL_Texture *)Content::LoadContent(ContentTypes::Texture, fullPathImg.c_str());
+        // anim.Image = (SDL_Texture *)Content::LoadContent(ContentTypes::Texture, fullPathImg.c_str());
+        anim.Image = Image::ImageFactory(fullPathImg.c_str());
         _animations.push_back(anim);
     }
 }
