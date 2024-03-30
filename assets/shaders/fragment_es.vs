@@ -1,11 +1,11 @@
 precision mediump float; // Specify precision for float
 
-varying vec3 ourColor;
-varying vec2 TexCoord;
+varying vec2 TexCoords;
 
-uniform sampler2D ourTexture;
+uniform sampler2D image;
+uniform vec3 spriteColor;
 
 void main() {
-    gl_FragColor = texture2D(ourTexture, TexCoord);
+    gl_FragColor = vec4(spriteColor, 1.0) * texture2D(image, TexCoords);
     // gl_FragColor = vec4(ourColor, 1.0);
 }

@@ -1,12 +1,14 @@
-attribute vec3 aPos; // Cannot use VAOs, so need attribute passed in.
-attribute vec3 aColor;
-attribute vec2 aTexCoord;
+attribute vec4 vertex;
 
-varying vec3 ourColor;
-varying vec2 TexCoord;
+varying vec2 TexCoords;
+uniform mat4 model;
+uniform mat4 projection;
 
-void main() {
-    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-    ourColor = aColor;
-    TexCoord = aTexCoord;
+void main()
+{
+    TexCoords = vertex.zw;
+    gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+    // gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    // ourColor = aColor;
+    // TexCoord = aTexCoord;
 }

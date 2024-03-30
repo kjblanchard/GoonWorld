@@ -156,7 +156,7 @@ static void Update(double timeMs)
     {
         movingLeft = false;
     }
-    if (x > game->GetAppSettings().WindowConfig.WindowSize.x)
+    if (x + 400 > game->GetAppSettings().WindowConfig.WindowSize.x)
     {
         movingLeft = true;
     }
@@ -164,7 +164,7 @@ static void Update(double timeMs)
     {
         movingDown = true;
     }
-    if (y > game->GetAppSettings().WindowConfig.WindowSize.y)
+    if (y + 200 > game->GetAppSettings().WindowConfig.WindowSize.y)
     {
         movingDown = false;
     }
