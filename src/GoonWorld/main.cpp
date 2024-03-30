@@ -27,6 +27,9 @@ static void Draw()
     geShaderUse(shader);
     if (USE_GL_ES)
     {
+        // Bind the vertex buffer
+        glActiveTexture(GL_TEXTURE0);
+        geTexture2DBind(texture);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         // Specify the vertex attribute pointers
@@ -38,10 +41,6 @@ static void Draw()
         // texture coord attribute
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
-
-        // Bind the vertex buffer
-        glActiveTexture(GL_TEXTURE0);
-        geTexture2DBind(texture);
     }
     else
     {
@@ -59,11 +58,6 @@ static void Draw()
 
 static void InitSprite()
 {
-    // Triangle
-    // float vertices[] = {
-    //     -0.5f, -0.5f, 0.0f,
-    //     0.5f, -0.5f, 0.0f,
-    //     0.0f, 0.5f, 0.0f};
     float vertices[] = {
         // positions          // colors           // texture coords
         0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
@@ -71,18 +65,18 @@ static void InitSprite()
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
         -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // top left
     };
-    // We are using a quad, so lets use multiple indices.
+    // We are using a quad, so lets use multiple indices. to draw multiple triangle with the same indices
     unsigned int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
     if (!USE_GL_ES)
     {
-        // create VAO
+        // create VAO and bind to it, which holds the pointers for vertex attributes
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
     }
-    // Make a opengl buffer to store the vertices in gpu
+    // Make a opengl buffer to store the vertices, color, map, etc in gpu
     glGenBuffers(1, &VBO);
     // Element buffer, for indices
     glGenBuffers(1, &EBO);
@@ -90,7 +84,7 @@ static void InitSprite()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Copies the data from vertices into the buffer
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    // Copies the data from indeces to the buffer
+    // Copies the data from indices to the buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     if (!USE_GL_ES)
@@ -106,9 +100,6 @@ static void InitSprite()
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
 
-        // Old, when we were just using one
-        // glEnableVertexAttribArray(0);
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
         glBindVertexArray(0);
     }
     // Unbind after we added data to it.
@@ -121,7 +112,6 @@ static void InitSprite()
 
     texture = geTexture2DNew();
     geTexture2DGenerate(texture, "assets/img/blocks.png");
-    // geTexture2DGenerate(texture, "assets/img/container.jpg");
     geShaderCompile(shader, vertexShaderFile, fragmentShaderFile, NULL);
     geShaderSetInteger(shader, "ourTexture", 0, true);
 }
