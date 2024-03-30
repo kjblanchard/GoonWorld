@@ -150,33 +150,33 @@ static float x = 0, y = 0;
 static float rotation = 0;
 static void Update(double timeMs)
 {
-    x = movingLeft ? x - 0.5 : x + 0.5;
-    y = !movingDown ? y - 0.5 : y + 0.5;
-    if (x < 0)
-    {
-        movingLeft = false;
-    }
-    if (x + 400 > game->GetAppSettings().WindowConfig.WindowSize.x)
-    {
-        movingLeft = true;
-    }
-    if (y < 0)
-    {
-        movingDown = true;
-    }
-    if (y + 200 > game->GetAppSettings().WindowConfig.WindowSize.y)
-    {
-        movingDown = false;
-    }
+    // x = movingLeft ? x - 0.5 : x + 0.5;
+    // y = !movingDown ? y - 0.5 : y + 0.5;
+    // if (x < 0)
+    // {
+    //     movingLeft = false;
+    // }
+    // if (x + 400 > game->GetAppSettings().WindowConfig.WindowSize.x)
+    // {
+    //     movingLeft = true;
+    // }
+    // if (y < 0)
+    // {
+    //     movingDown = true;
+    // }
+    // if (y + 200 > game->GetAppSettings().WindowConfig.WindowSize.y)
+    // {
+    //     movingDown = false;
+    // }
 
-    rotation += 0.5;
+    // rotation += 0.5;
     // game->Update(timeMs);
 }
 
 static void Draw()
 {
     // game->Draw();
-    geSpriteRendererDraw(sprite, texture, vec2{x, y}, vec2{400, 200}, rotation, vec3{1, 1, 1});
+    geSpriteRendererDraw(sprite, texture, vec2{x, y}, vec2{16, 16}, rotation, vec3{1, 1, 1}, vec2{0,0}, vec2{16,16});
 }
 
 int main()
