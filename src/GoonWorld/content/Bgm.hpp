@@ -12,6 +12,8 @@ namespace GoonWorld
         static inline std::string GetLoadPath(std::string &title) { return "assets/audio/" + title + ".ogg"; }
 
         inline bool IsLoaded() override { return _bgm != nullptr; }
+        inline unsigned int GetAssetID() const override { return _id; };
+        inline void SetAssetID(unsigned int ID) override { _id = ID; };
         Bgm(std::string &name, float start = 0, float end = 0);
         void Play(int loops = -1, float volume = 1.0);
         ~Bgm();
@@ -23,6 +25,7 @@ namespace GoonWorld
         std::string _bgmName;
         float _bgmStart, _bgmEnd;
         gsBgm *_bgm = nullptr;
+        unsigned int _id;
     };
 
 }

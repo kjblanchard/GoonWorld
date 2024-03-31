@@ -19,12 +19,13 @@ namespace GoonWorld
         static T *GetLoadedContentOfType(const char *filename);
         static void *GetLoadedContent(const char *filename);
 
-        static void AddContent(ILoadContent *content);
+        static unsigned int AddContent(ILoadContent *content);
         static void LoadAllContent();
         static ILoadContent *GetContent(std::string &name);
         static void ClearContent();
 
     private:
+        static unsigned int _currentId;
     };
 
     template <typename T>

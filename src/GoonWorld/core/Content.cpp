@@ -8,6 +8,7 @@ using namespace GoonWorld;
 
 static std::unordered_map<std::string, std::pair<ContentTypes, void *>> _loadedContent;
 static std::unordered_map<std::string, ILoadContent *> _loadedContents;
+unsigned int Content::_currentId = 0;
 
 void *Content::LoadContent(ContentTypes contentType, const char *filename)
 {
@@ -69,9 +70,10 @@ void Content::ClearContent()
     _loadedContents.clear();
 }
 
-void Content::AddContent(ILoadContent *content)
+unsigned int Content::AddContent(ILoadContent *content)
 {
     _loadedContents[content->GetContentName()] = content;
+    return _currentId++;
 }
 
 void Content::LoadAllContent()

@@ -14,12 +14,15 @@ namespace GoonWorld
         void Play(float volume = 1.0);
         ~Sfx();
         inline std::string &GetContentName() override { return _sfxName; }
+        inline unsigned int GetAssetID() const override { return _id; };
+        inline void SetAssetID(unsigned int ID) override { _id = ID; };
         void Load() override;
         void Unload() override;
 
     private:
         std::string _sfxName;
         gsSfx *_sfx = nullptr;
+        unsigned int _id;
     };
 
 }

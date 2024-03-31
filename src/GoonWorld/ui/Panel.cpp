@@ -16,8 +16,8 @@ void Panel::AddText(Text *image)
 }
 void Panel::AddImage(Image *image)
 {
-    AddUIDrawObject(image);
-    AddUIUpdateObject(image);
+    // AddUIDrawObject(image);
+    // AddUIUpdateObject(image);
 }
 
 void Panel::Update()

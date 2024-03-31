@@ -30,6 +30,8 @@ namespace GoonWorld
         static Text *TextFactory(std::string stringToLoad, Point location, geColor textColor = geColor{255, 255, 255, 255});
         inline int Width() { return _boundingBox.w / 2; }
         inline int Height() { return _boundingBox.h / 2; }
+        inline unsigned int GetAssetID() const override { return _id; };
+        inline void SetAssetID(unsigned int ID) override { _id = ID; };
         void UpdateTextAlpha(int alpha);
         void Load() override;
         void Unload() override;
@@ -45,6 +47,7 @@ namespace GoonWorld
         int _alpha = 255;
         bool _isVisible = true;
         bool _isLoaded = false;
+        unsigned int _id;
     };
 
 }
