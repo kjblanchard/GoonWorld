@@ -2,8 +2,9 @@
 #include <memory>
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonEngine/point.h>
-struct SDL_Surface;
-struct SDL_Texture;
+// struct SDL_Surface;
+// struct SDL_Texture;
+typedef struct geTexture2D geTexture2D;
 namespace GoonWorld
 {
     /**
@@ -31,9 +32,9 @@ namespace GoonWorld
 
         inline Point GetGravity() { return _gravity; }
         inline std::string &BgmName() { return _bgmName; }
-        inline float BgmLoopStart() { return _bgmStart;}
-        inline float BgmLoopEnd() { return _bgmEnd;}
-        inline float BgmVolume() { return _volume;}
+        inline float BgmLoopStart() { return _bgmStart; }
+        inline float BgmLoopEnd() { return _bgmEnd; }
+        inline float BgmVolume() { return _volume; }
         std::string GetNextLevel();
 
     private:
@@ -53,15 +54,18 @@ namespace GoonWorld
          * @param tileset the tileset for this tile
          * @return struct SDL_Surface* The loaded surface
          */
-        struct SDL_Surface *GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset);
+        // struct SDL_Surface *GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset);
+        geTexture2D *GetSurfaceForGid(int gid, const TiledMap::Tileset *tileset);
 
         void LoadGravity();
         void LoadBgm();
 
     private:
         std::string _name;
-        std::vector<std::pair<std::string, struct SDL_Surface *>> _loadedTilesets;
-        struct SDL_Texture *_loadedAtlas;
+        std::vector<std::pair<std::string, geTexture2D *>> _loadedTilesets;
+        // struct SDL_Texture *_loadedAtlas;
+        // struct geTexture2D *_loadedAtlas;
+        unsigned int _loadedAtlas;
         std::unique_ptr<TiledMap> _mapData;
         Point _gravity;
         std::string _bgmName = "";
