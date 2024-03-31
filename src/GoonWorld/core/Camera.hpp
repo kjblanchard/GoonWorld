@@ -2,6 +2,9 @@
 
 #include <GoonEngine/point.h>
 #include <GoonEngine/rectangle.h>
+#include <cglm/mat4.h>
+
+typedef struct geCamera geCamera;
 
 namespace GoonWorld
 {
@@ -13,6 +16,7 @@ namespace GoonWorld
         inline geRectangle *Bounds() { return &_cameraBounds; }
         inline void SetLevelSize(Point size) { levelSize = size; }
         bool IsPointOnCamera(Point point);
+        inline geCamera *GetInternalCamera() { return _camera; }
         inline void Restart()
         {
             _cameraBounds.x = 0;
@@ -23,6 +27,7 @@ namespace GoonWorld
 
     private:
         geRectangle _cameraBounds;
+        geCamera *_camera;
         Point levelSize;
         GameObject *_followTarget;
     };

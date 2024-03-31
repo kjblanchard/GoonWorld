@@ -1,8 +1,10 @@
 #include <GoonWorld/core/Camera.hpp>
 #include <GoonWorld/base/GameObject.hpp>
+#include <GoonEngine/Camera.h>
 using namespace GoonWorld;
-Camera::Camera(geRectangle cameraBounds) : _cameraBounds(cameraBounds),  levelSize(Point{0, 0}), _followTarget(nullptr)
+Camera::Camera(geRectangle cameraBounds) : _cameraBounds(cameraBounds), levelSize(Point{0, 0}), _followTarget(nullptr)
 {
+    _camera = geCameraNew();
 }
 
 void Camera::Update()
@@ -14,6 +16,8 @@ void Camera::Update()
     if (_followTarget->Location().x > halfwayPointX)
         // Cap the camera at the end of the level, else set it halfway
         _cameraBounds.x = std::min(maxCameraX, _followTarget->Location().x - halfwayPointX);
+    geCameraSetX(_camera, _cameraBounds.x);
+    geCameraUpdate(_camera);
 }
 bool Camera::IsPointOnCamera(Point point)
 {
