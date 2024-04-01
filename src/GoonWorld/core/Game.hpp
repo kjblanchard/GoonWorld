@@ -7,6 +7,8 @@
 #include <GoonWorld/interfaces/ITween.hpp>
 
 typedef struct gpScene gpScene;
+typedef struct geTexture2D geTexture2D;
+typedef struct geColor geColor;
 
 namespace GoonWorld
 {
@@ -56,6 +58,12 @@ namespace GoonWorld
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
         void LoadLevel(std::string levelName);
+        void AddBatchQuad(geRectangle dst,
+                          float rotate,
+                          geColor color,
+                          geRectangle src,
+                          geTexture2D *texture,
+                          int mirror);
 
     private:
         inline void PlayerDie(Player *player) { _playerDying = player; }

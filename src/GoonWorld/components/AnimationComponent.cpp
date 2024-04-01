@@ -13,6 +13,7 @@
 #include <GoonEngine/Sprite.h>
 #include <cglm/vec2.h>
 #include <cglm/vec2.h>
+#include <GoonEngine/color.h>
 using namespace GoonWorld;
 
 extern geShader *shader;
@@ -96,11 +97,12 @@ void AnimationComponent::Draw()
         return;
     auto rect = GetDrawRect();
     // geDrawTextureWithCameraOffset(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
-    geSpriteRendererDraw(_sprite, _currentAnimation->Image->GetTexture(), vec2{(float)rect.x, (float)rect.y},
-                         vec2{(float)rect.w, (float)rect.h}, 0, vec3{1, 1, 1},
-                         vec2{(float)SpriteImageRect.x, (float)SpriteImageRect.y},
-                         vec2{(float)SpriteImageRect.w, (float)SpriteImageRect.h},
-                         Mirror, GetGame().GetCamera()->GetInternalCamera());
+    // geSpriteRendererDraw(_sprite, _currentAnimation->Image->GetTexture(), vec2{(float)rect.x, (float)rect.y},
+    //                      vec2{(float)rect.w, (float)rect.h}, 0, vec3{1, 1, 1},
+    //                      vec2{(float)SpriteImageRect.x, (float)SpriteImageRect.y},
+    //                      vec2{(float)SpriteImageRect.w, (float)SpriteImageRect.h},
+    //                      Mirror, GetGame().GetCamera()->GetInternalCamera());
+    GetGame().AddBatchQuad(rect, 0, geColor{1, 1, 1, 1}, SpriteImageRect, _currentAnimation->Image->GetTexture(), Mirror);
 }
 
 void AnimationComponent::OnComponentAdd(GameObject &parent)

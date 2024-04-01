@@ -32,6 +32,12 @@
 // #include <GoonWorld/content/Image.hpp>
 #include <GoonWorld/ui/LogoPanel.hpp>
 #include <GoonWorld/ui/Panel.hpp>
+
+// GL spritebatch test
+#include <GoonEngine/Spritebatch.h>
+#include <cglm/cglm.h>
+static geSpriteBatch *spritebatch = nullptr;
+extern geShader *shader;
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -62,6 +68,7 @@ Game::Game()
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
+
     // _coinUI = std::make_unique<CoinsCollectedUI>();
     // _levelTimerUI = std::make_unique<LevelTimer>();
     // logoPanel = std::make_unique<LogoPanel>();
@@ -143,6 +150,8 @@ void Game::Update(double timeMs)
 
 void Game::Draw()
 {
+    geSpriteBatchStartBatch(spritebatch, _camera->GetInternalCamera());
+
     if (_currentState == GameStates::Logos)
     {
         logoPanel->Draw();
@@ -174,11 +183,13 @@ void Game::Draw()
         //         object->Draw();
         // }
     }
+    geSpriteBatchFlush(spritebatch);
 }
 
 void Game::StartGameLevel(std::string &levelName)
 {
     _currentState = GameStates::Level;
+    spritebatch = geSpriteBatchNew(shader);
     LoadLevel(levelName);
 }
 
@@ -347,4 +358,15 @@ void Game::ChangeDrawObjectLayer(IDraw *draw, int newLayer)
         DrawObjects[newLayer].push_back(draw);
         DrawObjects[currentLayer].erase(DrawObjects[currentLayer].begin() + objectIndex);
     }
+}
+void Game::AddBatchQuad(geRectangle dst,
+                        float rotate,
+                        geColor color,
+                        geRectangle src,
+                        geTexture2D *texture,
+                        int mirror)
+{
+    geSpriteBatchAddQuad(spritebatch, vec2{(float)dst.x, (float)dst.y}, vec2{(float)dst.w, (float)dst.y}, 0,
+                         vec4{(float)color.R, (float)color.G, (float)color.B, (float)color.A}, vec4{(float)src.x, (float)src.y, (float)src.w, (float)src.h},
+                         texture, mirror);
 }
