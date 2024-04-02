@@ -1,5 +1,6 @@
 #version 330 core
 layout(location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
+layout(location = 1) in float imageNum;
 
 out vec2 TexCoords;
 out float a_imageNum;
@@ -10,7 +11,6 @@ uniform mat4 projection;
 uniform vec2 texOffset;
 uniform vec2 texSize;
 uniform bool flipHorizontal;
-uniform int imageNum;
 
 void main() {
     vec2 adjustedTexCoords = vertex.zw * texSize + texOffset;
