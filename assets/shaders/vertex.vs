@@ -1,9 +1,11 @@
 #version 330 core
 layout(location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
 layout(location = 1) in float imageNum;
+layout(location = 2) in vec4 color;
 
 out vec2 TexCoords;
 out float a_imageNum;
+out vec4 a_color;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -24,5 +26,6 @@ void main() {
     }
     TexCoords = adjustedTexCoords;
     a_imageNum = imageNum;
+    a_color = color;
     gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
 }
