@@ -60,7 +60,7 @@ Game::Game()
     AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
     AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
-    // _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
+    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
     // _coinUI = std::make_unique<CoinsCollectedUI>();
     // _levelTimerUI = std::make_unique<LevelTimer>();
@@ -109,7 +109,7 @@ void Game::Update(double timeMs)
         if (_shouldChangeLevel)
             ChangeLevel();
         // If there is not a player getting big, we should update physics.
-        // _camera->Update();
+        _camera->Update();
         auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
         for (auto &tween : _tweens)
         {
@@ -261,7 +261,7 @@ void Game::LoadLevel(std::string level)
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     // _loadedLevel->SetTextureAtlas();
-    // _camera->SetLevelSize(_loadedLevel->GetSize());
+    _camera->SetLevelSize(_loadedLevel->GetSize());
     // SetCameraRect(_camera->Bounds());
     auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
     // _camera->Restart();
