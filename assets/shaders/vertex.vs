@@ -2,6 +2,7 @@
 layout(location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
 
 out vec2 TexCoords;
+out float a_imageNum;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -9,6 +10,7 @@ uniform mat4 projection;
 uniform vec2 texOffset;
 uniform vec2 texSize;
 uniform bool flipHorizontal;
+uniform int imageNum;
 
 void main() {
     vec2 adjustedTexCoords = vertex.zw * texSize + texOffset;
@@ -21,5 +23,6 @@ void main() {
         adjustedTexCoords = originalCoords * texSize + texOffset;
     }
     TexCoords = adjustedTexCoords;
+    a_imageNum = imageNum;
     gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
 }
