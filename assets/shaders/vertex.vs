@@ -26,7 +26,8 @@ void main() {
         adjustedTexCoords = originalCoords * texSize + texOffset;
     }
     TexCoords = adjustedTexCoords;
-    a_imageNum = imageNum;
+    // a_imageNum = imageNum;
+    a_imageNum = 1;
     a_color = color;
     gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
 }
