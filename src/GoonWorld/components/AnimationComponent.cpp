@@ -97,7 +97,7 @@ void AnimationComponent::Draw()
     auto rect = GetDrawRect();
     // geDrawTextureWithCameraOffset(_currentAnimation->Image, &SpriteImageRect, &rect, Mirror);
     geSpriteRendererDraw(_sprite, _currentAnimation->Image->GetTexture(), vec2{(float)rect.x, (float)rect.y},
-                         vec2{(float)rect.w, (float)rect.h}, 0, vec3{1, 1, 1}, vec2{(float)SpriteImageRect.x, (float)SpriteImageRect.y},
+                         vec2{(float)rect.w, (float)rect.h}, 0, vec4{1, 1, 1, 1}, vec2{(float)SpriteImageRect.x, (float)SpriteImageRect.y},
                          vec2{(float)SpriteImageRect.w, (float)SpriteImageRect.h}, Mirror, GetGame().GetCamera()->GetInternalCamera());
 }
 

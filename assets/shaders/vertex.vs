@@ -2,6 +2,7 @@
 layout(location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
 layout(location = 1) in float imageNum;
 layout(location = 2) in vec4 color;
+layout(location = 3) in vec4 textureSourceRect;
 
 out vec2 TexCoords;
 out float a_imageNum;
@@ -10,11 +11,11 @@ out vec4 a_color;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform vec2 texOffset;
-uniform vec2 texSize;
 uniform bool flipHorizontal;
 
 void main() {
+    vec2 texOffset = textureSourceRect.xy;
+    vec2 texSize = textureSourceRect.zw;
     vec2 adjustedTexCoords = vertex.zw * texSize + texOffset;
     if(flipHorizontal) {
         // Calculate the original normalized texture coordinates within the subtexture
