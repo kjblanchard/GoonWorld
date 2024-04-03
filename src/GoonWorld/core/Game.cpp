@@ -35,6 +35,7 @@
 
 // Spritebatch
 #include <GoonEngine/Shader.h>
+#include <GoonEngine/Sprite.h>
 extern geShader *shader;
 
 using namespace GoonWorld;
@@ -154,7 +155,7 @@ void Game::Draw()
     }
     else
     {
-        geShaderSetViewUniform(shader, _camera->GetInternalCamera());
+        geSpriteRendererStart(_spritebatch, _camera->GetInternalCamera());
         for (auto layer : DrawObjects)
         {
             for (auto object : layer)
@@ -163,6 +164,7 @@ void Game::Draw()
                     object->Draw();
             }
         }
+        geSpriteRendererEnd(_spritebatch);
 
         // if (_gameSettings->DebugConfig.SolidDebug)
         // {
@@ -184,6 +186,7 @@ void Game::Draw()
 
 void Game::StartGameLevel(std::string &levelName)
 {
+    _spritebatch = geSpriteRendererNew(shader);
     _currentState = GameStates::Level;
     LoadLevel(levelName);
 }
@@ -353,4 +356,15 @@ void Game::ChangeDrawObjectLayer(IDraw *draw, int newLayer)
         DrawObjects[newLayer].push_back(draw);
         DrawObjects[currentLayer].erase(DrawObjects[currentLayer].begin() + objectIndex);
     }
+}
+void Game::SpritebatchDraw(
+    geTexture2D *texture,
+    geRectangle dstRect,
+    float rotate,
+    geColor color,
+    geRectangle srcRect,
+    int flipHorizontal)
+{
+    geSpriteRendererDraw(_spritebatch, texture, vec2{(float)dstRect.x, (float)dstRect.y}, vec2{(float)dstRect.w, (float)dstRect.h}, rotate,
+                         vec4{(float)color.R, (float)color.G, (float)color.B, (float)color.A}, vec2{(float)srcRect.x, (float)srcRect.y}, vec2{(float)srcRect.w, (float)srcRect.h}, flipHorizontal);
 }

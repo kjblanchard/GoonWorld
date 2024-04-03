@@ -7,6 +7,9 @@
 #include <GoonWorld/interfaces/ITween.hpp>
 
 typedef struct gpScene gpScene;
+typedef struct geSpriteRenderer geSpriteRenderer;
+typedef struct geTexture2D geTexture2D;
+typedef struct geColor geColor;
 
 namespace GoonWorld
 {
@@ -56,6 +59,22 @@ namespace GoonWorld
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
         void LoadLevel(std::string levelName);
+        // void SpritebatchDraw(
+        //     geTexture2D *texture,
+        //     vec2 pos,
+        //     vec2 size,
+        //     float rotate,
+        //     vec4 color,
+        //     vec2 texOffset,
+        //     vec2 texSize,
+        //     int flipHorizontal);
+        void SpritebatchDraw(
+            geTexture2D *texture,
+            geRectangle dstRect,
+            float rotate,
+            geColor color,
+            geRectangle srcRect,
+            int flipHorizontal);
 
     private:
         inline void PlayerDie(Player *player) { _playerDying = player; }
@@ -90,5 +109,6 @@ namespace GoonWorld
 
         GameStates _currentState = GameStates::Default;
         TimeSpan _deltaTime;
+        geSpriteRenderer *_spritebatch;
     };
 }

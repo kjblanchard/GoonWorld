@@ -5,7 +5,7 @@
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <GoonEngine/point.h>
 #include <GoonEngine/rectangle.h>
-typedef struct geSpriteRenderer geSpriteRenderer;
+// typedef struct geSpriteRenderer geSpriteRenderer;
 namespace GoonWorld
 {
     class Animator;
@@ -39,7 +39,7 @@ namespace GoonWorld
         Animator *_animator;
         Animation *_currentAnimation;
         AsepriteDocument *_currentAnimationDocument;
-        geSpriteRenderer* _sprite;
+        // geSpriteRenderer* _sprite;
         double _secondsThisFrame;
         int _currentFrame;
         int _layer;
