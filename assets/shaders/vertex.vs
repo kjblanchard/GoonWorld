@@ -8,28 +8,18 @@ out vec2 TexCoords;
 out float a_imageNum;
 out vec4 a_color;
 
-// uniform mat4 model;
 // Camera view
 uniform mat4 view;
 // World view
 uniform mat4 projection;
-uniform bool flipHorizontal;
+// uniform bool flipHorizontal;
 
 void main() {
     vec2 texOffset = textureSourceRect.xy;
     vec2 texSize = textureSourceRect.zw;
     vec2 adjustedTexCoords = vertex.zw * texSize + texOffset;
-    if(flipHorizontal) {
-        // Calculate the original normalized texture coordinates within the subtexture
-        vec2 originalCoords = (adjustedTexCoords - texOffset) / texSize;
-        // Mirror the texture coordinates horizontally within the subtexture
-        originalCoords.x = 1.0 - originalCoords.x;
-        // Transform back to the texture space
-        adjustedTexCoords = originalCoords * texSize + texOffset;
-    }
     TexCoords = adjustedTexCoords;
-    // a_imageNum = imageNum;
-    a_imageNum = 1;
+    a_imageNum = imageNum;
     a_color = color;
     // gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
     gl_Position = projection * view  * vec4(vertex.xy, 0.0, 1.0);
