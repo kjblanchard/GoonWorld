@@ -32,6 +32,11 @@
 // #include <GoonWorld/content/Image.hpp>
 #include <GoonWorld/ui/LogoPanel.hpp>
 #include <GoonWorld/ui/Panel.hpp>
+
+// Spritebatch
+#include <GoonEngine/Shader.h>
+extern geShader *shader;
+
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -149,6 +154,7 @@ void Game::Draw()
     }
     else
     {
+        geShaderSetViewUniform(shader, _camera->GetInternalCamera());
         for (auto layer : DrawObjects)
         {
             for (auto object : layer)
