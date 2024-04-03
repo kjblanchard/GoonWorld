@@ -21,7 +21,8 @@ void Camera::Update()
         _cameraBounds.x = 0;
     }
 
-    geCameraSetX(_camera, _cameraBounds.x);
+    // Apply scale
+    geCameraSetX(_camera, _cameraBounds.x * 2);
     geCameraUpdate(_camera);
 }
 bool Camera::IsPointOnCamera(Point point)
