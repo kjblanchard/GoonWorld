@@ -10,6 +10,8 @@
 
 #include <glad/glad.h>
 #include <GoonEngine/Texture2D.h>
+#include <GoonEngine/TileSheet.h>
+#include <GoonEngine/Shader.h>
 using namespace GoonWorld;
 
 TiledLevel::TiledLevel(const char *filename)
@@ -21,7 +23,7 @@ TiledLevel::TiledLevel(const char *filename)
     LoadSurfaces();
     LoadSolidObjects();
     LoadBgm();
-    // CreateBackgroundAtlas();
+    CreateBackgroundAtlas();
 }
 std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
 {
@@ -57,7 +59,6 @@ void TiledLevel::LoadSurfaces()
                 auto surfacePath = AssetPrefix + TiledPrefix + tile.Image;
                 auto texture = geTexture2DNew();
                 geTexture2DGenerate(texture, surfacePath.c_str());
-                // auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
                 _loadedTilesets.push_back({tile.Image, texture});
             }
         }
@@ -66,7 +67,6 @@ void TiledLevel::LoadSurfaces()
             auto surfacePath = AssetPrefix + TiledPrefix + tileset.Image;
             auto texture = geTexture2DNew();
             geTexture2DGenerate(texture, surfacePath.c_str());
-            // auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
             _loadedTilesets.push_back({tileset.Image, texture});
         }
     }
@@ -107,33 +107,35 @@ geTexture2D *TiledLevel::GetSurfaceForGid(int gid, const TiledMap::Tileset *tile
     printf("Could not find loaded surface for git %ud\n", gid);
     return nullptr;
 }
-static unsigned int LoadAtlas(int width, int height)
-{
-    GLuint textureAtlas; // ID of the texture atlas
+// static unsigned int LoadAtlas(int width, int height)
+// {
+//     GLuint textureAtlas; // ID of the texture atlas
 
-    // Generate a new texture ID
-    glGenTextures(1, &textureAtlas);
+//     // Generate a new texture ID
+//     glGenTextures(1, &textureAtlas);
 
-    // Bind the texture atlas
-    glBindTexture(GL_TEXTURE_2D, textureAtlas);
+//     // Bind the texture atlas
+//     glBindTexture(GL_TEXTURE_2D, textureAtlas);
 
-    // Allocate memory for the texture atlas
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+//     // Allocate memory for the texture atlas
+//     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-    // Set texture parameters (optional, adjust as needed)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    return textureAtlas;
-}
+//     // Set texture parameters (optional, adjust as needed)
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//     return textureAtlas;
+// }
+
 void TiledLevel::CreateBackgroundAtlas()
 {
     if (_loadedAtlas)
         return;
 
-    // auto atlas = LoadTextureAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
-    _loadedAtlas = LoadAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
+    _loadedAtlas = geTileSheetNew();
+
+
     for (auto &group : _mapData->Groups)
     {
         if (group.Name == "background")
@@ -161,16 +163,14 @@ void TiledLevel::CreateBackgroundAtlas()
                         }
                         auto dstRect = geRectangle{dstX, dstY, sourceRect.w, sourceRect.h};
 
-                        // BlitSurface(
-                        //     tileSurface,
-                        //     &sourceRect,
-                        //     atlas,
-                        //     &dstRect);
+                        geTileSheetAddTile(_loadedAtlas, &dstRect, &sourceRect, tileSurface);
+
                     }
                 }
             }
         }
     }
+    geTileSheetBufferData(_loadedAtlas);
     // _loadedAtlas = CreateTextureFromSurface(atlas);
 }
 void TiledLevel::LoadGravity()

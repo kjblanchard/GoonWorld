@@ -12,7 +12,6 @@ out vec4 a_color;
 uniform mat4 view;
 // World view
 uniform mat4 projection;
-// uniform bool flipHorizontal;
 
 void main() {
     vec2 texOffset = textureSourceRect.xy;
