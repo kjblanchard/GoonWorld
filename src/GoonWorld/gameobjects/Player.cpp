@@ -428,7 +428,7 @@ void Player::Jump()
     _isJumping = true;
     SetFlag(_playerFlags, PlayerFlags::CanJump, false);
     _rigidbodyComponent->Velocity().y = _playerConfig->InitialJumpVelocity;
-    jumpSfx->Play();
+    jumpSfx->Play(0.5);
 }
 
 void Player::JumpExtend()
