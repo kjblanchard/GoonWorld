@@ -5,6 +5,7 @@
 // struct SDL_Surface;
 // struct SDL_Texture;
 typedef struct geTexture2D geTexture2D;
+typedef struct geTileSheet geTileSheet;
 namespace GoonWorld
 {
     /**
@@ -65,7 +66,8 @@ namespace GoonWorld
         std::vector<std::pair<std::string, geTexture2D *>> _loadedTilesets;
         // struct SDL_Texture *_loadedAtlas;
         // struct geTexture2D *_loadedAtlas;
-        unsigned int _loadedAtlas;
+        // unsigned int _loadedAtlas;
+        geTileSheet* _loadedAtlas;
         std::unique_ptr<TiledMap> _mapData;
         Point _gravity;
         std::string _bgmName = "";

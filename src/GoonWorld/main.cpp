@@ -14,6 +14,7 @@ static unsigned int VBO = 0;
 static unsigned int VAO = 0;
 static unsigned int EBO = 0;
 geShader *shader;
+geShader *tileShader;
 static geTexture2D *texture;
 static geSpriteRenderer *sprite;
 extern unsigned int USE_GL_ES;
@@ -133,16 +134,19 @@ static void InitReal(int width, int height)
     const char *vertexShaderFile = USE_GL_ES ? "assets/shaders/vertex_es.vs" : "assets/shaders/vertex.vs";
     const char *fragmentShaderFile = USE_GL_ES ? "assets/shaders/fragment_es.vs" : "assets/shaders/fragment.vs";
 
-    // sprite = geSpriteRendererNew(shader);
-    // texture = geTexture2DNew();
-    // geTexture2DGenerate(texture, "assets/img/blocks.png");
+    tileShader = geShaderNew();
+    const char *tilevertexShaderFile = USE_GL_ES ? "assets/shaders/vertex_es.vs" : "assets/shaders/v_tile.vs";
+    const char *tilefragmentShaderFile = USE_GL_ES ? "assets/shaders/fragment_es.vs" : "assets/shaders/fragment.vs";
+
     geShaderCompile(shader, vertexShaderFile, fragmentShaderFile, NULL);
-    // geShaderSetInteger(shader, "ourTexture", 0, true);
+    geShaderCompile(tileShader, tilevertexShaderFile, tilefragmentShaderFile, NULL);
     mat4 projection;
     glm_mat4_identity(projection);
     glm_ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f, projection);
-    geShaderSetInteger(shader, "image", 0, true);
+    // geShaderSetInteger(shader, "image", 0, true);
     geShaderSetMatrix4(shader, "projection", &projection, true);
+
+    geShaderSetMatrix4(tileShader, "projection", &projection, true);
 }
 
 static void Update(double timeMs)

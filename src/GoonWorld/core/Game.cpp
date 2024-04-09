@@ -269,7 +269,7 @@ void Game::LoadLevel(std::string level)
     }
     gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
-    // _loadedLevel->SetTextureAtlas();
+    _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
     // SetCameraRect(_camera->Bounds());
     auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());

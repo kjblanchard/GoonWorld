@@ -10,6 +10,7 @@
 
 #include <glad/glad.h>
 #include <GoonEngine/Texture2D.h>
+#include <GoonEngine/TileSheet.h>
 using namespace GoonWorld;
 
 TiledLevel::TiledLevel(const char *filename)
@@ -21,7 +22,7 @@ TiledLevel::TiledLevel(const char *filename)
     LoadSurfaces();
     LoadSolidObjects();
     LoadBgm();
-    // CreateBackgroundAtlas();
+    CreateBackgroundAtlas();
 }
 std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
 {
@@ -133,7 +134,8 @@ void TiledLevel::CreateBackgroundAtlas()
         return;
 
     // auto atlas = LoadTextureAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
-    _loadedAtlas = LoadAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
+    // _loadedAtlas = LoadAtlas(_mapData->Width * _mapData->TileWidth, _mapData->Height * _mapData->TileHeight);
+    _loadedAtlas = geTileSheetNew();
     for (auto &group : _mapData->Groups)
     {
         if (group.Name == "background")
