@@ -24,6 +24,8 @@
 - Learn about low-level programming for pictures (libpng) sound (ogg/openal), text (freetype) instead of using pre-made libraries
 - Better at cross-platform building with cmake (Macos, Linux, Windows, Emscripten)
 - Learn github actions to build and publish outside developer environment
+- Create music in DAW
+- Create Pixel art in Aseprite
 - Create a simple "Super mario bros" clone.
 
 ### Stretch Goals
@@ -35,6 +37,7 @@
 - Emscripten: Build for web
 - Make: Streamlining building with one command
 - CMake: The actual cross-platform build system.
+- GarageBand: DAW
 
 ## Licenses
 ### Full Game
@@ -43,7 +46,6 @@
 - [Mushroom](https://freesound.org/people/timgormly/sounds/170155/) - Attribution
 - [Powerup](https://freesound.org/people/ProjectsU012/sounds/341629/) - Attribution
 - [Fireball](https://freesound.org/people/adh.dreaming/sounds/615576/) - Creative Commons
-- [Level1-ArcadeLoop](https://freesound.org/people/joshuaempyre/sounds/251461/) - Attribution
 - [Level2-ChiptuneBeat](https://freesound.org/people/YipYep/sounds/679167/) - Attribution
 - [Level3-RetroFunk](https://freesound.org/people/sonically_sound/sounds/624874/) - Attribution
 - [Level4-Castle](https://freesound.org/people/Sirkoto51/sounds/416632/) - Attribution

@@ -5,10 +5,10 @@
     },
     "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
-        ".",
         "templates",
-        "/Users/kevin/Documents/tiled"
+        "/Users/kevin/Documents/tiled",
+        ".",
+        "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -87,8 +87,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 2484.75,
-                "y": 425
+                "x": 88,
+                "y": 214
             }
         },
         "level1.tmx": {
@@ -155,11 +155,11 @@
     "project": "goonDash.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "level1.tmj",
         "level2.tmj",
         "scenery.tsj",
         "blocks.tsj",
         "background.tsj",
+        "level1.tmj",
         "terrain.tsj",
         "background.tsx",
         "terrain.tsx",
