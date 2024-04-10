@@ -136,7 +136,7 @@ static void InitReal(int width, int height)
 
     tileShader = geShaderNew();
     const char *tilevertexShaderFile = USE_GL_ES ? "assets/shaders/vertex_es.vs" : "assets/shaders/v_tile.vs";
-    const char *tilefragmentShaderFile = USE_GL_ES ? "assets/shaders/fragment_es.vs" : "assets/shaders/fragment.vs";
+    const char *tilefragmentShaderFile = USE_GL_ES ? "assets/shaders/fragment_es.vs" : "assets/shaders/f_tile.vs";
 
     geShaderCompile(shader, vertexShaderFile, fragmentShaderFile, NULL);
     geShaderCompile(tileShader, tilevertexShaderFile, tilefragmentShaderFile, NULL);
@@ -145,7 +145,6 @@ static void InitReal(int width, int height)
     glm_ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f, projection);
     // geShaderSetInteger(shader, "image", 0, true);
     geShaderSetMatrix4(shader, "projection", &projection, true);
-
     geShaderSetMatrix4(tileShader, "projection", &projection, true);
 }
 
