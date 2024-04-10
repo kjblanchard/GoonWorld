@@ -1,4 +1,10 @@
 # GoonWorld
+## THIS IS WHERE IM STOPPING FOR OPENGL
+shit sucks.  Basically, it is broken on the drawing of background tiles.  For some reason, if you add a compile problem on the fragment shader for tiles (f_tile), it works slightly.  My thoughts are that it is working with GL_TEXTURE0 as that is the default one.  When trying other things, it seems like when binding the background tile with the blue color, for some reason it draws nothing.  And the fragment shader blows.
+Seems like something is broken with the images or something.  I've been stuck on this for weeks with no end in sight.  I just want to move on.  Byeeeeeeeeeee
+
+
+
 - A C++ game that utilizes Tiled and Aseprite for the game "engine".
 - Uses C self made libraries for physics, sound, and engine, found in the Libraries section
 - ![Build All Platforms]( https://github.com/kjblanchard/GoonWorld/actions/workflows/test.yml/badge.svg)
