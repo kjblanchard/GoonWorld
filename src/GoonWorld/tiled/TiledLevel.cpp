@@ -166,6 +166,7 @@ void TiledLevel::CreateBackgroundAtlas()
             }
         }
     }
+    geTileSheetBufferData(_loadedAtlas);
     // _loadedAtlas = CreateTextureFromSurface(atlas);
 }
 void TiledLevel::LoadGravity()
