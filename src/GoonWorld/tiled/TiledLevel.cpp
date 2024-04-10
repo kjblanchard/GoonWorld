@@ -33,7 +33,7 @@ TiledLevel::~TiledLevel()
 {
     // DestroyTexture(_loadedAtlas);
     // geTexture2DFree(_loadedAtlas);
-    //TODO need to clean texture
+    // TODO need to clean texture
 }
 
 void TiledLevel::SetTextureAtlas()
@@ -58,7 +58,6 @@ void TiledLevel::LoadSurfaces()
                 auto surfacePath = AssetPrefix + TiledPrefix + tile.Image;
                 auto texture = geTexture2DNew();
                 geTexture2DGenerate(texture, surfacePath.c_str());
-                // auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
                 _loadedTilesets.push_back({tile.Image, texture});
             }
         }
@@ -67,7 +66,6 @@ void TiledLevel::LoadSurfaces()
             auto surfacePath = AssetPrefix + TiledPrefix + tileset.Image;
             auto texture = geTexture2DNew();
             geTexture2DGenerate(texture, surfacePath.c_str());
-            // auto surface = (SDL_Surface *)Content::LoadContent(ContentTypes::Surface, surfacePath.c_str());
             _loadedTilesets.push_back({tileset.Image, texture});
         }
     }
@@ -162,12 +160,7 @@ void TiledLevel::CreateBackgroundAtlas()
                             dstY -= (sourceRect.h - _mapData->TileHeight);
                         }
                         auto dstRect = geRectangle{dstX, dstY, sourceRect.w, sourceRect.h};
-
-                        // BlitSurface(
-                        //     tileSurface,
-                        //     &sourceRect,
-                        //     atlas,
-                        //     &dstRect);
+                        geTileSheetAddTile(_loadedAtlas, &dstRect, &sourceRect, tileSurface);
                     }
                 }
             }
