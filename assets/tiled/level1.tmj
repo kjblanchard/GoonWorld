@@ -861,10 +861,10 @@
          "type":"class",
          "value":
             {
-             "bgmName":"arcade",
-             "loopBegin":0,
+             "bgmName":"1-1",
+             "loopBegin":13.534,
              "loopEnd":0,
-             "volume":0.35
+             "volume":1.5
             }
         }, 
         {
