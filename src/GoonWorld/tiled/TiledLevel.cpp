@@ -27,7 +27,7 @@ std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
 
 TiledLevel::~TiledLevel()
 {
-    DestroyTexture(_loadedAtlas);
+    geDestroyTexture(_loadedAtlas);
 }
 
 void TiledLevel::SetTextureAtlas()
@@ -38,7 +38,7 @@ void TiledLevel::SetTextureAtlas()
     //     _mapData->Width * _mapData->TileWidth,
     //     _mapData->Height * _mapData->TileHeight,
     // };
-    SetBackgroundAtlas(_loadedAtlas);
+    geSetBackgroundAtlas(_loadedAtlas);
 }
 
 void TiledLevel::LoadSurfaces()

@@ -10,7 +10,7 @@
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
 #include <GoonPhysics/GoonPhysics.h>
-#include <GoonEngine/test.h>
+#include <GoonEngine/game.h>
 #include <GoonEngine/color.h>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonEngine/SdlWindow.h>
@@ -267,7 +267,7 @@ void Game::LoadLevel(std::string level)
     gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
     _loadedLevel->SetTextureAtlas();
     _camera->SetLevelSize(_loadedLevel->GetSize());
-    SetCameraRect(_camera->Bounds());
+    geSetCameraRect(_camera->Bounds());
     auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
     _camera->Restart();
     LoadGameObjects();

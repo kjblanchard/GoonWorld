@@ -36,8 +36,10 @@ elseif(APPLE)
         set(MACOS ON CACHE BOOL "Is Macos")
 
         if(CMAKE_GENERATOR STREQUAL "Xcode")
-            message(STATUS "Setting Build to Specific OS type, as libpng cannot handle universal.")
-            set(CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES} CACHE STRING "" FORCE)
+            # message(STATUS "Setting Build to Specific OS type, as libpng cannot handle universal.")
+            # set(CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES} CACHE STRING "" FORCE)
+            message(STATUS "Setting Build to Universal Binary")
+            set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "" FORCE)
         endif(CMAKE_GENERATOR STREQUAL "Xcode")
     else()
         # IOS
@@ -76,9 +78,20 @@ set(BUILD_TESTING GOON_BUILD_TESTING) # Set the cmake variable build_testing to 
 # #########################################
 set(GOON_DEBUG_SOUND ON CACHE BOOL "Builds sound from subdirectory instead of using a made package so we can debug" FORCE)
 set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP INSTALLATION" FORCE)
+
+if(APPLE)
+    set(libpng_arm_sources
+        arm/arm_init.c
+        arm/filter_neon_intrinsics.c
+        arm/palette_neon_intrinsics.c
+        arm/filter_neon.S
+        CACHE STRING "Enable arm sources for apple universal builds, regardless" FORCE)
+endif(APPLE)
+
 set(PNG_TESTS OFF CACHE BOOL "Build the libpng tests" FORCE)
-set(PNG_ARM_NEON on CACHE BOOL "Build the libpng tests" FORCE)
-set(PNG_ARM_NEON_OPT 0 CACHE BOOL "What" FORCE)
+# set(PNG_HARDWARE_OPTIMIZATIONS OFF CACHE BOOL "Universal" FORCE)
+# set(PNG_ARM_NEON off CACHE BOOL "Build the libpng tests" FORCE)
+# set(PNG_ARM_NEON_OPT 0 CACHE BOOL "What" FORCE)
 set(PNG_BUILD_ZLIB ON CACHE BOOL "Build the libpng tests" FORCE)
 set(PNG_TOOLS OFF CACHE BOOL "Build the libpng tests" FORCE)
 set(PNG_SHARED OFF CACHE BOOL "Build the libpng tests" FORCE)
@@ -159,6 +172,7 @@ set(FULL_COMPILE_OPTIONS
     -Wpedantic
     -Wdeprecated
     -Wno-newline-eof
+
     # -Wno-strict-prototypes
     -Wno-sign-compare
     -Wno-unused-parameter

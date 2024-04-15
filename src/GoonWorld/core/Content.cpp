@@ -22,7 +22,7 @@ void *Content::LoadContent(ContentTypes contentType, const char *filename)
         loadedContent = LoadSurfaceFromFile(filename);
         break;
     case ContentTypes::Texture:
-        loadedContent = CreateTextureFromFile(filename);
+        loadedContent = geCreateTextureFromFile(filename);
         break;
     default:
         loadedContent = nullptr;
@@ -49,10 +49,10 @@ void Content::ClearContent()
         switch (value.first)
         {
         case ContentTypes::Surface:
-            DestroySurface((SDL_Surface *)value.second);
+            geDestroySurface((SDL_Surface *)value.second);
             break;
         case ContentTypes::Texture:
-            DestroyTexture((SDL_Texture *)value.second);
+            geDestroyTexture((SDL_Texture *)value.second);
             break;
         default:
             break;

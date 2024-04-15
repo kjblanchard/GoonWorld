@@ -23,7 +23,7 @@ Image::~Image()
 
 void Image::Load()
 {
-    surface = CreateTextureFromFile(GetLoadPath(_imageName).c_str());
+    surface = geCreateTextureFromFile(GetLoadPath(_imageName).c_str());
 }
 
 void Image::Unload()

@@ -1,15 +1,15 @@
 { "frames": [
    {
-    "filename": "mario 0.aseprite",
+    "filename": "kevin 0.aseprite",
     "frame": { "x": 0, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 36 },
     "sourceSize": { "w": 18, "h": 36 },
-    "duration": 100
+    "duration": 250
    },
    {
-    "filename": "mario 1.aseprite",
+    "filename": "kevin 1.aseprite",
     "frame": { "x": 18, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -18,7 +18,7 @@
     "duration": 100
    },
    {
-    "filename": "mario 2.aseprite",
+    "filename": "kevin 2.aseprite",
     "frame": { "x": 36, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -27,7 +27,7 @@
     "duration": 100
    },
    {
-    "filename": "mario 3.aseprite",
+    "filename": "kevin 3.aseprite",
     "frame": { "x": 54, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -36,7 +36,7 @@
     "duration": 100
    },
    {
-    "filename": "mario 4.aseprite",
+    "filename": "kevin 4.aseprite",
     "frame": { "x": 72, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -45,7 +45,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 5.aseprite",
+    "filename": "kevin 5.aseprite",
     "frame": { "x": 90, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -54,7 +54,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 6.aseprite",
+    "filename": "kevin 6.aseprite",
     "frame": { "x": 108, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -63,7 +63,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 7.aseprite",
+    "filename": "kevin 7.aseprite",
     "frame": { "x": 126, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -72,7 +72,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 8.aseprite",
+    "filename": "kevin 8.aseprite",
     "frame": { "x": 144, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -81,7 +81,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 9.aseprite",
+    "filename": "kevin 9.aseprite",
     "frame": { "x": 162, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -90,7 +90,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 10.aseprite",
+    "filename": "kevin 10.aseprite",
     "frame": { "x": 180, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -99,7 +99,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 11.aseprite",
+    "filename": "kevin 11.aseprite",
     "frame": { "x": 198, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -108,7 +108,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 12.aseprite",
+    "filename": "kevin 12.aseprite",
     "frame": { "x": 216, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -117,7 +117,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 13.aseprite",
+    "filename": "kevin 13.aseprite",
     "frame": { "x": 234, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -126,7 +126,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 14.aseprite",
+    "filename": "kevin 14.aseprite",
     "frame": { "x": 252, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -135,7 +135,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 15.aseprite",
+    "filename": "kevin 15.aseprite",
     "frame": { "x": 270, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -144,7 +144,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 16.aseprite",
+    "filename": "kevin 16.aseprite",
     "frame": { "x": 288, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -153,7 +153,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 17.aseprite",
+    "filename": "kevin 17.aseprite",
     "frame": { "x": 306, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -162,7 +162,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 18.aseprite",
+    "filename": "kevin 18.aseprite",
     "frame": { "x": 324, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -171,7 +171,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 19.aseprite",
+    "filename": "kevin 19.aseprite",
     "frame": { "x": 342, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -180,7 +180,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 20.aseprite",
+    "filename": "kevin 20.aseprite",
     "frame": { "x": 360, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -189,7 +189,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 21.aseprite",
+    "filename": "kevin 21.aseprite",
     "frame": { "x": 378, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -198,7 +198,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 22.aseprite",
+    "filename": "kevin 22.aseprite",
     "frame": { "x": 396, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -207,7 +207,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 23.aseprite",
+    "filename": "kevin 23.aseprite",
     "frame": { "x": 414, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -216,7 +216,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 24.aseprite",
+    "filename": "kevin 24.aseprite",
     "frame": { "x": 432, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -225,7 +225,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 25.aseprite",
+    "filename": "kevin 25.aseprite",
     "frame": { "x": 450, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -234,7 +234,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 26.aseprite",
+    "filename": "kevin 26.aseprite",
     "frame": { "x": 468, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -243,7 +243,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 27.aseprite",
+    "filename": "kevin 27.aseprite",
     "frame": { "x": 486, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,
@@ -252,7 +252,7 @@
     "duration": 150
    },
    {
-    "filename": "mario 28.aseprite",
+    "filename": "kevin 28.aseprite",
     "frame": { "x": 504, "y": 0, "w": 18, "h": 36 },
     "rotated": false,
     "trimmed": false,

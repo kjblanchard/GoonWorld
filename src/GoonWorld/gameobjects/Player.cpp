@@ -238,6 +238,10 @@ void Player::AnimationUpdate()
     {
         _animationComponent->AnimationSpeed = std::abs(_rigidbodyComponent->Velocity().x) / 100.0f;
     }
+    else
+    {
+        _animationComponent->AnimationSpeed = 1;
+    }
     _shouldFallAnim = _isJumping || !_isOnGround;
     _shouldIdleAnim = _isOnGround && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _isOnGround && _rigidbodyComponent->Velocity().x != 0;
@@ -450,7 +454,7 @@ void Player::GoombaOverlapFunc(void *instance, void *body, void *overlapBody, gp
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
-    Goomba *goomba = (Goomba *)((gpBody*) overlapBody)->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody *)overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
@@ -479,7 +483,7 @@ void Player::GoombaOverlapFuncJumpBox(void *instance, void *body, void *overlapB
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
-    Goomba *goomba = (Goomba *)((gpBody*) overlapBody)->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody *)overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
@@ -537,7 +541,7 @@ void Player::WinBoxOverlap(void *instance, void *body, void *overlapBody, gpOver
 void Player::FlagOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
-    auto flag = static_cast<Flag *>(static_cast<gpBody*>(overlapBody)->funcArgs);
+    auto flag = static_cast<Flag *>(static_cast<gpBody *>(overlapBody)->funcArgs);
     if (!flag)
         return;
     flag->TakeDamage();
@@ -583,7 +587,7 @@ void Player::BrickOverlapFunc(void *instance, void *body, void *overlapBody, gpO
         return;
     if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
-    ItemBrick *itemBox = (ItemBrick *)((gpBody* )overlapBody)->funcArgs;
+    ItemBrick *itemBox = (ItemBrick *)((gpBody *)overlapBody)->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
@@ -598,7 +602,7 @@ void Player::ItemBoxOverlapFunc(void *instance, void *body, void *overlapBody, g
     // If we are not traveling upwards
     if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
-    ItemBox *itemBox = (ItemBox *)((gpBody*) overlapBody)->funcArgs;
+    ItemBox *itemBox = (ItemBox *)((gpBody *)overlapBody)->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
@@ -610,7 +614,7 @@ void Player::MushroomOverlapFunc(void *instance, void *body, void *overlapBody, 
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Mushroom *mushroom = (Mushroom *)((gpBody*)overlapBody)->funcArgs;
+    Mushroom *mushroom = (Mushroom *)((gpBody *)overlapBody)->funcArgs;
     if (!mushroom->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
@@ -622,7 +626,7 @@ void Player::FireflowerOverlapFunc(void *instance, void *body, void *overlapBody
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Fireflower *flower = (Fireflower *)((gpBody*)overlapBody)->funcArgs;
+    Fireflower *flower = (Fireflower *)((gpBody *)overlapBody)->funcArgs;
     if (!flower->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
