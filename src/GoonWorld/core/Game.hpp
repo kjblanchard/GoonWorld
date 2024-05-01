@@ -51,7 +51,7 @@ namespace GoonWorld
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
         Level &GetCurrentLevel();
-        void StartGameLevel(std::string &levelName);
+        void ChangeGameLevel(std::string &levelName);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
         void LoadLevel(std::string levelName);
@@ -75,7 +75,7 @@ namespace GoonWorld
         static Game *_gameInstance;
         static long long _ticks;
         std::unordered_map<int, std::vector<Observer *>> _observers;
-        std::unique_ptr<Level> _logoLevel;
+        // std::unique_ptr<Level> _logoLevel;
         std::unique_ptr<Level> _loadingLevel;
         std::unique_ptr<Level> _loadedLevel;
         std::unique_ptr<Sound> _sound;

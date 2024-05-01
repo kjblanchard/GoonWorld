@@ -78,5 +78,6 @@ void LogoPanel::FadeOutTextTweenCompleteFunc(void *args)
     if (!logo)
         return;
     std::string levelName = "level1";
-    logo->_game->StartGameLevel(levelName);
+    // logo->_game->StartGameLevel(levelName);
+    logo->_game->ChangeGameLevel(levelName);
 }

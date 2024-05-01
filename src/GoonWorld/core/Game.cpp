@@ -66,16 +66,16 @@ Game::Game()
     _levelTimerUI = std::make_unique<LevelTimer>();
     if (!_gameSettings->MiscConfig.SkipLogos)
     {
-        _logoLevel = std::make_unique<Level>();
+        _loadedLevel = std::make_unique<Level>();
         // TODO is this cleaned up somewhere in level?
         auto logoPanel = new LogoPanel();
-        _logoLevel->AddUpdateObject(logoPanel);
-        _logoLevel->AddDrawObject(logoPanel);
+        _loadedLevel->AddUpdateObject(logoPanel);
+        _loadedLevel->AddDrawObject(logoPanel);
         _currentState = GameStates::Logos;
     }
     else
     {
-        _currentState = GameStates::Level;
+        ChangeGameLevel(_gameSettings->DebugConfig.InitialLevel);
     }
     Content::LoadAllContent();
 }
@@ -101,7 +101,7 @@ void Game::Update(double timeMs)
     _deltaTime = TimeSpan(totalSeconds);
     if (_currentState == GameStates::Logos)
     {
-        _logoLevel->Update();
+        _loadedLevel->Update();
         // logoPanel->Update();
         auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
         for (auto &tween : _tweens)
@@ -149,7 +149,7 @@ void Game::Draw()
     if (_currentState == GameStates::Logos)
     {
         // logoPanel->Draw();
-        _logoLevel->Draw();
+        _loadedLevel->Draw();
     }
     else
     {
@@ -176,9 +176,10 @@ void Game::Draw()
     }
 }
 
-void Game::StartGameLevel(std::string &levelName)
+void Game::ChangeGameLevel(std::string &levelName)
 {
     _currentState = GameStates::Level;
+    _shouldChangeLevel = true;
     LoadLevel(levelName);
 }
 
@@ -253,9 +254,10 @@ void Game::LoadLevel(std::string level)
 {
     _tweens.clear();
     InitializePhysics();
-    if (!_loadedLevel || _shouldChangeLevel)
+    if (_shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<Level>(level.c_str());
+        _shouldChangeLevel = false;
     }
     auto gravity = _loadedLevel->GetTiledLevel().GetGravity();
     gpSceneSetGravity(_scene, gravity.y);
