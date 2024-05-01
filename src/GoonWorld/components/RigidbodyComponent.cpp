@@ -56,8 +56,7 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
         _bodyNum = gpSceneAddBody(_body);
     }
     Enabled(true);
-    // GetGame().AddDrawObject(this);
-    GetGame().GetCurrentLevel()->AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
 }
 
 void RigidbodyComponent::OnEnabled()

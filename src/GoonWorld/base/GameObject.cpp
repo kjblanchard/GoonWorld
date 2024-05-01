@@ -14,7 +14,7 @@ std::vector<std::shared_ptr<GameObject>> GameObject::_gameobjects;
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{0, 0})
 {
-    Game::Instance()->GetCurrentLevel()->AddUpdateObject(this);
+    Game::Instance()->GetCurrentLevel().AddUpdateObject(this);
     _gameobjects.push_back(std::shared_ptr<GameObject>(this));
     _enabled = true;
 }

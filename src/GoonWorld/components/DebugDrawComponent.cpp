@@ -26,5 +26,5 @@ void DebugDrawComponent::OnComponentAdd(GameObject &parent)
     Component::OnComponentAdd(parent);
     Enabled(true);
     // GetGame().AddDrawObject(this);
-    GetGame().GetCurrentLevel()->AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
 }

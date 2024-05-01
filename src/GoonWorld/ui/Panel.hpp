@@ -2,12 +2,13 @@
 #include <vector>
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <GoonWorld/interfaces/IUpdate.hpp>
+#include <GoonWorld/interfaces/IEnable.hpp>
 
 namespace GoonWorld
 {
     class Image;
     class Text;
-    class Panel : public IDraw, public IUpdate
+    class Panel : public IDraw, public IUpdate, public IEnable
     {
     public:
         virtual ~Panel();
@@ -21,6 +22,14 @@ namespace GoonWorld
         virtual void Draw() override;
         std::vector<IDraw *> UIDrawObjects;
         std::vector<IUpdate *> UIUpdateObjects;
+
+        bool IsEnabled() const override;
+        void Enabled(bool isEnabled) override;
+        void OnEnabled() override;
+        void OnDisabled() override;
+
+    private:
+        bool _enabled = true;
     };
 
 }

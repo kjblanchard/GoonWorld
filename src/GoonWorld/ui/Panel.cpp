@@ -44,3 +44,18 @@ bool Panel::IsVisible()
 {
     return true;
 }
+bool Panel::IsEnabled() const
+{
+    return _enabled;
+}
+void Panel::Enabled(bool isEnabled)
+{
+    _enabled = isEnabled;
+
+}
+void Panel::OnEnabled()
+{
+}
+void Panel::OnDisabled()
+{
+}

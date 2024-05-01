@@ -41,7 +41,7 @@ void BoxColliderComponent::OnComponentAdd(GameObject &parent)
     Component::OnComponentAdd(parent);
     _boxNum = gpSceneAddBoxCollider(_boxCollider);
     // GetGame().AddDrawObject(this);
-    GetGame().GetCurrentLevel()->AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
     Enabled(true);
 }
 

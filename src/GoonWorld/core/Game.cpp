@@ -40,7 +40,7 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
     {
@@ -64,8 +64,19 @@ Game::Game()
     _gameInstance = this;
     _coinUI = std::make_unique<CoinsCollectedUI>();
     _levelTimerUI = std::make_unique<LevelTimer>();
-    logoPanel = std::make_unique<LogoPanel>();
-    _currentState = GameStates::Logos;
+    if (!_gameSettings->MiscConfig.SkipLogos)
+    {
+        _logoLevel = std::make_unique<Level>();
+        // TODO is this cleaned up somewhere in level?
+        auto logoPanel = new LogoPanel();
+        _logoLevel->AddUpdateObject(logoPanel);
+        _logoLevel->AddDrawObject(logoPanel);
+        _currentState = GameStates::Logos;
+    }
+    else
+    {
+        _currentState = GameStates::Level;
+    }
     Content::LoadAllContent();
 }
 
@@ -75,8 +86,6 @@ Game::~Game()
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
-    // UpdateObjects.clear();
-    // DrawObjects.clear();
     _tweens.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
@@ -92,7 +101,8 @@ void Game::Update(double timeMs)
     _deltaTime = TimeSpan(totalSeconds);
     if (_currentState == GameStates::Logos)
     {
-        logoPanel->Update();
+        _logoLevel->Update();
+        // logoPanel->Update();
         auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
         for (auto &tween : _tweens)
         {
@@ -138,7 +148,8 @@ void Game::Draw()
 {
     if (_currentState == GameStates::Logos)
     {
-        logoPanel->Draw();
+        // logoPanel->Draw();
+        _logoLevel->Draw();
     }
     else
     {
@@ -226,11 +237,6 @@ void Game::RestartLevel()
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
-    // UpdateObjects.clear();
-    // for (auto &layer : DrawObjects)
-    // {
-    //     layer.clear();
-    // }
     if (_loadedLevel)
     {
         _loadedLevel->ClearObjects();
@@ -239,7 +245,6 @@ void Game::RestartLevel()
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
-    // LoadLevel(_loadedLevel->GetName());
     LoadLevel(_loadedLevel->GetTiledLevel().GetName());
     _loadedLevel->GetTiledLevel().RestartLevel();
 }
@@ -259,7 +264,6 @@ void Game::LoadLevel(std::string level)
     _camera->SetLevelSize(_loadedLevel->GetTiledLevel().GetSize());
     geSetCameraRect(_camera->Bounds());
     auto [bgmName, bgmStart, bgmEnd, volume] = _loadedLevel->GetTiledLevel().GetBgmData();
-    // auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
     auto bgm = Bgm::BgmFactory(bgmName, bgmStart, bgmEnd);
     _camera->Restart();
     LoadGameObjects();
@@ -267,7 +271,6 @@ void Game::LoadLevel(std::string level)
     AddUIObject(_coinUI.get());
     AddUIObject(_levelTimerUI.get());
     _loadedLevel->AddUpdateObject(_levelTimerUI.get());
-    // AddUpdateObject(_levelTimerUI.get());
     bgm->Play(-1, volume);
     _coinUI->UpdateCoins(0);
     _levelTimerUI->UpdateTime(0);
@@ -307,11 +310,6 @@ void Game::ChangeLevel()
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
-    // UpdateObjects.clear();
-    // for (auto &layer : DrawObjects)
-    // {
-    //     layer.clear();
-    // }
     if (_loadedLevel)
     {
         _loadedLevel->ClearObjects();
@@ -319,8 +317,16 @@ void Game::ChangeLevel()
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
-    // auto nextLevel = _loadedLevel->GetNextLevel();
     auto nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;
+}
+
+Level &Game::GetCurrentLevel()
+{
+    if (!_loadedLevel)
+    {
+        LogError("Getting a level when there isn't a loaded level will result in crash!");
+    }
+    return *_loadedLevel;
 }

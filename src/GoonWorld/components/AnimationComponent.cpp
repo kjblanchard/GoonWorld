@@ -92,7 +92,7 @@ void AnimationComponent::Draw()
 void AnimationComponent::OnComponentAdd(GameObject &parent)
 {
     Component::OnComponentAdd(parent);
-    GetGame().GetCurrentLevel()->AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
 }
 
 geRectangle AnimationComponent::GetDrawRect()
@@ -107,6 +107,6 @@ void AnimationComponent::AddTransition(std::string from, std::string to, bool ma
 
 void AnimationComponent::ChangeLayer(int layer)
 {
-    GetGame().GetCurrentLevel()->ChangeDrawObjectLayer(this, layer);
+    GetGame().GetCurrentLevel().ChangeDrawObjectLayer(this, layer);
     _layer = layer;
 }
