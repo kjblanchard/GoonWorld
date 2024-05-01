@@ -99,80 +99,56 @@ void Game::Update(double timeMs)
     auto totalSeconds = timeMs / 1000;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
     _deltaTime = TimeSpan(totalSeconds);
-    if (_currentState == GameStates::Logos)
+    if (_shouldRestart)
+        RestartLevel();
+    if (_shouldChangeLevel)
+        ChangeLevel();
+    _camera->Update();
+    auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
+    for (auto &tween : _tweens)
+    {
+        if (!tween)
+            continue;
+        tween->Update(deltaTimeSeconds);
+    }
+    // If there is a player dying or player getting big, we should only update them.
+    if (_playerDying || _playerBig)
+    {
+        if (_playerDying)
+            _playerDying->Update();
+        if (_playerBig)
+            _playerBig->Update();
+        return;
+    }
+    GameObject::UpdateTimers();
+    if (_loadedLevel)
     {
         _loadedLevel->Update();
-        // logoPanel->Update();
-        auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
-        for (auto &tween : _tweens)
-        {
-            if (!tween)
-                continue;
-            tween->Update(deltaTimeSeconds);
-        }
-    }
-    else
-    {
-
-        if (_shouldRestart)
-            RestartLevel();
-        if (_shouldChangeLevel)
-            ChangeLevel();
-        // If there is not a player getting big, we should update physics.
-        _camera->Update();
-        auto deltaTimeSeconds = _deltaTime.GetTotalSeconds();
-        for (auto &tween : _tweens)
-        {
-            if (!tween)
-                continue;
-            tween->Update(deltaTimeSeconds);
-        }
-        // If there is a player dying or player getting big, we should only update them.
-        if (_playerDying || _playerBig)
-        {
-            if (_playerDying)
-                _playerDying->Update();
-            if (_playerBig)
-                _playerBig->Update();
-            return;
-        }
-        GameObject::UpdateTimers();
-        if (_loadedLevel)
-        {
-            _loadedLevel->Update();
-        }
     }
 }
 
 void Game::Draw()
 {
-    if (_currentState == GameStates::Logos)
+    if (_loadedLevel)
     {
-        // logoPanel->Draw();
         _loadedLevel->Draw();
     }
-    else
+
+    if (_gameSettings->DebugConfig.SolidDebug)
     {
-        if (_loadedLevel)
+        for (auto &solid : _loadedLevel->GetTiledLevel().GetAllSolidObjects())
         {
-            _loadedLevel->Draw();
+            auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
+            auto color = geColor{0, 255, 0, 255};
+            geDrawDebugRect(&box, &color);
         }
+    }
 
-        if (_gameSettings->DebugConfig.SolidDebug)
-        {
-            for (auto &solid : _loadedLevel->GetTiledLevel().GetAllSolidObjects())
-            {
-                auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
-                auto color = geColor{0, 255, 0, 255};
-                geDrawDebugRect(&box, &color);
-            }
-        }
-
-        for (auto object : UIDrawObjects)
-        {
-            if (object->IsVisible())
-                object->Draw();
-        }
+    // Move UI to it's own place?
+    for (auto object : UIDrawObjects)
+    {
+        if (object->IsVisible())
+            object->Draw();
     }
 }
 
@@ -270,6 +246,7 @@ void Game::LoadLevel(std::string level)
     _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContent();
+
     AddUIObject(_coinUI.get());
     AddUIObject(_levelTimerUI.get());
     _loadedLevel->AddUpdateObject(_levelTimerUI.get());
