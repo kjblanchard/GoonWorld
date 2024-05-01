@@ -21,7 +21,8 @@ namespace GoonWorld
     class IDraw;
     struct Observer;
     class AppSettings;
-    class TiledLevel;
+    // class TiledLevel;
+    class Level;
     class Player;
     class Sound;
     class Camera;
@@ -43,18 +44,18 @@ namespace GoonWorld
         inline void AddTween(ITween *tween) { _tweens.push_back(std::unique_ptr<ITween>(tween)); }
         inline void TriggerRestartLevel() { _shouldRestart = true; }
         inline void TriggerNextLevel() { _shouldChangeLevel = true; }
-        inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
+        // inline TiledLevel *GetCurrentLevel() const { return _loadedLevel.get(); }
         inline Sound *GetSound() const { return _sound.get(); }
         inline Camera *GetCamera() { return _camera.get(); }
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
-        inline void AddUpdateObject(IUpdate *update) { UpdateObjects.push_back(update); }
-        void AddDrawObject(IDraw *draw);
-        void ChangeDrawObjectLayer(IDraw *draw, int newLayer);
+        // void AddDrawObject(IDraw *draw);
+        inline Level *GetCurrentLevel() { return _loadedLevel.get(); }
+        // void ChangeDrawObjectLayer(IDraw *draw, int newLayer);
         inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
         void StartGameLevel(std::string &levelName);
-        void SetCurrentLevel(TiledLevel *level);
+        // void SetCurrentLevel(TiledLevel *level);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
         void LoadLevel(std::string levelName);
@@ -62,10 +63,9 @@ namespace GoonWorld
     private:
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
-        std::vector<IUpdate *> UpdateObjects;
-        // std::vector<ITween *> _tweens;
         std::vector<std::unique_ptr<ITween>> _tweens;
-        std::vector<std::vector<IDraw *>> DrawObjects;
+        // std::vector<IUpdate *> UpdateObjects;
+        // std::vector<std::vector<IDraw *>> DrawObjects;
         std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);
@@ -81,7 +81,8 @@ namespace GoonWorld
         static Game *_gameInstance;
         static long long _ticks;
         std::unordered_map<int, std::vector<Observer *>> _observers;
-        std::unique_ptr<TiledLevel> _loadedLevel;
+        // std::unique_ptr<TiledLevel> _loadedLevel;
+        std::unique_ptr<Level> _loadedLevel;
         std::unique_ptr<Sound> _sound;
         std::unique_ptr<Camera> _camera;
         std::unique_ptr<Observer> _playerBigObserver;

@@ -1,4 +1,5 @@
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/core/Timer.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/base/Component.hpp>
@@ -13,7 +14,7 @@ std::vector<std::shared_ptr<GameObject>> GameObject::_gameobjects;
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{0, 0})
 {
-    Game::Instance()->AddUpdateObject(this);
+    Game::Instance()->GetCurrentLevel()->AddUpdateObject(this);
     _gameobjects.push_back(std::shared_ptr<GameObject>(this));
     _enabled = true;
 }

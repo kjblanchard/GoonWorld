@@ -9,6 +9,7 @@
 #include <GoonWorld/interfaces/IDraw.hpp>
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
+#include <GoonWorld/core/Level.hpp>
 #include <GoonPhysics/GoonPhysics.h>
 #include <GoonEngine/game.h>
 #include <GoonEngine/color.h>
@@ -39,13 +40,8 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : DrawObjects(4), _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
-// : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
-    // DrawObjects{4, {}};
-    // std::vector<std::vector<IDraw*>> DrawObjects(4, std::vector<IDraw*>());
-    // DrawObjects(4, std::vector<IDraw *>());
-
     if (_gameInstance)
     {
         fprintf(stderr, "Can only create one game instance");
@@ -79,8 +75,8 @@ Game::~Game()
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
-    UpdateObjects.clear();
-    DrawObjects.clear();
+    // UpdateObjects.clear();
+    // DrawObjects.clear();
     _tweens.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
@@ -131,12 +127,9 @@ void Game::Update(double timeMs)
             return;
         }
         GameObject::UpdateTimers();
-        for (auto object : UpdateObjects)
+        if (_loadedLevel)
         {
-            auto updateEnable = dynamic_cast<IEnable *>(object);
-            if (updateEnable && !updateEnable->IsEnabled())
-                continue;
-            object->Update();
+            _loadedLevel->Update();
         }
     }
 }
@@ -149,18 +142,14 @@ void Game::Draw()
     }
     else
     {
-        for (auto layer : DrawObjects)
+        if (_loadedLevel)
         {
-            for (auto object : layer)
-            {
-                if (object->IsVisible())
-                    object->Draw();
-            }
+            _loadedLevel->Draw();
         }
 
         if (_gameSettings->DebugConfig.SolidDebug)
         {
-            for (auto &solid : _loadedLevel->GetAllSolidObjects())
+            for (auto &solid : _loadedLevel->GetTiledLevel().GetAllSolidObjects())
             {
                 auto box = geRectangle{solid.X, solid.Y, solid.Width, solid.Height};
                 auto color = geColor{0, 255, 0, 255};
@@ -180,11 +169,6 @@ void Game::StartGameLevel(std::string &levelName)
 {
     _currentState = GameStates::Level;
     LoadLevel(levelName);
-}
-
-void Game::SetCurrentLevel(TiledLevel *level)
-{
-    _loadedLevel = std::unique_ptr<TiledLevel>(level);
 }
 
 void Game::RemoveObserver(Observer *observer)
@@ -242,17 +226,22 @@ void Game::RestartLevel()
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
-    UpdateObjects.clear();
-    for (auto &layer : DrawObjects)
+    // UpdateObjects.clear();
+    // for (auto &layer : DrawObjects)
+    // {
+    //     layer.clear();
+    // }
+    if (_loadedLevel)
     {
-        layer.clear();
+        _loadedLevel->ClearObjects();
     }
     UIDrawObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
-    LoadLevel(_loadedLevel->GetName());
-    _loadedLevel->RestartLevel();
+    // LoadLevel(_loadedLevel->GetName());
+    LoadLevel(_loadedLevel->GetTiledLevel().GetName());
+    _loadedLevel->GetTiledLevel().RestartLevel();
 }
 
 void Game::LoadLevel(std::string level)
@@ -261,27 +250,31 @@ void Game::LoadLevel(std::string level)
     InitializePhysics();
     if (!_loadedLevel || _shouldChangeLevel)
     {
-        _loadedLevel = std::make_unique<TiledLevel>(level.c_str());
+        _loadedLevel = std::make_unique<Level>(level.c_str());
     }
-    gpSceneSetGravity(_scene, _loadedLevel->GetGravity().y);
-    gpSceneSetFriction(_scene, _loadedLevel->GetGravity().x);
-    _loadedLevel->SetTextureAtlas();
-    _camera->SetLevelSize(_loadedLevel->GetSize());
+    auto gravity = _loadedLevel->GetTiledLevel().GetGravity();
+    gpSceneSetGravity(_scene, gravity.y);
+    gpSceneSetFriction(_scene, gravity.x);
+    _loadedLevel->GetTiledLevel().SetTextureAtlas();
+    _camera->SetLevelSize(_loadedLevel->GetTiledLevel().GetSize());
     geSetCameraRect(_camera->Bounds());
-    auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
+    auto [bgmName, bgmStart, bgmEnd, volume] = _loadedLevel->GetTiledLevel().GetBgmData();
+    // auto bgm = Bgm::BgmFactory(_loadedLevel->BgmName().c_str(), _loadedLevel->BgmLoopStart(), _loadedLevel->BgmLoopEnd());
+    auto bgm = Bgm::BgmFactory(bgmName, bgmStart, bgmEnd);
     _camera->Restart();
     LoadGameObjects();
     Content::LoadAllContent();
     AddUIObject(_coinUI.get());
     AddUIObject(_levelTimerUI.get());
-    AddUpdateObject(_levelTimerUI.get());
-    bgm->Play(-1, _loadedLevel->BgmVolume());
+    _loadedLevel->AddUpdateObject(_levelTimerUI.get());
+    // AddUpdateObject(_levelTimerUI.get());
+    bgm->Play(-1, volume);
     _coinUI->UpdateCoins(0);
     _levelTimerUI->UpdateTime(0);
 }
 void Game::LoadGameObjects()
 {
-    for (auto &object : _loadedLevel->GetAllObjects())
+    for (auto &object : _loadedLevel->GetTiledLevel().GetAllObjects())
     {
         auto iter = GameSpawnMap.find(object.ObjectType);
         if (iter == GameSpawnMap.end())
@@ -314,42 +307,20 @@ void Game::ChangeLevel()
     _shouldRestart = false;
     _playerDying = nullptr;
     _playerBig = nullptr;
-    UpdateObjects.clear();
-    for (auto &layer : DrawObjects)
+    // UpdateObjects.clear();
+    // for (auto &layer : DrawObjects)
+    // {
+    //     layer.clear();
+    // }
+    if (_loadedLevel)
     {
-        layer.clear();
+        _loadedLevel->ClearObjects();
     }
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
-    auto nextLevel = _loadedLevel->GetNextLevel();
+    // auto nextLevel = _loadedLevel->GetNextLevel();
+    auto nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
     LoadLevel(nextLevel);
     _shouldChangeLevel = false;
-}
-
-void Game::AddDrawObject(IDraw *draw)
-{
-    DrawObjects[draw->DrawLayer()].push_back(draw);
-}
-
-void Game::ChangeDrawObjectLayer(IDraw *draw, int newLayer)
-{
-    int currentLayer = draw->DrawLayer(); // Current layer of the IDraw object
-    int objectIndex = -1;
-
-    for (size_t i = 0; i < DrawObjects[currentLayer].size(); ++i)
-    {
-
-        if (DrawObjects[currentLayer][i] == draw)
-        {
-            objectIndex = i; // Store the current layer
-            break;           // Exit the inner loop
-        }
-    }
-
-    if (objectIndex != -1)
-    {
-        DrawObjects[newLayer].push_back(draw);
-        DrawObjects[currentLayer].erase(DrawObjects[currentLayer].begin() + objectIndex);
-    }
 }

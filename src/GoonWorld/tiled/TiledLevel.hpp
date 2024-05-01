@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <tuple>
 #include <GoonWorld/tiled/TiledMap.hpp>
 #include <GoonEngine/point.h>
 struct SDL_Surface;
@@ -30,10 +31,11 @@ namespace GoonWorld
         void SetTextureAtlas();
 
         inline Point GetGravity() { return _gravity; }
-        inline std::string &BgmName() { return _bgmName; }
-        inline float BgmLoopStart() { return _bgmStart;}
-        inline float BgmLoopEnd() { return _bgmEnd;}
-        inline float BgmVolume() { return _volume;}
+        // inline std::string &BgmName() { return _bgmName; }
+        inline std::tuple<std::string&, float, float, float> GetBgmData() { return {_bgmName, _bgmStart, _bgmEnd, _volume}; }
+        // inline float BgmLoopStart() { return _bgmStart; }
+        // inline float BgmLoopEnd() { return _bgmEnd; }
+        // inline float BgmVolume() { return _volume; }
         std::string GetNextLevel();
 
     private:

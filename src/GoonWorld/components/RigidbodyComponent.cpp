@@ -1,5 +1,6 @@
 #include <vector>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/scene.h>
@@ -55,7 +56,8 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
         _bodyNum = gpSceneAddBody(_body);
     }
     Enabled(true);
-    GetGame().AddDrawObject(this);
+    // GetGame().AddDrawObject(this);
+    GetGame().GetCurrentLevel()->AddDrawObject(this);
 }
 
 void RigidbodyComponent::OnEnabled()

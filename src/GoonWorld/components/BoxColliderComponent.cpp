@@ -3,6 +3,7 @@
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 using namespace GoonWorld;
 
 std::vector<BoxColliderComponent *> BoxColliderComponent::_currentBoxColliders;
@@ -39,7 +40,8 @@ void BoxColliderComponent::OnComponentAdd(GameObject &parent)
     _boxCollider->funcArgs = (void *)&parent;
     Component::OnComponentAdd(parent);
     _boxNum = gpSceneAddBoxCollider(_boxCollider);
-    GetGame().AddDrawObject(this);
+    // GetGame().AddDrawObject(this);
+    GetGame().GetCurrentLevel()->AddDrawObject(this);
     Enabled(true);
 }
 
