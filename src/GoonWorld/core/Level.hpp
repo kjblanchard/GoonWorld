@@ -17,28 +17,22 @@ namespace GoonWorld
         ~Level();
         inline TiledLevel &GetTiledLevel() { return *_tiledLevel.get(); }
         inline int DrawLayer() override { return 0; }
+        inline void AddUpdateObject(IUpdate *update) { _updateObjects.push_back(update); }
         void InitializeTiledMap(const char *tiledFilename);
         void Update() override;
         void Draw() override;
         void Visible(bool isVisible) override;
         bool IsVisible() override;
-        inline void AddUpdateObject(IUpdate *update) { _updateObjects.push_back(update); }
         void AddDrawObject(IDraw *draw);
-        // inline void AddUiUpdateObject(IUpdate *update) { _updateUiObjects.push_back(update); }
-        inline void AddUiPanel(Panel *update) { _uiPanels.push_back(update); }
-        // void AddUiDrawObject(IDraw *draw);
+        void AddUiPanel(Panel *update);
         void ChangeDrawObjectLayer(IDraw *draw, int newLayer);
         void ClearObjects();
 
-
-
     private:
         std::unique_ptr<TiledLevel> _tiledLevel;
+        std::vector<std::unique_ptr<Panel>> _uiPanels;
+
         std::vector<IUpdate *> _updateObjects;
         std::vector<std::vector<IDraw *>> _drawObjects;
-        // std::vector<IUpdate *> _updateUiObjects;
-        // std::vector<std::vector<IDraw *>> _uiDrawObjects;
-        std::vector<Panel *> _uiPanels;
-        // std::vector<std::vector<IDraw *>> _uiDrawObjects;
     };
 }

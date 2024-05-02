@@ -36,7 +36,7 @@ namespace GoonWorld
     {
     public:
         static inline Game *Instance() { return _gameInstance; }
-        static inline long long GetTicks() { return _ticks; }
+        inline long long GetTicks() { return _ticks; }
         Game();
         ~Game();
         void Update(double time);
@@ -47,11 +47,10 @@ namespace GoonWorld
         inline Sound *GetSound() const { return _sound.get(); }
         inline Camera *GetCamera() { return _camera.get(); }
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
-        // inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
         Level &GetCurrentLevel();
-        void ChangeGameLevel(std::string &levelName);
+        void ChangeToTiledLevel(std::string &levelName);
         void RemoveObserver(Observer *observer);
         void PushEvent(Event event);
         void LoadLevel(std::string levelName);
@@ -60,7 +59,7 @@ namespace GoonWorld
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<std::unique_ptr<ITween>> _tweens;
-        // std::vector<IDraw *> UIDrawObjects;
+        void InitializeLogoLevel();
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);
         void LoadGameObjects();
@@ -74,7 +73,7 @@ namespace GoonWorld
         bool _shouldChangeLevel = false;
         gpScene *_scene;
         static Game *_gameInstance;
-        static long long _ticks;
+        long long _ticks = 0;
         std::unordered_map<int, std::vector<Observer *>> _observers;
         std::unique_ptr<Level> _loadingLevel;
         std::unique_ptr<Level> _loadedLevel;

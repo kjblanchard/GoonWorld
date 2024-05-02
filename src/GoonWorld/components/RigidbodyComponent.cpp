@@ -36,10 +36,11 @@ void RigidbodyComponent::AddOverlapFunction(int overlapType, OverlapFunc func)
 
 bool RigidbodyComponent::IsOnGround()
 {
-    if (Game::GetTicks() == _isOnGroundCached)
-        return _isOnGround;
-    _isOnGroundCached = Game::GetTicks();
-    return _isOnGround = gpBodyIsOnGround(_body);
+    // if (Game::Instance()->GetTicks() == _isOnGroundCached)
+    //     return _isOnGround;
+    // _isOnGroundCached = Game::GetTicks();
+    // return _isOnGround = gpBodyIsOnGround(_body);
+    return gpBodyIsOnGround(_body);
 }
 
 void RigidbodyComponent::OnComponentAdd(GameObject &parent)

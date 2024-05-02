@@ -27,10 +27,10 @@ void Level::ClearObjects()
     {
         layer.clear();
     }
-    for (auto &ui : _uiPanels)
-    {
-        delete (ui);
-    }
+    // for (auto &ui : _uiPanels)
+    // {
+    //     delete (ui);
+    // }
     _uiPanels.clear();
     // _uiDrawObjects.clear();
 }
@@ -39,10 +39,11 @@ void Level::InitializeTiledMap(const char *tiledFilename)
 {
     _tiledLevel = std::make_unique<TiledLevel>(tiledFilename);
 }
+void Level::AddUiPanel(Panel *update) { _uiPanels.push_back(std::unique_ptr<Panel>(update)); }
 
 void Level::Update()
 {
-    for (auto object : _updateObjects)
+    for (auto &object : _updateObjects)
     {
         auto updateEnable = dynamic_cast<IEnable *>(object);
         if (updateEnable && !updateEnable->IsEnabled())
@@ -50,7 +51,7 @@ void Level::Update()
         object->Update();
     }
 
-    for (auto object : _uiPanels)
+    for (auto &object : _uiPanels)
     {
         if (!object->IsEnabled())
             continue;
@@ -68,7 +69,7 @@ void Level::Draw()
         }
     }
 
-    for (auto object : _uiPanels)
+    for (auto &object : _uiPanels)
     {
         if (!object->IsEnabled())
             continue;

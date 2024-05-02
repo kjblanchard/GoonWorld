@@ -63,23 +63,9 @@ namespace GoonWorld
         gpBody *_body;
         static std::vector<RigidbodyComponent *> _currentRigidbodies;
         int _bodyNum;
-        long long _isOnGroundCached;
         bool _isOnGround = false, _static = false, _isGravityEnabled = true;
         Point _offset;
         bool _debugDraw = false;
         std::vector<BoxColliderComponent *> _boxColliders;
     };
-    // template <typename T>
-    // void RigidbodyComponent::AddOverlapFunction(int overlapType, std::function<void(void* args, gpBody *body, gpBody* overlapBody, gpOverlap *overlap)> func)
-    // {
-    // auto instance = dynamic_cast<T *>(_parent);
-    // bodyOverlapArgs args;
-    // args.bodyType = _body->bodyType;
-    // args.overlapBodyType = overlapType;
-    // args.overlapFunc = [func](void *args, gpBody *body, gpBody *overlapBody, gpOverlap *overlap)
-    // {
-    //     func(instance, overlapBody, overlap);
-    // };
-    // gpBodyAddOverlapBeginFunc(_body, func);
-    // }
 }

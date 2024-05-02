@@ -31,13 +31,11 @@
 #include <GoonWorld/ui/LevelTimer.hpp>
 
 // Image test
-// #include <GoonWorld/content/Image.hpp>
 #include <GoonWorld/ui/LogoPanel.hpp>
-// #include <GoonWorld/ui/Panel.hpp>
 #include <GoonWorld/platformer/Helpers.hpp>
+
 using namespace GoonWorld;
 
-long long Game::_ticks = 0;
 Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
@@ -46,8 +44,7 @@ Game::Game()
 {
     if (_gameInstance)
     {
-        fprintf(stderr, "Can only create one game instance");
-        exit(1);
+        LogCritical("Can only create one game instance");
     }
     _gameSettings = std::make_unique<AppSettings>("assets/config/appsettings.json");
     geInitializeRenderingWindow(_gameSettings->WindowConfig.WindowSize.x,
@@ -55,32 +52,34 @@ Game::Game()
                                 _gameSettings->WindowConfig.WorldSize.x,
                                 _gameSettings->WindowConfig.WorldSize.y,
                                 _gameSettings->WindowConfig.Title.c_str());
+    _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
+    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
+    _gameInstance = this;
+
+    // Platformer observers and event functions
     _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
                                                     { this->PlayerBigEvent(event); });
     _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
                                                     { this->PlayerDieEvent(event); });
     AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
     AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
-    _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
-    _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
-    _gameInstance = this;
 
-    // _coinUI = std::make_unique<CoinsCollectedUI>();
-    // _levelTimerUI = std::make_unique<LevelTimer>();
     if (!_gameSettings->MiscConfig.SkipLogos)
     {
-        _loadedLevel = std::make_unique<Level>();
-        // TODO is this cleaned up somewhere in level?
-        auto logoPanel = new LogoPanel();
-        _loadedLevel->AddUpdateObject(logoPanel);
-        _loadedLevel->AddDrawObject(logoPanel);
-        _currentState = GameStates::Logos;
+        InitializeLogoLevel();
     }
     else
     {
-        ChangeGameLevel(_gameSettings->DebugConfig.InitialLevel);
+        ChangeToTiledLevel(_gameSettings->DebugConfig.InitialLevel);
     }
     Content::LoadAllContent();
+}
+void Game::InitializeLogoLevel()
+{
+    _loadedLevel = std::make_unique<Level>();
+    auto logoPanel = new LogoPanel();
+    _loadedLevel->AddUiPanel(logoPanel);
+    _currentState = GameStates::Logos;
 }
 
 Game::~Game()
@@ -155,7 +154,7 @@ void Game::Draw()
     // }
 }
 
-void Game::ChangeGameLevel(std::string &levelName)
+void Game::ChangeToTiledLevel(std::string &levelName)
 {
     _currentState = GameStates::Level;
     _shouldChangeLevel = true;
@@ -253,10 +252,6 @@ void Game::LoadLevel(std::string level)
     // _loadedLevel->GetTiledLevel().RestartLevel();
     Content::LoadAllContent();
     bgm->Play(-1, volume);
-}
-
-Panel *Game::CreateMarioLevelUi()
-{
 }
 
 void Game::LoadGameObjects()
