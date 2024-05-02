@@ -148,11 +148,11 @@ void Game::Draw()
     }
 
     // Move UI to it's own place?
-    for (auto object : UIDrawObjects)
-    {
-        if (object->IsVisible())
-            object->Draw();
-    }
+    // for (auto object : UIDrawObjects)
+    // {
+    //     if (object->IsVisible())
+    //         object->Draw();
+    // }
 }
 
 void Game::ChangeGameLevel(std::string &levelName)
@@ -210,7 +210,7 @@ void Game::PlayerBig(Player *player)
 
 void Game::RestartLevel()
 {
-    _tweens.clear();
+    // _tweens.clear();
     if (!_loadedLevel)
         return;
     _shouldChangeLevel = false;
@@ -221,17 +221,18 @@ void Game::RestartLevel()
     {
         _loadedLevel->ClearObjects();
     }
-    UIDrawObjects.clear();
-    GameObject::ClearGameObjects();
-    RigidbodyComponent::ResetRigidBodyVector();
-    BoxColliderComponent::ResetBoxColliders();
     LoadLevel(_loadedLevel->GetTiledLevel().GetName());
     _loadedLevel->GetTiledLevel().RestartLevel();
 }
 
 void Game::LoadLevel(std::string level)
 {
+    // Cleanup
     _tweens.clear();
+    GameObject::ClearGameObjects();
+    RigidbodyComponent::ResetRigidBodyVector();
+    BoxColliderComponent::ResetBoxColliders();
+    // Initialize
     InitializePhysics();
     if (_shouldChangeLevel)
     {
@@ -249,6 +250,7 @@ void Game::LoadLevel(std::string level)
     _camera->Restart();
     Helpers::AddMarioUiToLevel(_loadedLevel.get());
     LoadGameObjects();
+    // _loadedLevel->GetTiledLevel().RestartLevel();
     Content::LoadAllContent();
     bgm->Play(-1, volume);
 }

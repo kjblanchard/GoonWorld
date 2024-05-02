@@ -1,9 +1,11 @@
 #include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
 #include <GoonWorld/interfaces/IEnable.hpp>
+#include <GoonWorld/ui/Panel.hpp>
 using namespace GoonWorld;
 Level::Level()
-    : _tiledLevel(nullptr), _drawObjects(4), _uiDrawObjects(4)
+    // : _tiledLevel(nullptr), _drawObjects(4), _uiDrawObjects(4)
+    : _tiledLevel(nullptr), _drawObjects(4)
 {
 }
 
@@ -16,6 +18,21 @@ Level::~Level()
 {
     ClearObjects();
     _drawObjects.clear();
+}
+
+void Level::ClearObjects()
+{
+    _updateObjects.clear();
+    for (auto &layer : _drawObjects)
+    {
+        layer.clear();
+    }
+    for (auto &ui : _uiPanels)
+    {
+        delete (ui);
+    }
+    _uiPanels.clear();
+    // _uiDrawObjects.clear();
 }
 
 void Level::InitializeTiledMap(const char *tiledFilename)
@@ -33,10 +50,9 @@ void Level::Update()
         object->Update();
     }
 
-    for (auto object : _updateUiObjects)
+    for (auto object : _uiPanels)
     {
-        auto updateEnable = dynamic_cast<IEnable *>(object);
-        if (!updateEnable || !updateEnable->IsEnabled())
+        if (!object->IsEnabled())
             continue;
         object->Update();
     }
@@ -52,17 +68,11 @@ void Level::Draw()
         }
     }
 
-    for (auto layer : _uiDrawObjects)
+    for (auto object : _uiPanels)
     {
-        for (auto object : layer)
-        {
-            if (!object->IsVisible())
-                continue;
-            auto updateEnable = dynamic_cast<IEnable *>(object);
-            if (!updateEnable || !updateEnable->IsEnabled())
-                continue;
-            object->Draw();
-        }
+        if (!object->IsEnabled())
+            continue;
+        object->Draw();
     }
 }
 void Level::Visible(bool isVisible)
@@ -97,7 +107,7 @@ void Level::AddDrawObject(IDraw *draw)
     _drawObjects[draw->DrawLayer()].push_back(draw);
 }
 
-void Level::AddUiDrawObject(IDraw *draw)
-{
-    _uiDrawObjects[draw->DrawLayer()].push_back(draw);
-}
+// void Level::AddUiDrawObject(IDraw *draw)
+// {
+//     _uiDrawObjects[draw->DrawLayer()].push_back(draw);
+// }

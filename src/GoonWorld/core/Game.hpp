@@ -60,7 +60,7 @@ namespace GoonWorld
         inline void PlayerDie(Player *player) { _playerDying = player; }
         void PlayerBig(Player *player);
         std::vector<std::unique_ptr<ITween>> _tweens;
-        std::vector<IDraw *> UIDrawObjects;
+        // std::vector<IDraw *> UIDrawObjects;
         void PlayerBigEvent(Event &event);
         void PlayerDieEvent(Event &event);
         void LoadGameObjects();

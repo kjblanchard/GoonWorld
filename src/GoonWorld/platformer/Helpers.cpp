@@ -13,6 +13,6 @@ void Helpers::AddMarioUiToLevel(Level *level)
     panel->AddUIUpdateObject(timer);
     panel->AddUIDrawObject(timer);
     panel->AddUIDrawObject(coin);
-    level->AddUiDrawObject(panel);
-    level->AddUiUpdateObject(panel);
+    // level->AddUiDrawObject(panel);
+    level->AddUiPanel(panel);
 }

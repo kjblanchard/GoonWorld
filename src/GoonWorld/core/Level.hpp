@@ -7,6 +7,7 @@
 namespace GoonWorld
 {
     class TiledLevel;
+    class Panel;
 
     class Level : public IUpdate, public IDraw
     {
@@ -23,25 +24,21 @@ namespace GoonWorld
         bool IsVisible() override;
         inline void AddUpdateObject(IUpdate *update) { _updateObjects.push_back(update); }
         void AddDrawObject(IDraw *draw);
-        inline void AddUiUpdateObject(IUpdate *update) { _updateUiObjects.push_back(update); }
-        void AddUiDrawObject(IDraw *draw);
+        // inline void AddUiUpdateObject(IUpdate *update) { _updateUiObjects.push_back(update); }
+        inline void AddUiPanel(Panel *update) { _uiPanels.push_back(update); }
+        // void AddUiDrawObject(IDraw *draw);
         void ChangeDrawObjectLayer(IDraw *draw, int newLayer);
+        void ClearObjects();
 
-        inline void ClearObjects()
-        {
-            _updateObjects.clear();
-            for (auto &layer : _drawObjects)
-            {
-                layer.clear();
-            }
-            _uiDrawObjects.clear();
-        }
+
 
     private:
         std::unique_ptr<TiledLevel> _tiledLevel;
         std::vector<IUpdate *> _updateObjects;
-        std::vector<IUpdate *> _updateUiObjects;
         std::vector<std::vector<IDraw *>> _drawObjects;
-        std::vector<std::vector<IDraw *>> _uiDrawObjects;
+        // std::vector<IUpdate *> _updateUiObjects;
+        // std::vector<std::vector<IDraw *>> _uiDrawObjects;
+        std::vector<Panel *> _uiPanels;
+        // std::vector<std::vector<IDraw *>> _uiDrawObjects;
     };
 }
