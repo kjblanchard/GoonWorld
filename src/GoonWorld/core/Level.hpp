@@ -23,6 +23,8 @@ namespace GoonWorld
         bool IsVisible() override;
         inline void AddUpdateObject(IUpdate *update) { _updateObjects.push_back(update); }
         void AddDrawObject(IDraw *draw);
+        inline void AddUiUpdateObject(IUpdate *update) { _updateUiObjects.push_back(update); }
+        void AddUiDrawObject(IDraw *draw);
         void ChangeDrawObjectLayer(IDraw *draw, int newLayer);
 
         inline void ClearObjects()
@@ -37,9 +39,9 @@ namespace GoonWorld
 
     private:
         std::unique_ptr<TiledLevel> _tiledLevel;
-
         std::vector<IUpdate *> _updateObjects;
+        std::vector<IUpdate *> _updateUiObjects;
         std::vector<std::vector<IDraw *>> _drawObjects;
-        std::vector<IDraw *> _uiDrawObjects;
+        std::vector<std::vector<IDraw *>> _uiDrawObjects;
     };
 }

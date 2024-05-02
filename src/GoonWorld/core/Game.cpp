@@ -1,4 +1,5 @@
 #include <GoonWorld/core/Game.hpp>
+
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/core/Content.hpp>
 #include <GoonWorld/core/Camera.hpp>
@@ -32,7 +33,8 @@
 // Image test
 // #include <GoonWorld/content/Image.hpp>
 #include <GoonWorld/ui/LogoPanel.hpp>
-#include <GoonWorld/ui/Panel.hpp>
+// #include <GoonWorld/ui/Panel.hpp>
+#include <GoonWorld/platformer/Helpers.hpp>
 using namespace GoonWorld;
 
 long long Game::_ticks = 0;
@@ -62,8 +64,9 @@ Game::Game()
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
-    _coinUI = std::make_unique<CoinsCollectedUI>();
-    _levelTimerUI = std::make_unique<LevelTimer>();
+
+    // _coinUI = std::make_unique<CoinsCollectedUI>();
+    // _levelTimerUI = std::make_unique<LevelTimer>();
     if (!_gameSettings->MiscConfig.SkipLogos)
     {
         _loadedLevel = std::make_unique<Level>();
@@ -244,16 +247,16 @@ void Game::LoadLevel(std::string level)
     auto [bgmName, bgmStart, bgmEnd, volume] = _loadedLevel->GetTiledLevel().GetBgmData();
     auto bgm = Bgm::BgmFactory(bgmName, bgmStart, bgmEnd);
     _camera->Restart();
+    Helpers::AddMarioUiToLevel(_loadedLevel.get());
     LoadGameObjects();
     Content::LoadAllContent();
-
-    AddUIObject(_coinUI.get());
-    AddUIObject(_levelTimerUI.get());
-    _loadedLevel->AddUpdateObject(_levelTimerUI.get());
     bgm->Play(-1, volume);
-    _coinUI->UpdateCoins(0);
-    _levelTimerUI->UpdateTime(0);
 }
+
+Panel *Game::CreateMarioLevelUi()
+{
+}
+
 void Game::LoadGameObjects()
 {
     for (auto &object : _loadedLevel->GetTiledLevel().GetAllObjects())

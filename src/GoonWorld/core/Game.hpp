@@ -47,7 +47,7 @@ namespace GoonWorld
         inline Sound *GetSound() const { return _sound.get(); }
         inline Camera *GetCamera() { return _camera.get(); }
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
-        inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
+        // inline void AddUIObject(IDraw *draw) { UIDrawObjects.push_back(draw); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
         Level &GetCurrentLevel();
@@ -67,6 +67,7 @@ namespace GoonWorld
         void InitializePhysics();
         void RestartLevel();
         void ChangeLevel();
+        Panel* CreateMarioLevelUi();
         Player *_playerDying;
         Player *_playerBig;
         bool _shouldRestart = false;
@@ -75,7 +76,6 @@ namespace GoonWorld
         static Game *_gameInstance;
         static long long _ticks;
         std::unordered_map<int, std::vector<Observer *>> _observers;
-        // std::unique_ptr<Level> _logoLevel;
         std::unique_ptr<Level> _loadingLevel;
         std::unique_ptr<Level> _loadedLevel;
         std::unique_ptr<Sound> _sound;
@@ -83,9 +83,6 @@ namespace GoonWorld
         std::unique_ptr<Observer> _playerBigObserver;
         std::unique_ptr<Observer> _playerDieObserver;
         std::unique_ptr<AppSettings> _gameSettings;
-        std::unique_ptr<CoinsCollectedUI> _coinUI;
-        std::unique_ptr<LevelTimer> _levelTimerUI;
-        // std::unique_ptr<LogoPanel> logoPanel;
 
         GameStates _currentState = GameStates::Default;
         TimeSpan _deltaTime;

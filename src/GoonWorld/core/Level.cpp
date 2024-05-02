@@ -3,12 +3,12 @@
 #include <GoonWorld/interfaces/IEnable.hpp>
 using namespace GoonWorld;
 Level::Level()
-    : _tiledLevel(nullptr), _drawObjects(4)
+    : _tiledLevel(nullptr), _drawObjects(4), _uiDrawObjects(4)
 {
 }
 
 Level::Level(const char *tiledFilename)
-: Level()
+    : Level()
 {
     InitializeTiledMap(tiledFilename);
 }
@@ -32,6 +32,14 @@ void Level::Update()
             continue;
         object->Update();
     }
+
+    for (auto object : _updateUiObjects)
+    {
+        auto updateEnable = dynamic_cast<IEnable *>(object);
+        if (!updateEnable || !updateEnable->IsEnabled())
+            continue;
+        object->Update();
+    }
 }
 void Level::Draw()
 {
@@ -41,6 +49,19 @@ void Level::Draw()
         {
             if (object->IsVisible())
                 object->Draw();
+        }
+    }
+
+    for (auto layer : _uiDrawObjects)
+    {
+        for (auto object : layer)
+        {
+            if (!object->IsVisible())
+                continue;
+            auto updateEnable = dynamic_cast<IEnable *>(object);
+            if (!updateEnable || !updateEnable->IsEnabled())
+                continue;
+            object->Draw();
         }
     }
 }
@@ -74,4 +95,9 @@ void Level::ChangeDrawObjectLayer(IDraw *draw, int newLayer)
 void Level::AddDrawObject(IDraw *draw)
 {
     _drawObjects[draw->DrawLayer()].push_back(draw);
+}
+
+void Level::AddUiDrawObject(IDraw *draw)
+{
+    _uiDrawObjects[draw->DrawLayer()].push_back(draw);
 }
