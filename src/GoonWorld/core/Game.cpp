@@ -40,7 +40,8 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    // : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
     {
@@ -57,12 +58,7 @@ Game::Game()
     _gameInstance = this;
 
     // Platformer observers and event functions
-    _playerBigObserver = std::make_unique<Observer>((int)EventTypes::PlayerBig, [this](Event &event)
-                                                    { this->PlayerBigEvent(event); });
-    _playerDieObserver = std::make_unique<Observer>((int)EventTypes::PlayerDie, [this](Event &event)
-                                                    { this->PlayerDieEvent(event); });
-    AddEventObserver((int)EventTypes::PlayerBig, _playerBigObserver.get());
-    AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver.get());
+    Helpers::AddMarioEventObserverFunctions();
 
     if (!_gameSettings->MiscConfig.SkipLogos)
     {
@@ -86,8 +82,6 @@ Game::~Game()
 {
     _shouldChangeLevel = false;
     _shouldRestart = false;
-    _playerDying = nullptr;
-    _playerBig = nullptr;
     _tweens.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
@@ -113,15 +107,17 @@ void Game::Update(double timeMs)
             continue;
         tween->Update(deltaTimeSeconds);
     }
-    // If there is a player dying or player getting big, we should only update them.
-    if (_playerDying || _playerBig)
+
+    // Handle game paused and paused exceptions
+    if (_paused)
     {
-        if (_playerDying)
-            _playerDying->Update();
-        if (_playerBig)
-            _playerBig->Update();
+        for (auto pausedObject : _pauseUpdateObjects)
+        {
+            pausedObject->Update();
+        }
         return;
     }
+
     GameObject::UpdateTimers();
     if (_loadedLevel)
     {
@@ -145,13 +141,6 @@ void Game::Draw()
             geDrawDebugRect(&box, &color);
         }
     }
-
-    // Move UI to it's own place?
-    // for (auto object : UIDrawObjects)
-    // {
-    //     if (object->IsVisible())
-    //         object->Draw();
-    // }
 }
 
 void Game::ChangeToTiledLevel(std::string &levelName)
@@ -194,19 +183,6 @@ void Game::PushEvent(Event event)
     }
 }
 
-void Game::PlayerBig(Player *player)
-{
-    _playerBig = player;
-    if (_playerBig)
-    {
-        gpSceneSetEnabled(false);
-    }
-    else
-    {
-        gpSceneSetEnabled(true);
-    }
-}
-
 void Game::RestartLevel()
 {
     // _tweens.clear();
@@ -214,8 +190,6 @@ void Game::RestartLevel()
         return;
     _shouldChangeLevel = false;
     _shouldRestart = false;
-    _playerDying = nullptr;
-    _playerBig = nullptr;
     if (_loadedLevel)
     {
         _loadedLevel->ClearObjects();
@@ -228,6 +202,8 @@ void Game::LoadLevel(std::string level)
 {
     // Cleanup
     _tweens.clear();
+    _paused = false;
+    _pauseUpdateObjects.clear();
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
@@ -249,9 +225,10 @@ void Game::LoadLevel(std::string level)
     _camera->Restart();
     Helpers::AddMarioUiToLevel(_loadedLevel.get());
     LoadGameObjects();
-    // _loadedLevel->GetTiledLevel().RestartLevel();
     Content::LoadAllContent();
     bgm->Play(-1, volume);
+    auto eventArgs = Event{this, this, (int)EventTypes::LevelStart};
+    PushEvent(eventArgs);
 }
 
 void Game::LoadGameObjects()
@@ -272,23 +249,9 @@ void Game::InitializePhysics()
     geSetCurrentScene(_scene);
 }
 
-void Game::PlayerBigEvent(Event &event)
-{
-    auto player = static_cast<Player *>(event.eventArgs);
-    PlayerBig(player);
-}
-
-void Game::PlayerDieEvent(Event &event)
-{
-    auto player = static_cast<Player *>(event.eventArgs);
-    PlayerDie(player);
-}
-
 void Game::ChangeLevel()
 {
     _shouldRestart = false;
-    _playerDying = nullptr;
-    _playerBig = nullptr;
     if (_loadedLevel)
     {
         _loadedLevel->ClearObjects();

@@ -551,8 +551,11 @@ void Player::FlagOverlapFunc(void *instance, void *body, void *overlapBody, gpOv
 
 void Player::Die()
 {
-    auto bigEvent = Event{this, this, (int)EventTypes::PlayerDie};
-    GetGame().PushEvent(bigEvent);
+    // TODO Nothing is probably using this die event
+    auto dieEvent = Event{this, this, (int)EventTypes::PlayerDie};
+    GetGame().PushEvent(dieEvent);
+    // GetGame().AddPauseUpdateObject(this);
+    // GetGame().PauseGame(true);
     dieBgm->Play(0);
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);
@@ -629,15 +632,11 @@ void Player::FireflowerOverlapFunc(void *instance, void *body, void *overlapBody
     Fireflower *flower = (Fireflower *)((gpBody *)overlapBody)->funcArgs;
     if (!flower->IsEnabled())
         return;
-    if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
-    {
-        player->PowerChangeStart(true);
-    }
-    else
+    if (player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
     {
         player->SetFlag(player->_playerFlags, Player::PlayerFlags::IsSuper, true);
-        player->SuperPowerupTick();
     }
+    player->PowerChangeStart(true);
     flower->TakeDamage();
 }
 
@@ -674,8 +673,9 @@ void Player::PowerChangeStart(bool isGettingBig)
         SetFlag(_playerFlags, PlayerFlags::IsBig, isGettingBig);
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
-        auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
+        auto bigEvent = Event{this, this, (int)EventTypes::PlayerPowerup};
         GetGame().PushEvent(bigEvent);
+        _rigidbodyComponent->Enabled(false);
         _isTurningBig = true;
     }
 }
@@ -686,8 +686,7 @@ void Player::PowerupTick()
     if (_currentBigIterations > _bigIterations)
     {
         _isTurningBig = false;
-        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerBig};
-        GetGame().PushEvent(bigEvent);
+        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerPowerupComplete};
         if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
         {
             // Move marios current location up by 16 pixes cause he is getting big
@@ -709,6 +708,8 @@ void Player::PowerupTick()
             _boxColliderComponent->BoundingBox().h -= 16;
             _animationComponent->Offset(Point{0, -20});
         }
+        GetGame().PushEvent(bigEvent);
+        _rigidbodyComponent->Enabled(true);
     }
     // Regular loop
     else
@@ -747,21 +748,14 @@ void Player::PowerupTick()
 }
 void Player::SuperPowerupTick()
 {
-    if (!_isTurningBig)
-    {
-        _isTurningBig = true;
-        _currentBigIterations = 0;
-        _currentBigIterationTime = 0;
-        auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
-        GetGame().PushEvent(bigEvent);
-    }
 
     // End
     if (_currentBigIterations > _bigIterations)
     {
         _isTurningBig = false;
-        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerBig};
+        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerPowerupComplete};
         GetGame().PushEvent(bigEvent);
+        _rigidbodyComponent->Enabled(true);
     }
     // Regular loop
     else

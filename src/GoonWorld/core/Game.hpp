@@ -49,6 +49,9 @@ namespace GoonWorld
         inline void AddEventObserver(int event, Observer *observer) { _observers[event].push_back(observer); }
         inline AppSettings &GetAppSettings() { return *_gameSettings; }
         inline TimeSpan DeltaTime() { return _deltaTime; }
+        inline void AddPauseUpdateObject(IUpdate *obj) { _pauseUpdateObjects.push_back(obj); }
+        inline void RemovePauseUpdateObject(IUpdate *obj) { _pauseUpdateObjects.erase(std::remove(_pauseUpdateObjects.begin(), _pauseUpdateObjects.end(), obj), _pauseUpdateObjects.end()); }
+        inline void PauseGame(bool isPaused) { _paused = isPaused; }
         Level &GetCurrentLevel();
         void ChangeToTiledLevel(std::string &levelName);
         void RemoveObserver(Observer *observer);
@@ -56,19 +59,17 @@ namespace GoonWorld
         void LoadLevel(std::string levelName);
 
     private:
-        inline void PlayerDie(Player *player) { _playerDying = player; }
-        void PlayerBig(Player *player);
         std::vector<std::unique_ptr<ITween>> _tweens;
+
+        // Paused Stuff
+        bool _paused;
+        std::vector<IUpdate *> _pauseUpdateObjects;
+
         void InitializeLogoLevel();
-        void PlayerBigEvent(Event &event);
-        void PlayerDieEvent(Event &event);
         void LoadGameObjects();
         void InitializePhysics();
         void RestartLevel();
         void ChangeLevel();
-        Panel* CreateMarioLevelUi();
-        Player *_playerDying;
-        Player *_playerBig;
         bool _shouldRestart = false;
         bool _shouldChangeLevel = false;
         gpScene *_scene;
@@ -79,8 +80,6 @@ namespace GoonWorld
         std::unique_ptr<Level> _loadedLevel;
         std::unique_ptr<Sound> _sound;
         std::unique_ptr<Camera> _camera;
-        std::unique_ptr<Observer> _playerBigObserver;
-        std::unique_ptr<Observer> _playerDieObserver;
         std::unique_ptr<AppSettings> _gameSettings;
 
         GameStates _currentState = GameStates::Default;

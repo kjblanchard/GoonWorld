@@ -10,6 +10,7 @@
 #include <GoonWorld/gameobjects/Player.hpp>
 #include <GoonWorld/core/Sound.hpp>
 #include <GoonWorld/content/Sfx.hpp>
+#include <GoonWorld/platformer/Helpers.hpp>
 using namespace GoonWorld;
 
 const char *deadSound = "death";
@@ -22,13 +23,11 @@ Goomba::Goomba(TiledMap::TiledObject &object)
     auto bodyRect = geRectangle{object.X, object.Y, object.Width, object.Height};
     bodyRect.h -= 4;
     _rigidbodyComponent = new RigidbodyComponent(&bodyRect, Point{0, 2});
-    // _rigidbodyComponent = new RigidbodyComponent(&bodyRect);
     _rigidbodyComponent->SetBodyType(2);
     _animationComponent = new AnimationComponent("goomba");
     _rigidbodyComponent->AddOverlapFunction((int)BodyTypes::Static, &StaticBodyOverlapFunc);
     deadSfx = Sfx::SfxFactory(deadSound);
     AddComponent({_rigidbodyComponent, _animationComponent});
-    // _rigidbodyComponent->SetDebug(true);
     _animationComponent->AddTransition("walk", "dead", true, &_isDead);
 }
 void Goomba::TakeDamage()
@@ -42,6 +41,16 @@ void Goomba::TakeDamage()
 
 void Goomba::Update()
 {
+    if (!Helpers::ShouldEnemyUpdate())
+    {
+        _rigidbodyComponent->Enabled(false);
+        return;
+    }
+    else
+    {
+        _rigidbodyComponent->Enabled(true);
+    }
+
     if (_isDead)
     {
         if (_currentDeadTime < _deadTimer)
