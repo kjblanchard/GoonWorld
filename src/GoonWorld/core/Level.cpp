@@ -1,10 +1,13 @@
+#include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/tiled/TiledLevel.hpp>
 #include <GoonWorld/interfaces/IEnable.hpp>
 #include <GoonWorld/ui/Panel.hpp>
+#include <GoonWorld/base/GameObject.hpp>
+#include <GoonEngine/debug.h>
+
 using namespace GoonWorld;
 Level::Level()
-    // : _tiledLevel(nullptr), _drawObjects(4), _uiDrawObjects(4)
     : _tiledLevel(nullptr), _drawObjects(4)
 {
 }
@@ -17,7 +20,16 @@ Level::Level(const char *tiledFilename)
 Level::~Level()
 {
     ClearObjects();
+    _uiPanels.clear();
     _drawObjects.clear();
+}
+
+void Level::RestartLevel()
+{
+    if (_tiledLevel)
+    {
+        _tiledLevel->RestartLevel();
+    }
 }
 
 void Level::ClearObjects()
@@ -27,22 +39,19 @@ void Level::ClearObjects()
     {
         layer.clear();
     }
-    // for (auto &ui : _uiPanels)
-    // {
-    //     delete (ui);
-    // }
     _uiPanels.clear();
-    // _uiDrawObjects.clear();
 }
 
 void Level::InitializeTiledMap(const char *tiledFilename)
 {
     _tiledLevel = std::make_unique<TiledLevel>(tiledFilename);
 }
+
 void Level::AddUiPanel(Panel *update) { _uiPanels.push_back(std::unique_ptr<Panel>(update)); }
 
 void Level::Update()
 {
+    GameObject::UpdateTimers();
     for (auto &object : _updateObjects)
     {
         auto updateEnable = dynamic_cast<IEnable *>(object);
@@ -107,8 +116,3 @@ void Level::AddDrawObject(IDraw *draw)
 {
     _drawObjects[draw->DrawLayer()].push_back(draw);
 }
-
-// void Level::AddUiDrawObject(IDraw *draw)
-// {
-//     _uiDrawObjects[draw->DrawLayer()].push_back(draw);
-// }

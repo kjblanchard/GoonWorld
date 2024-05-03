@@ -18,6 +18,7 @@ namespace GoonWorld
         inline TiledLevel &GetTiledLevel() { return *_tiledLevel.get(); }
         inline int DrawLayer() override { return 0; }
         inline void AddUpdateObject(IUpdate *update) { _updateObjects.push_back(update); }
+        void RestartLevel();
         void InitializeTiledMap(const char *tiledFilename);
         void Update() override;
         void Draw() override;
@@ -31,8 +32,8 @@ namespace GoonWorld
     private:
         std::unique_ptr<TiledLevel> _tiledLevel;
         std::vector<std::unique_ptr<Panel>> _uiPanels;
-
         std::vector<IUpdate *> _updateObjects;
         std::vector<std::vector<IDraw *>> _drawObjects;
+        long long _levelStartTicks;
     };
 }

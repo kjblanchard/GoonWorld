@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
-#include <GoonWorld/interfaces/IDraw.hpp>
-#include <GoonWorld/interfaces/IUpdate.hpp>
+// #include <GoonWorld/interfaces/IDraw.hpp>
+// #include <GoonWorld/interfaces/IUpdate.hpp>
+#include <GoonWorld/base/UiObject.hpp>
 
 namespace GoonWorld
 {
     class Text;
-    class LevelTimer : public IDraw, public IUpdate
+    class LevelTimer : public UiObject
     {
     public:
         LevelTimer();

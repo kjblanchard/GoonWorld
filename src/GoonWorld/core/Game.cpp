@@ -33,6 +33,9 @@
 // Image test
 #include <GoonWorld/ui/LogoPanel.hpp>
 #include <GoonWorld/platformer/Helpers.hpp>
+#include <GoonWorld/ui/BoxUi.hpp>
+#include <GoonWorld/content/Text.hpp>
+#include <GoonWorld/content/Image.hpp>
 
 using namespace GoonWorld;
 
@@ -40,7 +43,6 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    // : _playerDying(nullptr), _playerBig(nullptr), _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
     : _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
@@ -66,16 +68,38 @@ Game::Game()
     }
     else
     {
-        ChangeToTiledLevel(_gameSettings->DebugConfig.InitialLevel);
+        // ChangeToTiledLevel(_gameSettings->DebugConfig.InitialLevel);
+        InitializeLoadingLevel();
     }
     Content::LoadAllContent();
 }
+
 void Game::InitializeLogoLevel()
 {
     _loadedLevel = std::make_unique<Level>();
     auto logoPanel = new LogoPanel();
     _loadedLevel->AddUiPanel(logoPanel);
     _currentState = GameStates::Logos;
+}
+
+void Game::InitializeLoadingLevel()
+{
+    _loadingLevel = std::make_unique<Level>();
+    auto loadingPanel = new Panel();
+    auto box = new BoxUi(geRectangle{0, 0, 512, 288});
+    auto text = Text::TextFactory("World 1 - 1", Point{64, 20});
+    auto texHeight = text->Height();
+    auto mario = Image::ImageFactory("mario", geRectangle{64 + 20, texHeight + 5 + 40, 16, 40});
+    auto livesLocation = Point{mario->Location().x + mario->Size().x + 20, mario->Location().y + 16 };
+    auto livesText = Text::TextFactory("x 99", livesLocation);
+    mario->SetSrcRect(geRectangle{0, 0, 16, 40});
+    loadingPanel->AddUIDrawObject(box);
+    loadingPanel->AddText(text);
+    loadingPanel->AddImage(mario);
+    loadingPanel->AddText(livesText);
+
+    _loadingLevel->AddUiPanel(loadingPanel);
+    _currentState = GameStates::Loading;
 }
 
 Game::~Game()
@@ -86,7 +110,8 @@ Game::~Game()
     GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     GameSpawnMap.clear();
-    Content::ClearContent();
+    // TODO this should be ran here, however there is issues with deletion order due to Images/Text in UI and unique ptrs in panel
+    // Content::ClearContent();
 }
 
 void Game::Update(double timeMs)
@@ -118,18 +143,43 @@ void Game::Update(double timeMs)
         return;
     }
 
-    GameObject::UpdateTimers();
-    if (_loadedLevel)
+    switch (_currentState)
     {
-        _loadedLevel->Update();
+    case GameStates::Loading:
+        _loadingLevel->Update();
+        break;
+
+    case GameStates::Level:
+        if (_loadedLevel)
+        {
+            _loadedLevel->Update();
+        }
+        break;
+
+    case GameStates::Logos:
+    default:
+        break;
     }
 }
 
 void Game::Draw()
 {
-    if (_loadedLevel)
+    switch (_currentState)
     {
-        _loadedLevel->Draw();
+    case GameStates::Loading:
+        _loadingLevel->Draw();
+        break;
+
+    case GameStates::Level:
+        if (_loadedLevel)
+        {
+            _loadedLevel->Draw();
+        }
+        break;
+
+    case GameStates::Logos:
+    default:
+        break;
     }
 
     if (_gameSettings->DebugConfig.SolidDebug)
@@ -185,17 +235,12 @@ void Game::PushEvent(Event event)
 
 void Game::RestartLevel()
 {
-    // _tweens.clear();
     if (!_loadedLevel)
         return;
     _shouldChangeLevel = false;
     _shouldRestart = false;
-    if (_loadedLevel)
-    {
-        _loadedLevel->ClearObjects();
-    }
+    _loadedLevel->ClearObjects();
     LoadLevel(_loadedLevel->GetTiledLevel().GetName());
-    _loadedLevel->GetTiledLevel().RestartLevel();
 }
 
 void Game::LoadLevel(std::string level)
@@ -214,16 +259,16 @@ void Game::LoadLevel(std::string level)
         _loadedLevel = std::make_unique<Level>(level.c_str());
         _shouldChangeLevel = false;
     }
+    Helpers::AddMarioUiToLevel(_loadedLevel.get());
     auto gravity = _loadedLevel->GetTiledLevel().GetGravity();
     gpSceneSetGravity(_scene, gravity.y);
     gpSceneSetFriction(_scene, gravity.x);
-    _loadedLevel->GetTiledLevel().SetTextureAtlas();
+    _loadedLevel->RestartLevel();
     _camera->SetLevelSize(_loadedLevel->GetTiledLevel().GetSize());
     geSetCameraRect(_camera->Bounds());
     auto [bgmName, bgmStart, bgmEnd, volume] = _loadedLevel->GetTiledLevel().GetBgmData();
     auto bgm = Bgm::BgmFactory(bgmName, bgmStart, bgmEnd);
     _camera->Restart();
-    Helpers::AddMarioUiToLevel(_loadedLevel.get());
     LoadGameObjects();
     Content::LoadAllContent();
     bgm->Play(-1, volume);
@@ -241,6 +286,7 @@ void Game::LoadGameObjects()
         (*iter).second(object);
     }
 }
+
 void Game::InitializePhysics()
 {
     if (_scene)
@@ -268,7 +314,7 @@ Level &Game::GetCurrentLevel()
 {
     if (!_loadedLevel)
     {
-        LogError("Getting a level when there isn't a loaded level will result in crash!");
+        LogCritical("Getting a level when there isn't a loaded level will result in crash!");
     }
     return *_loadedLevel;
 }

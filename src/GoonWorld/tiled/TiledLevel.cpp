@@ -16,7 +16,6 @@ TiledLevel::TiledLevel(const char *filename)
     _name = filename;
     LoadGravity();
     LoadSurfaces();
-    LoadSolidObjects();
     LoadBgm();
     CreateBackgroundAtlas();
 }
@@ -28,11 +27,6 @@ std::vector<TiledMap::TiledObject> TiledLevel::GetAllObjects()
 TiledLevel::~TiledLevel()
 {
     geDestroyTexture(_loadedAtlas);
-}
-
-void TiledLevel::SetTextureAtlas()
-{
-    geSetBackgroundAtlas(_loadedAtlas);
 }
 
 void TiledLevel::LoadSurfaces()
@@ -175,4 +169,5 @@ std::string TiledLevel::GetNextLevel()
 void TiledLevel::RestartLevel()
 {
     LoadSolidObjects();
+    geSetBackgroundAtlas(_loadedAtlas);
 }

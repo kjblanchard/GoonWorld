@@ -65,6 +65,7 @@ namespace GoonWorld
         bool _paused;
         std::vector<IUpdate *> _pauseUpdateObjects;
 
+        void InitializeLoadingLevel();
         void InitializeLogoLevel();
         void LoadGameObjects();
         void InitializePhysics();

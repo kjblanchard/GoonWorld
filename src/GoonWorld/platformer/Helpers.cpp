@@ -3,6 +3,7 @@
 #include <GoonWorld/ui/Panel.hpp>
 #include <GoonWorld/ui/CoinsCollected.hpp>
 #include <GoonWorld/ui/LevelTimer.hpp>
+#include <GoonWorld/ui/BoxUi.hpp>
 #include <GoonWorld/core/Level.hpp>
 #include <GoonPhysics/scene.h>
 #include <GoonWorld/events/EventTypes.hpp>
@@ -20,7 +21,7 @@ Observer *Helpers::_playerBigObserver = new Observer((int)EventTypes::PlayerPowe
 Observer *Helpers::_loadLevelObserver = new Observer((int)EventTypes::LevelStart, [](Event &event)
                                                      { Helpers::HandleEvent(event); });
 Observer *Helpers::_playerPowerupCompleteObserver = new Observer((int)EventTypes::PlayerPowerupComplete, [](Event &event)
-                                                     { Helpers::HandleEvent(event); });
+                                                                 { Helpers::HandleEvent(event); });
 
 void Helpers::AddMarioEventObserverFunctions()
 {
@@ -52,8 +53,9 @@ void Helpers::AddMarioUiToLevel(Level *level)
     auto panel = new Panel();
     auto coin = new CoinsCollectedUI();
     auto timer = new LevelTimer();
-    panel->AddUIUpdateObject(timer);
+    // auto box = new BoxUi(geRectangle{0, 0, 64, 64});
     panel->AddUIDrawObject(timer);
     panel->AddUIDrawObject(coin);
+    // panel->AddUIDrawObject(box);
     level->AddUiPanel(panel);
 }

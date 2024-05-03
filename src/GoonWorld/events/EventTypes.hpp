@@ -3,6 +3,7 @@ enum class EventTypes
 {
     None,
     LevelStart,
+    LevelEnd,
     PlayerPowerup,
     PlayerPowerupComplete,
     PlayerDie,
