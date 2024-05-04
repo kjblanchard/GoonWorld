@@ -43,7 +43,7 @@ Game *Game::_gameInstance = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _scene(nullptr), _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
 {
     if (_gameInstance)
     {
@@ -58,6 +58,7 @@ Game::Game()
     _sound = std::make_unique<Sound>(_gameSettings->SoundConfigs);
     _camera = std::make_unique<Camera>(geRectangle{0, 0, _gameSettings->WindowConfig.WorldSize.x, _gameSettings->WindowConfig.WorldSize.y});
     _gameInstance = this;
+    InitializeLoadingLevel();
 
     // Platformer observers and event functions
     Helpers::AddMarioEventObserverFunctions();
@@ -69,7 +70,6 @@ Game::Game()
     else
     {
         // ChangeToTiledLevel(_gameSettings->DebugConfig.InitialLevel);
-        InitializeLoadingLevel();
     }
     Content::LoadAllContent();
 }
@@ -90,7 +90,7 @@ void Game::InitializeLoadingLevel()
     auto text = Text::TextFactory("World 1 - 1", Point{64, 20});
     auto texHeight = text->Height();
     auto mario = Image::ImageFactory("mario", geRectangle{64 + 20, texHeight + 5 + 40, 16, 40});
-    auto livesLocation = Point{mario->Location().x + mario->Size().x + 20, mario->Location().y + 16 };
+    auto livesLocation = Point{mario->Location().x + mario->Size().x + 20, mario->Location().y + 16};
     auto livesText = Text::TextFactory("x 99", livesLocation);
     mario->SetSrcRect(geRectangle{0, 0, 16, 40});
     loadingPanel->AddUIDrawObject(box);
@@ -99,7 +99,8 @@ void Game::InitializeLoadingLevel()
     loadingPanel->AddText(livesText);
 
     _loadingLevel->AddUiPanel(loadingPanel);
-    _currentState = GameStates::Loading;
+    // _shouldChangeLevel = true;
+    // LoadLevel(_gameSettings->DebugConfig.InitialLevel);
 }
 
 Game::~Game()
@@ -143,10 +144,28 @@ void Game::Update(double timeMs)
         return;
     }
 
+    // TODo this should be done differently.
+    if (_switchNextFrame)
+    {
+        _currentState = GameStates::Level;
+        _switchNextFrame = _startedLoading = false;
+        _loadedLevel->Start();
+    }
+
     switch (_currentState)
     {
     case GameStates::Loading:
+        if (!_startedLoading)
+        {
+            LoadLevel(_nextLevel);
+            _startedLoading = true;
+        }
+        _currentLoadingTime += totalSeconds;
         _loadingLevel->Update();
+        if (_currentLoadingTime > _maxLoadingTime)
+        {
+            _switchNextFrame = true;
+        }
         break;
 
     case GameStates::Level:
@@ -157,6 +176,7 @@ void Game::Update(double timeMs)
         break;
 
     case GameStates::Logos:
+        _loadedLevel->Update();
     default:
         break;
     }
@@ -178,6 +198,7 @@ void Game::Draw()
         break;
 
     case GameStates::Logos:
+        _loadedLevel->Draw();
     default:
         break;
     }
@@ -191,13 +212,6 @@ void Game::Draw()
             geDrawDebugRect(&box, &color);
         }
     }
-}
-
-void Game::ChangeToTiledLevel(std::string &levelName)
-{
-    _currentState = GameStates::Level;
-    _shouldChangeLevel = true;
-    LoadLevel(levelName);
 }
 
 void Game::RemoveObserver(Observer *observer)
@@ -233,80 +247,77 @@ void Game::PushEvent(Event event)
     }
 }
 
+// This should restart a tiled level, AND NO LOADING SCREEN
+
 void Game::RestartLevel()
 {
     if (!_loadedLevel)
         return;
     _shouldChangeLevel = false;
     _shouldRestart = false;
-    _loadedLevel->ClearObjects();
-    LoadLevel(_loadedLevel->GetTiledLevel().GetName());
+    // _loadedLevel->ClearObjects();
+    // LoadLevel(_loadedLevel->GetTiledLevel().GetName());
+    LoadLevel(_nextLevel);
+    _loadedLevel->Start();
 }
 
+// Loads and starts a tiled level, this is called from the logo panel, and should just set the next level and change to loading screen
+void Game::ChangeToTiledLevel(std::string &levelName)
+{
+    _currentState = GameStates::Loading;
+    _shouldChangeLevel = true;
+    _nextLevel = levelName;
+}
+
+// Loads a level, does not start.
 void Game::LoadLevel(std::string level)
 {
+    // _currentState = GameStates::Loading;
     // Cleanup
     _tweens.clear();
     _paused = false;
     _pauseUpdateObjects.clear();
-    GameObject::ClearGameObjects();
+    // GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
     // Initialize
-    InitializePhysics();
     if (_shouldChangeLevel)
     {
         _loadedLevel = std::make_unique<Level>(level.c_str());
         _shouldChangeLevel = false;
     }
-    Helpers::AddMarioUiToLevel(_loadedLevel.get());
-    auto gravity = _loadedLevel->GetTiledLevel().GetGravity();
-    gpSceneSetGravity(_scene, gravity.y);
-    gpSceneSetFriction(_scene, gravity.x);
+    // _loadedLevel->InitializePhysics();
     _loadedLevel->RestartLevel();
+    Helpers::AddMarioUiToLevel(_loadedLevel.get());
     _camera->SetLevelSize(_loadedLevel->GetTiledLevel().GetSize());
     geSetCameraRect(_camera->Bounds());
-    auto [bgmName, bgmStart, bgmEnd, volume] = _loadedLevel->GetTiledLevel().GetBgmData();
-    auto bgm = Bgm::BgmFactory(bgmName, bgmStart, bgmEnd);
     _camera->Restart();
-    LoadGameObjects();
+    // _loadedLevel->LoadTiledGameObjects();
+    _loadedLevel->Load();
     Content::LoadAllContent();
-    bgm->Play(-1, volume);
     auto eventArgs = Event{this, this, (int)EventTypes::LevelStart};
     PushEvent(eventArgs);
+    // _loadedLevel->Start();
 }
 
-void Game::LoadGameObjects()
-{
-    for (auto &object : _loadedLevel->GetTiledLevel().GetAllObjects())
-    {
-        auto iter = GameSpawnMap.find(object.ObjectType);
-        if (iter == GameSpawnMap.end())
-            continue;
-        (*iter).second(object);
-    }
-}
-
-void Game::InitializePhysics()
-{
-    if (_scene)
-        gpSceneFree(_scene);
-    _scene = gpInitScene();
-    geSetCurrentScene(_scene);
-}
-
+// Happens during a frame update, loads and starts the next level, called at end of game level
 void Game::ChangeLevel()
 {
     _shouldRestart = false;
-    if (_loadedLevel)
-    {
-        _loadedLevel->ClearObjects();
-    }
-    GameObject::ClearGameObjects();
-    RigidbodyComponent::ResetRigidBodyVector();
-    BoxColliderComponent::ResetBoxColliders();
-    auto nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
-    LoadLevel(nextLevel);
+    // if(_currentState)
+    _currentState = GameStates::Loading;
+
+    // if (_loadedLevel)
+    // {
+    //     _loadedLevel->ClearObjects();
+    // }
+    // GameObject::ClearGameObjects();
+    // RigidbodyComponent::ResetRigidBodyVector();
+    // BoxColliderComponent::ResetBoxColliders();
+
+    // auto nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
+    // LoadLevel(_nextLevel);
+
     _shouldChangeLevel = false;
 }
 

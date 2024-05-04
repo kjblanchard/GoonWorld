@@ -18,7 +18,7 @@ namespace GoonWorld
         UiObject();
         virtual ~UiObject();
         virtual void Enabled(bool isEnabled) override;
-        inline virtual void Start() const override {}
+        inline virtual void Start() override {}
         inline virtual void Update() override {}
         inline bool IsEnabled() const override { return _enabled; }
         inline virtual void OnEnabled() override {}

@@ -90,3 +90,20 @@ ILoadContent *Content::GetContent(std::string &name)
         return iter->second;
     return nullptr;
 }
+
+void Content::RemoveContent(std::string &name)
+{
+    auto it = _loadedContents.find(name);
+
+    // If the element is found, erase it
+    if (it != _loadedContents.end())
+    {
+        _loadedContents.erase(it);
+    }
+}
+
+void Content::RemoveContent(ILoadContent *content)
+{
+    auto name = content->GetContentName();
+    RemoveContent(name);
+}

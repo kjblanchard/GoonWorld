@@ -19,6 +19,7 @@ Image::Image(std::string &name, geRectangle dstRect)
 
 Image::~Image()
 {
+    Unload();
 }
 
 void Image::Load()
@@ -28,6 +29,7 @@ void Image::Load()
 
 void Image::Unload()
 {
+    Content::RemoveContent(this);
 }
 
 void Image::Draw()

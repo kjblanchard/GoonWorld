@@ -67,13 +67,12 @@ namespace GoonWorld
 
         void InitializeLoadingLevel();
         void InitializeLogoLevel();
-        void LoadGameObjects();
-        void InitializePhysics();
+        // void LoadGameObjects();
+        // void InitializePhysics();
         void RestartLevel();
         void ChangeLevel();
         bool _shouldRestart = false;
         bool _shouldChangeLevel = false;
-        gpScene *_scene;
         static Game *_gameInstance;
         long long _ticks = 0;
         std::unordered_map<int, std::vector<Observer *>> _observers;
@@ -82,6 +81,12 @@ namespace GoonWorld
         std::unique_ptr<Sound> _sound;
         std::unique_ptr<Camera> _camera;
         std::unique_ptr<AppSettings> _gameSettings;
+
+        float _currentLoadingTime = 0;
+        const float _maxLoadingTime = 2.0;
+        bool _switchNextFrame = false;
+        bool _startedLoading = false;
+        std::string _nextLevel;
 
         GameStates _currentState = GameStates::Default;
         TimeSpan _deltaTime;
