@@ -147,6 +147,7 @@ void Game::Update(double timeMs)
     // TODo this should be done differently.
     if (_switchNextFrame)
     {
+        _currentLoadingTime = 0;
         _currentState = GameStates::Level;
         _switchNextFrame = _startedLoading = false;
         _loadedLevel->Start();
@@ -257,8 +258,10 @@ void Game::RestartLevel()
     _shouldRestart = false;
     // _loadedLevel->ClearObjects();
     // LoadLevel(_loadedLevel->GetTiledLevel().GetName());
-    LoadLevel(_nextLevel);
-    _loadedLevel->Start();
+
+    _currentState = GameStates::Loading;
+    // LoadLevel(_nextLevel);
+    // _loadedLevel->Start();
 }
 
 // Loads and starts a tiled level, this is called from the logo panel, and should just set the next level and change to loading screen
@@ -304,19 +307,11 @@ void Game::LoadLevel(std::string level)
 void Game::ChangeLevel()
 {
     _shouldRestart = false;
-    // if(_currentState)
     _currentState = GameStates::Loading;
 
-    // if (_loadedLevel)
-    // {
-    //     _loadedLevel->ClearObjects();
-    // }
-    // GameObject::ClearGameObjects();
-    // RigidbodyComponent::ResetRigidBodyVector();
-    // BoxColliderComponent::ResetBoxColliders();
-
-    // auto nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
-    // LoadLevel(_nextLevel);
+    // If this is being called by mario, load the next level.
+    _nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
+    LoadLevel(_nextLevel);
 
     _shouldChangeLevel = false;
 }
