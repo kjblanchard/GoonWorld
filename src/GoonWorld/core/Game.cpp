@@ -40,6 +40,7 @@
 using namespace GoonWorld;
 
 Game *Game::_gameInstance = nullptr;
+Bgm *_loadingBgm = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
@@ -63,6 +64,7 @@ Game::Game()
     // Platformer observers and event functions
     Helpers::AddMarioEventObserverFunctions();
 
+    // _nextLevel = _gameSettings->DebugConfig.InitialLevel;
     if (!_gameSettings->MiscConfig.SkipLogos)
     {
         InitializeLogoLevel();
@@ -70,6 +72,10 @@ Game::Game()
     else
     {
         // ChangeToTiledLevel(_gameSettings->DebugConfig.InitialLevel);
+        auto levelName = _gameSettings->DebugConfig.InitialLevel;
+        _currentState = GameStates::Loading;
+        _shouldChangeLevel = true;
+        _nextLevel = levelName;
     }
     Content::LoadAllContent();
 }
@@ -97,10 +103,8 @@ void Game::InitializeLoadingLevel()
     loadingPanel->AddText(text);
     loadingPanel->AddImage(mario);
     loadingPanel->AddText(livesText);
-
+    _loadingBgm = Bgm::BgmFactory("loading");
     _loadingLevel->AddUiPanel(loadingPanel);
-    // _shouldChangeLevel = true;
-    // LoadLevel(_gameSettings->DebugConfig.InitialLevel);
 }
 
 Game::~Game()
@@ -113,6 +117,11 @@ Game::~Game()
     GameSpawnMap.clear();
     // TODO this should be ran here, however there is issues with deletion order due to Images/Text in UI and unique ptrs in panel
     // Content::ClearContent();
+}
+
+void Game::SetNextTiledLevelIfLevel()
+{
+    _nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
 }
 
 void Game::Update(double timeMs)
@@ -256,12 +265,8 @@ void Game::RestartLevel()
         return;
     _shouldChangeLevel = false;
     _shouldRestart = false;
-    // _loadedLevel->ClearObjects();
-    // LoadLevel(_loadedLevel->GetTiledLevel().GetName());
-
     _currentState = GameStates::Loading;
-    // LoadLevel(_nextLevel);
-    // _loadedLevel->Start();
+    _loadingBgm->Play();
 }
 
 // Loads and starts a tiled level, this is called from the logo panel, and should just set the next level and change to loading screen
@@ -275,12 +280,10 @@ void Game::ChangeToTiledLevel(std::string &levelName)
 // Loads a level, does not start.
 void Game::LoadLevel(std::string level)
 {
-    // _currentState = GameStates::Loading;
     // Cleanup
     _tweens.clear();
     _paused = false;
     _pauseUpdateObjects.clear();
-    // GameObject::ClearGameObjects();
     RigidbodyComponent::ResetRigidBodyVector();
     BoxColliderComponent::ResetBoxColliders();
     // Initialize
@@ -289,18 +292,15 @@ void Game::LoadLevel(std::string level)
         _loadedLevel = std::make_unique<Level>(level.c_str());
         _shouldChangeLevel = false;
     }
-    // _loadedLevel->InitializePhysics();
     _loadedLevel->RestartLevel();
     Helpers::AddMarioUiToLevel(_loadedLevel.get());
     _camera->SetLevelSize(_loadedLevel->GetTiledLevel().GetSize());
     geSetCameraRect(_camera->Bounds());
     _camera->Restart();
-    // _loadedLevel->LoadTiledGameObjects();
     _loadedLevel->Load();
     Content::LoadAllContent();
     auto eventArgs = Event{this, this, (int)EventTypes::LevelStart};
     PushEvent(eventArgs);
-    // _loadedLevel->Start();
 }
 
 // Happens during a frame update, loads and starts the next level, called at end of game level
@@ -308,12 +308,9 @@ void Game::ChangeLevel()
 {
     _shouldRestart = false;
     _currentState = GameStates::Loading;
-
-    // If this is being called by mario, load the next level.
-    _nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel();
     LoadLevel(_nextLevel);
-
     _shouldChangeLevel = false;
+    _loadingBgm->Play();
 }
 
 Level &Game::GetCurrentLevel()

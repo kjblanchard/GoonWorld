@@ -62,7 +62,8 @@ void Level::Unload()
 
 void Level::RestartLevel()
 {
-    if (_tiledLevel)
+    auto thing = _tiledLevel.get();
+    if (thing)
     {
         InitializePhysics();
         auto gravity = _tiledLevel->GetGravity();
@@ -156,6 +157,7 @@ void Level::Visible(bool isVisible)
 }
 bool Level::IsVisible()
 {
+    return true;
 }
 void Level::ChangeDrawObjectLayer(IDraw *draw, int newLayer)
 {

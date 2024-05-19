@@ -15,7 +15,7 @@ namespace GoonWorld
     private:
         static void HandleEvent(Event &event);
         static bool _shouldEnemyUpdate;
-        static Observer *_playerWinObserver, *_playerDieObserver, *_playerBigObserver, *_loadLevelObserver, *_playerPowerupCompleteObserver;
+        static Observer *_playerWinObserver, *_playerDieObserver, *_playerBigObserver, *_loadLevelObserver, *_levelEndObserver, *_playerPowerupCompleteObserver;
     };
 
 }

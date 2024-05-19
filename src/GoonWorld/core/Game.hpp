@@ -52,6 +52,8 @@ namespace GoonWorld
         inline void AddPauseUpdateObject(IUpdate *obj) { _pauseUpdateObjects.push_back(obj); }
         inline void RemovePauseUpdateObject(IUpdate *obj) { _pauseUpdateObjects.erase(std::remove(_pauseUpdateObjects.begin(), _pauseUpdateObjects.end(), obj), _pauseUpdateObjects.end()); }
         inline void PauseGame(bool isPaused) { _paused = isPaused; }
+        // inline void SetNextTiledLevelIfLevel() { _nextLevel = _loadedLevel->GetTiledLevel().GetNextLevel(); }
+        void SetNextTiledLevelIfLevel();
         Level &GetCurrentLevel();
         void ChangeToTiledLevel(std::string &levelName);
         void RemoveObserver(Observer *observer);
@@ -83,7 +85,7 @@ namespace GoonWorld
         std::unique_ptr<AppSettings> _gameSettings;
 
         float _currentLoadingTime = 0;
-        const float _maxLoadingTime = 2.0;
+        const float _maxLoadingTime = 3.5;
         bool _switchNextFrame = false;
         bool _startedLoading = false;
         std::string _nextLevel;

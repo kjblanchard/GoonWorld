@@ -20,6 +20,8 @@ Observer *Helpers::_playerBigObserver = new Observer((int)EventTypes::PlayerPowe
                                                      { Helpers::HandleEvent(event); });
 Observer *Helpers::_loadLevelObserver = new Observer((int)EventTypes::LevelStart, [](Event &event)
                                                      { Helpers::HandleEvent(event); });
+Observer *Helpers::_levelEndObserver = new Observer((int)EventTypes::LevelEnd, [](Event &event)
+                                                    { Helpers::HandleEvent(event); });
 Observer *Helpers::_playerPowerupCompleteObserver = new Observer((int)EventTypes::PlayerPowerupComplete, [](Event &event)
                                                                  { Helpers::HandleEvent(event); });
 
@@ -29,6 +31,7 @@ void Helpers::AddMarioEventObserverFunctions()
     Game::Instance()->AddEventObserver((int)EventTypes::PlayerDie, _playerDieObserver);
     Game::Instance()->AddEventObserver((int)EventTypes::PlayerPowerup, _playerBigObserver);
     Game::Instance()->AddEventObserver((int)EventTypes::LevelStart, _loadLevelObserver);
+    Game::Instance()->AddEventObserver((int)EventTypes::LevelEnd, _loadLevelObserver);
     Game::Instance()->AddEventObserver((int)EventTypes::PlayerPowerupComplete, _playerPowerupCompleteObserver);
 }
 void Helpers::HandleEvent(Event &event)
@@ -39,6 +42,11 @@ void Helpers::HandleEvent(Event &event)
     case (int)EventTypes::PlayerDie:
     case (int)EventTypes::PlayerWin:
         _shouldEnemyUpdate = false;
+        break;
+
+    case (int)EventTypes::LevelEnd:
+        // TODO this should be diff
+        Game::Instance()->SetNextTiledLevelIfLevel();
         break;
 
     default:

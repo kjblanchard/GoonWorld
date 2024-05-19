@@ -406,10 +406,10 @@
          "type":"class",
          "value":
             {
-             "bgmName":"chiptune",
-             "loopBegin":0,
+             "bgmName":"1-2",
+             "loopBegin":8.727,
              "loopEnd":0,
-             "volume":0.75
+             "volume":1.5
             }
         }, 
         {

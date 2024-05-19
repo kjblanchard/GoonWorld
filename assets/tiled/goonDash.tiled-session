@@ -5,10 +5,10 @@
     },
     "activeFile": "level1.tmj",
     "expandedProjectPaths": [
-        "/Users/kevin/Documents/tiled/sdl_dash/tilesets",
-        "/Users/kevin/Documents/tiled",
         "templates",
-        "."
+        ".",
+        "/Users/kevin/Documents/tiled",
+        "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -87,8 +87,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 1834.75,
-                "y": 180.5
+                "x": 1654,
+                "y": 126
             }
         },
         "level1.tmx": {
@@ -107,14 +107,14 @@
                 2
             ],
             "expandedObjectLayers": [
-                3,
-                4
+                4,
+                3
             ],
             "scale": 3,
             "selectedLayer": 5,
             "viewCenter": {
                 "x": 432,
-                "y": 144.16666666666663
+                "y": 144
             }
         },
         "scenery.tsj": {

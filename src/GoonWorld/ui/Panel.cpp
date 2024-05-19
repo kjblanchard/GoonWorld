@@ -6,7 +6,6 @@ using namespace GoonWorld;
 
 Panel::~Panel()
 {
-    LogWarn("Deleting panel");
     UiObjects.clear();
 }
 

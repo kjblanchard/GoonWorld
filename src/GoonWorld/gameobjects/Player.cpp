@@ -282,7 +282,11 @@ void Player::HandleInput()
             if (_isDead)
                 Game::Instance()->TriggerRestartLevel();
             else
+            {
                 Game::Instance()->TriggerNextLevel();
+                auto event = Event{this, this, (int)EventTypes::LevelEnd};
+                GetGame().PushEvent(event);
+            }
         }
         return;
     }
