@@ -238,6 +238,10 @@ void Player::AnimationUpdate()
     {
         _animationComponent->AnimationSpeed = std::abs(_rigidbodyComponent->Velocity().x) / 100.0f;
     }
+    else
+    {
+        _animationComponent->AnimationSpeed = 1;
+    }
     _shouldFallAnim = _isJumping || !_isOnGround;
     _shouldIdleAnim = _isOnGround && _rigidbodyComponent->Velocity().x == 0;
     _shouldRunAnim = _isOnGround && _rigidbodyComponent->Velocity().x != 0;
@@ -278,7 +282,11 @@ void Player::HandleInput()
             if (_isDead)
                 Game::Instance()->TriggerRestartLevel();
             else
+            {
                 Game::Instance()->TriggerNextLevel();
+                auto event = Event{this, this, (int)EventTypes::LevelEnd};
+                GetGame().PushEvent(event);
+            }
         }
         return;
     }
@@ -450,7 +458,7 @@ void Player::GoombaOverlapFunc(void *instance, void *body, void *overlapBody, gp
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
-    Goomba *goomba = (Goomba *)((gpBody*) overlapBody)->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody *)overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
@@ -479,7 +487,7 @@ void Player::GoombaOverlapFuncJumpBox(void *instance, void *body, void *overlapB
     auto player = (Player *)instance;
     if (player->_isDead || player->_isDying || player->IsFlagSet(player->_playerFlags, PlayerFlags::EnemyJustKilled))
         return;
-    Goomba *goomba = (Goomba *)((gpBody*) overlapBody)->funcArgs;
+    Goomba *goomba = (Goomba *)((gpBody *)overlapBody)->funcArgs;
     if (goomba->IsDead())
         return;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapDown)
@@ -537,7 +545,7 @@ void Player::WinBoxOverlap(void *instance, void *body, void *overlapBody, gpOver
 void Player::FlagOverlapFunc(void *instance, void *body, void *overlapBody, gpOverlap *overlap)
 {
     auto player = (Player *)instance;
-    auto flag = static_cast<Flag *>(static_cast<gpBody*>(overlapBody)->funcArgs);
+    auto flag = static_cast<Flag *>(static_cast<gpBody *>(overlapBody)->funcArgs);
     if (!flag)
         return;
     flag->TakeDamage();
@@ -547,8 +555,11 @@ void Player::FlagOverlapFunc(void *instance, void *body, void *overlapBody, gpOv
 
 void Player::Die()
 {
-    auto bigEvent = Event{this, this, (int)EventTypes::PlayerDie};
-    GetGame().PushEvent(bigEvent);
+    // TODO Nothing is probably using this die event
+    auto dieEvent = Event{this, this, (int)EventTypes::PlayerDie};
+    GetGame().PushEvent(dieEvent);
+    // GetGame().AddPauseUpdateObject(this);
+    // GetGame().PauseGame(true);
     dieBgm->Play(0);
     _isDying = true;
     _rigidbodyComponent->SetCollidesWithStaticBody(false);
@@ -583,7 +594,7 @@ void Player::BrickOverlapFunc(void *instance, void *body, void *overlapBody, gpO
         return;
     if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
-    ItemBrick *itemBox = (ItemBrick *)((gpBody* )overlapBody)->funcArgs;
+    ItemBrick *itemBox = (ItemBrick *)((gpBody *)overlapBody)->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
@@ -598,7 +609,7 @@ void Player::ItemBoxOverlapFunc(void *instance, void *body, void *overlapBody, g
     // If we are not traveling upwards
     if (player->_rigidbodyComponent->Velocity().y > 0 && player->_rigidbodyComponent->Acceleration().y > 0)
         return;
-    ItemBox *itemBox = (ItemBox *)((gpBody*) overlapBody)->funcArgs;
+    ItemBox *itemBox = (ItemBox *)((gpBody *)overlapBody)->funcArgs;
     if (overlap->overlapDirection == gpOverlapDirections::gpOverlapUp)
     {
         itemBox->TakeDamage();
@@ -610,7 +621,7 @@ void Player::MushroomOverlapFunc(void *instance, void *body, void *overlapBody, 
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Mushroom *mushroom = (Mushroom *)((gpBody*)overlapBody)->funcArgs;
+    Mushroom *mushroom = (Mushroom *)((gpBody *)overlapBody)->funcArgs;
     if (!mushroom->IsEnabled())
         return;
     if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
@@ -622,18 +633,14 @@ void Player::FireflowerOverlapFunc(void *instance, void *body, void *overlapBody
     Player *player = static_cast<Player *>(instance);
     if (player->_isDead || player->_isDying)
         return;
-    Fireflower *flower = (Fireflower *)((gpBody*)overlapBody)->funcArgs;
+    Fireflower *flower = (Fireflower *)((gpBody *)overlapBody)->funcArgs;
     if (!flower->IsEnabled())
         return;
-    if (!player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
-    {
-        player->PowerChangeStart(true);
-    }
-    else
+    if (player->IsFlagSet(player->_playerFlags, PlayerFlags::IsBig))
     {
         player->SetFlag(player->_playerFlags, Player::PlayerFlags::IsSuper, true);
-        player->SuperPowerupTick();
     }
+    player->PowerChangeStart(true);
     flower->TakeDamage();
 }
 
@@ -670,8 +677,9 @@ void Player::PowerChangeStart(bool isGettingBig)
         SetFlag(_playerFlags, PlayerFlags::IsBig, isGettingBig);
         _currentBigIterations = 0;
         _currentBigIterationTime = 0;
-        auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
+        auto bigEvent = Event{this, this, (int)EventTypes::PlayerPowerup};
         GetGame().PushEvent(bigEvent);
+        _rigidbodyComponent->Enabled(false);
         _isTurningBig = true;
     }
 }
@@ -682,8 +690,7 @@ void Player::PowerupTick()
     if (_currentBigIterations > _bigIterations)
     {
         _isTurningBig = false;
-        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerBig};
-        GetGame().PushEvent(bigEvent);
+        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerPowerupComplete};
         if (IsFlagSet(_playerFlags, PlayerFlags::IsBig))
         {
             // Move marios current location up by 16 pixes cause he is getting big
@@ -705,6 +712,8 @@ void Player::PowerupTick()
             _boxColliderComponent->BoundingBox().h -= 16;
             _animationComponent->Offset(Point{0, -20});
         }
+        GetGame().PushEvent(bigEvent);
+        _rigidbodyComponent->Enabled(true);
     }
     // Regular loop
     else
@@ -743,21 +752,14 @@ void Player::PowerupTick()
 }
 void Player::SuperPowerupTick()
 {
-    if (!_isTurningBig)
-    {
-        _isTurningBig = true;
-        _currentBigIterations = 0;
-        _currentBigIterationTime = 0;
-        auto bigEvent = Event{this, this, (int)EventTypes::PlayerBig};
-        GetGame().PushEvent(bigEvent);
-    }
 
     // End
     if (_currentBigIterations > _bigIterations)
     {
         _isTurningBig = false;
-        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerBig};
+        auto bigEvent = Event{this, nullptr, (int)EventTypes::PlayerPowerupComplete};
         GetGame().PushEvent(bigEvent);
+        _rigidbodyComponent->Enabled(true);
     }
     // Regular loop
     else

@@ -8,7 +8,7 @@ Component::Component(int componentType)
     : _componentType(componentType)
 {
 }
-void Component::Start() const
+void Component::Start()
 {
 }
 void Component::Update()

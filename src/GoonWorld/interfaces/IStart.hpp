@@ -4,7 +4,7 @@ namespace GoonWorld
     class IStart
     {
     public:
-        virtual void Start() const = 0;
+        virtual void Start() = 0;
         virtual ~IStart() {}
     };
 

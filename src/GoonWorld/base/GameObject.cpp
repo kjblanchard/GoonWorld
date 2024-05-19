@@ -1,4 +1,5 @@
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/core/Timer.hpp>
 #include <GoonWorld/base/GameObject.hpp>
 #include <GoonWorld/base/Component.hpp>
@@ -8,13 +9,15 @@ std::list<std::shared_ptr<Timer>> GameObject::_timers;
 
 unsigned int GameObject::_numGameObjects = 0;
 TimeSpan GameObject::DeltaTime = TimeSpan(0);
-std::vector<std::shared_ptr<GameObject>> GameObject::_gameobjects;
+// std::vector<std::weak_ptr<GameObject>> GameObject::_gameobjects;
+std::vector<GameObject*> GameObject::_gameobjects;
 
 GameObject::GameObject()
     : _id(_numGameObjects++), _location(Point{0, 0})
 {
-    Game::Instance()->AddUpdateObject(this);
-    _gameobjects.push_back(std::shared_ptr<GameObject>(this));
+    Game::Instance()->GetCurrentLevel().AddUpdateObject(this);
+    // _gameobjects.push_back(std::shared_ptr<GameObject>(this));
+    _gameobjects.push_back(this);
     _enabled = true;
 }
 GameObject::GameObject(geRectangle *rect)
@@ -30,7 +33,7 @@ GameObject::~GameObject()
 {
     Component::GameObjectComponentTypeMap.erase(_id);
 }
-void GameObject::Start() const
+void GameObject::Start()
 {
 }
 void GameObject::Update()

@@ -28,6 +28,7 @@ LogoPanel::LogoPanel()
     fadeInSggTween->SetCallback(FadeInTweenCompleteFunc);
     fadeInSggTween->SetCallbackArgs(this);
 }
+
 LogoPanel::~LogoPanel()
 {
 }
@@ -78,5 +79,6 @@ void LogoPanel::FadeOutTextTweenCompleteFunc(void *args)
     if (!logo)
         return;
     std::string levelName = "level1";
-    logo->_game->StartGameLevel(levelName);
+    // logo->_game->StartGameLevel(levelName);
+    logo->_game->ChangeToTiledLevel(levelName);
 }

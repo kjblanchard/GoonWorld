@@ -10,6 +10,10 @@ namespace GoonWorld
     {
     public:
         AppSettings(const char *filepath);
+        struct MiscConfig
+        {
+            bool SkipLogos;
+        };
 
         struct WindowConfig
         {
@@ -50,12 +54,13 @@ namespace GoonWorld
         };
         struct DebugConfig
         {
-            bool SolidDebug;
+            bool SolidDebug, RigidBodyDebug;
+            std::string InitialLevel, LogLevel;
         };
         struct PlayerConfig
         {
             int InitialJumpVelocity, FrameJumpAcceleration, InitialMoveVelocity, WalkSpeedBoost, RunSpeedBoost, MaxWalkSpeed, MaxRunSpeed;
-            int RigidBodyOffsetX, RigidBodyOffsetY, RigidBodyOffsetW, RigidBodyOffsetH, JumpColliderOffsetX,  JumpColliderOffsetY,  JumpColliderOffsetW,  JumpColliderOffsetH;
+            int RigidBodyOffsetX, RigidBodyOffsetY, RigidBodyOffsetW, RigidBodyOffsetH, JumpColliderOffsetX, JumpColliderOffsetY, JumpColliderOffsetW, JumpColliderOffsetH;
             float MaxJumpTime;
         };
         struct Animation
@@ -63,6 +68,7 @@ namespace GoonWorld
             std::string Default;
             std::vector<AnimationConfig> Animations;
         };
+        MiscConfig MiscConfig;
         WindowConfig WindowConfig;
         GraphicsConfig GraphicsConfig;
         SoundConfig SoundConfigs;

@@ -12,29 +12,38 @@ Image *Image::ImageFactory(std::string imageName, geRectangle dstRect)
 }
 
 Image::Image(std::string &name, geRectangle dstRect)
-    : _imageName(name), _destRect(dstRect), surface(nullptr)
+    : _imageName(name), _destRect(dstRect), _srcRect(geRectangleZero()), surface(nullptr)
 {
     Content::AddContent(this);
 }
 
 Image::~Image()
 {
+    Unload();
 }
 
 void Image::Load()
 {
-    surface = CreateTextureFromFile(GetLoadPath(_imageName).c_str());
+    surface = geCreateTextureFromFile(GetLoadPath(_imageName).c_str());
 }
 
 void Image::Unload()
 {
+    Content::RemoveContent(this);
 }
 
 void Image::Draw()
 {
     if (!IsVisible())
         return;
-    geDrawTexture(surface, NULL, &_destRect, false);
+    if (geRectangleIsZero(&_srcRect))
+    {
+        geDrawTexture(surface, NULL, &_destRect, false);
+    }
+    else
+    {
+        geDrawTexture(surface, &_srcRect, &_destRect, false);
+    }
 }
 
 void Image::Visible(bool isVisible)

@@ -21,7 +21,7 @@ namespace GoonWorld
         GameObject(geRectangle *rect);
         GameObject(TiledMap::TiledObject);
         virtual ~GameObject();
-        virtual void Start() const override;
+        virtual void Start() override;
         virtual void Update() override;
         inline unsigned int Id() { return _id; }
         inline Point &Location() { return _location; }
@@ -54,7 +54,8 @@ namespace GoonWorld
             }
         }
         inline bool IsFlagSet(int &flags, int flag) { return (flags & flag); }
-        static std::vector<std::shared_ptr<GameObject>> _gameobjects;
+        // static std::vector<std::weak_ptr<GameObject>> _gameobjects;
+        static std::vector<GameObject *> _gameobjects;
         unsigned int _id;
         Point _location;
         std::vector<std::shared_ptr<Component>> _components;

@@ -15,7 +15,7 @@ namespace GoonWorld
     public:
         static std::unordered_map<unsigned int, std::unordered_map<unsigned int, Component *>> GameObjectComponentTypeMap;
         Component(int componentType);
-        virtual void Start() const override;
+        virtual void Start() override;
         virtual void Update() override;
         virtual void OnComponentAdd(GameObject &parent);
         virtual ~Component();

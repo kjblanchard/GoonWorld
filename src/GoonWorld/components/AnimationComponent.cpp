@@ -1,5 +1,6 @@
 #include <GoonWorld/gnpch.hpp>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/components/AnimationComponent.hpp>
 #include <GoonWorld/animation/Animator.hpp>
 #include <GoonWorld/animation/AnimationTransition.hpp>
@@ -91,7 +92,7 @@ void AnimationComponent::Draw()
 void AnimationComponent::OnComponentAdd(GameObject &parent)
 {
     Component::OnComponentAdd(parent);
-    GetGame().AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
 }
 
 geRectangle AnimationComponent::GetDrawRect()
@@ -106,6 +107,6 @@ void AnimationComponent::AddTransition(std::string from, std::string to, bool ma
 
 void AnimationComponent::ChangeLayer(int layer)
 {
-    GetGame().ChangeDrawObjectLayer(this, layer);
+    GetGame().GetCurrentLevel().ChangeDrawObjectLayer(this, layer);
     _layer = layer;
 }

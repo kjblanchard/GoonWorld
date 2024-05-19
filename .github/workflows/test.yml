@@ -17,16 +17,16 @@ jobs:
           suffix: zip
           zlib: wzlib
           name: win
+        # - os: macos
+        #   make_cmd: xrebuild CMAKE_OSX_ARCHITECTURES=x86_64
+        #   suffix: tgz
+        #   zlib: zlib
+        #   name: macintel
         - os: macos
-          make_cmd: xrebuild CMAKE_OSX_ARCHITECTURES=x86_64
+          make_cmd: xrebuild
           suffix: tgz
           zlib: zlib
-          name: macintel
-        - os: macos
-          make_cmd: xrebuild CMAKE_OSX_ARCHITECTURES=arm64
-          suffix: tgz
-          zlib: zlib
-          name: macsilicon
+          name: mac
         - os: ubuntu
           make_cmd: brebuild
           suffix: tgz
@@ -101,12 +101,12 @@ jobs:
           - os: win
             artifact_name: SupergoonWorld.zip
             asset_name: supergoon_win.zip
-          - os: macintel
+          # - os: macintel
+          #   artifact_name: SupergoonWorld.tgz
+          #   asset_name: supergoon_mac_intel.tgz
+          - os: mac
             artifact_name: SupergoonWorld.tgz
-            asset_name: supergoon_mac_intel.tgz
-          - os: macsilicon
-            artifact_name: SupergoonWorld.tgz
-            asset_name: supergoon_mac_silicon.tgz
+            asset_name: supergoon_mac.tgz
           - os: linux
             artifact_name: SupergoonWorld.tgz
             asset_name: supergoon_ubuntu.tgz

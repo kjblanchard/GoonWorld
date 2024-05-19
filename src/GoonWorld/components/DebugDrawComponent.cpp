@@ -3,6 +3,7 @@
 #include <GoonEngine/SdlWindow.h>
 #include <GoonEngine/SdlSurface.h>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 using namespace GoonWorld;
 
 DebugDrawComponent::DebugDrawComponent(Point size)
@@ -24,5 +25,6 @@ void DebugDrawComponent::OnComponentAdd(GameObject &parent)
 {
     Component::OnComponentAdd(parent);
     Enabled(true);
-    GetGame().AddDrawObject(this);
+    // GetGame().AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
 }

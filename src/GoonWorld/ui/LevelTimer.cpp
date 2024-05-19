@@ -4,6 +4,7 @@
 #include <GoonWorld/core/Game.hpp>
 #include <GoonWorld/events/Observer.hpp>
 #include <GoonWorld/events/EventTypes.hpp>
+#include <GoonWorld/platformer/Helpers.hpp>
 using namespace GoonWorld;
 
 LevelTimer::LevelTimer()
@@ -44,6 +45,8 @@ void LevelTimer::Draw()
 
 void LevelTimer::Update()
 {
+    if (!Helpers::ShouldEnemyUpdate())
+        return;
     currentTimeTotalSeconds += Game::Instance()->DeltaTime().GetTotalSeconds();
     auto time = (int)currentTimeTotalSeconds;
     if (time != currentTimeSeconds)

@@ -22,6 +22,8 @@ namespace GoonWorld
         static void AddContent(ILoadContent *content);
         static void LoadAllContent();
         static ILoadContent *GetContent(std::string &name);
+        static void RemoveContent(std::string &name);
+        static void RemoveContent(ILoadContent* content);
         static void ClearContent();
 
     private:

@@ -1,17 +1,19 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include <GoonWorld/interfaces/IDraw.hpp>
+// #include <GoonWorld/interfaces/IDraw.hpp>
+#include <GoonWorld/base/UiObject.hpp>
 
 namespace GoonWorld
 {
     class Text;
     struct Event;
     struct Observer;
-    class CoinsCollectedUI : public IDraw
+    class CoinsCollectedUI : public UiObject
     {
     public:
         CoinsCollectedUI();
+        ~CoinsCollectedUI() = default;
         void UpdateCoins(int coins);
         int _currentCoins;
         int x;
@@ -23,7 +25,9 @@ namespace GoonWorld
         void Visible(bool isVisible) override;
         bool IsVisible() override;
         void CoinCollectedEvent(Event &event);
-        std::unique_ptr<Observer> coinObserver;
+
+    private:
+        std::unique_ptr<Observer> _coinObserver;
     };
 
 }

@@ -1,15 +1,16 @@
 #pragma once
 #include <string>
 #include <GoonWorld/interfaces/ILoadContent.hpp>
-#include <GoonWorld/interfaces/IDraw.hpp>
-#include <GoonWorld/interfaces/IUpdate.hpp>
+#include <GoonWorld/base/UiObject.hpp>
+// #include <GoonWorld/interfaces/IDraw.hpp>
+// #include <GoonWorld/interfaces/IUpdate.hpp>
 #include <GoonEngine/color.h>
 #include <GoonEngine/point.h>
 #include <GoonEngine/rectangle.h>
 typedef struct SDL_Texture SDL_Texture;
 namespace GoonWorld
 {
-    class Text : public ILoadContent, public IDraw, public IUpdate
+    class Text : public ILoadContent, public UiObject
     {
     public:
         Text(std::string stringToLoad, Point location, geColor textColor = geColor{255, 255, 255, 255});

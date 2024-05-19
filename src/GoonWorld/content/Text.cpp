@@ -58,7 +58,8 @@ void Text::Load()
 
 void Text::Unload()
 {
-    DestroyTexture(_loadedTexture);
+    geDestroyTexture(_loadedTexture);
+    Content::RemoveContent(this);
 }
 
 void Text::Update()

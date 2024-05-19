@@ -1,5 +1,6 @@
 #include <vector>
 #include <GoonWorld/core/Game.hpp>
+#include <GoonWorld/core/Level.hpp>
 #include <GoonWorld/components/RigidbodyComponent.hpp>
 #include <GoonPhysics/body.h>
 #include <GoonPhysics/scene.h>
@@ -35,10 +36,11 @@ void RigidbodyComponent::AddOverlapFunction(int overlapType, OverlapFunc func)
 
 bool RigidbodyComponent::IsOnGround()
 {
-    if (Game::GetTicks() == _isOnGroundCached)
-        return _isOnGround;
-    _isOnGroundCached = Game::GetTicks();
-    return _isOnGround = gpBodyIsOnGround(_body);
+    // if (Game::Instance()->GetTicks() == _isOnGroundCached)
+    //     return _isOnGround;
+    // _isOnGroundCached = Game::GetTicks();
+    // return _isOnGround = gpBodyIsOnGround(_body);
+    return gpBodyIsOnGround(_body);
 }
 
 void RigidbodyComponent::OnComponentAdd(GameObject &parent)
@@ -55,7 +57,7 @@ void RigidbodyComponent::OnComponentAdd(GameObject &parent)
         _bodyNum = gpSceneAddBody(_body);
     }
     Enabled(true);
-    GetGame().AddDrawObject(this);
+    GetGame().GetCurrentLevel().AddDrawObject(this);
 }
 
 void RigidbodyComponent::OnEnabled()
