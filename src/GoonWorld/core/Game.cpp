@@ -104,6 +104,7 @@ void Game::InitializeLoadingLevel()
     loadingPanel->AddImage(mario);
     loadingPanel->AddText(livesText);
     _loadingBgm = Bgm::BgmFactory("loading");
+
     _loadingLevel->AddUiPanel(loadingPanel);
 }
 
@@ -169,6 +170,7 @@ void Game::Update(double timeMs)
         {
             LoadLevel(_nextLevel);
             _startedLoading = true;
+            _loadingBgm->Play(0);
         }
         _currentLoadingTime += totalSeconds;
         _loadingLevel->Update();
@@ -266,7 +268,7 @@ void Game::RestartLevel()
     _shouldChangeLevel = false;
     _shouldRestart = false;
     _currentState = GameStates::Loading;
-    _loadingBgm->Play();
+    _loadingBgm->Play(0);
 }
 
 // Loads and starts a tiled level, this is called from the logo panel, and should just set the next level and change to loading screen

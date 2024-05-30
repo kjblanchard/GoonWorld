@@ -862,8 +862,8 @@
          "value":
             {
              "bgmName":"1-1",
-             "loopBegin":10.225,
-             "loopEnd":0,
+             "loopBegin":10.105,
+             "loopEnd":20.2,
              "volume":1.5
             }
         }, 

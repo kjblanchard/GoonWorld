@@ -50,7 +50,7 @@ namespace GoonWorld
         std::vector<std::vector<IDraw *>> _drawObjects;
         bool _isLoaded;
         Bgm *_bgm;
-        gpScene *_scene;
+        gpScene *_scene = nullptr;
         float _bgmVolume;
     };
 }
