@@ -22,6 +22,7 @@ Bgm::Bgm(std::string &name, float start, float end)
 
 void Bgm::Play(int loops, float volume)
 {
+    puts("Playing bgm!");
     gsPreLoadBgm(_bgm);
     auto config = Game::Instance()->GetSound()->GetSoundConfig();
     auto muteMultiplier = config->Muted ? 0 : 1;

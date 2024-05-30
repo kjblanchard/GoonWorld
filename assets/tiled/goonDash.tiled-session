@@ -87,8 +87,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 1866.75,
-                "y": 268.5
+                "x": 988.25,
+                "y": 140.25
             }
         },
         "level1.tmx": {
@@ -107,14 +107,14 @@
                 2
             ],
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 3,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 574,
-                "y": 239.16666666666666
+                "x": 431.8333333333333,
+                "y": 144
             }
         },
         "scenery.tsj": {
@@ -150,11 +150,11 @@
     "project": "goonDash.tiled-project",
     "property.type": "float",
     "recentFiles": [
+        "level2.tmj",
         "level1.tmj",
         "background.tsj",
         "blocks.tsj",
         "scenery.tsj",
-        "level2.tmj",
         "terrain.tsj",
         "background.tsx",
         "terrain.tsx",

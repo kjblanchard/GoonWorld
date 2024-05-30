@@ -268,7 +268,6 @@ void Game::RestartLevel()
     _shouldChangeLevel = false;
     _shouldRestart = false;
     _currentState = GameStates::Loading;
-    _loadingBgm->Play(0);
 }
 
 // Loads and starts a tiled level, this is called from the logo panel, and should just set the next level and change to loading screen
@@ -312,7 +311,6 @@ void Game::ChangeLevel()
     _currentState = GameStates::Loading;
     LoadLevel(_nextLevel);
     _shouldChangeLevel = false;
-    _loadingBgm->Play();
 }
 
 Level &Game::GetCurrentLevel()
