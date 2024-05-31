@@ -44,7 +44,7 @@ Bgm *_loadingBgm = nullptr;
 extern std::map<std::string, std::function<GameObject *(TiledMap::TiledObject &)>> GameSpawnMap;
 
 Game::Game()
-    : _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0)
+    : _loadingLevel(nullptr), _loadedLevel(nullptr), _deltaTime(0), _paused(false), _nextLevel("")
 {
     if (_gameInstance)
     {

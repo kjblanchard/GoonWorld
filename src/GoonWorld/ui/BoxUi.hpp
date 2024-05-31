@@ -23,7 +23,7 @@ namespace GoonWorld
 
     private:
         geRectangle _location;
-        bool _filled;
+        bool _filled = true;
         geColor _drawColor;
     };
 }

@@ -3,7 +3,7 @@
 using namespace GoonWorld;
 
 UiObject::UiObject()
-    : _enabled(true)
+    : _enabled(true), _isVisible(true)
 {
 }
 UiObject::~UiObject() {}

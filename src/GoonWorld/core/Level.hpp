@@ -48,9 +48,9 @@ namespace GoonWorld
         std::vector<std::unique_ptr<Panel>> _uiPanels;
         std::vector<IUpdate *> _updateObjects;
         std::vector<std::vector<IDraw *>> _drawObjects;
-        bool _isLoaded;
-        Bgm *_bgm;
+        bool _isLoaded = false;
+        Bgm *_bgm = nullptr;
         gpScene *_scene = nullptr;
-        float _bgmVolume;
+        float _bgmVolume = 0;
     };
 }
