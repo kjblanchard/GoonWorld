@@ -128,7 +128,7 @@ void Game::SetNextTiledLevelIfLevel()
 void Game::Update(double timeMs)
 {
     ++_ticks;
-    auto totalSeconds = timeMs / 1000;
+    auto totalSeconds = timeMs;
     GameObject::DeltaTime = TimeSpan(totalSeconds);
     _deltaTime = TimeSpan(totalSeconds);
     if (_shouldRestart)
