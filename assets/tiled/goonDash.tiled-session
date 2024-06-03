@@ -5,9 +5,9 @@
     },
     "activeFile": "",
     "expandedProjectPaths": [
-        "/Users/kevin/Documents/tiled",
-        "templates",
         ".",
+        "templates",
+        "/Users/kevin/Documents/tiled",
         "/Users/kevin/Documents/tiled/sdl_dash/tilesets"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
